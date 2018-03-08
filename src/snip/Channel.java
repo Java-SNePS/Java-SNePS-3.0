@@ -1,4 +1,4 @@
-package sneps.network.classes;
+package snip;
 
 public class Channel {
 
