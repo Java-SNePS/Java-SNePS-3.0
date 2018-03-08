@@ -3,7 +3,7 @@ package sneps.network.classes.setClasses;
 import java.util.Iterator;
 import java.util.Set;
 
-import snip.Channel;
+import sneps.snip.Channel;
 
 import java.util.HashSet;
 
