@@ -8,4 +8,5 @@ public class SampleTest extends TestCase {
 	public void test() {
 		assertEquals(1,1);
 		}
+	
 }
