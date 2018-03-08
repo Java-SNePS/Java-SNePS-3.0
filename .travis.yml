@@ -1,6 +1,8 @@
 language: java
 jdk: oraclejdk8
 sudo: false
+notifications:
+    slack: javasneps-2018:VO13VcwbL6X6e2COPNU0AOnW
 script:
   - ant compile test-compile test
 after_success:
