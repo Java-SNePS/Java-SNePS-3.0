@@ -8,28 +8,22 @@ import java.util.Set;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
-import sneps.network.nodes.Node;
-import sneps.network.nodes.NodeSet;
-import sneps.network.nodes.PropositionNode;
+import sneps.network.Node;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
-import sneps.snebr.PropositionSet;
-import sneps.snebr.SNeBR;
-import sneps.snebr.Support;
 import sneps.snebr.Supports;
-import sneps.snip.Pair;
 import sneps.snip.Report;
-import sneps.snip.Runner;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
 import sneps.snip.channels.MatchChannel;
 import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.matching.Matcher;
 import sneps.snip.matching.Substitutions;
-//TODO Proposition Nodes globally stored
+
+
 public class PropositionNode extends Node {
-	private Supports basicSupport;//TODO Change to Support
+	private Supports basicSupport;
 	
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
@@ -46,7 +40,7 @@ public class PropositionNode extends Node {
 		setTerm(trm);
 	}
 	
-
+/*
 	public void processSingleChannelReports(Channel currentChannel) {
 		ArrayList<Report> reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
@@ -187,7 +181,7 @@ public class PropositionNode extends Node {
 	public boolean alreadyWorking(Channel channel) {
 		return false;
 	}
-
+*/
 
 	
 	public Supports getBasicSupport() {
