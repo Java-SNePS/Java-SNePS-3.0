@@ -7,6 +7,16 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import sneps.network.Node;
+import sneps.network.PropositionNode;
+import sneps.network.classes.CFSignature;
+import sneps.network.classes.CableTypeConstraint;
+import sneps.network.classes.CaseFrame;
+import sneps.network.classes.PathTrace;
+import sneps.network.classes.RCFP;
+import sneps.network.classes.Relation;
+import sneps.network.classes.SubDomainConstraint;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.exceptions.CustomException;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -49,6 +59,12 @@ public class Network {
 	 */
 	private static Hashtable<String, Node> nodes = new Hashtable<String, Node>();
 
+	 /* A hash table that stores all the proposition nodes defined(available) in the network.
+	 * Each entry is a 2-tuple having the name of the node as the key and the
+	 * corresponding node object as the value.
+	 */
+	private static Hashtable<String, PropositionNode> propositionNodes = new Hashtable<String, PropositionNode>();
+	
 	/**
 	 * an array list that stores all the nodes defined in the network. Each node
 	 * is stored in the array list at the position corresponding to its ID.
@@ -255,47 +271,6 @@ public class Network {
 	}
 
 	/**
-	 *
-	 * @param array
-	 *            a 2D array of Objects that represents relation-node pairs for
-	 *            the cable set
-	 *
-	 * @return the molecular node that have the down cable set specified by the
-	 *         given 2D array.
-	 */
-	public static MolecularNode getMolecularNode(Object[][] array) {
-		if (!downCableSetExists(array))
-			return (null);
-		else {
-			int counter = 0;
-			NodeSet intersection = new NodeSet();
-			while (true) {
-				if (array[counter][1].getClass().getSimpleName()
-						.equals("NodeSet"))
-					counter++;
-				else {
-					String r = ((Relation) array[counter][0]).getName();
-					NodeSet ns = ((Node) array[counter][1]).getUpCableSet()
-							.getUpCable(r).getNodeSet();
-					intersection.addAll(ns);
-					break;
-				}
-			}
-			for (int i = counter; i < array.length; i++) {
-				if (array[i][1].getClass().getSimpleName().equals("NodeSet"))
-					continue;
-				else {
-					Relation r1 = (Relation) array[i][0];
-					NodeSet ns1 = ((Node) array[i][1]).getUpCableSet()
-							.getUpCable(r1.getName()).getNodeSet();
-					intersection = intersection.Intersection(ns1);
-				}
-			}
-			return (MolecularNode) intersection.getNode(0);
-		}
-	}
-
-	/**
 	 * This method is used to define a new relation in the network.
 	 *
 	 * @param name
@@ -490,13 +465,13 @@ public class Network {
 			}
 		}
 	}
-
+/* TODO Build These
 	/**
 	 * This method builds a variable node with the default semantic type for
 	 * variable nodes which is 'infimum'.
 	 *
 	 * @return the newly created variable node.
-	 */
+	 *
 	public static VariableNode buildVariableNode() {
 		Variable v = new Variable(getNextVarName());
 		Infimum i = new Infimum();
@@ -511,7 +486,7 @@ public class Network {
 	treated in the network?
 	In the current version, all variable nodes are assumed to have only the
 	default semantic type 'infimum'.
-	 */
+	 *
 	
 	/**
 	 * This method builds a variable node with the given semantic type.
@@ -521,7 +496,7 @@ public class Network {
 	 *            semantic type for the variable node that will be created.
 	 *
 	 * @return the newly created variable node.
-	 */
+	 *
 	public static VariableNode buildVariableNode(Entity semantic) {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(v, semantic);
@@ -529,7 +504,7 @@ public class Network {
 		nodesIndex.add(node.getId(), node);
 		return node;
 	}
-
+*/
 	/**
 	 * This method builds a new base node with the given name and semantic type.
 	 *
@@ -579,7 +554,8 @@ public class Network {
 			return nodes.get(identifier);
 		}
 	}
-
+	
+/* TODO Build These
 	/**
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
@@ -603,7 +579,7 @@ public class Network {
 	 *             set already exists in the system. - the given relations-node
 	 *             pairs are not valid. - the given down cable set is not
 	 *             following the specifications of the given case frame.
-	 */
+	 *
 	public static MolecularNode buildMolecularNode(Object[][] array,
 			CaseFrame caseFrame) throws Exception, CustomException {
 		// System.out.println("in method");
@@ -637,7 +613,7 @@ public class Network {
 				.addNode(mNode);
 		return mNode;
 	}
-
+*/
 	/**
 	 * checks whether the given down cable set already exists in the network or
 	 * not.
