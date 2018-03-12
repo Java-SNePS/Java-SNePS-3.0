@@ -17,6 +17,7 @@ import sneps.network.classes.CaseFrame;
 import sneps.network.classes.PathTrace;
 import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
+import sneps.network.classes.Semantic;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Molecular;
@@ -470,15 +471,15 @@ public class Network {
 	 *            semantic type for the variable node that will be created.
 	 *
 	 * @return the newly created variable node.
-	 *
-	public static VariableNode buildVariableNode(Entity semantic) {
+	 */
+	public static Node buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
-		VariableNode node = new VariableNode(v, semantic);
+		Node node = new Node(semantic, v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
 	}
-*/
+
 	/**
 	 * This method builds a new base node with the given name and semantic type.
 	 *
