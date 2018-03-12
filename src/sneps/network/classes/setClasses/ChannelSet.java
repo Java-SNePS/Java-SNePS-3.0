@@ -2,9 +2,10 @@ package sneps.network.classes.setClasses;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.HashSet;
 
-import sneps.network.classes.Channel;
+import sneps.snip.Channel;
+
+import java.util.HashSet;
 
 public class ChannelSet implements Iterable<Channel> {
 	private Set<Channel> channels;
