@@ -51,7 +51,8 @@ public abstract class RuleNode extends PropositionNode {
 	 * Set of ids of the variables shared by all patterns
 	 */
 	protected Set<Integer> sharedVars;
-
+	
+/*
 	protected ContextRuisSet contextRuisSet;
 
 	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
@@ -80,14 +81,6 @@ public abstract class RuleNode extends PropositionNode {
 		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
 
-	/**
-	 * Applies the rule handler after receiving a report
-	 * 
-	 * @param report
-	 *            Report
-	 * @param signature
-	 *            Node
-	 */
 	public void applyRuleHandler(Report report, Node signature) {
 		int contextID = report.getContextID();
 		// Context context = SNeBR.getContextByID(contextID);
@@ -119,20 +112,12 @@ public abstract class RuleNode extends PropositionNode {
 
 	abstract protected void sendRui(RuleUseInfo tRui, int contextID);
 
-	/**
-	 * Nullifies all instance variables previously used in this node in-order to
-	 * save some memory and prepare for the new inference
-	 */
+	
 	public void clear() {
 		contextRuisSet.clear();
 		contextConstantRUI.clear();
 	}
 
-	/**
-	 * Check if all patterns share all variables or not
-	 * 
-	 * @return true or false
-	 */
 	public boolean allShareVars(NodeSet nodes) {
 		if (nodes.isEmpty())
 			return false;
@@ -148,13 +133,6 @@ public abstract class RuleNode extends PropositionNode {
 		return res;
 	}
 
-	/**
-	 * Return the intersection of the Variables of the patterns
-	 * 
-	 * @param nodes
-	 *            NodeSet
-	 * @return Set<VariableNode>
-	 */
 	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
 		if (nodes.isEmpty())
 			return new HashSet<VariableNode>();
@@ -168,13 +146,6 @@ public abstract class RuleNode extends PropositionNode {
 		return res;
 	}
 
-	/**
-	 * Return the intersection of the Variables of the patterns
-	 * 
-	 * @param nodes
-	 *            NodeSet
-	 * @return Set<VariableNode>
-	 */
 	public Set<Integer> getSharedVarsInts(NodeSet nodes) {
 		Set<VariableNode> vars = getSharedVarsNodes(nodes);
 		Set<Integer> res = new HashSet<Integer>();
@@ -183,32 +154,12 @@ public abstract class RuleNode extends PropositionNode {
 		return res;
 	}
 
-	/**
-	 * Return the down node set of this node
-	 * 
-	 * @param name
-	 *            the relation name
-	 * @return NodeSet
-	 */
 	public NodeSet getDownNodeSet(String name) {
 		return this.getDownCableSet().getDownCable(name).getNodeSet();
 	}
 
-	/**
-	 * Returns the antecedents down node set and in case of And-or or Thresh
-	 * returns the arguments down node set
-	 * 
-	 * @return NodeSet
-	 */
 	public abstract NodeSet getDownAntNodeSet();
 
-	/**
-	 * Return the up node set of this node
-	 * 
-	 * @param name
-	 *            the relation name
-	 * @return NodeSet
-	 */
 	public NodeSet getUpNodeSet(String name) {
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
@@ -217,13 +168,6 @@ public abstract class RuleNode extends PropositionNode {
 		return contextRuisSet;
 	}
 
-	/**
-	 * Add a ContextRUIS to ContextRUISSet
-	 * 
-	 * @param c
-	 *            Context
-	 * @return ContextRUIS
-	 */
 	public RuisHandler addContextRUIS(int contextID) {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
@@ -237,64 +181,24 @@ public abstract class RuleNode extends PropositionNode {
 		}
 	}
 
-	/**
-	 * Add a ContextRUIS to the ContextRUISSet and return it.
-	 * 
-	 * @param cRuis
-	 *            ContextRUIS
-	 * @return ContextRUIS
-	 */
 	public RuisHandler addContextRUIS(RuisHandler cRuis) {
 		// ChannelsSet ctemp = consequentChannel.getConChannelsSet(c);
 		contextRuisSet.putIn(cRuis);
 		return cRuis;
 	}
 
-	/**
-	 * Returns a new ContextRUI that is used in-case the antecedents/arguments
-	 * do not share the same variables is to be associated with the Context c
-	 * 
-	 * @param c
-	 *            Context
-	 * @return ContextRUIS
-	 */
 	protected RuisHandler createContextRUISNonShared(int contextID) {
 		return new RuleUseInfoSet(contextID, false);
 	}
 
-	/**
-	 * Returns the contextSet type that is used in-case the
-	 * antecedents/arguments share some variables. </br>
-	 * <b>SIndex.PTree: </b> in AndNode </br>
-	 * <b>SIndex.RUIS: </b> in other rule nodes
-	 * 
-	 * @return byte
-	 */
 	protected byte getSIndexContextType() {
 		return SIndex.RUIS;
 	}
 
-	/**
-	 * Returns the class of the ContextRUI to be used in the GeneralSindexing
-	 * 
-	 * @return
-	 */
 	protected NodeSet getPatternNodes() {
 		return antNodesWithVars;
 	}
 
-	/**
-	 * Fills the NodeSet withVars with all the Variable Nodes and Pattern Nodes
-	 * from the NodeSet allNodes and Fills the NodeSet withoutVars with the rest
-	 * of the Nodes from the NodeSet allNodes
-	 * 
-	 * @param allNodes
-	 *            NodeSet
-	 * @param withVars
-	 *            NodeSet
-	 * @param WithoutVars
-	 *            NodeSet
-	 */
 	public void splitToNodesWithVarsAndWithout(NodeSet allNodes, NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
@@ -305,20 +209,7 @@ public abstract class RuleNode extends PropositionNode {
 		}
 	}
 
-	/**
-	 * Combines the Constant RuleUseInfo (RUI) rui with the existed Constant RUI
-	 * that is Associated with the Context context.
-	 * 
-	 * @param context
-	 *            The Context that is associated with the RUI sent.
-	 * @param rui
-	 *            The RUI to be combined with the existed one.
-	 * @return the resulted from combining the existed RUI with the new one
-	 * @throws NullPointerException
-	 *             when there is something went wrong in combine the existed
-	 *             constant RUI with the new RUI
-	 */
-
+	
 	public RuleUseInfo addConstantRuiToContext(int context, RuleUseInfo rui) {
 		RuleUseInfo tRui = contextConstantRUI.get(context);
 		if (tRui != null)
@@ -337,44 +228,10 @@ public abstract class RuleNode extends PropositionNode {
 		return tRui;
 	}
 
-	// /**
-	// * Gets the number of positive constant reports in the Context context
-	// *
-	// * @param context
-	// * Context
-	// * @return int
-	// */
-	// public int getPositiveCount(Context context) {
-	// if (contextConstantRUI.containsKey(context.getId()))
-	// return contextConstantRUI.get(context.getId()).getPosCount();
-	// return 0;
-	// }
-
-	// /**
-	// * Gets the number of negative constant reports in the Context context
-	// *
-	// * @param context
-	// * Context
-	// * @return int
-	// */
-	// public int getNegativeCount(Context context) {
-	// if (contextConstantRUI.containsKey(context.getId()))
-	// return contextConstantRUI.get(context.getId()).getNegCount();
-	// return 0;
-	// }
-
 	public RuleUseInfo getConstantRUI(int context) {
 		return contextConstantRUI.get(context);
 	}
-
-	/**
-	 * Checks if the given Node is a constant node i.e. does not have
-	 * freeVariables
-	 * 
-	 * @param n
-	 *            Node
-	 * @return boolean
-	 */
+	
 	public static boolean isConstantNode(Node n) {
 		return !(n instanceof NodeWithVar) || n instanceof RuleNode || ((NodeWithVar) n).getFreeVariables().isEmpty();
 	}
@@ -430,5 +287,5 @@ public abstract class RuleNode extends PropositionNode {
 			currentChannel.clearReportsBuffer();
 		}
 	}
-
+*/
 }

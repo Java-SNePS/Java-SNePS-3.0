@@ -1,25 +1,10 @@
 package sneps.network;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
-import sneps.network.classes.setClasses.NodeSet;
-import sneps.snebr.Context;
 import sneps.snebr.Supports;
-import sneps.snip.Report;
-import sneps.snip.channels.AntecedentToRuleChannel;
-import sneps.snip.channels.Channel;
-import sneps.snip.channels.ChannelTypes;
-import sneps.snip.channels.MatchChannel;
-import sneps.snip.channels.RuleToConsequentChannel;
-import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.matching.Substitutions;
 
 
 public class PropositionNode extends Node {
