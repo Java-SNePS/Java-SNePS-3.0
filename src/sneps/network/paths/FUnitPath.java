@@ -20,6 +20,7 @@ import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.Node;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Molecular;
 
 public class FUnitPath extends Path {
 	
@@ -57,7 +58,8 @@ public class FUnitPath extends Path {
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
 		System.out.println(node);
 		if (node.getSyntacticSuperClass().equals("Molecular")){
-			 DownCableSet dSet = node.getDownCableSet();
+			Molecular mNode = (Molecular) node.getTerm(); 
+			 DownCableSet dSet = mNode.getDownCableSet();
 			 DownCable dCable = dSet.getDownCable(this.relation.getName());
 			 if (dCable != null){
 				 NodeSet ns = dCable.getNodeSet();

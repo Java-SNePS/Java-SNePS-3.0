@@ -1,22 +1,11 @@
 package sneps.network;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import sneps.network.cables.DownCableSet;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.semantic.Entity;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
-import sneps.snip.Pair;
-import sneps.snip.Runner;
-import sneps.snip.Channel;
-import sneps.snip.channels.ChannelTypes;
-import sneps.snip.matching.Matcher;
 import sneps.snip.matching.Substitutions;
 
 public class Node {
@@ -107,7 +96,6 @@ public class Node {
 		return this.term.getUpCableSet();
 	}
 
-
 	/**
 	 *
 	 * @return a node set containing all the parent nodes of the current node.
@@ -177,7 +165,7 @@ public class Node {
 	}
 	
 	public boolean isWhQuestion(Substitutions sub) {
-		if (!this.getIdentifier().equalsIgnoreCase("patternnode"))
+		/*if (!this.getIdentifier().equalsIgnoreCase("patternnode"))
 			return false;
 
 		PatternNode node = (PatternNode) this;
@@ -188,7 +176,7 @@ public class Node {
 			if (termNode == null || (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
 				return true;
 
-		}
+		}*/
 		return false;
 	}
 
@@ -196,8 +184,8 @@ public class Node {
 		return null;
 	}
 
-	public void deduce(Channel channel) {
-		Runner.initiate();
+	public void deduce(Node node) {
+		/*Runner.initiate();
 		NodeSet dominatingRules = getDominatingRules();
 		sendRequests(dominatingRules, channel.getFilter().getSubstitution(),
 				channel.getContextID(), ChannelTypes.RuleCons);
@@ -216,7 +204,7 @@ public class Node {
 			e.printStackTrace();
 		}
 		Runner.run();
-		// what to return here ?
+		// what to return here ?*/
 	}
 
 	

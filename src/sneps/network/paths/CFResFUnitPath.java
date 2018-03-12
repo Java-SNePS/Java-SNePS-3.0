@@ -24,6 +24,7 @@ import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.Node;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Molecular;
 
 public class CFResFUnitPath extends Path{
 	
@@ -77,7 +78,8 @@ public class CFResFUnitPath extends Path{
 	{	
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
 		if (node.getSyntacticSuperClass().equals("Molecular")){
-			 DownCableSet dSet = node.getDownCableSet();
+			Molecular mNode = (Molecular) node.getTerm();
+			 DownCableSet dSet = mNode.getDownCableSet();
 			 // Check the restriction of the CaseFrame
 			 if (dSet.getCaseFrame().getId().equals(this.caseFrame.getId())){
 				 DownCable dCable = dSet.getDownCable(this.relation.getName());

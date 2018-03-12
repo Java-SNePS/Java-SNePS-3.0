@@ -25,7 +25,7 @@ public class BangPath extends Path{
      */
 	@Override
 	public LinkedList<Object[]> follow(Node node, PathTrace trace, Context context) {
-		
+		/*
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
 		// check it's proposition and it's asserted
 		if ((node.getSemanticType().getSuperClassesNames().contains("Proposition") ||
@@ -41,7 +41,7 @@ public class BangPath extends Path{
 			o[1] = pt;
 			result.add(o);
 		}
-		return result;
+		return result;*/return null;
 	}
 
 	/** (non-Javadoc)
@@ -49,12 +49,11 @@ public class BangPath extends Path{
      */
 	@Override
 	public LinkedList<Object[]> followConverse(Node node, PathTrace trace, Context context) {
-		
+		/*
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
 		if ((node.getSemanticType().getSuperClassesNames().contains("Proposition") ||
 				node.getSemanticType().getClass().getSimpleName().equals("Proposition")) &&
-					context.getHypothesisSet().propositions.contains(node.getSemanticType())
-		)
+					context.getHypothesisSet().propositions.contains(node.getSemanticType()))
 		{
 			PathTrace pt = trace.clone();
 			pt.addSupport(node);
@@ -64,7 +63,7 @@ public class BangPath extends Path{
 			o[1] = pt;
 			result.add(o);
 		}
-		return result;
+		return result;*/return null;
 	}
 
 	/** (non-Javadoc)

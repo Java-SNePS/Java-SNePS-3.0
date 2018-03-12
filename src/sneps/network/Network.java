@@ -17,38 +17,8 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.exceptions.CustomException;
-import sneps.network.cables.Cable;
-import sneps.network.cables.DownCable;
-import sneps.network.cables.DownCableSet;
-import sneps.network.cables.UpCable;
-import sneps.network.classes.semantic.Act;
-import sneps.network.classes.semantic.Action;
-import sneps.network.classes.semantic.ControlAction;
-import sneps.network.classes.semantic.Entity;
-import sneps.network.classes.semantic.Infimum;
-import sneps.network.classes.semantic.Proposition;
-import sneps.network.classes.syntactic.Base;
-import sneps.network.classes.syntactic.Closed;
-import sneps.network.classes.syntactic.Pattern;
-import sneps.network.classes.syntactic.Variable;
-import sneps.network.nodes.ActNode;
-import sneps.network.nodes.ActionNode;
-import sneps.network.nodes.ClosedNode;
-import sneps.network.nodes.ControlActionNode;
-import sneps.network.nodes.MolecularNode;
-import sneps.network.nodes.NodeSet;
-import sneps.network.nodes.PatternNode;
-import sneps.network.nodes.PropositionNode;
-import sneps.network.nodes.VariableNode;
-import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
-import sneps.snebr.SNeBR;
-import sneps.snip.rules.nodes.AndNode;
-import sneps.snip.rules.nodes.AndOrNode;
-import sneps.snip.rules.nodes.NumericalNode;
-import sneps.snip.rules.nodes.OrNode;
-import sneps.snip.rules.nodes.ThreshNode;
 
 public class Network {
 	
@@ -409,6 +379,7 @@ public class Network {
 		relation.setPath(null);
 	}
 
+/* TODO Build These
 	/**
 	 * This method is used to remove a node from the network and also removes
 	 * all the nodes that are only dominated by it.
@@ -418,7 +389,7 @@ public class Network {
 	 *
 	 * @throws CustomException
 	 *             if the node cannot be removed because it is not isolated.
-	 */
+	 *
 	public static void removeNode(Node node) throws CustomException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
@@ -465,7 +436,7 @@ public class Network {
 			}
 		}
 	}
-/* TODO Build These
+	
 	/**
 	 * This method builds a variable node with the default semantic type for
 	 * variable nodes which is 'infimum'.
@@ -519,7 +490,7 @@ public class Network {
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in
 	 *             the network.
-	 */
+	 *
 	public static Node buildBaseNode(String identifier, Entity semantic) {
 		if (semantic instanceof Act) {
 			System.out.print("ERROR: Acts cannot be base nodes!!!");
@@ -613,7 +584,7 @@ public class Network {
 				.addNode(mNode);
 		return mNode;
 	}
-*/
+
 	/**
 	 * checks whether the given down cable set already exists in the network or
 	 * not.
@@ -623,7 +594,7 @@ public class Network {
 	 *            set specifications.
 	 *
 	 * @return true if the down cable set exists, and false otherwise
-	 */
+	 *
 	private static boolean downCableSetExists(Object[][] array) {
 		int size = 0;
 		// System.out.println("called");
@@ -691,7 +662,7 @@ public class Network {
 		// System.out.println("size "  + ns.size());
 		return ns.size() == 1;
 	}
-
+*/
 	/**
 	 * This method checks that each pair in a 2D array of relation-node pairs is
 	 * valid. The pair is valid if the relation can point to the node paired
@@ -828,7 +799,7 @@ public class Network {
 			return false;
 		return true;
 	}
-
+/*
 	/**
 	 * This method examines the down cable set of a certain molecular node to
 	 * check whether it dominate free variables or not. Pattern nodes dominate
@@ -841,7 +812,7 @@ public class Network {
 	 *
 	 * @return true if the node dominates free variable and thus should be
 	 *         pattern node, and false otherwise.
-	 */
+	 *
 	private static boolean isToBePattern(Object[][] array) {
 		for (int i = 0; i < array.length; i++) {
 			if (array[i][1].getClass().getSimpleName().equals("NodeSet"))
@@ -890,7 +861,7 @@ public class Network {
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
-	 */
+	 *
 	@SuppressWarnings("rawtypes")
 	private static MolecularNode createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
@@ -960,7 +931,7 @@ public class Network {
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
-	 */
+	 *
 	@SuppressWarnings("rawtypes")
 	private static MolecularNode createClosedNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
@@ -1003,7 +974,7 @@ public class Network {
 		}
 
 	}
-
+*/
 	// not tested
 	/**
 	 * This method builds a hash table with each entry having the relation name
@@ -1192,7 +1163,7 @@ public class Network {
 
 		return result;
 	}
-
+/*
 	/**
 	 * This method builds an instance of the semantic class with the given name.
 	 *
@@ -1203,13 +1174,13 @@ public class Network {
 	 *
 	 * @throws Exception
 	 *             if the semantic class cannot be successfully built.
-	 */
+	 *
 	public Entity buildSemanticClass(String name) throws Exception {
 		Class<?> sem = Class.forName("sneps.network.classes.semantic." + name);
 		Entity e = (Entity) sem.newInstance();
 		return e;
 	}
-
+*/
 	/**
 	 * This method builds a new case frame signature with the given parameters.
 	 *
@@ -1305,7 +1276,7 @@ public class Network {
 
 	// Methods that was implemented to by
 	// used by the UI (if needed)
-
+/*
 	public static NodeSet getNodesHavingCF(CaseFrame caseFrame) {
 		NodeSet ns = new NodeSet();
 		if (molecularNodes.containsKey(caseFrame.getId())) {
@@ -1324,7 +1295,7 @@ public class Network {
 		}
 		return ns;
 	}
-
+*/
 	// helper methods that generate the names for the
 	// different types of nodes that are to built in the network
 
@@ -1725,7 +1696,7 @@ public class Network {
 	 * @return a node set of variable nodes that are dominated by the given
 	 *         molecular node
 	 */
-	@SuppressWarnings("unused")
+/*	@SuppressWarnings("unused")
 	private static NodeSet getAllVariables(MolecularNode node) {
 		NodeSet result = new NodeSet();
 
@@ -1747,17 +1718,17 @@ public class Network {
 
 		return result;
 	}
-
+*/
 	public static NodeSet match(Node x) {
 		return new NodeSet();
 	}
 	
-	public static void defineDefaults() throws CustomException {
+/*	public static void defineDefaults() throws CustomException {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
 		CaseFrame.createDefaultCaseFrames();
 		SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		ControlActionNode.initControlActions();
 	}
-
+*/
 }

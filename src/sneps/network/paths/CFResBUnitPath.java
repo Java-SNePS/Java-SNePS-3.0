@@ -24,6 +24,7 @@ import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.Node;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Molecular;
 
 public class CFResBUnitPath extends Path{
 
@@ -82,9 +83,9 @@ public class CFResBUnitPath extends Path{
 			for(int i = 0; i < ns.size(); i++){
 				Node n = ns.getNode(i);
 				// check the CaseFrame of the node before adding it
-				if ((n.getDownCableSet().getCaseFrame().
-						getId().equals(this.caseFrame.getId()))
-				{
+				Molecular mNode = (Molecular) n.getTerm();
+				if ((mNode.getDownCableSet().getCaseFrame().
+						getId().equals(this.caseFrame.getId())))	{
 					PathTrace t = trace.clone();
 					t.compose(new CFResBUnitPath(this.relation, this.caseFrame));
 					Object[] o = new Object[2];
