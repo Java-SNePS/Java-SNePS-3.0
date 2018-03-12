@@ -23,5 +23,9 @@ public class ReportSet implements Iterable<Report> {
 		return reports.iterator();
 	}
 
+	public boolean contains(Report report) {
+		return reports.contains(report);
+	}
+
 
 }

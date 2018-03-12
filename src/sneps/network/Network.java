@@ -8,15 +8,28 @@ import java.util.LinkedList;
 
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.cables.Cable;
+import sneps.network.cables.DownCable;
+import sneps.network.cables.DownCableSet;
+import sneps.network.cables.UpCable;
 import sneps.network.classes.CFSignature;
 import sneps.network.classes.CableTypeConstraint;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.PathTrace;
 import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
+import sneps.network.classes.Semantic;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.VariableSet;
+import sneps.network.classes.term.Base;
+import sneps.network.classes.term.Closed;
+import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
+import sneps.network.classes.term.Term;
+import sneps.network.classes.term.Variable;
 import sneps.exceptions.CustomException;
+import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
 
@@ -31,7 +44,7 @@ public class Network {
 
 	 /* A hash table that stores all the proposition nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
-	 * corresponding node object as the value.
+	 * corresponding proposition node object as the value.
 	 */
 	private static Hashtable<String, PropositionNode> propositionNodes = new Hashtable<String, PropositionNode>();
 	
@@ -379,17 +392,6 @@ public class Network {
 		relation.setPath(null);
 	}
 
-/* TODO Build These
-	/**
-	 * This method is used to remove a node from the network and also removes
-	 * all the nodes that are only dominated by it.
-	 *
-	 * @param node
-	 *            the node that will be removed.
-	 *
-	 * @throws CustomException
-	 *             if the node cannot be removed because it is not isolated.
-	 *
 	public static void removeNode(Node node) throws CustomException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
@@ -407,7 +409,7 @@ public class Network {
 		// no other parents
 		if (node.getClass().getSuperclass().getSimpleName()
 				.equals("MolecularNode")) {
-			MolecularNode m = (MolecularNode) node;
+			Molecular m = (Molecular) node.getTerm();
 			molecularNodes.get(m.getDownCableSet().getCaseFrame().getId())
 					.removeNode(node);
 			DownCableSet dCableSet = m.getDownCableSet();
@@ -437,74 +439,35 @@ public class Network {
 		}
 	}
 	
-	/**
-	 * This method builds a variable node with the default semantic type for
-	 * variable nodes which is 'infimum'.
-	 *
-	 * @return the newly created variable node.
-	 *
-	public static VariableNode buildVariableNode() {
+	public static Node buildVariableNode() {
 		Variable v = new Variable(getNextVarName());
-		Infimum i = new Infimum();
-		VariableNode node = new VariableNode(v, i);
+		Node node = new Node(v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
 	}
 
-	/* check when this method should be used in the network??
-	and how the variable node that have a semantic type should be handled and
-	treated in the network?
-	In the current version, all variable nodes are assumed to have only the
-	default semantic type 'infimum'.
-	 *
-	
-	/**
-	 * This method builds a variable node with the given semantic type.
-	 *
-	 * @param semantic
-	 *            the specified semantic type that will override the default
-	 *            semantic type for the variable node that will be created.
-	 *
-	 * @return the newly created variable node.
-	 *
-	public static VariableNode buildVariableNode(Entity semantic) {
-		Variable v = new Variable(getNextVarName());
-		VariableNode node = new VariableNode(v, semantic);
+	public static Node buildVariableNode(Term semantic) {
+		Node node = new Node(semantic);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
 	}
-*/
-	/**
-	 * This method builds a new base node with the given name and semantic type.
-	 *
-	 * @param identifier
-	 *            the name of the new base node.
-	 * @param semantic
-	 *            the semantic class that represents the semantic type of the
-	 *            new base node.
-	 *
-	 * @return the newly created base node.
-	 *
-	 * @throws CustomException
-	 *             if another node with the same given name already exists in
-	 *             the network.
-	 *
-	public static Node buildBaseNode(String identifier, Entity semantic) {
-		if (semantic instanceof Act) {
+
+	public static Node buildBaseNode(String identifier, Semantic semantic) {
+		/*if (semantic instanceof Act) {
 			System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
-		}
+		}*/
 		if (nodes.containsKey(identifier)) {
+			//Already Present
 			return nodes.get(identifier);
-
-			// throw new
-			// CustomException("There is already another node with the same name existing in the network");
+			//throw new CustomException("There is already another node with the same name existing in the network");
+			
 		} else {
 			Base b = new Base(identifier);
 			Node node;
-			if (semantic instanceof Action) {
+			/*if (semantic instanceof Action) {
 				if (semantic instanceof ControlAction) {
 					node = new ControlActionNode(b, (ControlAction)semantic);
 				} else {
@@ -512,7 +475,9 @@ public class Network {
 				}
 			} else {				
 				node = new Node(b, semantic);
-			}
+			}*/
+			node = new Node(semantic, b);
+			
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
 
@@ -526,32 +491,7 @@ public class Network {
 		}
 	}
 	
-/* TODO Build These
-	/**
-	 * This method builds a new molecular node with the given down cable set
-	 * specifications and case frame.
-	 *
-	 * @param array
-	 *            a 2D array of Relation-Node pairs that represents the
-	 *            specifications of the down cable set of the new molecular
-	 *            node.
-	 * @param caseFrame
-	 *            the case frame that will be implemented by the new molecular
-	 *            node.
-	 *
-	 * @return the newly created molecular node.
-	 *
-	 * @throws Exception
-	 *             if the invoked methods to create a pattern node or closed
-	 *             node throw an Exception.
-	 * @throws CustomException
-	 *             if the node cannot be built due to one of the following
-	 *             reasons: - another node with the same specified down cable
-	 *             set already exists in the system. - the given relations-node
-	 *             pairs are not valid. - the given down cable set is not
-	 *             following the specifications of the given case frame.
-	 *
-	public static MolecularNode buildMolecularNode(Object[][] array,
+	public static Node buildMolecularNode(Object[][] array,
 			CaseFrame caseFrame) throws Exception, CustomException {
 		// System.out.println("in method");
 		if (downCableSetExists(array))
@@ -570,7 +510,7 @@ public class Network {
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// System.out.println("done 3rd");
 		// create the Molecular Node
-		MolecularNode mNode;
+		Node mNode;
 		if (isToBePattern(array)) {
 			System.out.println("building patt");
 			mNode = createPatNode(relNodeSet, caseFrame);
@@ -580,21 +520,11 @@ public class Network {
 		}
 		nodes.put(mNode.getIdentifier(), mNode);
 		nodesIndex.add(mNode.getId(), mNode);
-		molecularNodes.get(mNode.getDownCableSet().getCaseFrame().getId())
+		molecularNodes.get(((Molecular) mNode.getTerm()).getDownCableSet().getCaseFrame().getId())
 				.addNode(mNode);
 		return mNode;
 	}
 
-	/**
-	 * checks whether the given down cable set already exists in the network or
-	 * not.
-	 *
-	 * @param array
-	 *            a 2D array of Relation-Node pairs representing a down cable
-	 *            set specifications.
-	 *
-	 * @return true if the down cable set exists, and false otherwise
-	 *
 	private static boolean downCableSetExists(Object[][] array) {
 		int size = 0;
 		// System.out.println("called");
@@ -620,7 +550,7 @@ public class Network {
 		// System.out.println(ns);
 		for (int j = 0; j < ns.size(); j++) {
 			Object[] x = ns.get(j);
-			MolecularNode n = (MolecularNode) x[0];
+			Molecular n = (Molecular) x[0];
 			// System.out.println(array.length);
 			for (int i = 0; i < array.length; i++) {
 				if (array[i][1].getClass().getSimpleName().equals("NodeSet")) {
@@ -643,7 +573,7 @@ public class Network {
 		// System.out.println("done 3rd loop");
 		for (int i = 0; i < ns.size(); i++) {
 			Object[] x = ns.get(i);
-			MolecularNode n = (MolecularNode) x[0];
+			Molecular n = (Molecular) x[0];
 			int c = 0;
 			Enumeration<DownCable> dCables = n.getDownCableSet()
 					.getDownCables().elements();
@@ -662,20 +592,7 @@ public class Network {
 		// System.out.println("size "  + ns.size());
 		return ns.size() == 1;
 	}
-*/
-	/**
-	 * This method checks that each pair in a 2D array of relation-node pairs is
-	 * valid. The pair is valid if the relation can point to the node paired
-	 * with it according to the semantic type specified in the relation. In the
-	 * current implementation any relation can point to the variable node
-	 * because all nodes have infimum as their semantic type.
-	 *
-	 * @param array
-	 *            a 2D array of Relation-Node pairs that represents the
-	 *            specifications of the down cable set of a new molecular node.
-	 *
-	 * @return true if each pair in the 2D array is valid, and false otherwise.
-	 */
+
 	public static boolean validRelNodePairs(Object[][] array) {
 		for (int i = 0; i < array.length; i++) {
 			if (!array[i][1].getClass().getSimpleName().equals("NodeSet")) {
@@ -696,17 +613,6 @@ public class Network {
 		return true;
 	}
 
-	/**
-	 * This method build a 2D array of relation-nodeSet pairs from a given 2D
-	 * array of relation-node pairs.
-	 *
-	 * @param array
-	 *            a 2D array of Relation-Node pairs that represents the
-	 *            specifications of the down cable set of the new molecular
-	 *            node.
-	 *
-	 * @return a 2D array of relation-nodeSet pairs.
-	 */
 	private static Object[][] turnIntoRelNodeSet(Object[][] array) {
 		Object[][] temp = new Object[array.length][];
 		for (int i = 0; i < array.length; i++) {
@@ -762,22 +668,7 @@ public class Network {
 		return result;
 	}
 
-	/**
-	 * This method checks whether the down cable set of a certain molecular node
-	 * is following the restrictions specified by the case frame or not.(exactly
-	 * same relations and each relation is at least pointing to the minimum
-	 * number of nodes specified by its limit in its RCFP entry within this case
-	 * frame).
-	 *
-	 * @param array
-	 *            a 2D array of relation-nodeSet pairs that represent the down
-	 *            cable set of a certain molecular node
-	 * @param caseFrame
-	 *            the case frame implemented by this certain molecular node
-	 *
-	 * @return true if the down cable set is following the case frame
-	 *         restrictions, and false otherwise.
-	 */
+
 	private static boolean followingCaseFrame(Object[][] array,
 			CaseFrame caseFrame) {
 		Hashtable<String, RCFP> list = new Hashtable<String, RCFP>(
@@ -799,20 +690,8 @@ public class Network {
 			return false;
 		return true;
 	}
-/*
-	/**
-	 * This method examines the down cable set of a certain molecular node to
-	 * check whether it dominate free variables or not. Pattern nodes dominate
-	 * free variables while closed nodes do not dominate free variables.
-	 *
-	 * @param array
-	 *            a 2D array of Relation-Node pairs that represents the
-	 *            specifications of the down cable set of the new molecular
-	 *            node.
-	 *
-	 * @return true if the node dominates free variable and thus should be
-	 *         pattern node, and false otherwise.
-	 *
+
+	
 	private static boolean isToBePattern(Object[][] array) {
 		for (int i = 0; i < array.length; i++) {
 			if (array[i][1].getClass().getSimpleName().equals("NodeSet"))
@@ -824,10 +703,10 @@ public class Network {
 				return true;
 			if (node.getSyntactic().getClass().getSimpleName()
 					.equals("Pattern")) {
-				Pattern pattern = (Pattern) node.getSyntactic();
-				LinkedList<VariableNode> varNodes = pattern.getFreeVariables();
+				Open pattern = (Open) node.getTerm();
+				VariableSet varNodes = pattern.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
-					VariableNode v = varNodes.get(j);
+					Variable v = varNodes.getVariable(j);
 					boolean flag = false;
 					for (int k = 0; k < array.length; k++) {
 						if (array[k][1].getClass().getSimpleName()
@@ -845,25 +724,7 @@ public class Network {
 		return false;
 	}
 
-	/**
-	 * This method builds a new pattern node or proposition node with the given
-	 * down cable set specifications and case frame.
-	 *
-	 * @param relNodeSet
-	 *            a 2D array of relation-nodeSet pairs that represents the down
-	 *            cable set of the new pattern or proposition node.
-	 * @param caseFrame
-	 *            the case frame implemented by the new pattern or proposition
-	 *            node.
-	 *
-	 * @return the newly created pattern node or proposition node.
-	 *
-	 * @throws Exception
-	 *             if the semantic class specified by the case frame was not
-	 *             successfully created and thus the node was not built.
-	 *
-	@SuppressWarnings("rawtypes")
-	private static MolecularNode createPatNode(Object[][] relNodeSet,
+	private static Node createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
 		System.out.println("mtooo");
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
@@ -873,14 +734,14 @@ public class Network {
 		}
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String patName = getNextPatName();
-		Pattern p = new Pattern(patName, dCableSet);
+		Open p = new Open(patName, dCableSet);
 		String semantic = getCFSignature(turnIntoHashtable(relNodeSet),
 				caseFrame);
 		Class sem = Class.forName("sneps.network.classes.semantic." + semantic);
-		Entity e = (Entity) sem.newInstance();
+		Term e = (Term) sem.newInstance();
 		// builds a proposition node if the semantic class is proposition, and
-		// pattern node otherwise
-		if (semantic.equals("Proposition")) {
+		//TODO pattern node otherwise
+		/*if (semantic.equals("Proposition")) {
 			PropositionNode propNode;
 			Proposition prop = ((Proposition) e);
 			if (caseFrame == CaseFrame.andRule)
@@ -895,11 +756,9 @@ public class Network {
 				propNode = new NumericalNode(p, prop);	
 			else if (caseFrame == CaseFrame.doIf)
 				propNode = null;
-			//TODO
 //				propNode = new DoIfNode(p, prop);
 			else if (caseFrame == CaseFrame.whenDo)
 				propNode = null;
-			//TODO
 //				propNode = new WhenDoNode(p, prop);
 			else
 				propNode = new PropositionNode(p, prop);
@@ -908,32 +767,15 @@ public class Network {
 			Act a = (Act) e;
 			return new ActNode(p, a);
 		} else {
-			PatternNode pNode = new PatternNode(p, e);
+			Node pNode = new Node(p, e);
 			return pNode;
-		}
-
+		}*/
+		Node pNode = new Node(p);
+		return pNode;
 	}
 
-	/**
-	 * This method builds a new closed node or proposition with the given down
-	 * cable set specifications and case frame.
-	 *
-	 *
-	 * @param relNodeSet
-	 *            a 2D array of relation-nodeSet pairs that represents the down
-	 *            cable set of the new closed or proposition node.
-	 * @param caseFrame
-	 *            the case frame implemented by the new closed or proposition
-	 *            node.
-	 *
-	 * @return the newly created closed or proposition node.
-	 *
-	 * @throws Exception
-	 *             if the semantic class specified by the case frame was not
-	 *             successfully created and thus the node was not built.
-	 *
-	@SuppressWarnings("rawtypes")
-	private static MolecularNode createClosedNode(Object[][] relNodeSet,
+	
+	private static Node createClosedNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
@@ -946,10 +788,10 @@ public class Network {
 		String semantic = getCFSignature(turnIntoHashtable(relNodeSet),
 				caseFrame);
 		Class sem = Class.forName("sneps.network.classes.semantic." + semantic);
-		Entity e = (Entity) sem.newInstance();
+		Molecular e = (Molecular) sem.newInstance();
 		// builds a proposition node if the semantic class is proposition, and
-		// closed node otherwise
-		if (semantic.equals("Proposition")) {
+		// TODOclosed node otherwise
+		/*if (semantic.equals("Proposition")) {
 			Proposition prop = (Proposition) e;
 			PropositionNode propNode;
 			if (caseFrame == CaseFrame.andRule)
@@ -969,12 +811,14 @@ public class Network {
 			Act a = (Act) e;
 			return new ActNode(c, a);
 		} else {
-			ClosedNode cNode = new ClosedNode(c, e);
+			Closed cNode = new Closed(c, e);
 			return cNode;
-		}
-
+		}*/
+		Node cNode = new Node(c);
+		return cNode;
 	}
-*/
+
+	
 	// not tested
 	/**
 	 * This method builds a hash table with each entry having the relation name
@@ -1276,7 +1120,7 @@ public class Network {
 
 	// Methods that was implemented to by
 	// used by the UI (if needed)
-/*
+
 	public static NodeSet getNodesHavingCF(CaseFrame caseFrame) {
 		NodeSet ns = new NodeSet();
 		if (molecularNodes.containsKey(caseFrame.getId())) {
@@ -1286,7 +1130,7 @@ public class Network {
 			else {
 				// to handle if the hashing is not perfect
 				for (int i = 0; i < temp.size(); i++) {
-					if (((MolecularNode) temp.getNode(i)).getDownCableSet()
+					if (((Molecular) temp.getNode(i).getTerm()).getDownCableSet()
 							.getCaseFrame().getId().equals(caseFrame.getId())) {
 						ns.addNode(temp.getNode(i));
 					}
@@ -1295,7 +1139,7 @@ public class Network {
 		}
 		return ns;
 	}
-*/
+
 	// helper methods that generate the names for the
 	// different types of nodes that are to built in the network
 
@@ -1688,17 +1532,9 @@ public class Network {
 		return result;
 	}
 
-	/**
-	 * gets all the variable nodes dominated by the given molecular node
-	 *
-	 * @param node
-	 *            a MolecularNode to get variables dominated by it
-	 * @return a node set of variable nodes that are dominated by the given
-	 *         molecular node
-	 */
-/*	@SuppressWarnings("unused")
-	private static NodeSet getAllVariables(MolecularNode node) {
-		NodeSet result = new NodeSet();
+	
+	private static VariableSet getAllVariables(Molecular node) {
+		VariableSet result = new VariableSet();
 
 		Enumeration<DownCable> dCables = node.getDownCableSet().getDownCables()
 				.elements();
@@ -1708,27 +1544,27 @@ public class Network {
 			for (int j = 0; j < ns.size(); j++) {
 				Node n = ns.getNode(j);
 				if (n.getSyntacticType().equals("Variable")) {
-					result.addNode(n);
+					result.addVariable((Variable) n.getTerm());
 				}
 				if (n.getSyntacticSuperClass().equals("Molecular")) {
-					result.addAll(getAllVariables((MolecularNode) n));
+					result.addAll(getAllVariables((Molecular) n.getTerm()));
 				}
 			}
 		}
 
 		return result;
 	}
-*/
+
 	public static NodeSet match(Node x) {
 		return new NodeSet();
 	}
 	
-/*	public static void defineDefaults() throws CustomException {
+	/*public static void defineDefaults() throws CustomException {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
 		CaseFrame.createDefaultCaseFrames();
 		SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		ControlActionNode.initControlActions();
-	}
-*/
+	}*/
+
 }
