@@ -22,6 +22,7 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Base;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
@@ -939,9 +940,9 @@ public class Network {
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
-	 *
+	 */
 	@SuppressWarnings("rawtypes")
-	private static MolecularNode createClosedNode(Object[][] relNodeSet,
+	private static Node createClosedNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
@@ -953,36 +954,48 @@ public class Network {
 		Closed c = new Closed(closedName, dCableSet);
 		String semantic = getCFSignature(turnIntoHashtable(relNodeSet),
 				caseFrame);
-		Class sem = Class.forName("sneps.network.classes.semantic." + semantic);
-		Entity e = (Entity) sem.newInstance();
+		Semantic semType = new Semantic(semantic);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
 		if (semantic.equals("Proposition")) {
-			Proposition prop = (Proposition) e;
 			PropositionNode propNode;
-			if (caseFrame == CaseFrame.andRule)
-				propNode = new AndNode(c, prop);
-			else if (caseFrame == CaseFrame.orRule)
-				propNode = new OrNode(c, prop);
-			else if (caseFrame == CaseFrame.andOrRule)
-				propNode = new AndOrNode(c, prop);
-			else if (caseFrame == CaseFrame.threshRule)
-				propNode = new ThreshNode(c, prop);
-			else if (caseFrame == CaseFrame.numericalRule)
-				propNode = new NumericalNode(c, prop);
+			if (caseFrame == CaseFrame.andRule) {
+				propNode = null;
+				//TODO
+//				propNode = new AndNode(c, prop);
+				}
+			else if (caseFrame == CaseFrame.orRule) {
+				propNode = null;
+				//TODO
+//				propNode = new OrNode(c, prop);
+			}
+			else if (caseFrame == CaseFrame.andOrRule) {
+				propNode = null;
+				//TODO
+//				propNode = new AndOrNode(c, prop);
+				}
+			else if (caseFrame == CaseFrame.threshRule) {
+				propNode = null;
+				//TODO
+//				propNode = new ThreshNode(c, prop);
+				}
+			else if (caseFrame == CaseFrame.numericalRule) {
+				propNode = null;
+				//TODO
+//				propNode = new NumericalNode(c, prop);
+				}
 			else
-				propNode = new PropositionNode(c, prop);
+				propNode = new PropositionNode(c);
 			return propNode;
 		} else if (semantic.equals("Act")) {
-			Act a = (Act) e;
-			return new ActNode(c, a);
+			return new ActNode();
 		} else {
-			ClosedNode cNode = new ClosedNode(c, e);
+			Node cNode = new Node(semType, c);
 			return cNode;
 		}
 
 	}
-*/
+
 	// not tested
 	/**
 	 * This method builds a hash table with each entry having the relation name
