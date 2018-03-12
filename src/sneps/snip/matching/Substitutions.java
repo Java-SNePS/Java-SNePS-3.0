@@ -1,8 +1,7 @@
 package sneps.snip.matching;
 
 import sneps.network.Node;
-import sneps.network.classes.Variable;
-import sneps.snip.matching.Binding;
+import sneps.network.classes.term.Variable;
 
 public interface Substitutions {
 
@@ -37,7 +36,4 @@ public interface Substitutions {
     public int termID(int variableID);
     public void insertOrUpdate(Binding mb);
 
-	
-	
-	
 }
