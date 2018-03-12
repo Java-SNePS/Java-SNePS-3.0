@@ -23,6 +23,7 @@ import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.exceptions.CustomException;
 import sneps.network.paths.FUnitPath;
@@ -800,7 +801,7 @@ public class Network {
 			return false;
 		return true;
 	}
-/*
+
 	/**
 	 * This method examines the down cable set of a certain molecular node to
 	 * check whether it dominate free variables or not. Pattern nodes dominate
@@ -813,22 +814,22 @@ public class Network {
 	 *
 	 * @return true if the node dominates free variable and thus should be
 	 *         pattern node, and false otherwise.
-	 *
+	 */
 	private static boolean isToBePattern(Object[][] array) {
 		for (int i = 0; i < array.length; i++) {
 			if (array[i][1].getClass().getSimpleName().equals("NodeSet"))
 				continue;
 			Relation r = (Relation) array[i][0];
 			Node node = (Node) array[i][1];
-			if (node.getClass().getSimpleName().equals("VariableNode")
+			if (node.getTerm().getClass().getSimpleName().equals("Variable")
 					&& !r.isQuantifier())
 				return true;
 			if (node.getSyntactic().getClass().getSimpleName()
 					.equals("Pattern")) {
-				Pattern pattern = (Pattern) node.getSyntactic();
-				LinkedList<VariableNode> varNodes = pattern.getFreeVariables();
+				Open open = (Open) node.getSyntactic();
+				LinkedList<Node> varNodes = open.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
-					VariableNode v = varNodes.get(j);
+					Node v = varNodes.get(j);
 					boolean flag = false;
 					for (int k = 0; k < array.length; k++) {
 						if (array[k][1].getClass().getSimpleName()
