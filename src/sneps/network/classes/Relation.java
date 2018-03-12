@@ -1,5 +1,6 @@
-package sneps.network;
+package sneps.network.classes;
 
+import sneps.network.Network;
 import sneps.network.paths.Path;
 import sneps.exceptions.CustomException;
 

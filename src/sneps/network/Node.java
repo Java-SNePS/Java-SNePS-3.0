@@ -1,7 +1,7 @@
 package sneps.network;
 
 import sneps.network.classes.Semantic;
-import sneps.network.classes.Term;
+import sneps.network.classes.term.Term;
 
 public class Node {
 	

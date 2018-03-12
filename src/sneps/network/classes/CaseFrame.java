@@ -1,10 +1,11 @@
-package sneps.network;
+package sneps.network.classes;
 
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
 import sneps.exceptions.CustomException;
+import sneps.network.Network;
 
 public class CaseFrame {
 	public static CaseFrame andRule, orRule, andOrRule, threshRule,

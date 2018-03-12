@@ -1,4 +1,4 @@
-package sneps.network;
+package sneps.network.classes;
 
 import java.util.Collections;
 import java.util.LinkedList;

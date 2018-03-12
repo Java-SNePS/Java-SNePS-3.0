@@ -1,12 +1,12 @@
 package sneps.network;
 
-import sneps.network.classes.Term;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
-import sneps.snebr.SNeBrSupports;
+import sneps.network.classes.term.Term;
+import sneps.snebr.Supports;
 //TODO Proposition Nodes globally stored
 public class PropositionNode extends Node {
-	private SNeBrSupports basicSupport;//TODO Change to Support
+	private Supports basicSupport;//TODO Change to Support
 	
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
@@ -32,10 +32,10 @@ public class PropositionNode extends Node {
 	
 	
 	
-	public SNeBrSupports getBasicSupport() {
+	public Supports getBasicSupport() {
 		return basicSupport;
 	}
-	public void setBasicSupport(SNeBrSupports basicSupport) {
+	public void setBasicSupport(Supports basicSupport) {
 		this.basicSupport = basicSupport;
 	}
 	public ChannelSet getOutgoingChannels() {

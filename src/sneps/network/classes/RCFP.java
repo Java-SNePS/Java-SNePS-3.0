@@ -1,6 +1,7 @@
-package sneps.network;
+package sneps.network.classes;
 
 import sneps.exceptions.CustomException;
+import sneps.network.Network;
 
 public class RCFP {
 	public static RCFP andAnt, ant, cq, arg, min, max, i, threshMax, thresh,
