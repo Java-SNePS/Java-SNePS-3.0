@@ -1,6 +1,8 @@
 package sneps.snip;
 
 
+import sneps.network.classes.term.Variable;
+import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
@@ -16,15 +18,14 @@ public class Switch {
 	}
 
 	public void switchReport(Report r) {
-		/*for (int i = 0; i < this.substitution.cardinality(); i++) {
+		for (int i = 0; i < this.substitution.cardinality(); i++) {
 			
 			Binding b = r.getSubstitutions().getBindingByVariable(
 					this.substitution.getBinding(i).getVariable());
 			System.out.println(this.substitution.getBinding(i).getVariable());
 			System.out.println("i: " + i + " binding: " + b);
 			if (b != null) {
-				b.setVariable((Variable) this.substitution.getBinding(i)
-						.getNode());
+				b.setVariable((Variable) this.substitution.getBinding(i).getNode().getTerm());
 			}else {
 				System.out.println("there u go " + this.substitution.getBinding(i));
 				r.getSubstitutions().putIn(this.substitution.getBinding(i));
@@ -35,7 +36,7 @@ public class Switch {
 		System.out.println(r.getSubstitutions().isNew());
 		System.out.println("Done Switching:\n" + r.getSubstitutions());
 		// {a/X, b/Y}, {X/W, Y/Z, K/C} => {a/W, b/Z, K/C}
-//		r.getSubstitutions().unionIn(s);*/
+		// r.getSubstitutions().unionIn(s);
 	}
 	
 	public String toString() {

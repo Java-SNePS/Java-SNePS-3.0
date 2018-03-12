@@ -23,7 +23,9 @@ public abstract class Channel {
 		reportsBuffer = new ArrayList<Report>();
 	}
 
-	public Channel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID, Node requester,
+	public Channel(Substitutions switchSubstitution, 
+			Substitutions filterSubstitutions, 
+			int contextID, Node requester,
 			Node reporter, boolean v) {
 		this.filter = new Filter(filterSubstitutions);
 		this.switch_ = new Switch(switchSubstitution);
@@ -35,21 +37,7 @@ public abstract class Channel {
 		reportsBuffer = new ArrayList<Report>();
 	}
 
-	public int getContextID() {
-		return contextID;
-	}
-
-	public boolean isValveOpen() {
-		return valve;
-	}
-
-	public void clearReportsBuffer() {
-		reportsBuffer.clear();
-	}
-
-	public void setValve(boolean valve) {
-		this.valve = valve;
-	}
+	
 
 	public boolean addReport(Report report) {
 		System.out.println("Can pass " + filter.canPass(report));
@@ -57,29 +45,38 @@ public abstract class Channel {
 			System.out.println("\n\nThe Switch data:\n" + switch_);
 			switch_.switchReport(report);
 			reportsBuffer.add(report);
-			//Runner.addToHighQueue(requester);
+			//TODO Runner.addToHighQueue(requester);
 			return true;
 		}
 		return false;
 	}
 
+
+	public int getContextID() {
+		return contextID;
+	}
+	public boolean isValveOpen() {
+		return valve;
+	}
 	public Filter getFilter() {
 		return filter;
 	}
-
 	public Switch getSwitch() {
 		return switch_;
 	}
-
 	public Node getRequester() {
 		return requester;
 	}
-
 	public Node getReporter() {
 		return reporter;
 	}
-
 	public ArrayList<Report> getReportsBuffer() {
 		return reportsBuffer;
+	}
+	public void setValve(boolean valve) {
+		this.valve = valve;
+	}
+	public void clearReportsBuffer() {
+		reportsBuffer.clear();
 	}
 }
