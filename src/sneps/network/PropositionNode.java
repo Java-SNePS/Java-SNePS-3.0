@@ -4,13 +4,14 @@ import sneps.network.classes.Term;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.snebr.SNeBrSupports;
-
+//TODO Proposition Nodes globally stored
 public class PropositionNode extends Node {
-	private SNeBrSupports basicSupport;
+	private SNeBrSupports basicSupport;//TODO Change to Support
 	
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
 	protected ReportSet knownInstances;
+	protected ReportSet newInstances;
 
 	public PropositionNode() {
 		outgoingChannels = new ChannelSet();

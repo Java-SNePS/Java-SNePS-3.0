@@ -1,11 +1,12 @@
 package sneps.network;
 
+import sneps.network.classes.Semantic;
 import sneps.network.classes.Term;
 
 public class Node {
 	
 	private Term term;
-	private String semanticType; 
+	private Semantic semanticType;
 	private static int count=0;
 	private int id;
 	
@@ -16,8 +17,16 @@ public class Node {
 		id = count++;		
 	}
 
+	public Node(Semantic sem){
+		semanticType = sem;
+		id = count++;
+	}
 	
-	
+	public Node(Semantic sem, Term trm){
+		semanticType = sem;
+		term = trm;
+		id = count++;
+	}
 	
 	
 	
@@ -28,10 +37,10 @@ public class Node {
 	public void setTerm(Term term) {
 		this.term = term;
 	}
-	public String getSemanticType() {
+	public Semantic getSemanticType() {
 		return semanticType;
 	}
-	public void setSemanticType(String semanticType) {
+	public void setSemanticType(Semantic semanticType) {
 		this.semanticType = semanticType;
 	}
 	public static int getCount() {
