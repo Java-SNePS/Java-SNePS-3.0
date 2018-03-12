@@ -8,6 +8,9 @@ import java.util.LinkedList;
 
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.cables.DownCable;
+import sneps.network.cables.DownCableSet;
+import sneps.network.cables.UpCable;
 import sneps.network.classes.CFSignature;
 import sneps.network.classes.CableTypeConstraint;
 import sneps.network.classes.CaseFrame;
@@ -16,6 +19,7 @@ import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Molecular;
 import sneps.exceptions.CustomException;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -379,7 +383,6 @@ public class Network {
 		relation.setPath(null);
 	}
 
-/* TODO Build These
 	/**
 	 * This method is used to remove a node from the network and also removes
 	 * all the nodes that are only dominated by it.
@@ -389,7 +392,7 @@ public class Network {
 	 *
 	 * @throws CustomException
 	 *             if the node cannot be removed because it is not isolated.
-	 *
+	 */
 	public static void removeNode(Node node) throws CustomException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
@@ -405,9 +408,9 @@ public class Network {
 		nodesIndex.set(node.getId(), null);
 		// removing child nodes that are dominated by the removed node and has
 		// no other parents
-		if (node.getClass().getSuperclass().getSimpleName()
-				.equals("MolecularNode")) {
-			MolecularNode m = (MolecularNode) node;
+		if (node.getTerm().getClass().getSuperclass().getSimpleName()
+				.equals("Molecular")) {
+			Molecular m = (Molecular) node.getTerm();
 			molecularNodes.get(m.getDownCableSet().getCaseFrame().getId())
 					.removeNode(node);
 			DownCableSet dCableSet = m.getDownCableSet();
