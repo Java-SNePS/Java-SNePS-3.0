@@ -527,7 +527,6 @@ public class Network {
 		}
 	}
 	
-/* TODO Build These
 	/**
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
@@ -551,8 +550,8 @@ public class Network {
 	 *             set already exists in the system. - the given relations-node
 	 *             pairs are not valid. - the given down cable set is not
 	 *             following the specifications of the given case frame.
-	 *
-	public static MolecularNode buildMolecularNode(Object[][] array,
+	 */
+	public static Node buildMolecularNode(Object[][] array,
 			CaseFrame caseFrame) throws Exception, CustomException {
 		// System.out.println("in method");
 		if (downCableSetExists(array))
@@ -571,7 +570,7 @@ public class Network {
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// System.out.println("done 3rd");
 		// create the Molecular Node
-		MolecularNode mNode;
+		Node mNode;
 		if (isToBePattern(array)) {
 			System.out.println("building patt");
 			mNode = createPatNode(relNodeSet, caseFrame);
@@ -581,7 +580,8 @@ public class Network {
 		}
 		nodes.put(mNode.getIdentifier(), mNode);
 		nodesIndex.add(mNode.getId(), mNode);
-		molecularNodes.get(mNode.getDownCableSet().getCaseFrame().getId())
+		Molecular m = (Molecular)mNode.getTerm();
+		molecularNodes.get(m.getDownCableSet().getCaseFrame().getId())
 				.addNode(mNode);
 		return mNode;
 	}
