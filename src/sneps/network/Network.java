@@ -20,6 +20,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Variable;
 import sneps.exceptions.CustomException;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -445,11 +446,10 @@ public class Network {
 	 * variable nodes which is 'infimum'.
 	 *
 	 * @return the newly created variable node.
-	 *
-	public static VariableNode buildVariableNode() {
+	 */
+	public static Node buildVariableNode() {
 		Variable v = new Variable(getNextVarName());
-		Infimum i = new Infimum();
-		VariableNode node = new VariableNode(v, i);
+		Node node = new Node(v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
