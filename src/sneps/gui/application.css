@@ -1,0 +1,43 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root{
+	-fx-background-color: #333333;
+}
+
+.conOutput{
+	-fx-background: #333333;
+	-fx-text-fill: white;
+}
+
+.consoleInput {
+    text-area-background: #111111;
+    -fx-text-fill: #ff0000;
+    -fx-prompt-text-fill: #700000;
+}
+
+.consoleInput .content {
+    -fx-background-color: text-area-background;
+}
+
+.tab-label{
+	-fx-text-fill: white;
+}
+
+.tab-pane{
+	-fx-background: #333333;
+}
+
+.tab{
+    -fx-background-color: #c10000;
+    -fx-text-fill: white;
+}
+
+.tab:hover{
+    -fx-background-color: #ff0000;
+    -fx-text-fill: white;
+}
+
+.tab:selected{
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+}
