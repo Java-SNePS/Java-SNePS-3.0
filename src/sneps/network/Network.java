@@ -8,14 +8,23 @@ import java.util.LinkedList;
 
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.cables.Cable;
+import sneps.network.cables.DownCable;
+import sneps.network.cables.DownCableSet;
+import sneps.network.cables.UpCable;
 import sneps.network.classes.CFSignature;
 import sneps.network.classes.CableTypeConstraint;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.PathTrace;
 import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
+import sneps.network.classes.Semantic;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Base;
+import sneps.network.classes.term.Closed;
+import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Variable;
 import sneps.exceptions.CustomException;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -31,7 +40,7 @@ public class Network {
 
 	 /* A hash table that stores all the proposition nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
-	 * corresponding node object as the value.
+	 * corresponding proposition node object as the value.
 	 */
 	private static Hashtable<String, PropositionNode> propositionNodes = new Hashtable<String, PropositionNode>();
 	
@@ -379,7 +388,7 @@ public class Network {
 		relation.setPath(null);
 	}
 
-/* TODO Build These
+// TODO Build These
 	/**
 	 * This method is used to remove a node from the network and also removes
 	 * all the nodes that are only dominated by it.
@@ -389,7 +398,7 @@ public class Network {
 	 *
 	 * @throws CustomException
 	 *             if the node cannot be removed because it is not isolated.
-	 *
+	 */
 	public static void removeNode(Node node) throws CustomException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
@@ -407,7 +416,7 @@ public class Network {
 		// no other parents
 		if (node.getClass().getSuperclass().getSimpleName()
 				.equals("MolecularNode")) {
-			MolecularNode m = (MolecularNode) node;
+			Molecular m = (Molecular) node.getTerm();
 			molecularNodes.get(m.getDownCableSet().getCaseFrame().getId())
 					.removeNode(node);
 			DownCableSet dCableSet = m.getDownCableSet();
@@ -442,7 +451,7 @@ public class Network {
 	 * variable nodes which is 'infimum'.
 	 *
 	 * @return the newly created variable node.
-	 *
+	 */
 	public static VariableNode buildVariableNode() {
 		Variable v = new Variable(getNextVarName());
 		Infimum i = new Infimum();
@@ -457,7 +466,7 @@ public class Network {
 	treated in the network?
 	In the current version, all variable nodes are assumed to have only the
 	default semantic type 'infimum'.
-	 *
+	 */
 	
 	/**
 	 * This method builds a variable node with the given semantic type.
@@ -467,15 +476,15 @@ public class Network {
 	 *            semantic type for the variable node that will be created.
 	 *
 	 * @return the newly created variable node.
-	 *
-	public static VariableNode buildVariableNode(Entity semantic) {
+	 */
+	public static VariableNode buildVariableNode(Term semantic) {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(v, semantic);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
 	}
-*/
+
 	/**
 	 * This method builds a new base node with the given name and semantic type.
 	 *
@@ -490,21 +499,21 @@ public class Network {
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in
 	 *             the network.
-	 *
-	public static Node buildBaseNode(String identifier, Entity semantic) {
-		if (semantic instanceof Act) {
+	 */
+	public static Node buildBaseNode(String identifier, Semantic semantic) {
+		/*if (semantic instanceof Act) {
 			System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
-		}
+		}*/
 		if (nodes.containsKey(identifier)) {
+			//Already Present
 			return nodes.get(identifier);
-
-			// throw new
-			// CustomException("There is already another node with the same name existing in the network");
+			//throw new CustomException("There is already another node with the same name existing in the network");
+			
 		} else {
 			Base b = new Base(identifier);
 			Node node;
-			if (semantic instanceof Action) {
+			/*if (semantic instanceof Action) {
 				if (semantic instanceof ControlAction) {
 					node = new ControlActionNode(b, (ControlAction)semantic);
 				} else {
@@ -512,7 +521,9 @@ public class Network {
 				}
 			} else {				
 				node = new Node(b, semantic);
-			}
+			}*/
+			node = new Node(semantic, b);
+			
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
 
@@ -526,7 +537,6 @@ public class Network {
 		}
 	}
 	
-/* TODO Build These
 	/**
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
@@ -550,7 +560,7 @@ public class Network {
 	 *             set already exists in the system. - the given relations-node
 	 *             pairs are not valid. - the given down cable set is not
 	 *             following the specifications of the given case frame.
-	 *
+	 */
 	public static MolecularNode buildMolecularNode(Object[][] array,
 			CaseFrame caseFrame) throws Exception, CustomException {
 		// System.out.println("in method");
@@ -594,7 +604,7 @@ public class Network {
 	 *            set specifications.
 	 *
 	 * @return true if the down cable set exists, and false otherwise
-	 *
+	 */
 	private static boolean downCableSetExists(Object[][] array) {
 		int size = 0;
 		// System.out.println("called");
@@ -662,7 +672,7 @@ public class Network {
 		// System.out.println("size "  + ns.size());
 		return ns.size() == 1;
 	}
-*/
+
 	/**
 	 * This method checks that each pair in a 2D array of relation-node pairs is
 	 * valid. The pair is valid if the relation can point to the node paired
@@ -799,7 +809,7 @@ public class Network {
 			return false;
 		return true;
 	}
-/*
+
 	/**
 	 * This method examines the down cable set of a certain molecular node to
 	 * check whether it dominate free variables or not. Pattern nodes dominate
@@ -812,7 +822,7 @@ public class Network {
 	 *
 	 * @return true if the node dominates free variable and thus should be
 	 *         pattern node, and false otherwise.
-	 *
+	 */
 	private static boolean isToBePattern(Object[][] array) {
 		for (int i = 0; i < array.length; i++) {
 			if (array[i][1].getClass().getSimpleName().equals("NodeSet"))
@@ -824,10 +834,10 @@ public class Network {
 				return true;
 			if (node.getSyntactic().getClass().getSimpleName()
 					.equals("Pattern")) {
-				Pattern pattern = (Pattern) node.getSyntactic();
-				LinkedList<VariableNode> varNodes = pattern.getFreeVariables();
+				Pattern pattern = (Pattern) node.getTerm();
+				LinkedList<Variable> varNodes = pattern.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
-					VariableNode v = varNodes.get(j);
+					Variable v = varNodes.get(j);
 					boolean flag = false;
 					for (int k = 0; k < array.length; k++) {
 						if (array[k][1].getClass().getSimpleName()
@@ -861,7 +871,7 @@ public class Network {
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
-	 *
+	 */
 	@SuppressWarnings("rawtypes")
 	private static MolecularNode createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
@@ -931,7 +941,7 @@ public class Network {
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
-	 *
+	 */
 	@SuppressWarnings("rawtypes")
 	private static MolecularNode createClosedNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
@@ -969,12 +979,12 @@ public class Network {
 			Act a = (Act) e;
 			return new ActNode(c, a);
 		} else {
-			ClosedNode cNode = new ClosedNode(c, e);
+			Closed cNode = new Closed(c, e);
 			return cNode;
 		}
 
 	}
-*/
+
 	// not tested
 	/**
 	 * This method builds a hash table with each entry having the relation name
@@ -1276,7 +1286,7 @@ public class Network {
 
 	// Methods that was implemented to by
 	// used by the UI (if needed)
-/*
+
 	public static NodeSet getNodesHavingCF(CaseFrame caseFrame) {
 		NodeSet ns = new NodeSet();
 		if (molecularNodes.containsKey(caseFrame.getId())) {
@@ -1286,7 +1296,7 @@ public class Network {
 			else {
 				// to handle if the hashing is not perfect
 				for (int i = 0; i < temp.size(); i++) {
-					if (((MolecularNode) temp.getNode(i)).getDownCableSet()
+					if (((Molecular) temp.getNode(i).getTerm()).getDownCableSet()
 							.getCaseFrame().getId().equals(caseFrame.getId())) {
 						ns.addNode(temp.getNode(i));
 					}
@@ -1295,7 +1305,7 @@ public class Network {
 		}
 		return ns;
 	}
-*/
+
 	// helper methods that generate the names for the
 	// different types of nodes that are to built in the network
 
@@ -1696,7 +1706,7 @@ public class Network {
 	 * @return a node set of variable nodes that are dominated by the given
 	 *         molecular node
 	 */
-/*	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private static NodeSet getAllVariables(MolecularNode node) {
 		NodeSet result = new NodeSet();
 
@@ -1718,17 +1728,17 @@ public class Network {
 
 		return result;
 	}
-*/
+
 	public static NodeSet match(Node x) {
 		return new NodeSet();
 	}
 	
-/*	public static void defineDefaults() throws CustomException {
+	public static void defineDefaults() throws CustomException {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
 		CaseFrame.createDefaultCaseFrames();
 		SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		ControlActionNode.initControlActions();
 	}
-*/
+
 }
