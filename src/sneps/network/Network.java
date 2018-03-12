@@ -20,6 +20,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
 import sneps.exceptions.CustomException;
@@ -494,9 +495,9 @@ public class Network {
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in
 	 *             the network.
-	 *
-	public static Node buildBaseNode(String identifier, Entity semantic) {
-		if (semantic instanceof Act) {
+	 */
+	public static Node buildBaseNode(String identifier, Semantic semantic) {
+		if (semantic.getSemanticType().equals("Act")) {
 			System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
 		}
@@ -508,15 +509,7 @@ public class Network {
 		} else {
 			Base b = new Base(identifier);
 			Node node;
-			if (semantic instanceof Action) {
-				if (semantic instanceof ControlAction) {
-					node = new ControlActionNode(b, (ControlAction)semantic);
-				} else {
-					node = new ActionNode(b, (Action)semantic);
-				}
-			} else {				
-				node = new Node(b, semantic);
-			}
+			node = new Node(semantic, b);
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
 
