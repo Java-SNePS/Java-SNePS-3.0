@@ -29,7 +29,7 @@ public class Network {
 	 */
 	private static Hashtable<String, Node> nodes = new Hashtable<String, Node>();
 
-	 /* A hash table that stores all the proposition nodes defined(available) in the network.
+	/* A hash table that stores all the proposition nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding node object as the value.
 	 */
@@ -112,6 +112,13 @@ public class Network {
 	public static Hashtable<String, Node> getNodes() {
 		return nodes;
 	}
+
+	/**
+	 * This is created to reduce the search space when searching for only proposition nodes
+	 * @return the hash table that stores the proposition nodes defined in the network.
+	 */
+	public static Hashtable<String, PropositionNode> getPropositionNodes() {return propositionNodes;}
+
 
 	/**
 	 *
