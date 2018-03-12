@@ -863,9 +863,9 @@ public class Network {
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
-	 *
+	 */
 	@SuppressWarnings("rawtypes")
-	private static MolecularNode createPatNode(Object[][] relNodeSet,
+	private static Node createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
 		System.out.println("mtooo");
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
@@ -875,26 +875,33 @@ public class Network {
 		}
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String patName = getNextPatName();
-		Pattern p = new Pattern(patName, dCableSet);
+		Open open = new Open(patName, dCableSet);
 		String semantic = getCFSignature(turnIntoHashtable(relNodeSet),
 				caseFrame);
-		Class sem = Class.forName("sneps.network.classes.semantic." + semantic);
-		Entity e = (Entity) sem.newInstance();
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
 		if (semantic.equals("Proposition")) {
 			PropositionNode propNode;
-			Proposition prop = ((Proposition) e);
 			if (caseFrame == CaseFrame.andRule)
-				propNode = new AndNode(p, prop);
+				propNode = null;
+			//TODO
+//				propNode = new AndNode(open, prop);
 			else if (caseFrame == CaseFrame.orRule)
-				propNode = new OrNode(p, prop);
+				propNode = null;
+			//TODO
+//				propNode = new OrNode(open, prop);
 			else if (caseFrame == CaseFrame.andOrRule)
-				propNode = new AndOrNode(p, prop);
+				propNode = null;
+			//TODO
+//				propNode = new AndOrNode(open, prop);
 			else if (caseFrame == CaseFrame.threshRule)
-				propNode = new ThreshNode(p, prop);
+				propNode = null;
+			//TODO
+//				propNode = new ThreshNode(open, prop);
 			else if (caseFrame == CaseFrame.numericalRule)
-				propNode = new NumericalNode(p, prop);	
+				propNode = null;
+			//TODO
+//				propNode = new NumericalNode(open, prop);	
 			else if (caseFrame == CaseFrame.doIf)
 				propNode = null;
 			//TODO
@@ -904,13 +911,12 @@ public class Network {
 			//TODO
 //				propNode = new WhenDoNode(p, prop);
 			else
-				propNode = new PropositionNode(p, prop);
+				propNode = new PropositionNode(open);
 			return propNode;
 		} else if (semantic.equals("Act")) {
-			Act a = (Act) e;
-			return new ActNode(p, a);
+			return new ActNode();
 		} else {
-			PatternNode pNode = new PatternNode(p, e);
+			Node pNode = new Node(open);
 			return pNode;
 		}
 
