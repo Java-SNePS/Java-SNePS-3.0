@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.cables.UpCable;
@@ -24,6 +25,7 @@ import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
 import sneps.exceptions.CustomException;
+import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
 
@@ -591,7 +593,7 @@ public class Network {
 	 *            set specifications.
 	 *
 	 * @return true if the down cable set exists, and false otherwise
-	 *
+	 */
 	private static boolean downCableSetExists(Object[][] array) {
 		int size = 0;
 		// System.out.println("called");
@@ -617,14 +619,15 @@ public class Network {
 		// System.out.println(ns);
 		for (int j = 0; j < ns.size(); j++) {
 			Object[] x = ns.get(j);
-			MolecularNode n = (MolecularNode) x[0];
+			Node n = (Node) x[0];
+			Molecular molecular = (Molecular) n.getTerm();
 			// System.out.println(array.length);
 			for (int i = 0; i < array.length; i++) {
 				if (array[i][1].getClass().getSimpleName().equals("NodeSet")) {
 					// System.out.println("hey");
-					if (n.getDownCableSet().contains(
+					if (molecular.getDownCableSet().contains(
 							((Relation) array[i][0]).getName())
-							&& n.getDownCableSet()
+							&& molecular.getDownCableSet()
 									.getDownCable(
 											((Relation) array[i][0]).getName())
 									.getNodeSet().isEmpty())
@@ -640,9 +643,10 @@ public class Network {
 		// System.out.println("done 3rd loop");
 		for (int i = 0; i < ns.size(); i++) {
 			Object[] x = ns.get(i);
-			MolecularNode n = (MolecularNode) x[0];
+			Node n = (Node) x[0];
+			Molecular molecular = (Molecular) n.getTerm();
 			int c = 0;
-			Enumeration<DownCable> dCables = n.getDownCableSet()
+			Enumeration<DownCable> dCables = molecular.getDownCableSet()
 					.getDownCables().elements();
 			while (dCables.hasMoreElements()) {
 				Cable cb = dCables.nextElement();
@@ -659,7 +663,7 @@ public class Network {
 		// System.out.println("size "  + ns.size());
 		return ns.size() == 1;
 	}
-*/
+
 	/**
 	 * This method checks that each pair in a 2D array of relation-node pairs is
 	 * valid. The pair is valid if the relation can point to the node paired
