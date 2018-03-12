@@ -1,8 +1,6 @@
 package sneps.snip;
 
 
-import sneps.network.classes.term.Variable;
-import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
