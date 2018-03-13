@@ -47,7 +47,7 @@ public class Open extends Molecular {
 					this.variables.addVariable((Variable)ns.getNode(j).getTerm());
 				// if node is pattern node (means it dominates free variables)
 				if (nodeType.equals("Open")){
-					Open open = (Open) ns.getNode(j).getSyntactic();
+					Open open = (Open) ns.getNode(j).getTerm();
 					VariableSet patternFVars = new VariableSet();
 					patternFVars.addAll(open.getFreeVariables());
 					// looping over free variables of the pattern node

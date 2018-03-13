@@ -809,9 +809,9 @@ public class Network {
 			if (node.getTerm().getClass().getSimpleName().equals("Variable")
 					&& !r.isQuantifier())
 				return true;
-			if (node.getSyntactic().getClass().getSimpleName()
+			if (node.getTerm().getClass().getSimpleName()
 					.equals("Open")) {
-				Open open = (Open) node.getSyntactic();
+				Open open = (Open) node.getTerm();
 				VariableSet varNodes = open.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
 					Variable v = varNodes.getVariable(j);
