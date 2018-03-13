@@ -1,11 +1,8 @@
-package sneps.network.classes.setClasses;
-
-import java.util.Iterator;
-import java.util.Set;
-
-import sneps.snip.channels.Channel;
+package sneps.snip.channels;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ChannelSet implements Iterable<Channel> {
 	private Set<Channel> channels;
@@ -14,9 +11,12 @@ public class ChannelSet implements Iterable<Channel> {
 		channels = new HashSet<Channel>();
 	}
 
+	public void addChannel(Channel channel) {
+		channels.add(channel);
+	}
+
 	@Override
 	public Iterator<Channel> iterator() {
 		return channels.iterator();
 	}
-
 }

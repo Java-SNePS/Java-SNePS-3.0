@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import sneps.network.classes.Report;
+import sneps.snip.Report;
 
 
 public class ReportSet implements Iterable<Report> {
@@ -21,6 +21,10 @@ public class ReportSet implements Iterable<Report> {
 	@Override
 	public Iterator<Report> iterator(){
 		return reports.iterator();
+	}
+
+	public boolean contains(Report report) {
+		return reports.contains(report);
 	}
 
 
