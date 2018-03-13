@@ -16,5 +16,5 @@ public class Closed extends Molecular {
 	public Closed(String identifier, DownCableSet downCableSet){
 		super(identifier, downCableSet);
 	}
-	
+  
 }

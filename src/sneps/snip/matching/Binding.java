@@ -1,10 +1,3 @@
-/**
- * @(#)Binding.java
- *
- *
- * @author Mohamed Karam Gabr
- * @version 1.00 2010/3/14
- */
 package sneps.snip.matching;
 
 import sneps.network.Node;

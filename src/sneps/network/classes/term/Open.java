@@ -1,17 +1,15 @@
 package sneps.network.classes.term;
 
 import java.util.Enumeration;
-import java.util.LinkedList;
 
-import sneps.network.Node;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.Relation;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.VariableSet;
 
 public class Open extends Molecular {
-
-	private LinkedList<Node> freeVariables;
+	protected VariableSet variables;
 
 	/**
 	 * The constructor of this class.
@@ -22,20 +20,15 @@ public class Open extends Molecular {
 	 * 			the down cable set of the node that will be
 	 * 			created.
 	 */
-	public Open(String identifier, DownCableSet downCableSet){
-		super(identifier, downCableSet);
-		this.freeVariables = new LinkedList<Node>();
+	public Open(String identifier, DownCableSet dCableSet) {
+		super(identifier, dCableSet);
+		this.variables = new VariableSet();
 		this.updateFreeVariables();
 	}
-	
-	/**
-	 * 
-	 * @return the list of free variables dominated by the current 
-	 */
-	public LinkedList<Node> getFreeVariables(){
-		return this.freeVariables;
+	public VariableSet getFreeVariables() {
+		return variables;
 	}
-	
+
 	/**
 	 * The method that populate the list of free variables by the 
 	 * 	free variables dominated by the current node.
@@ -51,27 +44,28 @@ public class Open extends Molecular {
 				// if node is variable node
 				String nodeType = ns.getNode(j).getSyntacticType();
 				if (nodeType.equals("Variable") && !r.isQuantifier())
-					this.freeVariables.add((Node) ns.getNode(j));
+					this.variables.addVariable((Variable)ns.getNode(j).getTerm());
 				// if node is pattern node (means it dominates free variables)
-				if (nodeType.equals("Pattern")){
+				if (nodeType.equals("Open")){
 					Open open = (Open) ns.getNode(j).getSyntactic();
-					LinkedList<Node> patternFVars = new LinkedList<Node>();
+					VariableSet patternFVars = new VariableSet();
 					patternFVars.addAll(open.getFreeVariables());
 					// looping over free variables of the pattern node
 					for (int k = 0; k < patternFVars.size(); k++){
-						Node vNode = patternFVars.get(k);
+						Variable variable = patternFVars.getVariable(k);
 						// looping over the down cables
 						Enumeration<DownCable> dCs = dCableSet.getDownCables().elements();
 						while(dCs.hasMoreElements()){
 							DownCable d = dCs.nextElement();
-							if (d.getNodeSet().contains(vNode))
-								patternFVars.remove(vNode);
+							// TODO implement contains and remove in VariableSet
+							/*if (d.getNodeSet().contains(variable))
+								patternFVars.remove(variable);*/
 						}
 					}
-					this.freeVariables.addAll(patternFVars);
+					this.variables.addAll(patternFVars);
 				}
 			}
 		}
 	}
-	
+
 }
