@@ -55,10 +55,12 @@ public class Controller {
         return  context;
     }
 
+    public Context getCurrentContext() {
+        return contextSet.getContext(currContext);
+    }
+
     public static void checkForContradiction(Context c){
         // TODO: 13/03/18
     }
-
-
 
 }
