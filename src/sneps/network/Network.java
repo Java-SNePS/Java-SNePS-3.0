@@ -810,7 +810,7 @@ public class Network {
 					&& !r.isQuantifier())
 				return true;
 			if (node.getSyntactic().getClass().getSimpleName()
-					.equals("Pattern")) {
+					.equals("Open")) {
 				Open open = (Open) node.getSyntactic();
 				VariableSet varNodes = open.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
@@ -1691,7 +1691,7 @@ public class Network {
 		for (int i = 0; i < temp.size(); i++) {
 			Object[] o = temp.get(i);
 			Node n = (Node) o[0];
-			if (n.getSyntacticType().equals("Pattern"))
+			if (n.getSyntacticType().equals("Open"))
 				result.add(o);
 		}
 		return result;
