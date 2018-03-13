@@ -19,11 +19,6 @@ public class Molecular extends Term {
 		this.downCableSet = downCableSet;
 	}
 
-	public Molecular(String closedName, DownCableSet dCableSet) {
-		super(closedName);
-		downCableSet = dCableSet;
-	}
-
 	public DownCableSet getDownCableSet() {
 		return this.getDownCableSet();
 	}
