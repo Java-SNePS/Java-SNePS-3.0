@@ -16,4 +16,15 @@ public class PropositionSet implements Iterable<PropositionNode> {
 	public Iterator<PropositionNode> iterator() {
 		return nodes.iterator();
 	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		PropositionSet props = (PropositionSet)obj;
+		for (PropositionNode node: props.nodes) {
+			if(!this.nodes.contains(node))
+				return false;
+		}
+		return true;
+	}
 }
