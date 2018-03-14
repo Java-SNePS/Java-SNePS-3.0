@@ -13,11 +13,7 @@ public class Controller {
         contextSet.add(c);
         return c;
     }
-
-    public static void updateContextSet(Context c) {
-        contextSet.add(c);
-    }
-
+    
     public static Context addPropToContext(PropositionNode p, String contextName) {
         Context oldContext =  contextSet.getContext(contextName);
         Context newContext;
