@@ -284,6 +284,17 @@ public class Network {
 		return relations.get(name);
 	}
 
+	public static Relation defineRelation(String name, String type) throws CustomException {
+		if (relations.containsKey(name)) {
+			return relations.get(name);
+			// throw new CustomException("The relation named " + name +
+			// " is already defined in the network");
+		} else {
+			relations.put(name, new Relation(name, type));
+		}
+		return relations.get(name);
+	}
+	
 	/**
 	 * This method is used to delete a relation from the network.
 	 *
