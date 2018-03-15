@@ -1,14 +1,15 @@
 package sneps.network;
 
 import sneps.network.classes.setClasses.ChannelSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
-import sneps.snebr.Supports;
+import sneps.snebr.Support;
 
 
 public class PropositionNode extends Node {
-	private Supports basicSupport;
+	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
@@ -168,11 +169,14 @@ public class PropositionNode extends Node {
 	}
 */
 
-	
-	public Supports getBasicSupport() {
+	public void addAssumptionBasedSupport(PropositionSet propSet){
+		basicSupport.addAssumptionBasedSupport(propSet);
+	}
+
+	public Support getBasicSupport() {
 		return basicSupport;
 	}
-	public void setBasicSupport(Supports basicSupport) {
+	public void setBasicSupport(Support basicSupport) {
 		this.basicSupport = basicSupport;
 	}
 	public ChannelSet getOutgoingChannels() {
