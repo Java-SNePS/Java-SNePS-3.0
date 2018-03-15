@@ -2,16 +2,16 @@ package sneps.snip;
 
 import java.util.Set;
 
-import sneps.snebr.Supports;
+import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
 public class Report {
 	private Substitutions substitution;
-	private Set<Supports> supports;
+	private Set<Support> supports;
 	private boolean sign;
 	private int contextID;
 
-	public Report(Substitutions substitution, Set<Supports> set, boolean sign, int contextID) {
+	public Report(Substitutions substitution, Set<Support> set, boolean sign, int contextID) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
@@ -22,7 +22,7 @@ public class Report {
 		return substitution;
 	}
 
-	public Set<Supports> getSupports() {
+	public Set<Support> getSupports() {
 		return supports;
 	}
 
