@@ -1,11 +1,15 @@
 package sneps.snebr;
 
+import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.network.classes.setClasses.PropositionSet;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class Context {
-	private HashSet<PropositionNode> hyps;
+	private PropositionSet hyps;
 
 	private HashSet<String> names;
 
@@ -18,15 +22,15 @@ public class Context {
 	}
 
 	public Context(PropositionNode hyp) {
-		this.hyps=  new HashSet<PropositionNode>();
+		this.hyps=  new PropositionSet();
 		this.hyps.add(hyp);
 	}
 
-	public Context(HashSet<PropositionNode> hyps) {
+	public Context(PropositionSet hyps) {
 		this.hyps = hyps;
 	}
 
-	public HashSet<PropositionNode> getHypothesisSet() {
+	public PropositionSet getHypothesisSet() {
 		return hyps;
 	}
 
@@ -58,6 +62,26 @@ public class Context {
 		newContext.getHypothesisSet().remove(hyp);
 		// TODO: 13/03/18 check for contradiciton
 		return newContext;
+	}
+
+	public PropositionSet allAsserted() {
+		Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
+		PropositionSet asserted = new PropositionSet();
+		for (PropositionNode node : allPropositionNodes) {
+			if (this.hyps.getNodes().contains(node)) {
+				asserted.add(node);
+			} else {
+				Collection<PropositionSet> justificationSets = node.getBasicSupport()
+													.getAssumptionBasedSupport()
+													.values();
+				for (PropositionSet justificationHyps: justificationSets) {
+					if (justificationHyps.isSubSet(this.hyps)) {
+						asserted.add(node);
+					}
+				}
+			}
+		}
+		return asserted;
 	}
 
 	/**
