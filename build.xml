@@ -9,6 +9,10 @@
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
 	      <classpath path="lib/jacocoant.jar"/>
 	</taskdef>
+	
+	<taskdef uri="java_cup">
+	      <classpath path="lib/java-cup-11b.jar"/>
+	</taskdef>
 
   <path id="classpath.test">
     <pathelement location="lib/junit.jar"/>
