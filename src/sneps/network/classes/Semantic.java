@@ -16,4 +16,10 @@ public class Semantic {
 		return null;
 	}
 
+	public String getSemanticType() {
+		return semanticType;
+	}
+
+	
+	
 }
