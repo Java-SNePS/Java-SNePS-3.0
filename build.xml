@@ -13,6 +13,8 @@
   <path id="classpath.test">
     <pathelement location="lib/junit.jar"/>
     <pathelement location="lib/hamcrest.jar"/>
+    <pathelement location="lib/java-cup-11b.jar"/> 
+    <pathelement location="lib/java-cup-11b-runtime.jar"/>
     <pathelement location="${main.build.dir}"/>
   	 <fileset dir="lib/">
   	       <include name="**/*.jar"/>
