@@ -1,0 +1,392 @@
+import java.lang.System;
+import java.io.*;
+import java_cup.runtime.Symbol;
+
+%%
+%class Lexer
+
+%implements java_cup.runtime.Scanner
+%function next_token
+%type java_cup.runtime.Symbol
+%char
+%line
+
+%{
+//initialize  variables to be used by class
+	
+%}
+
+
+%init{
+//Add code to be executed on initialization of the lexer
+
+%init}
+
+%eofval{
+//Add code to be executed when the end of the file is reached
+	return (new Symbol(sym.EOF,""));
+%eofval}
+
+COMMENT=(;(.)*)
+WHITESPACE=((" "+)|("	"+))
+ACTIVATE=(activate)
+BANG=(!)
+DOT=(\.)
+ADD_TO_CONTEXT=(add-to-context)
+ASK=(ask)
+ASKIFNOT=(askifnot)
+ASKWH=(askwh)
+ASKWHNOT=(askwhnot)
+BELIEFS_ABOUT=(beliefs-about)
+BR_MODE=(br-mode)
+AUTO=(auto)
+MANUAL=(manual)
+CLEAR_INFER=(clear-infer)
+CLEARKB=(clearkb)
+COPYRIGHT=(copyright)
+DEFINE_FRAME=(define-frame)
+DEFINE_PATH=(define-path)
+DEMO=(demo)
+QUESTION_MARK=(\?)
+OPTION_T=(t)
+OPTION_B=(b)
+OPTION_BV=(bv)
+OPTION_A=(a)
+OPTION_AV=(av)
+OPTION_N=(n)
+DESCRIBE_CONTEXT=(describe-context)
+DESCRIBE_TERMS=(describe-terms)
+EXPERT=(expert)
+LIST_ASSERTED_WFFS=(list-asserted-wffs)
+LIST_CONTEXTS=(list-contexts)
+LIST_TERMS=(list-terms)
+LOAD=(load)
+NORMAL=(normal)
+PERFORM=(perform)
+REMOVE_FROM_CONTEXT=(remove-from-context)
+SET_CONTEXT=(set-context)
+SET_DEFAULT_CONTEXT=(set-default-context)
+SET_MODE_1=(set-mode-1)
+SET_MODE_2=(set-mode-2)
+SET_MODE_3=(set-mode-3)
+OPTION_NIL=(nil)
+SHOW=(show)
+TRACE=(trace)
+UNDEFINE_PATH=(undefine-path)
+UNLABELED=(unlabeled)
+UNTRACE=(untrace)
+INFERENCE=(inference)
+ACTING=(acting)
+PARSING=(parsing)
+TRANSLATION=(translation)
+SNEPSPATH=(EmptyPath|FUnitPath|BUnitPath|CFResFUnitPath|CFResBUnitPath|ComposePath|ConversePath|KStarPath|KPlusPath|OrPath|AndPath|IrreflexiveRestrictPath|DomainRestrictPath|RangeRestrictPath|BangPath)
+FILEPATH=((.)+\.snepslog)
+STRING_LIT=(\"[A-Za-z0-9]*\")
+INT_LIT=([1-9][0-9]*)|(0)
+IDENTIFIER=([A-Za-z][A-Za-z0-9]*)
+LESS_EQUAL_GREATER=(<=>)
+EQUAL_GREATER=(=>)
+V_EQUAL_GREATER=(v=>)
+AND_EQUAL_GREATER=(&=>)
+INT_EQUAL_GREATER=(INT_LIT=>)
+NOT=(~)
+ANDOR=(andor)
+AND=(and)
+OR=(or)
+NAND=(nand)
+NOR=(nor)
+XOR=(xor)
+IFF=(iff)
+THRESH=(thresh)
+ALL=(all)
+NEXISTS=(nexists)
+UNDERSCORE=(_)
+COMMA=(,)
+COLON=(:)
+OPEN_PARAN=(\()
+CLOSE_PARAN=(\))
+OPEN_CURLY=(\{)
+CLOSE_CURLY=(\})
+WITHSOME=(withsome)
+WITHALL=(withall)
+WFF=(wff)
+IFDO=(ifdo)
+WHENDO=(whendo)
+WHENEVERDO=(wheneverdo)
+ACTPLAN=(ActPlan)
+EFFECT=(Effect)
+GOALPLAN=(GoalPlan)
+PRECONDITION=(Precondition)
+
+%% 
+<YYINITIAL> {COMMENT} {
+}
+ <YYINITIAL> {WHITESPACE} {
+}
+<YYINITIAL> {ACTIVATE} { 
+	return (new Symbol(sym.ACTIVATE,yytext()));
+}
+<YYINITIAL> {BANG} { 
+	return (new Symbol(sym.BANG,yytext()));
+}
+<YYINITIAL> {DOT} { 
+	return (new Symbol(sym.DOT,yytext()));
+}
+<YYINITIAL> {ADD_TO_CONTEXT} { 
+	return (new Symbol(sym.ADD_TO_CONTEXT,yytext()));
+}
+<YYINITIAL> {ASK} { 
+	return (new Symbol(sym.ASK,yytext()));
+}
+<YYINITIAL> {ASKIFNOT} { 
+	return (new Symbol(sym.ASKIFNOT,yytext()));
+}
+<YYINITIAL> {ASKWH} { 
+	return (new Symbol(sym.ASKWH,yytext()));
+}
+<YYINITIAL> {ASKWHNOT} { 
+	return (new Symbol(sym.ASKWHNOT,yytext()));
+}
+<YYINITIAL> {BELIEFS_ABOUT} { 
+	return (new Symbol(sym.BELIEFS_ABOUT,yytext()));
+}
+<YYINITIAL> {BR_MODE} { 
+	return (new Symbol(sym.BR_MODE,yytext()));
+}
+<YYINITIAL> {AUTO} { 
+	return (new Symbol(sym.AUTO,yytext()));
+}
+<YYINITIAL> {MANUAL} { 
+	return (new Symbol(sym.MANUAL,yytext()));
+}
+<YYINITIAL> {CLEAR_INFER} { 
+	return (new Symbol(sym.CLEAR_INFER,yytext()));
+}
+<YYINITIAL> {CLEARKB} { 
+	return (new Symbol(sym.CLEARKB,yytext()));
+}
+<YYINITIAL> {COPYRIGHT} { 
+	return (new Symbol(sym.COPYRIGHT,yytext()));
+}
+<YYINITIAL> {DEFINE_FRAME} { 
+	return (new Symbol(sym.DEFINE_FRAME,yytext()));
+}
+<YYINITIAL> {DEFINE_PATH} { 
+	return (new Symbol(sym.DEFINE_PATH,yytext()));
+}
+<YYINITIAL> {DEMO} { 
+	return (new Symbol(sym.DEMO,yytext()));
+}
+<YYINITIAL> {QUESTION_MARK} { 
+	return (new Symbol(sym.QUESTION_MARK,yytext()));
+}
+<YYINITIAL> {OPTION_T} { 
+	return (new Symbol(sym.OPTION_T,yytext()));
+}
+<YYINITIAL> {OPTION_B} { 
+	return (new Symbol(sym.OPTION_B,yytext()));
+}
+<YYINITIAL> {OPTION_BV} { 
+	return (new Symbol(sym.OPTION_BV,yytext()));
+}
+<YYINITIAL> {OPTION_A} { 
+	return (new Symbol(sym.OPTION_A,yytext()));
+}
+<YYINITIAL> {OPTION_AV} { 
+	return (new Symbol(sym.OPTION_AV,yytext()));
+}
+<YYINITIAL> {OPTION_N} { 
+	return (new Symbol(sym.OPTION_N,yytext()));
+}
+<YYINITIAL> {DESCRIBE_CONTEXT} { 
+	return (new Symbol(sym.DESCRIBE_CONTEXT,yytext()));
+}
+<YYINITIAL> {DESCRIBE_TERMS} { 
+	return (new Symbol(sym.DESCRIBE_TERMS,yytext()));
+}
+<YYINITIAL> {EXPERT} { 
+	return (new Symbol(sym.EXPERT,yytext()));
+}
+<YYINITIAL> {LIST_ASSERTED_WFFS} { 
+	return (new Symbol(sym.LIST_ASSERTED_WFFS,yytext()));
+}
+<YYINITIAL> {LIST_CONTEXTS} { 
+	return (new Symbol(sym.LIST_CONTEXTS,yytext()));
+}
+<YYINITIAL> {LIST_TERMS} { 
+	return (new Symbol(sym.LIST_TERMS,yytext()));
+}
+<YYINITIAL> {LOAD} { 
+	return (new Symbol(sym.LOAD,yytext()));
+}
+<YYINITIAL> {NORMAL} { 
+	return (new Symbol(sym.NORMAL,yytext()));
+}
+<YYINITIAL> {PERFORM} { 
+	return (new Symbol(sym.PERFORM,yytext()));
+}
+<YYINITIAL> {REMOVE_FROM_CONTEXT} { 
+	return (new Symbol(sym.REMOVE_FROM_CONTEXT,yytext()));
+}
+<YYINITIAL> {SET_CONTEXT} { 
+	return (new Symbol(sym.SET_CONTEXT,yytext()));
+}
+<YYINITIAL> {SET_DEFAULT_CONTEXT} { 
+	return (new Symbol(sym.SET_DEFAULT_CONTEXT,yytext()));
+}
+<YYINITIAL> {SET_MODE_1} { 
+	return (new Symbol(sym.SET_MODE_1,yytext()));
+}
+<YYINITIAL> {SET_MODE_2} { 
+	return (new Symbol(sym.SET_MODE_2,yytext()));
+}
+<YYINITIAL> {SET_MODE_3} { 
+	return (new Symbol(sym.SET_MODE_3,yytext()));
+}
+<YYINITIAL> {OPTION_NIL} { 
+	return (new Symbol(sym.OPTION_NIL,yytext()));
+}
+<YYINITIAL> {SHOW} { 
+	return (new Symbol(sym.SHOW,yytext()));
+}
+<YYINITIAL> {TRACE} { 
+	return (new Symbol(sym.TRACE,yytext()));
+}
+<YYINITIAL> {UNDEFINE_PATH} { 
+	return (new Symbol(sym.UNDEFINE_PATH,yytext()));
+}
+<YYINITIAL> {UNLABELED} { 
+	return (new Symbol(sym.UNLABELED,yytext()));
+}
+<YYINITIAL> {UNTRACE} { 
+	return (new Symbol(sym.UNTRACE,yytext()));
+}
+<YYINITIAL> {INFERENCE} { 
+	return (new Symbol(sym.INFERENCE,yytext()));
+}
+<YYINITIAL> {ACTING} { 
+	return (new Symbol(sym.ACTING,yytext()));
+}
+<YYINITIAL> {PARSING} { 
+	return (new Symbol(sym.PARSING,yytext()));
+}
+<YYINITIAL> {TRANSLATION} { 
+	return (new Symbol(sym.TRANSLATION,yytext()));
+}
+<YYINITIAL> {SNEPSPATH} { 
+	return (new Symbol(sym.SNEPSPATH,yytext()));
+}
+<YYINITIAL> {STRING_LIT} { 
+	return (new Symbol(sym.STRING_LIT,yytext()));
+}
+<YYINITIAL> {FILEPATH} { 
+	return (new Symbol(sym.FILEPATH,yytext()));
+}
+<YYINITIAL> {IDENTIFIER} { 
+	return (new Symbol(sym.IDENTIFIER,yytext()));
+}
+<YYINITIAL> {LESS_EQUAL_GREATER} { 
+	return (new Symbol(sym.LESS_EQUAL_GREATER,yytext()));
+}
+<YYINITIAL> {EQUAL_GREATER} { 
+	return (new Symbol(sym.EQUAL_GREATER,yytext()));
+}
+<YYINITIAL> {V_EQUAL_GREATER} { 
+	return (new Symbol(sym.V_EQUAL_GREATER,yytext()));
+}
+<YYINITIAL> {AND_EQUAL_GREATER} { 
+	return (new Symbol(sym.AND_EQUAL_GREATER,yytext()));
+}
+<YYINITIAL> {INT_EQUAL_GREATER} { 
+	return (new Symbol(sym.INT_EQUAL_GREATER,yytext()));
+}
+<YYINITIAL> {NOT} { 
+	return (new Symbol(sym.NOT,yytext()));
+}
+<YYINITIAL> {ANDOR} { 
+	return (new Symbol(sym.ANDOR,yytext()));
+}
+<YYINITIAL> {AND} { 
+	return (new Symbol(sym.AND,yytext()));
+}
+<YYINITIAL> {OR} { 
+	return (new Symbol(sym.OR,yytext()));
+}
+<YYINITIAL> {NAND} { 
+	return (new Symbol(sym.NAND,yytext()));
+}
+<YYINITIAL> {NOR} { 
+	return (new Symbol(sym.NOR,yytext()));
+}
+<YYINITIAL> {XOR} { 
+	return (new Symbol(sym.XOR,yytext()));
+}
+<YYINITIAL> {IFF} { 
+	return (new Symbol(sym.IFF,yytext()));
+}
+<YYINITIAL> {THRESH} { 
+	return (new Symbol(sym.THRESH,yytext()));
+}
+<YYINITIAL> {ALL} { 
+	return (new Symbol(sym.ALL,yytext()));
+}
+<YYINITIAL> {NEXISTS} { 
+	return (new Symbol(sym.NEXISTS,yytext()));
+}
+<YYINITIAL> {UNDERSCORE} { 
+	return (new Symbol(sym.UNDERSCORE,yytext()));
+}
+<YYINITIAL> {INT_LIT} { 
+	return (new Symbol(sym.INT_LIT,yytext()));
+}
+<YYINITIAL> {COMMA} { 
+	return (new Symbol(sym.COMMA,yytext()));
+}
+<YYINITIAL> {COLON} { 
+	return (new Symbol(sym.COLON,yytext()));
+}
+<YYINITIAL> {OPEN_PARAN} { 
+	return (new Symbol(sym.OPEN_PARAN,yytext()));
+}
+<YYINITIAL> {CLOSE_PARAN} { 
+	return (new Symbol(sym.CLOSE_PARAN,yytext()));
+}
+<YYINITIAL> {OPEN_CURLY} { 
+	return (new Symbol(sym.OPEN_CURLY,yytext()));
+}
+<YYINITIAL> {CLOSE_CURLY} { 
+	return (new Symbol(sym.CLOSE_CURLY,yytext()));
+}
+<YYINITIAL> {WITHSOME} { 
+	return (new Symbol(sym.WITHSOME,yytext()));
+}
+<YYINITIAL> {WITHALL} { 
+	return (new Symbol(sym.WITHALL,yytext()));
+}
+<YYINITIAL> {WFF} { 
+	return (new Symbol(sym.WFF,yytext()));
+}
+<YYINITIAL> {IFDO} { 
+	return (new Symbol(sym.IFDO,yytext()));
+}
+<YYINITIAL> {WHENDO} { 
+	return (new Symbol(sym.WHENDO,yytext()));
+}
+<YYINITIAL> {WHENEVERDO} { 
+	return (new Symbol(sym.WHENEVERDO,yytext()));
+}
+<YYINITIAL> {ACTPLAN} { 
+	return (new Symbol(sym.ACTPLAN,yytext()));
+}
+<YYINITIAL> {EFFECT} { 
+	return (new Symbol(sym.EFFECT,yytext()));
+}
+<YYINITIAL> {GOALPLAN} { 
+	return (new Symbol(sym.GOALPLAN,yytext()));
+}
+<YYINITIAL> {PRECONDITION} { 
+	return (new Symbol(sym.PRECONDITION,yytext()));
+}
+<YYINITIAL> . {
+  return new Symbol(sym.error, "Invalid input: " + yytext());
+}
