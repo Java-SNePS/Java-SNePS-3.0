@@ -6,12 +6,13 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
+import sneps.snip.channels.Channel;
 import sneps.snip.matching.Substitutions;
 
 public class Node {
 	
-	private Term term;
-	private Semantic semanticType;
+	protected Term term;
+	protected Semantic semanticType;
 	private static int count=0;
 	private int id;
 	
@@ -134,7 +135,19 @@ public class Node {
 		return true;
 	}
 
-
+	public void receiveRequest(Channel newChannel) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void processReports() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void processRequests() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public NodeSet getDominatingRules() {
 		NodeSet ret = new NodeSet();
 		UpCable consequentCable = this.getUpCableSet().getUpCable("cq");
@@ -235,4 +248,6 @@ public class Node {
 		this.term.setTemp(temp);
 	}
 
+
+	
 }
