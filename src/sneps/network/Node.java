@@ -39,7 +39,7 @@ public class Node {
 	 * @return the instance of term class representing the term type
 	 *         of the current node.
 	 */
-	public Term getSyntactic() {
+	public Term getTerm() {
 		return this.term;
 	}
 
@@ -207,11 +207,6 @@ public class Node {
 		// what to return here ?*/
 	}
 
-	
-	
-	public Term getTerm() {
-		return term;
-	}
 	public void setTerm(Term term) {
 		this.term = term;
 	}

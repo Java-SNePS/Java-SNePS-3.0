@@ -4,13 +4,17 @@ import sneps.network.cables.DownCableSet;
 
 public class Closed extends Molecular {
 
-	public Closed(String idenitifier) {
-		super(idenitifier);
+	/**
+	 * The constructor of this class.
+	 * 
+	 * @param identifier
+	 * 			the name of the node that will be created.
+	 * @param downCableSet
+	 * 			the down cable set of the node that will be
+	 * 			created.
+	 */
+	public Closed(String identifier, DownCableSet downCableSet){
+		super(identifier, downCableSet);
 	}
-
-	public Closed(String closedName, DownCableSet dCableSet) {
-		super(closedName, dCableSet);
-	}
-
-
+  
 }
