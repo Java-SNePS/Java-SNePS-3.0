@@ -14,6 +14,8 @@ public class Context {
 	private HashSet<String> names;
 
 	public Context() {
+		hyps = new PropositionSet();
+		names = new HashSet<String>();
 	}
 
 	public Context(Context c) {
@@ -37,6 +39,10 @@ public class Context {
 	public HashSet<String> getNames() {
 		return names;
 	}
+//
+//	public PropositionNode isAsserted(PropositionNode p) {
+//
+//	}
 
 	/**
 	 * Creates a new Context with the propositionNode

@@ -9,6 +9,7 @@ public class Support {
 	private Hashtable<String, PropositionSet> assumptionBasedSupport;
 	
 	public Support() {
+		assumptionBasedSupport = new Hashtable<>();
 	}
 
 	public void addAssumptionBasedSupport(PropositionSet propSet) {
