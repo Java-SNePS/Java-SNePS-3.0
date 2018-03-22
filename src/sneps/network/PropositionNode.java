@@ -1,7 +1,9 @@
 package sneps.network;
 
-import sneps.network.classes.setClasses.ChannelSet;
+import java.util.ArrayList;
 
+import sneps.network.classes.setClasses.ChannelSet;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
@@ -13,7 +15,16 @@ import java.util.Hashtable;
 
 import sneps.network.Node;
 import sneps.snebr.Support;
-
+import sneps.snip.Pair;
+import sneps.snip.Report;
+import sneps.snip.Runner;
+import sneps.snip.channels.AntecedentToRuleChannel;
+import sneps.snip.channels.Channel;
+import sneps.snip.channels.ChannelTypes;
+import sneps.snip.channels.MatchChannel;
+import sneps.snip.channels.RuleToConsequentChannel;
+import sneps.snip.matching.LinearSubstitutions;
+import sneps.snip.matching.Substitutions;
 
 public class PropositionNode extends Node {
 	private Support basicSupport;
@@ -33,12 +44,12 @@ public class PropositionNode extends Node {
 		setTerm(trm);
 	}
 	
-/*
+
 	public void processSingleChannelReports(Channel currentChannel) {
-		ArrayList<Report> reports = currentChannel.getReportsBuffer();
+		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),
-					currentReport.getSign(), currentReport.getContextID());
+					currentReport.getSign(), currentReport.getContextName());
 			if (knownInstances.contains(alteredReport)) {
 				continue;
 			}
@@ -71,7 +82,8 @@ public class PropositionNode extends Node {
 	}
 
 	public void processSingleRequest(Channel currentChannel) {
-
+		//TODO check correctness
+		/*
 		PropositionSet propSet = new PropositionSet();
 		propSet.addProposition((PropositionNode) this);
 
@@ -116,9 +128,8 @@ public class PropositionNode extends Node {
 					}
 				}
 			}
-
 		}
-
+*/
 	}
 
 	public void processRequests() {
@@ -126,7 +137,7 @@ public class PropositionNode extends Node {
 			processSingleRequest(outChannel);
 	}
 
-	public void sendRequests(ArrayList<Pair> list, int conetxtID, ChannelTypes channelType) {
+	public void sendRequests(ArrayList<Pair> list, String conetxtID, ChannelTypes channelType) {
 		for (Pair currentPair : list) {
 			Substitutions switchSubs = currentPair.getSwitch();
 			Substitutions filterSubs = currentPair.getFilter();
@@ -145,7 +156,7 @@ public class PropositionNode extends Node {
 		}
 	}
 
-	public void sendRequests(NodeSet ns, Substitutions filterSubs, int contextID, ChannelTypes channelType) {
+	public void sendRequests(NodeSet ns, Substitutions filterSubs, String contextID, ChannelTypes channelType) {
 		for (Node sentTo : ns) {
 			Channel newChannel = null;
 			if (channelType == ChannelTypes.MATCHED) {
@@ -174,7 +185,7 @@ public class PropositionNode extends Node {
 	public boolean alreadyWorking(Channel channel) {
 		return false;
 	}
-*/
+
 
 
 	public Support getBasicSupport() {

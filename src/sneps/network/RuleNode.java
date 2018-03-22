@@ -1,20 +1,31 @@
 package sneps.network;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.Set;
 
 import sneps.network.Node;
+import sneps.network.classes.Semantic;
+import sneps.network.classes.setClasses.ContextRuisSet;
+import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.ReportSet;
+import sneps.network.classes.setClasses.RuleUseInfoSet;
+import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
+import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
 import sneps.snip.channels.RuleToConsequentChannel;
+import sneps.snip.classes.FlagNode;
+import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode {
 
@@ -52,13 +63,16 @@ public abstract class RuleNode extends PropositionNode {
 	 */
 	protected Set<Integer> sharedVars;
 	
-/*
+
 	protected ContextRuisSet contextRuisSet;
 
 	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
 
-	public RuleNode(Molecular syn, Proposition sym) {
-		super(syn, sym);
+	
+	public RuleNode(){}
+	
+	public RuleNode(Term syn, Semantic sym) {
+		//super(syn, sym);
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
@@ -75,14 +89,14 @@ public abstract class RuleNode extends PropositionNode {
 		for (Node n : antNodesWithoutVars) {
 			antNodesWithoutVarsIDs.add(n.getId());
 		}
-		this.antsWithoutVarsNumber = this.antNodesWithoutVars.size();
-		this.antsWithVarsNumber = this.antNodesWithVars.size();
+		//this.antNodesWithoutVars.size();
+		//this.antNodesWithVars.size();
 		this.shareVars = this.allShareVars(antNodesWithVars);
 		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
 
 	public void applyRuleHandler(Report report, Node signature) {
-		int contextID = report.getContextID();
+		String contextID = report.getContextName();
 		// Context context = SNeBR.getContextByID(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
@@ -110,7 +124,7 @@ public abstract class RuleNode extends PropositionNode {
 		}
 	}
 
-	abstract protected void sendRui(RuleUseInfo tRui, int contextID);
+	abstract protected void sendRui(RuleUseInfo tRui, String contextID);
 
 	
 	public void clear() {
@@ -122,10 +136,10 @@ public abstract class RuleNode extends PropositionNode {
 		if (nodes.isEmpty())
 			return false;
 
-		NodeWithVar n = (NodeWithVar) nodes.getNode(0);
+		VariableNode n = (VariableNode) nodes.getNode(0);
 		boolean res = true;
 		for (int i = 1; i < nodes.size(); i++) {
-			if (!n.hasSameFreeVariablesAs((NodeWithVar) nodes.getNode(i))) {
+			if (!n.hasSameFreeVariablesAs((VariableNode) nodes.getNode(i))) {
 				res = false;
 				break;
 			}
@@ -134,16 +148,17 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
-		if (nodes.isEmpty())
+		/*if (nodes.isEmpty())
 			return new HashSet<VariableNode>();
-		NodeWithVar n = (NodeWithVar) nodes.getNode(0);
+		VariableNode n = (VariableNode) nodes.getNode(0);
 		Set<VariableNode> res = ImmutableSet.copyOf(n.getFreeVariables());
 		for (int i = 1; i < nodes.size(); i++) {
-			n = (NodeWithVar) nodes.getNode(i);
+			n = (VariableNode) nodes.getNode(i);
 			Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
 			res = Sets.intersection(res, temp);
 		}
-		return res;
+		return res;*/
+		return null;
 	}
 
 	public Set<Integer> getSharedVarsInts(NodeSet nodes) {
@@ -155,7 +170,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public NodeSet getDownNodeSet(String name) {
-		return this.getDownCableSet().getDownCable(name).getNodeSet();
+		return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
 	}
 
 	public abstract NodeSet getDownAntNodeSet();
@@ -168,17 +183,22 @@ public abstract class RuleNode extends PropositionNode {
 		return contextRuisSet;
 	}
 
-	public RuisHandler addContextRUIS(int contextID) {
+	public RuisHandler addContextRUIS(String contextName) {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
 			if (shareVars)
-				si = new SIndex(contextID, sharedVars, SIndex.SINGLETONRUIS, getPatternNodes());
+				si = new SIndex(contextName, sharedVars, SIndex.SINGLETONRUIS, getPatternNodes());
 			else
-				si = new SIndex(contextID, sharedVars, getSIndexContextType(), getParentNodes());
+				si = new SIndex(contextName, sharedVars, getSIndexContextType(), getParentNodes());
 			return this.addContextRUIS(si);
 		} else {
-			return this.addContextRUIS(createContextRUISNonShared(contextID));
+			return this.addContextRUIS(createContextRUISNonShared(contextName));
 		}
+	}
+
+	private RuisHandler addContextRUIS(SIndex si) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public RuisHandler addContextRUIS(RuisHandler cRuis) {
@@ -187,8 +207,8 @@ public abstract class RuleNode extends PropositionNode {
 		return cRuis;
 	}
 
-	protected RuisHandler createContextRUISNonShared(int contextID) {
-		return new RuleUseInfoSet(contextID, false);
+	protected RuisHandler createContextRUISNonShared(String contextName) {
+		return new RuleUseInfoSet(contextName, false);
 	}
 
 	protected byte getSIndexContextType() {
@@ -224,7 +244,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public RuleUseInfo getConstantRui(Context con) {
-		RuleUseInfo tRui = contextConstantRUI.get(con.getId());
+		RuleUseInfo tRui = contextConstantRUI.get(con.getName());
 		return tRui;
 	}
 
@@ -233,17 +253,17 @@ public abstract class RuleNode extends PropositionNode {
 	}
 	
 	public static boolean isConstantNode(Node n) {
-		return !(n instanceof NodeWithVar) || n instanceof RuleNode || ((NodeWithVar) n).getFreeVariables().isEmpty();
+		return !(n instanceof VariableNode) || n instanceof RuleNode || ((VariableNode) n).getFreeVariables().isEmpty();
 	}
 
 	@Override
 	public void processRequests() {
 		for (Channel currentChannel : outgoingChannels) {
 			if (currentChannel instanceof RuleToConsequentChannel) {
-				LinkedList<VariableNode> variablesList = this.getFreeVariables();
+				VariableSet variablesList = ((Open)this.term).getFreeVariables();
 				if (variablesList.isEmpty()) {
-					Proposition semanticType = (Proposition) this.getSemantic();
-					if (semanticType.isAsserted(SNeBR.getContextByID(currentChannel.getContextID()))) {
+					//Proposition semanticType = (Proposition) this.getSemantic();TODO change according to snebr
+					if (this.semanticType.isAsserted(Controller.getContextByName(currentChannel.getContextName()))) {
 						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
 						NodeSet toBeSentTo = new NodeSet();
 						for (Node currentNode : antecedentNodeSet) {
@@ -257,7 +277,7 @@ public abstract class RuleNode extends PropositionNode {
 							}
 						}
 						sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitution(),
-								currentChannel.getContextID(), ChannelTypes.RuleAnt);
+								currentChannel.getContextName(), ChannelTypes.RuleAnt);
 					}
 				} else if (true)
 
@@ -278,7 +298,7 @@ public abstract class RuleNode extends PropositionNode {
 	@Override
 	public void processReports() {
 		for (Channel currentChannel : incomingChannels) {
-			ArrayList<Report> channelReports = currentChannel.getReportsBuffer();
+			ReportSet channelReports = currentChannel.getReportsBuffer();
 			for (Report currentReport : channelReports) {
 				if (currentChannel instanceof AntecedentToRuleChannel) {
 					applyRuleHandler(currentReport, currentChannel.getReporter());
@@ -287,5 +307,5 @@ public abstract class RuleNode extends PropositionNode {
 			currentChannel.clearReportsBuffer();
 		}
 	}
-*/
+
 }
