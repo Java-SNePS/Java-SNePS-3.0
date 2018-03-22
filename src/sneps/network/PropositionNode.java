@@ -7,6 +7,12 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Hashtable;
+
+
 import sneps.network.Node;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
@@ -181,9 +187,6 @@ public class PropositionNode extends Node {
 	}
 
 
-	public void addAssumptionBasedSupport(PropositionSet propSet){
-		basicSupport.addAssumptionBasedSupport(propSet);
-	}
 
 	public Support getBasicSupport() {
 		return basicSupport;
@@ -209,5 +212,6 @@ public class PropositionNode extends Node {
 	public void setKnownInstances(ReportSet knownInstances) {
 		this.knownInstances = knownInstances;
 	}
+
 
 }
