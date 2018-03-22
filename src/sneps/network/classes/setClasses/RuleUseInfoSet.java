@@ -3,10 +3,9 @@ package sneps.network.classes.setClasses;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
-public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo> {
+public class RuleUseInfoSet implements Iterable<RuleUseInfo> {
 	private HashSet<RuleUseInfo> ruis;
 
 	public RuleUseInfoSet(String contextName, boolean b) {
@@ -20,6 +19,11 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 	@Override
 	public Iterator<RuleUseInfo> iterator() {
 		return ruis.iterator();
+	}
+
+	public RuleUseInfoSet add(RuleUseInfo r) {
+		ruis.add(r);
+		return null;
 	}
 
 }
