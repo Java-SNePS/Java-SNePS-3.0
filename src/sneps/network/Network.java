@@ -1017,7 +1017,7 @@ public class Network {
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String patName = getNextPatName();
 		Open open = new Open(patName, dCableSet);
-		String temp = caseFrame.getSemanticClass();
+		String temp = caseFrame.getSemanticClass().getSemanticType();
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
@@ -1150,7 +1150,7 @@ public class Network {
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String closedName = getNexMolName();
 		Closed c = new Closed(closedName, dCableSet);
-		String temp = caseFrame.getSemanticClass();
+		String temp = caseFrame.getSemanticClass().getSemanticType();
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
@@ -1346,7 +1346,7 @@ public class Network {
 			}
 		}
 		System.out.println("Not Satisfied");
-		return caseframe.getSemanticClass();
+		return caseframe.getSemanticClass().getSemanticType();
 	}
 
 	/**
@@ -1576,7 +1576,7 @@ public class Network {
 	 * @return a String representing the generated closed node name in the form
 	 *         of "Mi" and i is an integer suffix.
 	 */
-	private static String getNexMolName() {
+	public static String getNexMolName() {
 		molCounter++;
 		String molName = "M";
 		for (int i = 0; i < userDefinedMolSuffix.size(); i++) {
