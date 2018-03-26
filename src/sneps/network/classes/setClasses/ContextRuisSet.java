@@ -3,22 +3,22 @@ package sneps.network.classes.setClasses;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleUseInfoSet;
 
-public class ContextRuisSet implements Iterable<RuisHandler> {
-	private HashSet<RuisHandler> ruisHandlers;
+public class ContextRuisSet implements Iterable<RuleUseInfoSet> {
+	private HashSet<RuleUseInfoSet> RuleUseInfoSets;
 
 	public ContextRuisSet() {
-		ruisHandlers = new HashSet<RuisHandler>();
+		RuleUseInfoSets = new HashSet<RuleUseInfoSet>();
 	}
 
 	@Override
-	public Iterator<RuisHandler> iterator() {
-		return ruisHandlers.iterator();
+	public Iterator<RuleUseInfoSet> iterator() {
+		return RuleUseInfoSets.iterator();
 	}
 
-	public void addChannel(RuisHandler newChannel) {
-		ruisHandlers.add(newChannel);
+	public void addChannel(RuleUseInfoSet newChannel) {
+		RuleUseInfoSets.add(newChannel);
 	}
 
 	public void clear() {
@@ -26,7 +26,7 @@ public class ContextRuisSet implements Iterable<RuisHandler> {
 		
 	}
 
-	public void putIn(RuisHandler cRuis) {
+	public void putIn(sneps.network.classes.setClasses.RuleUseInfoSet cRuis) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -36,9 +36,11 @@ public class ContextRuisSet implements Iterable<RuisHandler> {
 		return false;
 	}
 
-	public RuisHandler getContextRUIS(String contextID) {
+	public sneps.network.classes.setClasses.RuleUseInfoSet getContextRUIS(String contextID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

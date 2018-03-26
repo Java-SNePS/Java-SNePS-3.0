@@ -23,7 +23,6 @@ import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
 import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.classes.FlagNode;
-import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
@@ -110,13 +109,13 @@ public abstract class RuleNode extends PropositionNode {
 			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
-		RuisHandler crtemp = null;
+		RuleUseInfoSet crtemp = null;
 		if (this.getContextRUISSet().hasContext(contextID)) {
 			crtemp = this.getContextRUISSet().getContextRUIS(contextID);
 		} else {
 			crtemp = addContextRUIS(contextID);
 		}
-		RuleUseInfoSet res = crtemp.insertRUI(rui);
+		RuleUseInfoSet res = crtemp.add(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
 		for (RuleUseInfo tRui : res) {
@@ -183,7 +182,7 @@ public abstract class RuleNode extends PropositionNode {
 		return contextRuisSet;
 	}
 
-	public RuisHandler addContextRUIS(String contextName) {
+	public RuleUseInfoSet addContextRUIS(String contextName) {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
 			if (shareVars)
@@ -196,18 +195,17 @@ public abstract class RuleNode extends PropositionNode {
 		}
 	}
 
-	private RuisHandler addContextRUIS(SIndex si) {
+	private RuleUseInfoSet addContextRUIS(SIndex si) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public RuisHandler addContextRUIS(RuisHandler cRuis) {
-		// ChannelsSet ctemp = consequentChannel.getConChannelsSet(c);
+	public RuleUseInfoSet addContextRUIS(RuleUseInfoSet cRuis) {
 		contextRuisSet.putIn(cRuis);
 		return cRuis;
 	}
 
-	protected RuisHandler createContextRUISNonShared(String contextName) {
+	protected RuleUseInfoSet createContextRUISNonShared(String contextName) {
 		return new RuleUseInfoSet(contextName, false);
 	}
 
