@@ -2,16 +2,11 @@ package sneps.network;
 
 import java.util.ArrayList;
 
+import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Hashtable;
-
 
 import sneps.network.Node;
 import sneps.snebr.Support;
@@ -42,6 +37,11 @@ public class PropositionNode extends Node {
 	public PropositionNode(Term trm) {
 		this();
 		setTerm(trm);
+	}
+	public PropositionNode(Term trm, Semantic sem) {
+		this();
+		setTerm(trm);
+		setSemanticType(sem);
 	}
 	
 
@@ -179,7 +179,7 @@ public class PropositionNode extends Node {
 	}
 
 	public void receiveReports(Channel channel) {
-		//TODO
+		//TODO receiveReports(Channel channel)
 	}
 
 	public boolean alreadyWorking(Channel channel) {

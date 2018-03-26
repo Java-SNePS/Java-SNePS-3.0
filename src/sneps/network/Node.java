@@ -28,7 +28,7 @@ public class Node {
 		id = count++;
 	}
 	
-	public Node(Semantic sem, Term trm){
+	public Node(Term trm, Semantic sem){
 		semanticType = sem;
 		term = trm;
 		id = count++;

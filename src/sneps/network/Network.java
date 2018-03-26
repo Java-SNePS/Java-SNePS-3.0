@@ -33,22 +33,29 @@ import sneps.exceptions.CustomException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
+import sneps.snip.rules.AndNode;
+import sneps.snip.rules.AndOrNode;
+import sneps.snip.rules.DoIfNode;
+import sneps.snip.rules.NumericalNode;
+import sneps.snip.rules.OrNode;
+import sneps.snip.rules.ThreshNode;
+import sneps.snip.rules.WhenDoNode;
 
 public class Network {
-	
-	
-	 /* A hash table that stores all the nodes defined(available) in the network.
+
+
+	/* A hash table that stores all the nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding node object as the value.
 	 */
 	private static Hashtable<String, Node> nodes = new Hashtable<String, Node>();
 
-	 /* A hash table that stores all the proposition nodes defined(available) in the network.
+	/* A hash table that stores all the proposition nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding proposition node object as the value.
 	 */
 	private static Hashtable<String, PropositionNode> propositionNodes = new Hashtable<String, PropositionNode>();
-	
+
 	/**
 	 * an array list that stores all the nodes defined in the network. Each node
 	 * is stored in the array list at the position corresponding to its ID.
@@ -296,7 +303,7 @@ public class Network {
 		}
 		return relations.get(name);
 	}
-	
+
 	/**
 	 * This method is used to delete a relation from the network.
 	 *
@@ -327,50 +334,50 @@ public class Network {
 	}
 
 	// Assume the LinkedList<RCFP> is formulated in UI
-		/**
-		 * This method is used to define a new case frame.
-		 *
-		 * @param semanticType
-		 *            the default semantic type specified by the new case frame.
-		 * @param relationSet
-		 *            the list that contains the RCFP's of the relations included in
-		 *            the new case frame.
-		 *
-		 * @return the newly created case frame.
-		 *
-		 * @throws CustomException
-		 *             if another case frame with the same given relations (same id)
-		 *             is already defined in the network.
-		 */
-		public static RelationsRestrictedCaseFrame defineCaseFrameWithConstraints(String semanticType,
-				LinkedList<RCFP> relationSet) throws CustomException {
-			RelationsRestrictedCaseFrame caseFrame = new RelationsRestrictedCaseFrame(semanticType, relationSet);
-			if (caseFrames.containsKey(caseFrame.getId())) {
-				throw new CustomException(
-						"This case frame already exists in the network");
-			} else {
-				caseFrames.put(caseFrame.getId(), caseFrame);
-				// this to avoid non perfect hashing
-				if (!molecularNodes.containsKey(caseFrame.getId()))
-					molecularNodes.put(caseFrame.getId(), new NodeSet());
-			}
-			return (RelationsRestrictedCaseFrame)caseFrames.get(caseFrame.getId());
-		} 
-		
-		public static CaseFrame defineCaseFrame(String semanticType,
-				LinkedList<Relation> relationSet) throws CustomException {
-			CaseFrame caseFrame = new CaseFrame(semanticType, relationSet);
-			if (caseFrames.containsKey(caseFrame.getId())) {
-				throw new CustomException(
-						"This case frame already exists in the network");
-			} else {
-				caseFrames.put(caseFrame.getId(), caseFrame);
-				// this to avoid non perfect hashing
-				if (!molecularNodes.containsKey(caseFrame.getId()))
-					molecularNodes.put(caseFrame.getId(), new NodeSet());
-			}
-			return caseFrames.get(caseFrame.getId());
+	/**
+	 * This method is used to define a new case frame.
+	 *
+	 * @param semanticType
+	 *            the default semantic type specified by the new case frame.
+	 * @param relationSet
+	 *            the list that contains the RCFP's of the relations included in
+	 *            the new case frame.
+	 *
+	 * @return the newly created case frame.
+	 *
+	 * @throws CustomException
+	 *             if another case frame with the same given relations (same id)
+	 *             is already defined in the network.
+	 */
+	public static RelationsRestrictedCaseFrame defineCaseFrameWithConstraints(String semanticType,
+			LinkedList<RCFP> relationSet) throws CustomException {
+		RelationsRestrictedCaseFrame caseFrame = new RelationsRestrictedCaseFrame(semanticType, relationSet);
+		if (caseFrames.containsKey(caseFrame.getId())) {
+			throw new CustomException(
+					"This case frame already exists in the network");
+		} else {
+			caseFrames.put(caseFrame.getId(), caseFrame);
+			// this to avoid non perfect hashing
+			if (!molecularNodes.containsKey(caseFrame.getId()))
+				molecularNodes.put(caseFrame.getId(), new NodeSet());
 		}
+		return (RelationsRestrictedCaseFrame)caseFrames.get(caseFrame.getId());
+	} 
+
+	public static CaseFrame defineCaseFrame(String semanticType,
+			LinkedList<Relation> relationSet) throws CustomException {
+		CaseFrame caseFrame = new CaseFrame(semanticType, relationSet);
+		if (caseFrames.containsKey(caseFrame.getId())) {
+			throw new CustomException(
+					"This case frame already exists in the network");
+		} else {
+			caseFrames.put(caseFrame.getId(), caseFrame);
+			// this to avoid non perfect hashing
+			if (!molecularNodes.containsKey(caseFrame.getId()))
+				molecularNodes.put(caseFrame.getId(), new NodeSet());
+		}
+		return caseFrames.get(caseFrame.getId());
+	}
 
 	/**
 	 * This method is used to remove a case frame from the network.
@@ -447,7 +454,7 @@ public class Network {
 				.equals("Molecular")) {
 			Molecular m = (Molecular) node.getTerm();
 			molecularNodes.get(m.getDownCableSet().getCaseFrame().getId())
-					.removeNode(node);
+			.removeNode(node);
 			DownCableSet dCableSet = m.getDownCableSet();
 			// loop for down cables
 			Enumeration<DownCable> dCables = dCableSet.getDownCables()
@@ -474,7 +481,7 @@ public class Network {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method builds a variable node with the default semantic type for
 	 * variable nodes which is 'infimum'.
@@ -495,7 +502,7 @@ public class Network {
 	In the current version, all variable nodes are assumed to have only the
 	default semantic type 'infimum'.
 	 *
-	
+
 	/**
 	 * This method builds a variable node with the given semantic type.
 	 *
@@ -507,7 +514,7 @@ public class Network {
 	 */
 	public static Node buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
-		VariableNode node = new VariableNode(semantic, v);
+		VariableNode node = new VariableNode(v, semantic);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
@@ -537,11 +544,11 @@ public class Network {
 			//Already Present
 			return nodes.get(identifier);
 			//throw new CustomException("There is already another node with the same name existing in the network");
-			
+
 		} else {
 			Base b = new Base(identifier);
 			Node node;
-      /*if (semantic.getSemanticType().equals("Action")) {
+			/*if (semantic.getSemanticType().equals("Action")) {
 				if (semantic.getSemanticType().equals("ControlAction")) {
 					node = new ControlActionNode(semantic, b);
 				} else {
@@ -550,7 +557,7 @@ public class Network {
 			} else {				
 				node = new Node(semantic, b);
 			}*/
-			node = new Node(semantic, b);
+			node = new Node(b, semantic);
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
 
@@ -563,7 +570,7 @@ public class Network {
 			return nodes.get(identifier);
 		}
 	}
-	
+
 	/**
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
@@ -591,9 +598,9 @@ public class Network {
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
 			CaseFrame caseFrame) throws Exception, CustomException {
 		Object[][] array = turnWiresIntoArray(wires);  
-	    Object[] result = downCableSetExists(array);
+		Object[] result = downCableSetExists(array);
 		//System.out.println("Downcable set exists > "+ downCableSetExists(array)); 
-		
+
 		if (((Boolean)result[0]==true)&&(result[1]==null))
 			throw new CustomException(
 					"Cannot build the node .. down cable set already exists");  
@@ -602,7 +609,7 @@ public class Network {
 			throw new CustomException(
 					"This node has an equivalent node in the Network : " + result[1]);
 		}
-				
+
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
@@ -627,13 +634,13 @@ public class Network {
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
 	} 
-	
+
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
 			RelationsRestrictedCaseFrame caseFrame) throws Exception, CustomException {
 		Object[][] array = turnWiresIntoArray(wires);  
 		Object[] result = downCableSetExists(array);
 		//System.out.println("Downcable set exists > "+ downCableSetExists(array)); 
-		
+
 		if (((Boolean)result[0]==true)&&(result[1]==null))
 			throw new CustomException(
 					"Cannot build the node .. down cable set already exists"); 
@@ -682,37 +689,37 @@ public class Network {
 	 */
 	private static Object[] downCableSetExists(Object[][] array) {
 		int size = 0;  
-		
+
 		Object [] result = new Object[2]; 
 		boolean newBoundVarsExist = false; 
 		boolean networkBoundVarsExist = false; 
 		boolean[] newFlags = new boolean[array.length];
-	
+
 		for (int i = 0; i < array.length; i++) {
 			if (!array[i][1].getClass().getSimpleName().equals("NodeSet")){
 				size++; 
 			}
 			Relation r = (Relation) array[i][0];
-			
- 			if (r.isQuantifier()){ 
+
+			if (r.isQuantifier()){ 
 				newBoundVarsExist = true;
 				size--; 
-				
+
 			}
 			if ((newBoundVarsExist)&&(!r.isQuantifier())){ 
 				newFlags[i]=true;
 			}
 		}	
-	  
-		 for(int k = 0; k < newFlags.length; k++){
+
+		for(int k = 0; k < newFlags.length; k++){
 			if(newFlags[k]==true)
 				size--;
 		}
-	
-		
+
+
 		Object[][] temp = new Object[size][2];
 		int counter = 0; 
-		
+
 		for (int i = 0; i < array.length; i++) {
 			if (array[i][1].getClass().getSimpleName().equals("NodeSet"))
 				continue;  
@@ -720,21 +727,21 @@ public class Network {
 			NodeSet ns1 = new NodeSet(); 
 			if((r.isQuantifier())){ 
 				continue;
-			
+
 			}  
-		     
-			
+
+
 			temp[counter][0] = new FUnitPath((Relation) array[i][0]);
 			ns1.addNode((Node) array[i][1]); 
 			temp[counter][1] = ns1;
 			counter++; 
-			
-			
+
+
 		}
 
 		LinkedList<Object[]> ns = find(temp, new Context());
-	
-		
+
+
 		for (int j = 0; j < ns.size(); j++) {
 			Object[] x = ns.get(j);
 			Node n = (Node) x[0];
@@ -744,8 +751,8 @@ public class Network {
 					if (molecular.getDownCableSet().contains(
 							((Relation) array[i][0]).getName())
 							&& molecular.getDownCableSet()
-									.getDownCable(
-											((Relation) array[i][0]).getName())
+							.getDownCable(
+									((Relation) array[i][0]).getName())
 									.getNodeSet().isEmpty())
 						continue; 
 					else {
@@ -757,7 +764,7 @@ public class Network {
 			}
 		}
 
-		
+
 		for (int i = 0; i < ns.size(); i++) {
 			Object[] x = ns.get(i);
 			Node n = (Node) x[0];
@@ -771,12 +778,12 @@ public class Network {
 					c++;
 				else
 					c += cb.getNodeSet().size();
-				
+
 				if(cb.getRelation().isQuantifier()){  
 					networkBoundVarsExist=true;   
 				}
 				if((!cb.getRelation().isQuantifier())&&(networkBoundVarsExist)){  
-					 break;
+					break;
 				}
 
 			}
@@ -784,38 +791,38 @@ public class Network {
 				ns.remove(i);
 				i--;
 			} 
-			
+
 		} 
-           
+
 		if(ns.size() == 1){ 
 			result[0]= (Boolean) true; 
 			result[1]= null; 
-			
-		  if((newBoundVarsExist)&&(networkBoundVarsExist)){ 
-			Object[] s = ns.get(0);  
-			result[1]=(Node) s[0];
-		  }
-		 
-		  
+
+			if((newBoundVarsExist)&&(networkBoundVarsExist)){ 
+				Object[] s = ns.get(0);  
+				result[1]=(Node) s[0];
+			}
+
+
 			if((newBoundVarsExist)&&(!networkBoundVarsExist)){  
-		       result[0]= (Boolean) false;   
-		       ns.remove();
-		  } 
-			
-		  
+				result[0]= (Boolean) false;   
+				ns.remove();
+			} 
+
+
 		}
 		else{
 			result[0]= (Boolean) false;
-		    result[1]= null;
+			result[1]= null;
 		} 
-		
+
 		if((ns.size()==1)&&((Boolean)result[0]==false))
 			System.out.println("Downcable set already exist"); 
 		if(!(ns.size()==1))
 			System.out.println("Molecular Node built successfully");
-		
+
 		return result; 
-	
+
 	} 
 	/**
 	 * This method checks that each pair in a 2D array of relation-node pairs is
@@ -853,16 +860,16 @@ public class Network {
 	private static Object[][] turnWiresIntoArray(ArrayList<Wire> wires)
 	{
 		Object[][] result = new Object[wires.size()][2]; 
-	  
+
 		for(int i = 0; i < result.length; i++){ 
-			
+
 			result[i][0] = wires.get(i).getWireRelation();
 			result[i][1] = wires.get(i).getWireNode();  
 
-	    }
+		}
 		return result;
 	}
-	
+
 	private static Object[][] turnIntoRelNodeSet(Object[][] array) {
 		Object[][] temp = new Object[array.length][];
 		for (int i = 0; i < array.length; i++) {
@@ -1017,52 +1024,38 @@ public class Network {
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String patName = getNextPatName();
 		Open open = new Open(patName, dCableSet);
-		String temp = caseFrame.getSemanticClass();
+		String temp = caseFrame.getSemanticClass().getSemanticType();
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = null;
-			//TODO
-//				propNode = new AndNode(open);
+				propNode = new AndNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = null;
-			//TODO
-//				propNode = new OrNode(open);
+				propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = null;
-			//TODO
-//				propNode = new AndOrNode(open);
+				propNode = new AndOrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = null;
-			//TODO
-//				propNode = new ThreshNode(open);
+				propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = null;
-			//TODO
-//				propNode = new NumericalNode(open);	
+				propNode = new NumericalNode(open);	
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
-				propNode = null;
-			//TODO
-//				propNode = new DoIfNode(open);
+				propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
-				propNode = null;
-			//TODO
-//				propNode = new WhenDoNode(open);
+				propNode = new WhenDoNode(open);
 			else
 				propNode = new PropositionNode(open);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node pNode = new Node(semantic, open);
+			Node pNode = new Node(open, semantic);
 			return pNode;
 		}
 
 	}
-	
+
 	private static Node createPatNode(Object[][] relNodeSet,
 			RelationsRestrictedCaseFrame caseFrame) throws Exception {
 		System.out.println("mtooo");
@@ -1082,40 +1075,26 @@ public class Network {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = null;
-			//TODO
-//				propNode = new AndNode(open);
+				propNode = new AndNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = null;
-			//TODO
-//				propNode = new OrNode(open);
+				propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = null;
-			//TODO
-//				propNode = new AndOrNode(open);
+				propNode = new AndOrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = null;
-			//TODO
-//				propNode = new ThreshNode(open);
+				propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = null;
-			//TODO
-//				propNode = new NumericalNode(open);	
+				propNode = new NumericalNode(open);	
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
-				propNode = null;
-			//TODO
-//				propNode = new DoIfNode(open);
+				propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
-				propNode = null;
-			//TODO
-//				propNode = new WhenDoNode(open);
+				propNode = new WhenDoNode(open);
 			else
 				propNode = new PropositionNode(open);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node pNode = new Node(semantic, open);
+			Node pNode = new Node(open, semantic);
 			return pNode;
 		}
 
@@ -1150,48 +1129,38 @@ public class Network {
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String closedName = getNexMolName();
 		Closed c = new Closed(closedName, dCableSet);
-		String temp = caseFrame.getSemanticClass();
+		String temp = caseFrame.getSemanticClass().getSemanticType();
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
-			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
-				propNode = null;
-				//TODO
-//				propNode = new AndNode(c);
-				}
-			else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = null;
-				//TODO
-//				propNode = new OrNode(c);
-			}
-			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = null;
-				//TODO
-//				propNode = new AndOrNode(c);
-				}
-			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = null;
-				//TODO
-//				propNode = new ThreshNode(c);
-				}
-			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
-				propNode = null;
-				//TODO
-//				propNode = new NumericalNode(c);
-				}
+			if (caseFrame == RelationsRestrictedCaseFrame.andRule) 
+				propNode = new AndNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.orRule) 
+				propNode = new OrNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) 
+				propNode = new AndOrNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) 
+				propNode = new ThreshNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) 
+				propNode = new NumericalNode(c);
+			
 			else
 				propNode = new PropositionNode(c);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node cNode = new Node(semantic, c);
+			Node cNode = new Node(c, semantic);
 			return cNode;
 		}
 	} 
-	
+
 	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet,
 			RelationsRestrictedCaseFrame caseFrame) throws Exception {
@@ -1210,38 +1179,28 @@ public class Network {
 		// closed node otherwise
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
-			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
-				propNode = null;
-				//TODO
-//				propNode = new AndNode(c);
-				}
-			else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = null;
-				//TODO
-//				propNode = new OrNode(c);
-			}
-			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = null;
-				//TODO
-//				propNode = new AndOrNode(c);
-				}
-			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = null;
-				//TODO
-//				propNode = new ThreshNode(c);
-				}
-			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
-				propNode = null;
-				//TODO
-//				propNode = new NumericalNode(c);
-				}
+			if (caseFrame == RelationsRestrictedCaseFrame.andRule) 
+				propNode = new AndNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.orRule) 
+				propNode = new OrNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) 
+				propNode = new AndOrNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) 
+				propNode = new ThreshNode(c);
+			
+			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) 
+				propNode = new NumericalNode(c);
+			
 			else
 				propNode = new PropositionNode(c);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node cNode = new Node(semantic, c);
+			Node cNode = new Node(c, semantic);
 			return cNode;
 		}
 
@@ -1306,7 +1265,7 @@ public class Network {
 							if (ns.getNode(l).getSemanticType()
 									.equals(check.getSemanticType())
 									|| ns.getNode(l).getSemanticSuperClass()
-											.equals(check.getSemanticType())) {
+									.equals(check.getSemanticType())) {
 								counter++;
 							}
 						}
@@ -1346,7 +1305,7 @@ public class Network {
 			}
 		}
 		System.out.println("Not Satisfied");
-		return caseframe.getSemanticClass();
+		return caseframe.getSemanticClass().getSemanticType();
 	}
 
 	/**
@@ -1436,7 +1395,7 @@ public class Network {
 
 		return result;
 	}
-/*
+	/*
 	/**
 	 * This method builds an instance of the semantic class with the given name.
 	 *
@@ -1453,7 +1412,7 @@ public class Network {
 		Entity e = (Entity) sem.newInstance();
 		return e;
 	}
-*/
+	 */
 	/**
 	 * This method builds a new case frame signature with the given parameters.
 	 *
@@ -1576,7 +1535,7 @@ public class Network {
 	 * @return a String representing the generated closed node name in the form
 	 *         of "Mi" and i is an integer suffix.
 	 */
-	private static String getNexMolName() {
+	public static String getNexMolName() {
 		molCounter++;
 		String molName = "M";
 		for (int i = 0; i < userDefinedMolSuffix.size(); i++) {
@@ -1629,7 +1588,7 @@ public class Network {
 
 	//Methods that update the lists
 	//of user-defined suffix
-	
+
 	/**
 	 * This method checks if a user-defined name of a base node has the same
 	 * form as the closed nodes' identifiers "Mi"
@@ -1731,86 +1690,86 @@ public class Network {
 	}
 
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// /////////////////////////////// The method that checks for possible case
-		// frames' conflicts (and its helper method)
-		// ///////////////////////////////////
+	// /////////////////////////////// The method that checks for possible case
+	// frames' conflicts (and its helper method)
+	// ///////////////////////////////////
 
-		/**
-		 * This method checks whether the newly created case frame can cause
-		 * conflicts on the semantic level with any of the case frame existing in
-		 * the network. Two case frames are said to be conflicting if they can at
-		 * any point produce nodes that are semantically the same.
-		 *
-		 * V.Imp Notes: - This method is not used anywhere in the code yet. - In the
-		 * method it is assumed that the given case frame is newly created and thus
-		 * not added to the hash table of case frames yet thus if the same id as the
-		 * given case frame was found in the hash table of case frames, the method
-		 * will return null. (It's assumed that the method will be used while
-		 * creating the case frame .. so if it will be used somewhere else after
-		 * adding the case frame to the hash table of case frames .. the first check
-		 * in the method that returns null should be removed and it should be known
-		 * that the given case frame will be returned in the result (along with the
-		 * other conflicting case frames) because it will be conflicting with
-		 * itself.
-		 *
-		 *
-		 * @param cf
-		 *            the newly created case frame.
-		 *
-		 * @return a list of the case frame that are conflicting with the given case
-		 *         frame, and null if the given case frame already exists in the
-		 *         system. if no case frames are conflicting with the given case
-		 *         frame the list will be empty.
-		 */
-//		public static LinkedList<RCFPCaseFrame> CheckCFConflicts(RCFPCaseFrame cf) {
-//			if (caseFrames.containsKey(cf.getId())) {
-//				return null;
-//			}
-//			// loop over all defined case frames
-//			Enumeration<CaseFrame> caseframes = caseFrames.elements();
-//			LinkedList<RCFPCaseFrame> result = new LinkedList<RCFPCaseFrame>();
-//			// looping on the case frames with supersets or subsets of relations
-//			while (caseframes.hasMoreElements()) {
-//				RCFPCaseFrame cf1 = caseframes.nextElement();
-//				// get intersecting relations
-//				Hashtable<String, RCFP> intersection = getIntersectingRelations(
-//						cf1.getRelations(), cf.getRelations());
-//				// if no intersecting relations not conflicting so skip
-//				if (intersection.size() == 0) {
-//					continue;
-//				}
-//				// check new case frame
-//				Enumeration<RCFP> relations = cf.getRelations().elements();
-//				boolean satisfied = true;
-//				while (relations.hasMoreElements()) {
-//					RCFP r = relations.nextElement();
-//					if (intersection.containsKey(r.getRelation().getName()))
-//						continue;
-//					if (r.getLimit() != 0) {
-//						satisfied = false;
-//						break;
-//					}
-//				}
-//				if (satisfied) {
-//					// check other case frame
-//					Enumeration<RCFP> relations1 = cf1.getRelations().elements();
-//					boolean satisfied1 = true;
-//					while (relations1.hasMoreElements()) {
-//						RCFP r = relations1.nextElement();
-//						if (intersection.containsKey(r.getRelation().getName()))
-//							continue;
-//						if (r.getLimit() != 0) {
-//							satisfied1 = false;
-//							break;
-//						}
-//					}
-//					if (satisfied1) {
-//						result.add(cf1);
-//					}
-//				}
-//			}
-//			return result;
-//		}
+	/**
+	 * This method checks whether the newly created case frame can cause
+	 * conflicts on the semantic level with any of the case frame existing in
+	 * the network. Two case frames are said to be conflicting if they can at
+	 * any point produce nodes that are semantically the same.
+	 *
+	 * V.Imp Notes: - This method is not used anywhere in the code yet. - In the
+	 * method it is assumed that the given case frame is newly created and thus
+	 * not added to the hash table of case frames yet thus if the same id as the
+	 * given case frame was found in the hash table of case frames, the method
+	 * will return null. (It's assumed that the method will be used while
+	 * creating the case frame .. so if it will be used somewhere else after
+	 * adding the case frame to the hash table of case frames .. the first check
+	 * in the method that returns null should be removed and it should be known
+	 * that the given case frame will be returned in the result (along with the
+	 * other conflicting case frames) because it will be conflicting with
+	 * itself.
+	 *
+	 *
+	 * @param cf
+	 *            the newly created case frame.
+	 *
+	 * @return a list of the case frame that are conflicting with the given case
+	 *         frame, and null if the given case frame already exists in the
+	 *         system. if no case frames are conflicting with the given case
+	 *         frame the list will be empty.
+	 */
+	//		public static LinkedList<RCFPCaseFrame> CheckCFConflicts(RCFPCaseFrame cf) {
+	//			if (caseFrames.containsKey(cf.getId())) {
+	//				return null;
+	//			}
+	//			// loop over all defined case frames
+	//			Enumeration<CaseFrame> caseframes = caseFrames.elements();
+	//			LinkedList<RCFPCaseFrame> result = new LinkedList<RCFPCaseFrame>();
+	//			// looping on the case frames with supersets or subsets of relations
+	//			while (caseframes.hasMoreElements()) {
+	//				RCFPCaseFrame cf1 = caseframes.nextElement();
+	//				// get intersecting relations
+	//				Hashtable<String, RCFP> intersection = getIntersectingRelations(
+	//						cf1.getRelations(), cf.getRelations());
+	//				// if no intersecting relations not conflicting so skip
+	//				if (intersection.size() == 0) {
+	//					continue;
+	//				}
+	//				// check new case frame
+	//				Enumeration<RCFP> relations = cf.getRelations().elements();
+	//				boolean satisfied = true;
+	//				while (relations.hasMoreElements()) {
+	//					RCFP r = relations.nextElement();
+	//					if (intersection.containsKey(r.getRelation().getName()))
+	//						continue;
+	//					if (r.getLimit() != 0) {
+	//						satisfied = false;
+	//						break;
+	//					}
+	//				}
+	//				if (satisfied) {
+	//					// check other case frame
+	//					Enumeration<RCFP> relations1 = cf1.getRelations().elements();
+	//					boolean satisfied1 = true;
+	//					while (relations1.hasMoreElements()) {
+	//						RCFP r = relations1.nextElement();
+	//						if (intersection.containsKey(r.getRelation().getName()))
+	//							continue;
+	//						if (r.getLimit() != 0) {
+	//							satisfied1 = false;
+	//							break;
+	//						}
+	//					}
+	//					if (satisfied1) {
+	//						result.add(cf1);
+	//					}
+	//				}
+	//			}
+	//			return result;
+	//		}
 
 	/**
 	 * This method gets the intersecting relations between two different case
@@ -1863,7 +1822,7 @@ public class Network {
 					n.setId(oldID - empty);
 					nodesIndex.set(n.getId(), n);
 					nodesIndex.set(oldID, null);
-					 System.out.println("old id: " + oldID + " new id: "
+					System.out.println("old id: " + oldID + " new id: "
 							+ (oldID - empty) + " empty: " + empty);
 				}
 				nodes++;
@@ -1873,11 +1832,11 @@ public class Network {
 			nodesIndex.remove(i);
 			i--;
 		}
-		 System.out.println("");
-		 System.out.println("previous count of nodes before deletion: "
+		System.out.println("");
+		System.out.println("previous count of nodes before deletion: "
 				+ Node.getCount());
 		Node.setCount(nodes);
-		 System.out.println("current count of nodes before deletion: "
+		System.out.println("current count of nodes before deletion: "
 				+ Node.getCount());
 	}
 
@@ -1963,7 +1922,7 @@ public class Network {
 		return result;
 	}
 
-	
+
 	private static VariableSet getAllVariables(Molecular node) {
 		VariableSet result = new VariableSet();
 
@@ -1989,7 +1948,7 @@ public class Network {
 	public static NodeSet match(Node x) {
 		return new NodeSet();
 	}
-	
+
 	/*public static void defineDefaults() throws CustomException {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
