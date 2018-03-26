@@ -6,15 +6,21 @@ import java.util.LinkedList;
 public class CaseFrame { 
 	
 	
-	private String semanticClass; 
+	private Semantic semanticClass; 
 	
 	private LinkedList<Relation> relations; 
 	
 	private String id;
 	
 	
-	
 	public CaseFrame(String semanticClass, LinkedList<Relation> relations){
+		
+		   this.semanticClass = new Semantic(semanticClass);
+		   this.relations = relations;
+		   this.id = createId(relations);
+	} 
+	
+	public CaseFrame(Semantic semanticClass, LinkedList<Relation> relations){
 			
 		   this.semanticClass = semanticClass;
 		   this.relations = relations;
@@ -48,7 +54,7 @@ public class CaseFrame {
 		return id;
 	}
 
-	public String getSemanticClass() {
+	public Semantic getSemanticClass() {
 		return semanticClass;
 	}
 
