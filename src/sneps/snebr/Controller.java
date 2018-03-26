@@ -2,10 +2,15 @@ package sneps.snebr;
 
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.ContextSet;
+import sneps.network.classes.setClasses.PropositionSet;
+
+import java.util.HashSet;
 
 public class Controller {
     private static String currContext = "default";
     private static ContextSet contextSet = new ContextSet(currContext);
+    private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
+
 
     public static Context addContext(String contextName) {
         Context c = new Context(contextSet.getContext(currContext));
