@@ -50,8 +50,8 @@ public class PropositionSet {
 		return true;
 	}
 
-	public boolean isSubSet(PropositionSet hyps) {
-		int [] props =  hyps.getProps();
+	public boolean isSubSet(PropositionSet propositionSet) {
+		int [] props =  propositionSet.getProps();
 		int i = 0, j = 0;
 		while(i < this.props.length && j < props.length) {
 			if (this.props[i] == props[j])
