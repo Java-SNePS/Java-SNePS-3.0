@@ -1,39 +1,64 @@
 package sneps.network.classes.setClasses;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Timer;
-import java.util.TreeMap;
+public class PropositionSet {
+	private int[] props;
 
-import sneps.network.PropositionNode;
+	public PropositionSet(int prop) {
+		this.props = new int[]{prop};
+	}
 
-public class PropositionSet implements Iterable<PropositionNode> {
-	private	TreeMap<Integer, PropositionNode> nodes;
+	public PropositionSet(int [] props) {
+		this.props = new int[props.length];
+		for (int i = 0; i < props.length ; i++) {
+			this.props[i] = props[i];
+		}
+	}
 
-	public PropositionSet() {
-		nodes = new TreeMap<Integer, PropositionNode>();
-		
-	}
-	public void insert(PropositionNode propNode) {
-		nodes.put(propNode.getId(), propNode);
-	}
-	public void remove(PropositionNode propNode) {
-		nodes.remove(propNode.getId());
+	public PropositionSet(int [] props, int prop) {
+		int i = 0, j = 0;
+		this.props = new int[props.length + 1];
+		boolean inserted = false;
+		while (i < props.length) {
+			if(!inserted && prop < props[i]) {
+				this.props[j++] = prop;
+				inserted = true;
+			} else {
+				this.props[j++] = props[i++];
+			}
+		}
+		if(!inserted)
+			this.props[j] = prop;
 
 	}
-	public boolean contains(PropositionNode propNode){
-		return nodes.containsKey(propNode.getId());
+
+	public int[] getProps() {
+		return props;
 	}
-	public boolean isEmpty(){
-		return nodes.isEmpty();
+
+	public boolean equals(Object obj) {
+		PropositionSet propositionSet = (PropositionSet)obj;
+		int [] inputProps = propositionSet.getProps();
+		if (inputProps.length != this.props.length) {
+			return false;
+		}
+		else {
+			for (int i = 0; i < this.props.length; i ++) {
+				if (this.props[i] != inputProps[i])
+					return false;
+			}
+		}
+		return true;
 	}
-	public void clearSet() {
-		nodes.clear();
+
+	public boolean isSubSet(PropositionSet propositionSet) {
+		int [] props =  propositionSet.getProps();
+		int i = 0, j = 0;
+		while(i < this.props.length && j < props.length) {
+			if (this.props[i] == props[j])
+				i++;
+			else
+				j++;
+		}
+		return i == this.props.length;
 	}
-	@Override
-	public Iterator<PropositionNode> iterator() {
-		return nodes.values().iterator();
-	}
-	
 }
