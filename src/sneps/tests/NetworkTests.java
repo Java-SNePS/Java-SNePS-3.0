@@ -10,6 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import sneps.network.*;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -25,7 +27,29 @@ public class NetworkTests extends TestCase{
 	public void setUp() throws Exception {
 		network = new Network();
 		
-		VariableNode var1 = Network.buildVariableNode();
+		Node n1 = new Node(new Semantic("Dog"), new Base("Base"));
+		Node n2 = new Node(new Semantic("Fido"), new Base("Base"));
+		Node n3 = new Node();
+		NodeSet nodeSet = new NodeSet();
+		
+		Relation member = new Relation("member", "Entity", "reduce", 1);
+		member.setQuantifier();
+		Relation r1 = new Relation("class", "Entity", "none", 1);
+		r1.setQuantifier();
+		
+		LinkedList<Relation> lnkCF = new LinkedList<Relation>();
+		lnkCF.add(r1);
+		
+		DownCable dc1 = new DownCable(r1, nodeSet);
+		LinkedList<DownCable> lnkDC = new LinkedList<DownCable>();
+		lnkDC.add(dc1);
+		
+		DownCableSet downSet = new  DownCableSet(lnkDC,	new CaseFrame("member", lnkCF));
+		Molecular t1 = new Molecular("isMember", downSet);
+		
+		
+		
+		/*VariableNode var1 = Network.buildVariableNode();
 		VariableNode var2 = Network.buildVariableNode();
 		
 		// defining a new relation with the name: member
@@ -43,7 +67,7 @@ public class NetworkTests extends TestCase{
 
 		// creating the linked list of properties to be used in the caseFrame
 		// cf1
-		// TODO do I need to make a method for this in Network
+		// to do do I need to make a method for this in Network
 		LinkedList<RCFP> relProperties = new LinkedList<RCFP>();
 
 		// adding the elements to the list
@@ -54,7 +78,7 @@ public class NetworkTests extends TestCase{
 		//CaseFrame cf1 = Network.defineCaseFrame("Proposition", relProperties);
 
 		// the relation-node pair to be used in building Molecular Node m1
-		
+*/		
 	}
 
 	@After
@@ -64,6 +88,7 @@ public class NetworkTests extends TestCase{
 	@Test
 	public void test() {
 		
+/*
 		System.out.println(Network.getNexMolName());
 		Relation member = new Relation("member", "Entity", "reduce", 1);
 		member.setQuantifier();
@@ -103,7 +128,7 @@ public class NetworkTests extends TestCase{
 		//System.out.println("checking" + dcs.size());
 		//Open p = new Open("M1", dcs);
 		//Entity e = new Entity();
-		/*Node pNode = new Node(p);
+		Node pNode = new Node(p);
 		Set<Node> nodes;
 		nodes.put(pNode.getIdentifier(), pNode);
 		Set<CaseFrame> caseFrames;
@@ -114,7 +139,8 @@ public class NetworkTests extends TestCase{
 		System.out.println("start");
 		Node m = Network.buildMolecularNode(relNode, cf);
 		System.out.println(m.getSyntacticType());
-		System.out.println(m.getSemanticType());*/
+		System.out.println(m.getSemanticType());
+*/
 		
 		
 		fail("Not yet implemented");
