@@ -4,6 +4,13 @@
 	-fx-background-color: #333333;
 }
 
+
+.title{
+	-fx-text-fill: #ff0000;
+	-fx-border-color: #ff0000;
+	-fx-alignment: center;
+}
+
 .conOutput{
 	-fx-background: #333333;
 	-fx-text-fill: white;

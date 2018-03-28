@@ -9,12 +9,13 @@
  */
 package sneps.network.cables;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import sneps.network.classes.Relation;
 
-public class UpCableSet {
+public class UpCableSet implements Serializable {
 	
 
 	/**

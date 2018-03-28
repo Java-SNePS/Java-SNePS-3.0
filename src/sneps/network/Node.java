@@ -1,5 +1,7 @@
 package sneps.network;
 
+import java.io.Serializable;
+
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
@@ -8,7 +10,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.snip.matching.Substitutions;
 
-public class Node {
+public class Node implements Serializable {
 	
 	private Term term;
 	private Semantic semanticType;
