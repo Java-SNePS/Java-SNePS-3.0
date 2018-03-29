@@ -43,9 +43,14 @@ public class PropositionNode extends Node {
 		setTerm(trm);
 		setSemanticType(sem);
 	}
-	
+	public PropositionNode(Semantic sym, Term trm){
+		super(sym, trm);
+	}
+	public PropositionNode(Semantic sym){
+		super(sym);
+	}
 
-	public void processSingleChannelReports(Channel currentChannel) {
+ 	public void processSingleChannelReports(Channel currentChannel) {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),

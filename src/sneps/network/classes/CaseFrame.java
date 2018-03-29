@@ -13,8 +13,14 @@ public class CaseFrame {
 	private String id;
 	
 	
-	
 	public CaseFrame(String semanticClass, LinkedList<Relation> relations){
+		
+		   this.semanticClass = new Semantic(semanticClass);
+		   this.relations = relations;
+		   this.id = createId(relations);
+	} 
+	
+	public CaseFrame(Semantic semanticClass, LinkedList<Relation> relations){
 			
 		   this.semanticClass = new Semantic(semanticClass);
 		   this.relations = relations;
