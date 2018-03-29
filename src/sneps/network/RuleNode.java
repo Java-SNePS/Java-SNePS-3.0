@@ -28,51 +28,25 @@ import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode {
-
-	/**
-	 * a NodeSet containing all the pattern antecedents attached to this Node
-	 */
 	protected NodeSet antNodesWithVars;
-
-	/**
-	 * a NodeSet containing all the non pattern antecedents attached to this
-	 * Node
-	 */
 	protected NodeSet antNodesWithoutVars;
-
-	/**
-	 * an integer set containing all the ids of the pattern antecedents attached
-	 * to this Node
-	 */
 	protected Set<Integer> antNodesWithVarsIDs;
-
-	/**
-	 * an integer set containing all the ids of the non pattern antecedents
-	 * attached to this Node
-	 */
 	protected Set<Integer> antNodesWithoutVarsIDs;
-
-	/**
-	 * set to true if all the antecedents with Variables share the same
-	 * variables, false otherwise.
-	 */
 	protected boolean shareVars;
-
-	/**
-	 * Set of ids of the variables shared by all patterns
-	 */
 	protected Set<Integer> sharedVars;
-	
-
 	protected ContextRuisSet contextRuisSet;
-
 	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
 
 	
 	public RuleNode(){}
-	
-	public RuleNode(Term syn, Semantic sym) {
-		//super(syn, sym);
+	public RuleNode(Semantic sym){
+		super(sym);
+	}
+	public RuleNode(Term trm){
+		super(trm);
+	}
+	public RuleNode(Semantic sym, Term syn) {
+		super(sym, syn);
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
@@ -262,7 +236,7 @@ public abstract class RuleNode extends PropositionNode {
 			if (currentChannel instanceof RuleToConsequentChannel) {
 				VariableSet variablesList = ((Open)this.term).getFreeVariables();
 				if (variablesList.isEmpty()) {
-					//Proposition semanticType = (Proposition) this.getSemantic();TODO change according to snebr
+					//Proposition semanticType = (Proposition) this.getSemantic();//TODO change according to snebr
 					if (this.semanticType.isAsserted(Controller.getContextByName(currentChannel.getContextName()))) {
 						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
 						NodeSet toBeSentTo = new NodeSet();

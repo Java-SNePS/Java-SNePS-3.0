@@ -2,16 +2,11 @@ package sneps.network;
 
 import java.util.ArrayList;
 
+import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Hashtable;
-
 
 import sneps.network.Node;
 import sneps.snebr.Support;
@@ -43,9 +38,14 @@ public class PropositionNode extends Node {
 		this();
 		setTerm(trm);
 	}
-	
+	public PropositionNode(Semantic sym, Term trm){
+		super(sym, trm);
+	}
+	public PropositionNode(Semantic sym){
+		super(sym);
+	}
 
-	public void processSingleChannelReports(Channel currentChannel) {
+ 	public void processSingleChannelReports(Channel currentChannel) {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),
