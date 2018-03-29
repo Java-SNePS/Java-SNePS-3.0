@@ -17,8 +17,8 @@ public class NumericalNode extends RuleNode {
 		// TODO Auto-generated constructor stub
 	}
 
-	public NumericalNode(Term syn, Semantic sym) {
-		super(syn, sym);
+	public NumericalNode(Semantic sym, Term syn) {
+		super(sym, syn);
 		// TODO Auto-generated constructor stub
 	}
 

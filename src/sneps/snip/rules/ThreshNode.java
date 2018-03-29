@@ -17,8 +17,8 @@ public class ThreshNode extends RuleNode {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ThreshNode(Term syn, Semantic sym) {
-		super(syn, sym);
+	public ThreshNode(Semantic sym, Term syn) {
+		super(sym, syn);
 		// TODO Auto-generated constructor stub
 	}
 

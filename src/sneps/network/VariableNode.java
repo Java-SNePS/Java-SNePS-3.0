@@ -18,8 +18,8 @@ public class VariableNode extends Node {
 		super(sem);
 	}
 
-	public VariableNode(Term trm, Semantic sem) {
-		super(trm, sem);
+	public VariableNode(Semantic sem, Term trm) {
+		super(sem, trm);
 	}
 	
 

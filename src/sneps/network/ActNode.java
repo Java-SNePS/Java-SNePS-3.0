@@ -11,8 +11,8 @@ public class ActNode extends Node {
 		super(syn);
 	}
 	
-	public ActNode(Term syn, Semantic sem) {
-		super(syn,sem);
+	public ActNode(Semantic sem, Term syn) {
+		super(sem,syn);
 	}
 
 	public ActNode getAgenda() {

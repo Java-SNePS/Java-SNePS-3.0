@@ -10,8 +10,8 @@ public class WhenDoNode extends RuleNode {
 
 	public WhenDoNode() {}
 
-	public WhenDoNode(Term syn, Semantic sem) {
-		super(syn, sem);
+	public WhenDoNode(Semantic sem, Term syn) {
+		super(sem, syn);
 	}
 
 	public WhenDoNode(Term syn) {

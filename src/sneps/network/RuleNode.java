@@ -63,15 +63,13 @@ public abstract class RuleNode extends PropositionNode {
 		for (Node n : antNodesWithoutVars) {
 			antNodesWithoutVarsIDs.add(n.getId());
 		}
-		//this.antNodesWithoutVars.size();
-		//this.antNodesWithVars.size();
 		this.shareVars = this.allShareVars(antNodesWithVars);
 		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
 
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
-		// Context context = SNeBR.getContextByID(contextID);
+		// Context context = SNeBR.getContextByName(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
 			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);

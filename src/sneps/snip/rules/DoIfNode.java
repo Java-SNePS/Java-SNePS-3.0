@@ -14,8 +14,8 @@ public class DoIfNode extends RuleNode {
 		super(syn);
 	}
 
-	public DoIfNode(Term syn, Semantic sem) {
-		super(syn, sem);
+	public DoIfNode(Semantic sem, Term syn) {
+		super(sem, syn);
 	}
 
 

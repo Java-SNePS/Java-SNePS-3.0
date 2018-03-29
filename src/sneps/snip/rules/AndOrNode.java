@@ -17,8 +17,8 @@ public class AndOrNode extends RuleNode {
 		// TODO Auto-generated constructor stub
 	}
 
-	public AndOrNode(Term syn, Semantic sym) {
-		super(syn, sym);
+	public AndOrNode(Semantic sym, Term syn) {
+		super(sym, syn);
 		// TODO Auto-generated constructor stub
 	}
 

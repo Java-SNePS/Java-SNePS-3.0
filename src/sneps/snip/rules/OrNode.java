@@ -14,8 +14,8 @@ public class OrNode extends RuleNode {
 		super(syn);
 	}
 
-	public OrNode(Term syn, Semantic sym) {
-		super(syn, sym);
+	public OrNode(Semantic sym, Term syn) {
+		super(sym, syn);
 	}
 
 	@Override

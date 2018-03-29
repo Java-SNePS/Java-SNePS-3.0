@@ -514,7 +514,7 @@ public class Network {
 	 */
 	public static Node buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
-		VariableNode node = new VariableNode(v, semantic);
+		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
@@ -557,7 +557,7 @@ public class Network {
 			} else {				
 				node = new Node(semantic, b);
 			}*/
-			node = new Node(b, semantic);
+			node = new Node(semantic, b);
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
 
@@ -1050,7 +1050,7 @@ public class Network {
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node pNode = new Node(open, semantic);
+			Node pNode = new Node(semantic, open);
 			return pNode;
 		}
 
@@ -1094,7 +1094,7 @@ public class Network {
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node pNode = new Node(open, semantic);
+			Node pNode = new Node(semantic, open);
 			return pNode;
 		}
 
@@ -1156,7 +1156,7 @@ public class Network {
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node cNode = new Node(c, semantic);
+			Node cNode = new Node(semantic, c);
 			return cNode;
 		}
 	} 
@@ -1200,7 +1200,7 @@ public class Network {
 		} else if (semantic.getSemanticType().equals("Act")) {
 			return new ActNode();
 		} else {
-			Node cNode = new Node(c, semantic);
+			Node cNode = new Node(semantic, c);
 			return cNode;
 		}
 
