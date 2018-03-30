@@ -12,7 +12,6 @@ import sneps.network.classes.setClasses.PropositionSet;
 public class Support {
 
 	public Support() {
-		assumptionBasedSupport = new Hashtable<>();
 	}
 
 }
