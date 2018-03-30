@@ -34,4 +34,9 @@ public class VariableSet implements Iterable<Variable> {
 		return variables.size();
 	}
 
+
+	public boolean isEmpty() {
+		return variables.isEmpty();
+	}
+
 }

@@ -1,57 +1,64 @@
 package sneps.network.classes.setClasses;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import sneps.network.PropositionNode;
+public class PropositionSet {
+	private int[] props;
 
-public class PropositionSet implements Iterable<PropositionNode> {
-	private Set<PropositionNode> nodes;
-
-	public PropositionSet() {
-		nodes = new HashSet<PropositionNode>();
+	public PropositionSet(int prop) {
+		this.props = new int[]{prop};
 	}
 
-	public PropositionSet(Set<PropositionNode> nodes) {
-		this.nodes = nodes;
+	public PropositionSet(int [] props) {
+		this.props = new int[props.length];
+		for (int i = 0; i < props.length ; i++) {
+			this.props[i] = props[i];
+		}
 	}
 
-	@Override
-	public Iterator<PropositionNode> iterator() {
-		return nodes.iterator();
+	public PropositionSet(int [] props, int prop) {
+		int i = 0, j = 0;
+		this.props = new int[props.length + 1];
+		boolean inserted = false;
+		while (i < props.length) {
+			if(!inserted && prop < props[i]) {
+				this.props[j++] = prop;
+				inserted = true;
+			} else {
+				this.props[j++] = props[i++];
+			}
+		}
+		if(!inserted)
+			this.props[j] = prop;
+
 	}
 
-	public Set<PropositionNode> getNodes() {
-		return nodes;
+	public int[] getProps() {
+		return props;
 	}
 
-	public boolean add (PropositionNode p) {
-		return nodes.add(p);
-	}
-
-	public boolean addAll(Set<PropositionNode> props) {
-		return nodes.addAll(props);
-	}
-
-	public boolean remove(PropositionNode prop) {
-		return nodes.remove(prop);
-	}
-
-	@Override
 	public boolean equals(Object obj) {
-		PropositionSet props = (PropositionSet)obj;
-		for (PropositionNode node: props.nodes) {
-			if(!this.nodes.contains(node))
-				return false;
+		PropositionSet propositionSet = (PropositionSet)obj;
+		int [] inputProps = propositionSet.getProps();
+		if (inputProps.length != this.props.length) {
+			return false;
+		}
+		else {
+			for (int i = 0; i < this.props.length; i ++) {
+				if (this.props[i] != inputProps[i])
+					return false;
+			}
 		}
 		return true;
 	}
 
-	public boolean isSubSet(PropositionSet hyps) {
-		for (PropositionNode node: this.nodes) {
-			if (!hyps.nodes.contains(node))
-				return false;
+	public boolean isSubSet(PropositionSet propositionSet) {
+		int [] props =  propositionSet.getProps();
+		int i = 0, j = 0;
+		while(i < this.props.length && j < props.length) {
+			if (this.props[i] == props[j])
+				i++;
+			else
+				j++;
 		}
-		return true;
+		return i == this.props.length;
 	}
 }

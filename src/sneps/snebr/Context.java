@@ -6,7 +6,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
+
 
 public class Context {
 	private PropositionSet hyps;
@@ -14,8 +14,12 @@ public class Context {
 	private HashSet<String> names;
 
 	public Context() {
-		hyps = new PropositionSet();
+
+	}
+
+	public Context(String contextName) {
 		names = new HashSet<String>();
+		names.add(contextName);
 	}
 
 	public Context(Context c) {
@@ -23,17 +27,28 @@ public class Context {
 		this.names = c.getNames();
 	}
 
-	public Context(PropositionNode hyp) {
-		this.hyps=  new PropositionSet();
-		this.hyps.add(hyp);
+	public Context(Context c, PropositionNode hyp) {
+		this.names = c.getNames();
+		PropositionSet propSet = new PropositionSet(c.getHypothesisSet().getProps(), hyp.getId());
+		this.hyps = propSet;
 	}
 
-	public Context(PropositionSet hyps) {
+	public Context(String contextName, Context c) {
+		this(c);
+		this.names.add(contextName);
+	}
+
+	public Context(String contextName, PropositionSet hyps) {
+		this(contextName);
 		this.hyps = hyps;
 	}
 
 	public PropositionSet getHypothesisSet() {
 		return hyps;
+	}
+
+	private void setHypothesisSet(PropositionSet hyps) {
+		this.hyps = hyps;
 	}
 
 	public HashSet<String> getNames() {
@@ -44,51 +59,25 @@ public class Context {
 //
 //	}
 
-	/**
-	 * Creates a new Context with the propositionNode
-	 * @param hyp Propsosition Node to be added to the context's hyps
-	 * @return <code>true</code> if the hyp isn't a duplicate <code>false</code> otherwise.
-	 */
-	public Context addProp(PropositionNode hyp) {
-		Context newContext = new Context(this);
-		newContext.getHypothesisSet().add(hyp);
-		// TODO: check for contradiciton
-		return newContext;
-	}
-
-	public Context addProps(HashSet<PropositionNode> hyps) {
-		Context newContex = new Context(this);
-		newContex.getHypothesisSet().addAll(hyps);
-		// TODO: check for contradiciton
-		return newContex;
-	}
-
-	public Context removeProp(PropositionNode hyp) {
-		Context newContext = new Context(this);
-		newContext.getHypothesisSet().remove(hyp);
-		// TODO: 13/03/18 check for contradiciton
-		return newContext;
-	}
-
-	public PropositionSet allAsserted() {
-		Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
-		PropositionSet asserted = new PropositionSet();
-		for (PropositionNode node : allPropositionNodes) {
-			if (this.hyps.getNodes().contains(node)) {
-				asserted.add(node);
-			} else {
-				Collection<PropositionSet> justificationSets = node.getBasicSupport()
-													.getAssumptionBasedSupport()
-													.values();
-				for (PropositionSet justificationHyps: justificationSets) {
-					if (justificationHyps.isSubSet(this.hyps)) {
-						asserted.add(node);
-					}
-				}
-			}
-		}
-		return asserted;
-	}
+//	public PropositionSet allAsserted() {
+//		Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
+//		PropositionSet asserted = new PropositionSet();
+//		for (PropositionNode node : allPropositionNodes) {
+//			if (this.hyps.getNodes().contains(node)) {
+//				asserted.add(node);
+//			} else {
+//				Collection<PropositionSet> justificationSets = node.getBasicSupport()
+//													.getAssumptionBasedSupport()
+//													.values();
+//				for (PropositionSet justificationHyps: justificationSets) {
+//					if (justificationHyps.isSubSet(this.hyps)) {
+//						asserted.add(node);
+//					}
+//				}
+//			}
+//		}
+//		return asserted;
+//	}
 
 	/**
 	 * Adds a name to the set of names of the context if not a duplicate.
@@ -110,6 +99,11 @@ public class Context {
 	 */
 	public boolean removeName(String name) {
 		return this.names.remove(name);
+	}
+
+	public Object getName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

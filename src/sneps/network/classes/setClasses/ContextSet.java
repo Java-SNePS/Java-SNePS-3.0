@@ -14,7 +14,7 @@ public class ContextSet {
 
     public ContextSet(String name) {
         this();
-        this.contexts.put(name, new Context());
+        this.contexts.put(name, new Context(name));
     }
 
     public Context getContext(String name) {
@@ -26,7 +26,7 @@ public class ContextSet {
      * @param c context to be added/merged in the contexts hashtable
     */
     public void add(Context c) {
-        Context newContext = identiCalContext(c); //check for a duplicate context (shares the same set of hyps)
+        Context newContext = identicalContext(c); //check for a duplicate context (shares the same set of hyps)
         if (newContext != c) {
             newContext.addNames(c.getNames());
         }
@@ -36,7 +36,7 @@ public class ContextSet {
         }
     }
 
-    public Context identiCalContext(Context context) {
+    public Context identicalContext(Context context) {
         for(Context c: contexts.values()) {
             if(c.getHypothesisSet().equals(context))
                 return c;

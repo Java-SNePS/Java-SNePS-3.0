@@ -13,55 +13,54 @@ public class Controller {
 
 
     public static Context addContext(String contextName) {
-        Context c = new Context(contextSet.getContext(currContext));
-        c.addName(contextName);
+        Context c = new Context(contextName, contextSet.getContext(currContext));
         contextSet.add(c);
         return c;
     }
-    
-    public static Context addPropToContext(PropositionNode p, String contextName) {
+
+    public static Context addPropToContext(PropositionNode hyp, String contextName) {
         Context oldContext =  contextSet.getContext(contextName);
         Context newContext;
 
         if (oldContext != null) {
             oldContext.removeName(contextName);
-            newContext = new Context(oldContext.getHypothesisSet());
-            newContext.addName(contextName);
-            contextSet.add(newContext);
+            PropositionSet oldHypSet = oldContext.getHypothesisSet();
+            PropositionSet hypSet = new PropositionSet(oldHypSet.getProps(), hyp.getId());
+            newContext = new Context(contextName, hypSet);
         } else {
-            newContext = new Context(contextSet.getContext(currContext).getHypothesisSet());
-            newContext = newContext.addProp(p);
-            newContext.addName(contextName);
-            contextSet.add(newContext);
+            PropositionSet currHypSet = contextSet.getContext(currContext).getHypothesisSet();
+            PropositionSet hypSet = new PropositionSet(currHypSet.getProps(), hyp.getId());
+            newContext = new Context(contextName, hypSet);
         }
+        contextSet.add(newContext);
 
         return newContext;
     }
 
-//    public static Context addPropToContext(PropositionNode p, Context context) {
-//        updateContextSet(c);
-//        return c;
-//    }
-
-    public Context addPropToCurrentContext(PropositionNode p) {
+    public static Context addPropToCurrentContext(PropositionNode p) {
         return addPropToContext(p, currContext);
     }
 
-    public Context setCurrentContext(String contextName) {
-        currContext = contextName;
-        Context context =  contextSet.getContext(contextName);
+    public static Context setCurrentContext(String contextName) {
+        Context context = contextSet.getContext(contextName);
         if (context == null) {
             context = addContext(contextName);
         }
+        currContext = contextName;
+
         return  context;
     }
 
-    public Context getCurrentContext() {
+    public static Context getCurrentContext() {
         return contextSet.getContext(currContext);
     }
 
     public static void checkForContradiction(Context c){
         // TODO: 13/03/18
+    }
+
+    public static Context getContextByName(String contextName) {
+        return contextSet.getContext(contextName);
     }
 
 }

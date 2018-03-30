@@ -488,9 +488,9 @@ public class Network {
 	 *
 	 * @return the newly created variable node.
 	 */
-	public static Node buildVariableNode() {
+	public static VariableNode buildVariableNode() {
 		Variable v = new Variable(getNextVarName());
-		Node node = new Node(v);
+		VariableNode node = new VariableNode(v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
@@ -514,7 +514,7 @@ public class Network {
 	 */
 	public static Node buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
-		Node node = new Node(semantic, v);
+		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
