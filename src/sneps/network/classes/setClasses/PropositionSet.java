@@ -51,7 +51,7 @@ public class PropositionSet {
 		for (int i = 0; i < current.length; i++) {
 			if (propNode.getId() < current[i] && !found)
 				return;// Have to throw NotFound Exception or even return false
-			if (!propNode.equals(current[i])) {
+			if (!(propNode.getId() == current[i])) {
 				newSet[j] = current[i];
 				j++;
 			} else {
@@ -66,7 +66,7 @@ public class PropositionSet {
 		for (int i = 0; i < current.length; i++) {
 			if (propNode.getId() < current[i])
 				return false;
-			if (propNode.equals(current[i]))
+			if (propNode.getId() == current[i])
 				return true;
 		}
 		return false;
