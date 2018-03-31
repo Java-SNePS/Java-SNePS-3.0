@@ -1,64 +1,116 @@
 package sneps.network.classes.setClasses;
 
+import sneps.network.PropositionNode;
+
 public class PropositionSet {
-	private int[] props;
+	private int[] nodes;
+	private String hash;
 
-	public PropositionSet(int prop) {
-		this.props = new int[]{prop};
+	public PropositionSet() {
+		nodes = new int[0];
 	}
 
-	public PropositionSet(int [] props) {
-		this.props = new int[props.length];
-		for (int i = 0; i < props.length ; i++) {
-			this.props[i] = props[i];
-		}
-	}
-
-	public PropositionSet(int [] props, int prop) {
-		int i = 0, j = 0;
-		this.props = new int[props.length + 1];
-		boolean inserted = false;
-		while (i < props.length) {
-			if(!inserted && prop < props[i]) {
-				this.props[j++] = prop;
-				inserted = true;
+	public PropositionSet(PropositionSet propSet, PropositionNode propNode) {
+		int[] old = propSet.getNodes();
+		nodes = new int[old.length + 1];
+		hash = "";
+		int j = 0;
+		for (int i = 0; i < nodes.length; i++) {
+			if (propNode.getId() < old[i]) {
+				nodes[j] = propNode.getId();
+				hash += propNode.getId() + ", ";
+				j++;
+				i--;
 			} else {
-				this.props[j++] = props[i++];
+				nodes[j] = old[i];
+				hash += old[i] + ", ";
+				j++;
 			}
 		}
-		if(!inserted)
-			this.props[j] = prop;
-
+		nodes[old.length + 1] = propNode.getId();
+		hash += propNode.getId();
 	}
 
-	public int[] getProps() {
-		return props;
+	public PropositionSet(PropositionSet propSet) {
+		int[] old = propSet.getNodes();
+		nodes = new int[old.length];
+		nodes = propSet.getNodes();
+		hash = propSet.getHash();
 	}
 
-	public boolean equals(Object obj) {
-		PropositionSet propositionSet = (PropositionSet)obj;
-		int [] inputProps = propositionSet.getProps();
-		if (inputProps.length != this.props.length) {
-			return false;
+	public PropositionSet add(PropositionNode propNode) {
+		PropositionSet temp = new PropositionSet(this, propNode);
+		return temp;
+	}
+
+	public void remove(PropositionNode propNode) {
+		int[] current = this.getNodes();
+		int[] newSet = new int[current.length - 1];
+		int j = 0;
+		boolean found = false;
+		for (int i = 0; i < current.length; i++) {
+			if (propNode.getId() < current[i] && !found)
+				return;// Have to throw NotFound Exception or even return false
+			if (!propNode.equals(current[i])) {
+				newSet[j] = current[i];
+				j++;
+			} else {
+				found = true;
+			}
 		}
-		else {
-			for (int i = 0; i < this.props.length; i ++) {
-				if (this.props[i] != inputProps[i])
+		this.setNodes(newSet);
+	}
+
+	public boolean equals(PropositionNode propNode) {
+		int[] current = this.getNodes();
+		for (int i = 0; i < current.length; i++) {
+			if (propNode.getId() < current[i])
+				return false;
+			if (propNode.equals(current[i]))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean isSubSet(PropositionSet propSet) {
+		int[] large = propSet.getNodes();
+		int[] small = this.getNodes();
+		if (large.length < small.length)
+			return false;
+		int j = 0;
+		for (int i = 0; i < large.length; i++) {
+			if (j == small.length)
+				break;
+			if (large[i] == small[j]) {
+				j++;
+			} else {
+				if (j != 0 && j < small.length)
 					return false;
 			}
 		}
-		return true;
+		if (j == small.length)
+			return true;
+		return false;
 	}
 
-	public boolean isSubSet(PropositionSet propositionSet) {
-		int [] props =  propositionSet.getProps();
-		int i = 0, j = 0;
-		while(i < this.props.length && j < props.length) {
-			if (this.props[i] == props[j])
-				i++;
-			else
-				j++;
-		}
-		return i == this.props.length;
+	public boolean isEmpty() {
+		return nodes.length == 0;
 	}
+
+	public void clearSet() {
+		nodes = new int[0];
+	}
+
+	public int[] getNodes() {
+		return nodes;
+	}
+
+	private void setNodes(int[] newNodes) {
+		nodes = newNodes;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
 }
