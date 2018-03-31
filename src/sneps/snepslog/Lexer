@@ -46,6 +46,7 @@ CLEARKB=(clearkb)
 COPYRIGHT=(copyright)
 DEFINE_FRAME=(define-frame)
 DEFINE_PATH=(define-path)
+DEFINE_SEMANTIC=(define-semantic)
 DEMO=(demo)
 QUESTION_MARK=(\?)
 OPTION_T=(t)
@@ -173,6 +174,9 @@ PRECONDITION=(Precondition)
 }
 <YYINITIAL> {DEFINE_PATH} { 
 	return (new Symbol(sym.DEFINE_PATH,yytext()));
+}
+<YYINITIAL> {DEFINE_SEMANTIC} { 
+	return (new Symbol(sym.DEFINE_SEMANTIC,yytext()));
 }
 <YYINITIAL> {DEMO} { 
 	return (new Symbol(sym.DEMO,yytext()));
