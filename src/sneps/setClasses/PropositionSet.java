@@ -1,4 +1,4 @@
-package sneps.network.classes.setClasses;
+package sneps.setClasses;
 
 import java.time.Instant;
 import java.util.Date;

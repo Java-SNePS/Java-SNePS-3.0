@@ -6,15 +6,15 @@ import java.util.Set;
 
 import sneps.network.Node;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.ContextRuisSet;
-import sneps.network.classes.setClasses.FlagNodeSet;
-import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.ReportSet;
-import sneps.network.classes.setClasses.RuleUseInfoSet;
-import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
+import sneps.setClasses.ContextRuisSet;
+import sneps.setClasses.FlagNodeSet;
+import sneps.setClasses.NodeSet;
+import sneps.setClasses.ReportSet;
+import sneps.setClasses.RuleUseInfoSet;
+import sneps.setClasses.VariableSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
@@ -69,7 +69,7 @@ public abstract class RuleNode extends PropositionNode {
 
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
-		// Context context = SNeBR.getContextByName(contextID);
+		// Context context = Controller.getContext(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
 			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);

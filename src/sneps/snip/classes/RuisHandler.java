@@ -1,6 +1,6 @@
 package sneps.snip.classes;
 
-import sneps.network.classes.setClasses.RuleUseInfoSet;
+import sneps.setClasses.RuleUseInfoSet;
 
 public class RuisHandler {
 

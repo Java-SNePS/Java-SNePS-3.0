@@ -1,4 +1,4 @@
-package sneps.network.classes.setClasses;
+package sneps.setClasses;
 
 import java.util.Iterator;
 import java.util.Vector;

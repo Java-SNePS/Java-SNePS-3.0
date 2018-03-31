@@ -3,12 +3,11 @@ package sneps.network;
 import java.util.ArrayList;
 
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.ChannelSet;
-import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
-
 import sneps.network.Node;
+import sneps.setClasses.ChannelSet;
+import sneps.setClasses.NodeSet;
+import sneps.setClasses.ReportSet;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;

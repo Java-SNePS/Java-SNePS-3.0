@@ -16,8 +16,8 @@ import sneps.network.*;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.*;
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.*;
+import sneps.setClasses.NodeSet;
 
 
 public class NetworkTests extends TestCase{

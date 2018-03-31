@@ -13,13 +13,13 @@ package sneps.network.paths;
 
 import java.util.LinkedList;
 
+import sneps.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.Node;
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Molecular;
 
 public class FUnitPath extends Path {

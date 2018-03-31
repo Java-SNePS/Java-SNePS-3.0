@@ -11,7 +11,7 @@
 package sneps.network.cables;
 
 import sneps.network.classes.Relation;
-import sneps.network.classes.setClasses.NodeSet;
+import sneps.setClasses.NodeSet;
 
 public class DownCable extends Cable{
 

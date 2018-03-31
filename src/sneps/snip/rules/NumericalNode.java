@@ -2,24 +2,20 @@ package sneps.snip.rules;
 
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Term;
+import sneps.setClasses.NodeSet;
 import sneps.snip.classes.RuleUseInfo;
 
 public class NumericalNode extends RuleNode {
+	private NodeSet consequents;
+	private int i;
 
-	public NumericalNode() {
-		// TODO Auto-generated constructor stub
-	}
-
+	public NumericalNode() {}
 	public NumericalNode(Term syn) {
 		super(syn);
-		// TODO Auto-generated constructor stub
 	}
-
 	public NumericalNode(Semantic sym, Term syn) {
 		super(sym, syn);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -29,9 +25,16 @@ public class NumericalNode extends RuleNode {
 	}
 
 	@Override
-	public NodeSet getDownAntNodeSet() {
-		// TODO Auto-generated method stub
+	public NodeSet getDownAntNodeSet(){
+		//TODO this.getDownAntNodeSet();
 		return null;
+	}
+
+	public NodeSet getConsequents() {
+		return consequents;
+	}
+	public int getI() {
+		return i;
 	}
 
 }

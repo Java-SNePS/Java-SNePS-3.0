@@ -4,7 +4,7 @@ import java.util.Enumeration;
 
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
-import sneps.network.classes.setClasses.NodeSet;
+import sneps.setClasses.NodeSet;
 
 public abstract class Term {
 	/**

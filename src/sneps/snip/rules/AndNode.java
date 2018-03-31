@@ -2,8 +2,8 @@ package sneps.snip.rules;
 
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Term;
+import sneps.setClasses.NodeSet;
 import sneps.snip.classes.RuleUseInfo;
 
 public class AndNode extends RuleNode {
@@ -29,10 +29,9 @@ public class AndNode extends RuleNode {
 
 	@Override
 	public NodeSet getDownAntNodeSet() {
-		// TODO Auto-generated method stub
+		//TODO this.getDownAntNodeSet();
 		return null;
 	}
-	
 	
 	public NodeSet getConsequents() {
 		return consequents;

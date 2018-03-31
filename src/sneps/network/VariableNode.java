@@ -1,9 +1,9 @@
 package sneps.network;
 
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
+import sneps.setClasses.VariableSet;
 
 public class VariableNode extends Node {
 	private VariableSet freeVariables;

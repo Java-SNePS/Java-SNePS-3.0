@@ -2,7 +2,7 @@ package sneps.snip.classes;
 
 import java.util.Set;
 
-import sneps.network.classes.setClasses.NodeSet;
+import sneps.setClasses.NodeSet;
 
 public class SIndex {
 

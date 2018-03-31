@@ -1,4 +1,4 @@
-package sneps.network.classes.setClasses;
+package sneps.setClasses;
 
 import java.util.HashSet;
 import java.util.Iterator;

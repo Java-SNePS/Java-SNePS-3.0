@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import java.util.PriorityQueue;
 
 import sneps.network.PropositionNode;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.setClasses.PropositionSet;
 
 public class Support {
 
