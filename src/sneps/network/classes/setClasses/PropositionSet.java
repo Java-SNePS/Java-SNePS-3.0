@@ -61,7 +61,7 @@ public class PropositionSet {
 		this.setNodes(newSet);
 	}
 
-	public boolean contains(PropositionNode propNode) {
+	public boolean equals(PropositionNode propNode) {
 		int[] current = this.getNodes();
 		for (int i = 0; i < current.length; i++) {
 			if (propNode.getId() < current[i])
@@ -72,7 +72,7 @@ public class PropositionSet {
 		return false;
 	}
 
-	public boolean properSubset(PropositionSet propSet) {
+	public boolean isSubSet(PropositionSet propSet) {
 		int[] large = propSet.getNodes();
 		int[] small = this.getNodes();
 		if (large.length < small.length)

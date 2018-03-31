@@ -20,6 +20,11 @@ public class Semantic {
 		return semanticType;
 	}
 
+	public boolean isAsserted(Object contextByName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 	
 }

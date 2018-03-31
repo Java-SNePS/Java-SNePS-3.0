@@ -11,4 +11,9 @@ public class Context {
 		return null;
 	}
 
+	public Object getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
