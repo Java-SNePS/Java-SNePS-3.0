@@ -10,8 +10,10 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
 
-    public static Context addContext(String contextName) {
-        Context c = new Context(contextName, contextSet.getContext(currContext));
+    public static Context createContext(String contextName) {
+        if (contextSet.getContext(contextName) != null)
+            return null;
+        Context c = new Context(contextName);
         contextSet.add(c);
         return c;
     }
@@ -20,14 +22,28 @@ public class Controller {
         return new Context();
     }
 
-    public static Context addPropToContext(PropositionNode hyp, String contextName) {
+    public boolean removeContext(String contextName) {
+        return contextSet.remove(contextName);
+    }
+
+    public static Context createContext(String contextName, PropositionSet hyps) {
+        if (contextSet.getContext(contextName) != null) {
+            return null;
+        }
+    
+        // TODO: 01/04/18 check for contradiction in the hyps
+        Context newContext = new Context(contextName, hyps);
+        contextSet.add(newContext);
+        return newContext;
+    }
+
+    public static Context addPropToContext(String contextName, PropositionNode hyp) {
         Context oldContext =  contextSet.getContext(contextName);
         Context newContext;
         PropositionSet hypSet;
 
         if (oldContext != null) {
             oldContext.removeName(contextName);
-            hypSet = oldContext.getHypothesisSet();
         } else {
             hypSet = contextSet.getContext(currContext).getHypothesisSet();
         }
@@ -37,6 +53,10 @@ public class Controller {
         contextSet.add(newContext);
 
         return newContext;
+    }
+
+    public static Context addPropsToContext(String contextName, PropositionSet hyps) {
+
     }
 
 //    public static Context addPropsToContext(PropositionSet hyps, String contextName) {

@@ -50,6 +50,7 @@ public class Context {
 	}
 
 	public String getName() {return null;}
+
 	//	public PropositionNode isAsserted(PropositionNode p) {
 //
 //	}

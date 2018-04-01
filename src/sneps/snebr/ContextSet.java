@@ -21,6 +21,10 @@ public class ContextSet {
         return contexts.get(name);
     }
 
+    public boolean remove(String name) {
+        return contexts.remove(name) != null;
+    }
+
     /**
      * updates the hashtable of names to the correct context moreover it ensures no duplicate contexts exists
      * @param c context to be added/merged in the contexts hashtable
