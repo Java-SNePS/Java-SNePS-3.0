@@ -151,7 +151,7 @@ nonterminal command,
 
 /* Precedences */
 
-
+precedence left COMMA,COLON,BANG,DOT,QUESTION_MARK;
 
 /* The grammar */
 
