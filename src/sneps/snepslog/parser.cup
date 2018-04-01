@@ -106,8 +106,8 @@ nonterminal command,
             snepslogFunction,
             wff,
             infixedTerm,
-            prefixedTerms,
-            helperGroup1,
+            infixedTermHelper2,
+            infixedTermHelper1,
             entailment,
             pTermSet,
             termSet,
@@ -381,32 +381,32 @@ wff ::= infixedTerm
     
     :};				
 
-infixedTerm ::= prefixedTerm prefixedTerms
-           {:
+infixedTerm ::= prefixedTerm infixedTermHelper2
+            {:
     
-           :};
+            :};
 
-prefixedTerms ::= helperGroup1 prefixedTerm prefixedTerms
-              {:
+infixedTermHelper2 ::= infixedTermHelper1 prefixedTerm infixedTermHelper2
+                   {:
               
-              :}
-              | helperGroup1 prefixedTerm
-              {:
-              
-              :};
+                   :}
+                   | infixedTermHelper1 prefixedTerm
+                   {:
+                   
+                   :};
 
-helperGroup1 ::= AND
-             {:
+infixedTermHelper1 ::= AND
+                   {:
              
-             :}
-             | OR
-             {:
+                   :}
+                   | OR
+                   {:
              
-             :}
-             | EQUALITY
-             {:
+                   :}
+                   | EQUALITY
+                   {:
              
-             :};
+                   :};
 
 entailment ::= termSet IMPLICATION termSet
            {:
