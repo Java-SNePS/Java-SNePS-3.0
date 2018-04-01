@@ -1,5 +1,5 @@
 package sneps.snepslog;
 
-public class MainSnepslog {
+public class AP {
 
 }
