@@ -1,10 +1,8 @@
 package sneps.snebr;
 
-import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 
@@ -13,49 +11,46 @@ public class Context {
 
 	private HashSet<String> names;
 
-	public Context() {
+	protected Context() {
 
 	}
 
-	public Context(String contextName) {
+	protected Context(String contextName) {
 		names = new HashSet<String>();
 		names.add(contextName);
 	}
 
-	public Context(Context c) {
+	protected Context(Context c) {
 		this.hyps = c.getHypothesisSet();
 		this.names = c.getNames();
 	}
 
-	public Context(Context c, PropositionNode hyp) {
+	protected Context(Context c, PropositionNode hyp) {
 		this.names = c.getNames();
 		PropositionSet propSet = new PropositionSet(c.getHypothesisSet().getProps(), hyp.getId());
 		this.hyps = propSet;
 	}
 
-	public Context(String contextName, Context c) {
+	protected Context(String contextName, Context c) {
 		this(c);
 		this.names.add(contextName);
 	}
 
-	public Context(String contextName, PropositionSet hyps) {
+	protected Context(String contextName, PropositionSet hyps) {
 		this(contextName);
 		this.hyps = hyps;
 	}
 
-	public PropositionSet getHypothesisSet() {
+	protected PropositionSet getHypothesisSet() {
 		return hyps;
-	}
-
-	private void setHypothesisSet(PropositionSet hyps) {
-		this.hyps = hyps;
 	}
 
 	public HashSet<String> getNames() {
 		return names;
 	}
-//
-//	public PropositionNode isAsserted(PropositionNode p) {
+
+	public String getName() {return null;}
+	//	public PropositionNode isAsserted(PropositionNode p) {
 //
 //	}
 
@@ -80,15 +75,26 @@ public class Context {
 //	}
 
 	/**
+	 * Creates a new Context with the propositionNode
+	 * @param hyp Propsosition Node to be added to the context's hyps
+	 * @return <code>true</code> if the hyp isn't a duplicate <code>false</code> otherwise.
+	 */
+	public Context addProp(PropositionNode hyp) {
+		PropositionSet hyps = new PropositionSet(this.getHypothesisSet().getProps(), hyp.getId());
+		// TODO: check for contradiciton
+		return new Context(this.getName(), hyps);
+	}
+
+	/**
 	 * Adds a name to the set of names of the context if not a duplicate.
 	 * @param name Name to be added to the context's names
 	 * @return <code>true</code> if the name isn't a duplicate <code>false</code> otherwise.
 	 */
-	public boolean addName(String name) {
+	protected boolean addName(String name) {
 		return this.names.add(name);
 	}
 
-	public boolean addNames(HashSet<String> names) {
+	protected boolean addNames(HashSet<String> names) {
 		return this.names.addAll(names);
 	}
 
@@ -97,13 +103,8 @@ public class Context {
 	 * @param name Name to be remove from the context's names
 	 * @return <code>true</code> if this is found <code>false</code> otherwise.
 	 */
-	public boolean removeName(String name) {
+	protected boolean removeName(String name) {
 		return this.names.remove(name);
-	}
-
-	public Object getName() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

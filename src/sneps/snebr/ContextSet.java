@@ -1,4 +1,4 @@
-package sneps.network.classes.setClasses;
+package sneps.snebr;
 
 import sneps.snebr.Context;
 

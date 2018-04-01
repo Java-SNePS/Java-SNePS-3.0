@@ -33,6 +33,7 @@ import sneps.exceptions.CustomException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
+import sneps.snebr.Controller;
 
 public class Network {
 	
@@ -739,7 +740,7 @@ public class Network {
 			
 		}
 
-		LinkedList<Object[]> ns = find(temp, new Context());
+		LinkedList<Object[]> ns = find(temp, Controller.createContext());
 	
 		
 		for (int j = 0; j < ns.size(); j++) {

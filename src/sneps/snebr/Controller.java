@@ -1,7 +1,6 @@
 package sneps.snebr;
 
 import sneps.network.PropositionNode;
-import sneps.network.classes.setClasses.ContextSet;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
@@ -11,31 +10,52 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
 
-
     public static Context addContext(String contextName) {
         Context c = new Context(contextName, contextSet.getContext(currContext));
         contextSet.add(c);
         return c;
     }
 
+    public static Context createContext() {
+        return new Context();
+    }
+
     public static Context addPropToContext(PropositionNode hyp, String contextName) {
         Context oldContext =  contextSet.getContext(contextName);
         Context newContext;
+        PropositionSet hypSet;
 
         if (oldContext != null) {
             oldContext.removeName(contextName);
-            PropositionSet oldHypSet = oldContext.getHypothesisSet();
-            PropositionSet hypSet = new PropositionSet(oldHypSet.getProps(), hyp.getId());
-            newContext = new Context(contextName, hypSet);
+            hypSet = oldContext.getHypothesisSet();
         } else {
-            PropositionSet currHypSet = contextSet.getContext(currContext).getHypothesisSet();
-            PropositionSet hypSet = new PropositionSet(currHypSet.getProps(), hyp.getId());
-            newContext = new Context(contextName, hypSet);
+            hypSet = contextSet.getContext(currContext).getHypothesisSet();
         }
+        newContext = new Context(contextName, hypSet);
+        newContext = newContext.addProp(hyp);
+
         contextSet.add(newContext);
 
         return newContext;
     }
+
+//    public static Context addPropsToContext(PropositionSet hyps, String contextName) {
+//        Context oldContext =  contextSet.getContext(contextName);
+//        Context newContext;
+//
+//        if (oldContext != null) {
+//            oldContext.removeName(contextName);
+//            PropositionSet oldHypSet = oldContext.getHypothesisSet();
+//            newContext = new Context(contextName, oldHypSet);
+//        } else {
+//            PropositionSet currHypSet = contextSet.getContext(currContext).getHypothesisSet();
+//            newContext = new Context(contextName, currHypSet);
+//        }
+//
+//        for (int i = 0; i < hyps.getProps().length; i++) {
+//
+//        }
+//    }
 
     public static Context addPropToCurrentContext(PropositionNode p) {
         return addPropToContext(p, currContext);
