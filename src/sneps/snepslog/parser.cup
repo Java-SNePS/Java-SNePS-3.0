@@ -1,0 +1,846 @@
+import java.io.*;
+import java_cup.runtime.*;
+
+/*
+parser code {:
+:};*/
+	
+/* Terminals (tokens returned by the scanner). */
+
+terminal ACTIVATE,
+         BANG,
+         DOT,
+         ADD_TO_CONTEXT,
+         ASK,
+         ASKIFNOT,
+         ASKWH,
+         ASKWHNOT,
+         BELIEFS_ABOUT,
+         BR_MODE,
+         AUTO,
+         MANUAL,
+         CLEAR_INFER,
+         CLEARKB,
+         COPYRIGHT,
+         DEFINE_FRAME,
+         DEFINE_PATH,
+         DEFINE_SEMANTIC,
+         DEMO,
+         QUESTION_MARK,
+         OPTION_T,
+         OPTION_B,
+         OPTION_BV,
+         OPTION_A,
+         OPTION_AV,
+         OPTION_N,
+         DESCRIBE_CONTEXT,
+         DESCRIBE_TERMS,
+         EXPERT,
+         LIST_ASSERTED_WFFS,
+         LIST_CONTEXTS,
+         LIST_TERMS,
+         LOAD,
+         NORMAL,
+         PERFORM,
+         REMOVE_FROM_CONTEXT,
+         SET_CONTEXT,
+         SET_DEFAULT_CONTEXT,
+         SET_MODE_1,
+         SET_MODE_2,
+         SET_MODE_3,
+         OPTION_NIL,
+         SHOW,
+         TRACE,
+         UNDEFINE_PATH,
+         UNLABELED,
+         UNTRACE,
+         INFERENCE,
+         ACTING,
+         PARSING,
+         TRANSLATION,
+         SNEPSPATH,
+         FILEPATH,
+         STRING_LIT,
+         INT_LIT,
+         IDENTIFIER,
+         EQUALITY,
+         IMPLICATION,
+         OR_ENTAILMENT,
+         AND_ENTAILMENT,
+         INT_ARROW,
+         NOT,
+         ANDOR,
+         AND,
+         OR,
+         NAND,
+         NOR,
+         XOR,
+         IFF,
+         THRESH,
+         ALL,
+         NEXISTS,
+         UNDERSCORE,
+         COMMA,
+         COLON,
+         OPEN_PARAN,
+         CLOSE_PARAN,
+         OPEN_CURLY,
+         CLOSE_CURLY,
+         WITHSOME,
+         WITHALL,
+         WFF,
+         IFDO,
+         WHENDO,
+         WHENEVERDO,
+         ACTPLAN,
+         EFFECT,
+         GOALPLAN,
+         PRECONDITION;
+
+/* Non-terminals */
+
+nonterminal command,
+            wffNameCommand,
+            wffCommand,
+            snepslogCommand,
+            snepslogFunction,
+            wff,
+            infixedTerm,
+            prefixedTerms,
+            helperGroup1,
+            entailment,
+            pTermSet,
+            termSet,
+            termSequence,
+            prefixedTerms,
+            prefixedTerm,
+            negatedTerm,
+            andorTerm,
+            setTerm,
+            threshTerm,
+            allTerm,
+            nexistsTerm,
+            nexistsParameters,
+            atomicTerm,
+            withsomeTerm,
+            withallTerm,
+            ifdoTerm,
+            whendoTerm,
+            wheneverdoTerm,
+            actplanTerm,
+            effectTerm,
+            goalplanTerm,
+            preconditionTerm,
+            termSetSequence,
+            termSets,
+            symbolSequence,
+            snepslogSymbols,
+            wffName,
+            qvar,
+            snepslogSymbol,
+            terminalPunctuation,
+            optionalDot,
+            optionalBang,
+            optionalTerminalPunctuation,
+            optionalSnepslogSymbol,
+            optionalPTermSet,
+            identifiers,
+            identifiers_list,
+            demoFirstOptionalOptionSet,
+            demoSecondOptionalOptionSet;
+
+/* Precedences */
+
+
+
+/* The grammar */
+
+command ::= 	wffNameCommand
+		{: 
+				
+		:}
+		| snepslogCommand
+		{: 
+				
+		:}
+		| wffCommand
+		{: 
+
+		:};	
+
+wffNameCommand ::= wffName terminalPunctuation
+				{: 
+				
+				:};
+				
+wffCommand ::= wff terminalPunctuation
+		   {: 
+				
+		   :};	
+				
+snepslogCommand ::= ACTIVATE wff optionalDot
+				{: 
+				
+				:}
+				| ACTIVATE BANG wff optionalTerminalPunctuation
+				{: 
+
+				:}
+				| ADD_TO_CONTEXT snepslogSymbol termSet optionalDot
+				{: 
+
+				:}
+				| ASK wff optionalTerminalPunctuation
+				{: 
+
+				:}
+				| ASKIFNOT wff optionalTerminalPunctuation
+				{: 
+
+				:}
+				| ASKWH wff optionalTerminalPunctuation
+				{: 
+
+				:}
+				| ASKWHNOT wff optionalTerminalPunctuation
+				{: 
+
+				:}
+				| BELIEFS_ABOUT pTermSet optionalDot
+				{: 
+
+				:}
+				| BR_MODE optionalDot
+				{: 
+
+				:}
+				| BR_MODE AUTO optionalDot
+				{: 
+
+				:}
+				| BR_MODE MANUAL optionalDot
+				{: 
+
+				:}
+				| CLEAR_INFER optionalDot
+				{: 
+
+				:}
+				| CLEARKB optionalDot
+				{: 
+
+				:}
+				| COPYRIGHT optionalDot
+				{: 
+
+				:}
+				| DEFINE_FRAME IDENTIFIER snepslogSymbol identifiers_list optionalDot
+				{: 
+
+				:}
+				| DEFINE_FRAME IDENTIFIER snepslogSymbol identifiers_list STRING_LIT optionalDot
+				{: 
+
+				:}
+				| DEFINE_PATH IDENTIFIER SNEPSPATH optionalDot
+				{: 
+
+				:}
+				| DEFINE_SEMANTIC IDENTIFIER
+				{: 
+
+				:}
+				| DEFINE_SEMANTIC IDENTIFIER IDENTIFIER
+				{: 
+
+				:}
+				| DEFINE_SEMANTIC IDENTIFIER IDENTIFIER identifiers_list
+				{: 
+
+				:}
+				| DEMO demoFirstOptionalOptionSet demoSecondOptionalOptionSet optionalDot
+				{: 
+
+				:}
+				| DESCRIBE_CONTEXT optionalSnepslogSymbol optionalDot
+				{: 
+
+				:}
+				| DESCRIBE_TERMS optionalPTermSet optionalDot
+				{: 
+
+				:}
+				| EXPERT optionalDot
+				{: 
+
+				:}
+				| LIST_ASSERTED_WFFS optionalSnepslogSymbol optionalDot
+				{: 
+
+				:}
+				| LIST_CONTEXTS optionalDot
+				{: 
+
+				:}
+				| LIST_TERMS optionalPTermSet optionalDot
+				{: 
+
+				:}
+				| LOAD FILEPATH optionalDot
+				{: 
+
+				:}
+				| NORMAL optionalDot
+				{: 
+
+				:}
+				| PERFORM atomicTerm optionalDot
+				{: 
+
+				:}
+				| REMOVE_FROM_CONTEXT snepslogSymbol pTermSet
+				{: 
+
+				:}
+				| SET_CONTEXT snepslogSymbol optionalPTermSet
+				{: 
+
+				:}
+				| SET_DEFAULT_CONTEXT snepslogSymbol
+				{: 
+
+				:}
+				| SET_MODE_1 optionalDot
+				{: 
+
+				:}
+				| SET_MODE_2 optionalDot
+				{: 
+
+				:}
+				| SET_MODE_3 optionalDot
+				{: 
+
+				:}
+				| SET_MODE_3 OPTION_T optionalDot
+				{: 
+
+				:}
+				| SET_MODE_3 OPTION_NIL optionalDot
+				{: 
+
+				:}
+				| SHOW optionalPTermSet optionalDot
+				{: 
+
+				:}
+				| TRACE snepslogFunction optionalDot
+				{: 
+
+				:}
+				| UNDEFINE_PATH IDENTIFIER optionalDot
+				{: 
+
+				:}
+				| UNLABELED optionalDot
+				{: 
+
+				:}
+				| UNTRACE snepslogFunction optionalDot
+				{: 
+
+				:};	
+
+snepslogFunction ::=	 INFERENCE
+		     	{:
+			
+		     	:}
+		      	| ACTING
+		     	{:
+			
+		     	:}
+		     	| TRANSLATION
+		     	{:
+			
+		     	:}
+		     	| PARSING
+		     	{:
+			
+		     	:};	
+				
+wff ::= infixedTerm
+    {:
+    
+    :}
+    | entailment
+    {:
+    
+    :}
+    | prefixedTerm
+    {:
+    
+    :};				
+
+infixedTerm ::= prefixedTerm prefixedTerms
+           {:
+    
+           :};
+
+prefixedTerms ::= helperGroup1 prefixedTerm prefixedTerms
+              {:
+              
+              :}
+              | helperGroup1 prefixedTerm
+              {:
+              
+              :};
+
+helperGroup1 ::= AND
+             {:
+             
+             :}
+             | OR
+             {:
+             
+             :}
+             | EQUALITY
+             {:
+             
+             :};
+
+entailment ::= termSet IMPLICATION termSet
+           {:
+    
+           :}
+           | termSet OR_ENTAILMENT termSet
+           {:
+           
+           :}
+           | termSet AND_ENTAILMENT termSet
+           {:
+           
+           :}
+           | termSet INT_ARROW termSet
+           {:
+           
+           :};
+		
+pTermSet ::= termSet
+         {:
+    
+         :};		
+
+termSet ::=	prefixedTerm
+		{:
+			
+		:}
+		| OPEN_CURLY termSequence CLOSE_CURLY
+		{:
+			
+		:};
+		
+termSequence ::= prefixedTerm prefixedTerms
+             {:
+             
+             :};
+	     	
+prefixedTerms ::= COMMA prefixedTerm prefixedTerms
+			  {:
+			
+			  :}
+			  | 
+			  {:
+			
+		      :};
+		     
+prefixedTerm ::= negatedTerm
+			 {:
+			
+			 :}
+			 | andorTerm
+			 {:
+			
+		     :}
+		     | setTerm
+			 {:
+			
+		     :}
+		     | threshTerm
+			 {:
+			
+		     :}
+		     | allTerm
+			 {:
+			
+		     :}
+		     | nexistsTerm
+			 {:
+			
+		     :}
+		     | atomicTerm
+			 {:
+			
+		     :}
+		     | ifdoTerm
+			 {:
+			
+		     :}
+		     | whendoTerm
+			 {:
+			
+		     :}
+		     | wheneverdoTerm
+			 {:
+			
+		     :}
+		     | actplanTerm
+			 {:
+			
+		     :}
+		     | effectTerm
+			 {:
+			
+		     :}
+		     | goalplanTerm
+			 {:
+			
+		     :}
+		     | preconditionTerm
+			 {:
+			
+		     :};
+		     
+negatedTerm ::= NOT atomicTerm
+		    {:
+			
+			:};
+			
+andorTerm ::= ANDOR OPEN_PARAN INT_LIT COMMA INT_LIT CLOSE_PARAN termSet
+		  {:
+			
+		  :};
+	
+setTerm ::= AND termSet
+        {:
+             
+        :}
+        | OR termSet
+        {:
+             
+        :}
+        | NAND termSet
+        {:
+             
+        :}
+        | NOR termSet
+        {:
+             
+        :}
+        | XOR termSet
+        {:
+             
+        :}
+        | IFF termSet
+        {:
+             
+        :};
+
+threshTerm ::= THRESH OPEN_PARAN INT_LIT COMMA INT_LIT CLOSE_PARAN termSet
+           {:
+             
+           :}
+           | THRESH OPEN_PARAN INT_LIT CLOSE_PARAN termSet
+           {:
+             
+           :};
+
+allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN
+		{:
+			
+		:};
+		
+nexistsTerm ::= NEXISTS nexistsParameters OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN termSet COLON termSet CLOSE_PARAN
+		    {:
+			
+		    :};
+		    
+nexistsParameters ::= OPEN_PARAN INT_LIT COMMA INT_LIT COMMA INT_LIT CLOSE_PARAN
+		          {:
+		          
+		          :}
+		          | OPEN_PARAN UNDERSCORE COMMA INT_LIT COMMA UNDERSCORE CLOSE_PARAN
+		          {:
+		          
+			      :}
+			      | OPEN_PARAN INT_LIT COMMA UNDERSCORE COMMA INT_LIT CLOSE_PARAN
+		          {:
+		          
+			      :};
+
+atomicTerm ::= wffName
+           {:
+           
+           :}
+           | qvar
+           {:
+           
+           :}
+           | IDENTIFIER
+           {:
+           
+           :}
+           | IDENTIFIER COLON IDENTIFIER
+           {:
+           
+           :}
+           | withsomeTerm
+           {:
+           
+           :}
+           | withallTerm
+           {:
+           
+           :}
+           | qvar OPEN_PARAN termSetSequence CLOSE_PARAN
+           {:
+           
+           :}
+           | snepslogSymbol OPEN_PARAN termSetSequence CLOSE_PARAN
+           {:
+           
+           :}
+           | OPEN_PARAN wff CLOSE_PARAN
+           {:
+           
+           :};
+
+withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence COMMA termSet COMMA termSet COMMA termSet CLOSE_PARAN
+             {:
+             
+             :}
+             | WITHSOME OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CLOSE_PARAN
+             {:
+             
+             :};
+             
+withallTerm ::= WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet COMMA termSet CLOSE_PARAN
+             {:
+             
+             :}
+             | WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CLOSE_PARAN
+             {:
+             
+             :};
+
+ifdoTerm ::= IFDO OPEN_PARAN wff COMMA wff CLOSE_PARAN
+         {:
+			
+		 :};
+		 
+whendoTerm ::= WHENDO OPEN_PARAN wff COMMA wff CLOSE_PARAN
+           {:
+			
+		   :};
+		   
+wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff COMMA wff CLOSE_PARAN
+               {:
+			
+		       :};
+		   
+actplanTerm ::= ACTPLAN OPEN_PARAN wff COMMA wff CLOSE_PARAN
+            {:
+			
+		    :};
+		       
+effectTerm ::= EFFECT OPEN_PARAN wff COMMA wff CLOSE_PARAN
+           {:
+			
+	       :};
+		       
+goalplanTerm ::= GOALPLAN OPEN_PARAN wff COMMA wff CLOSE_PARAN
+             {:
+			
+		     :};		     
+
+preconditionTerm ::= PRECONDITION OPEN_PARAN wff COMMA wff CLOSE_PARAN
+                 {:
+			
+		         :};
+		         
+termSetSequence ::= termSet termSets
+                {:
+			
+		        :};
+
+termSets ::= COMMA termSet termSets
+	     {:
+			
+	     :}
+	     | 
+		 {:
+			
+		 :};
+		 
+symbolSequence ::= snepslogSymbol snepslogSymbols
+               {:
+			
+		       :};
+
+snepslogSymbols ::= COMMA snepslogSymbol snepslogSymbols
+	            {:
+			
+	            :}
+	            | 
+		        {:
+			
+		        :};
+
+wffName ::= WFF INT_LIT optionalBang
+	    {:
+			
+	    :};
+	    
+qvar ::= QUESTION_MARK snepslogSymbol
+	 {:
+			
+	 :};
+
+snepslogSymbol ::= WFF INT_LIT
+               {:
+               
+               :}
+               | IDENTIFIER
+               {:
+               
+               :};
+
+terminalPunctuation ::= DOT
+                    {:
+           
+                    :}
+                    | BANG
+                    {:
+           
+                    :}
+                    | QUESTION_MARK QUESTION_MARK
+                    {:
+           
+                    :}
+                    | QUESTION_MARK
+                    {:
+           
+                    :}
+                    | QUESTION_MARK OPEN_PARAN INT_LIT CLOSE_PARAN
+                    {:
+           
+                    :}
+                    | QUESTION_MARK OPEN_PARAN INT_LIT COMMA INT_LIT CLOSE_PARAN
+                    {:
+           
+                    :};
+							
+optionalDot ::= DOT
+			{:
+			
+			:}
+			| 
+			{:
+			
+			:};	
+			
+optionalBang ::= BANG
+			 {:
+			
+			 :}
+			 | 
+			 {:
+			
+			 :};	
+			
+optionalTerminalPunctuation ::= terminalPunctuation
+							{:
+			
+							:}
+							| 
+							{:
+			
+							:};				
+
+optionalSnepslogSymbol ::= snepslogSymbol
+					   {:
+			
+					   :}
+					   | 
+					   {:
+			
+					   :};		
+							
+optionalPTermSet ::=	 pTermSet
+				 {:
+			
+				 :}
+				 | 
+				 {:
+			
+				 :};		
+
+identifiers ::= COMMA IDENTIFIER identifiers
+            {:
+            
+            :}
+            |
+            {:
+            
+            :};
+
+identifiers_list ::= OPEN_PARAN IDENTIFIER identifiers CLOSE_PARAN
+                 {:
+                 
+                 :};
+
+demoFirstOptionalOptionSet ::= FILEPATH
+						  {:
+						  
+						  :}
+						  | QUESTION_MARK
+				          {:
+			
+				          :}
+				          | INT_LIT
+				          {:
+			
+				          :}
+				          |
+				          {:
+			
+				          :};
+				          
+demoSecondOptionalOptionSet ::= OPTION_T
+						  {:
+						  
+						  :}
+						  | OPTION_B
+				          {:
+			
+				          :}
+				          | OPTION_BV
+				          {:
+			
+				          :}
+				           | OPTION_A
+				          {:
+			
+				          :}
+				           | OPTION_AV
+				          {:
+			
+				          :}
+				           | OPTION_N
+				          {:
+			
+				          :}
+				          |
+				          {:
+			
+				          :};					          	
+																																																																																																																																																																
