@@ -85,11 +85,11 @@ FILEPATH=((.)+\.snepslog)
 STRING_LIT=(\"[A-Za-z0-9]*\")
 INT_LIT=([1-9][0-9]*)|(0)
 IDENTIFIER=([A-Za-z][A-Za-z0-9]*)
-LESS_EQUAL_GREATER=(<=>)
-EQUAL_GREATER=(=>)
-V_EQUAL_GREATER=(v=>)
-AND_EQUAL_GREATER=(&=>)
-INT_EQUAL_GREATER=(INT_LIT=>)
+EQUALITY=(<=>)
+IMPLICATION=(=>)
+OR_ENTAILMENT=(v=>)
+AND_ENTAILMENT=(&=>)
+INT_ARROW=(INT_LIT=>)
 NOT=(~)
 ANDOR=(andor)
 AND=(and)
@@ -289,20 +289,20 @@ PRECONDITION=(Precondition)
 <YYINITIAL> {IDENTIFIER} { 
 	return (new Symbol(sym.IDENTIFIER,yytext()));
 }
-<YYINITIAL> {LESS_EQUAL_GREATER} { 
-	return (new Symbol(sym.LESS_EQUAL_GREATER,yytext()));
+<YYINITIAL> {EQUALITY} { 
+	return (new Symbol(sym.EQUALITY,yytext()));
 }
-<YYINITIAL> {EQUAL_GREATER} { 
-	return (new Symbol(sym.EQUAL_GREATER,yytext()));
+<YYINITIAL> {IMPLICATION} { 
+	return (new Symbol(sym.IMPLICATION,yytext()));
 }
-<YYINITIAL> {V_EQUAL_GREATER} { 
-	return (new Symbol(sym.V_EQUAL_GREATER,yytext()));
+<YYINITIAL> {OR_ENTAILMENT} { 
+	return (new Symbol(sym.OR_ENTAILMENT,yytext()));
 }
-<YYINITIAL> {AND_EQUAL_GREATER} { 
-	return (new Symbol(sym.AND_EQUAL_GREATER,yytext()));
+<YYINITIAL> {AND_ENTAILMENT} { 
+	return (new Symbol(sym.AND_ENTAILMENT,yytext()));
 }
-<YYINITIAL> {INT_EQUAL_GREATER} { 
-	return (new Symbol(sym.INT_EQUAL_GREATER,yytext()));
+<YYINITIAL> {INT_ARROW} { 
+	return (new Symbol(sym.INT_ARROW,yytext()));
 }
 <YYINITIAL> {NOT} { 
 	return (new Symbol(sym.NOT,yytext()));
