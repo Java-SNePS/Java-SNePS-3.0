@@ -10,11 +10,23 @@ public class PTree extends RuisHandler {
 
 }
 
+class PSubTree {
+	private PTreeNode root;
+	
+	public PSubTree(){
+		root = null;
+	}
+	public PSubTree(PTreeNode rot){
+		root = rot;
+	}
+	
+}
+
 class PTreeNode {
-	public PTreeNode parent;
-	public PTreeNode sibling;
-	public PTreeNode leftChild;
-	public PTreeNode rightChild;
+	private PTreeNode parent;
+	private PTreeNode sibling;
+	private PTreeNode leftChild;
+	private PTreeNode rightChild;
 	private HashSet<RuleUseInfo> ruis;
 	
 	public PTreeNode(){
