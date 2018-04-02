@@ -1,5 +1,6 @@
 package sneps.snebr;
 
+import sneps.exceptions.ContextNameDuplicateException;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -10,9 +11,10 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
 
-    public static Context createContext(String contextName) {
+    public static Context createContext(String contextName) throws ContextNameDuplicateException {
         if (contextSet.getContext(contextName) != null)
-            return null;
+            throw new ContextNameDuplicateException(contextName);
+
         Context c = new Context(contextName);
         contextSet.add(c);
         return c;
@@ -26,9 +28,9 @@ public class Controller {
         return contextSet.remove(contextName);
     }
 
-    public static Context createContext(String contextName, PropositionSet hyps) {
+    public static Context createContext(String contextName, PropositionSet hyps) throws ContextNameDuplicateException {
         if (contextSet.getContext(contextName) != null) {
-            return null;
+            throw new ContextNameDuplicateException(contextName);
         }
 
         // TODO: 01/04/18 check for contradiction in the hyps
