@@ -30,7 +30,7 @@ public class Controller {
         if (contextSet.getContext(contextName) != null) {
             return null;
         }
-    
+
         // TODO: 01/04/18 check for contradiction in the hyps
         Context newContext = new Context(contextName, hyps);
         contextSet.add(newContext);
