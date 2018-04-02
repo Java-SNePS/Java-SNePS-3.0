@@ -216,8 +216,8 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public RuleUseInfo getConstantRui(Context con) {
-		RuleUseInfo tRui = contextConstantRUI.get(con.getName());
-		return tRui;
+		RuleUseInfo tRui = contextConstantRUI.get(/*con.getName()*/con);
+		return tRui;//TODO Change hashtable indexing
 	}
 
 	public RuleUseInfo getConstantRUI(int context) {
