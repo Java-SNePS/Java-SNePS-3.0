@@ -3,13 +3,17 @@ package tests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
+import sneps.exceptions.DuplicateContextNameException;
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 
 public class ControllerTest {
 
+    String testContext;
     @Before
     public void setUp() throws Exception {
+        testContext = "test context";
     }
 
     @After
@@ -21,15 +25,21 @@ public class ControllerTest {
     }
 
     @Test
-    public void createContext1() {
-    }
+    public void createNewContextWithNoProps() throws DuplicateContextNameException {
+       Context expectedContext = Controller.createContext(testContext);
 
-    @Test
-    public void removeContext() {
+       Context actualContext = Controller.getContextByName(testContext);
+
+       assertEquals(expectedContext, actualContext);
+
     }
 
     @Test
     public void createContext2() {
+    }
+
+    @Test
+    public void removeContext() {
     }
 
     @Test
