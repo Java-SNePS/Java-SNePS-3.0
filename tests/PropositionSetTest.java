@@ -36,4 +36,13 @@ public class PropositionSetTest {
         assertTrue(subSet.isSubSet(superSet));
 
     }
+
+    @Test
+    public void union() {
+        PropositionSet first = new PropositionSet(new int[] {1,2,3,4,5,6});
+        PropositionSet second = new PropositionSet(new int[] {2,4,7,9,10});
+        PropositionSet expected = new PropositionSet(new int[] {1,2,3,4,5,6,7,9,10});
+
+        assertArrayEquals(expected.getProps(), first.union(second).getProps());
+    }
 }

@@ -1,5 +1,8 @@
 package sneps.network.classes.setClasses;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class PropositionSet {
 	private int[] props;
 
@@ -61,4 +64,82 @@ public class PropositionSet {
 		}
 		return i == this.props.length;
 	}
+
+	public PropositionSet union(PropositionSet propSet) {
+		int [] props = propSet.getProps();
+		int [] props1 = this.getProps();
+		int [] props2 = new int[props.length + props1.length];
+
+		int i = 0, j = 0, k = 0;
+
+		while (i < props.length || j < props1.length) {
+
+			if (i >= props.length) {
+				props2[k++] = props1[j++];
+				continue;
+			} else if (j >= props1.length) {
+				props2[k++] = props[i++];
+				continue;
+			}
+
+			if(props[i] == props1[j]) {
+				props2[k] = props[i];
+				i++;j++;
+			} else if (props[i] < props1[i]) {
+				props2[k] = props[i];
+				i++;
+			} else {
+				props2[k] = props1[j];
+				j++;
+			}
+			k++;
+		}
+
+		int [] output = Arrays.copyOfRange(props2, 0, k);
+		return new PropositionSet(output);
+		}
+	}
+/*
+	public PropositionSet union(int[] props) {
+		int[] FirstSet = this.getProps();
+		int[] SecondSet = props;
+		int[] newSet = new int[FirstSet.length + SecondSet.length];
+		int i = 0, j = 0, q = 0, elements=0;
+		while (i < FirstSet.length || j < SecondSet.length) {
+			if (i == FirstSet.length) {
+				newSet[q++] = SecondSet[j++];
+				elements++;
+			} else {
+				if (j == SecondSet.length) {
+					newSet[q++] = FirstSet[i++];
+					elements++;
+				} else {
+					if (FirstSet[i] < SecondSet[j]) {
+						newSet[q++] = FirstSet[i];
+						elements++;
+					} else {
+						if (FirstSet[i] > SecondSet[j]) {
+							newSet[q++] = SecondSet[j++];
+							elements++;
+						} else {
+							newSet[q++] = FirstSet[i++];
+							j++;
+							elements++;
+						}
+					}
+				}
+			}
+
+		}
+		if(elements == newSet.length){
+			return new PropositionSet(newSet);
+		}else{
+			int[] smallSet = new int[elements];
+			for(int z = 0; z< smallSet.length; z++)
+				smallSet[z] = newSet[z];
+			return new PropositionSet(smallSet);
+		}
+
+	}
 }
+*/

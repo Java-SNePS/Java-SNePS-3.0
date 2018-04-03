@@ -1,6 +1,7 @@
 package sneps.snebr;
 
-import sneps.exceptions.ContextNameDuplicateException;
+import sneps.exceptions.ContextNameDoesntExist;
+import sneps.exceptions.DuplicateContextNameException;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -11,9 +12,9 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
 
-    public static Context createContext(String contextName) throws ContextNameDuplicateException {
+    public static Context createContext(String contextName) throws DuplicateContextNameException {
         if (contextSet.getContext(contextName) != null)
-            throw new ContextNameDuplicateException(contextName);
+            throw new DuplicateContextNameException(contextName);
 
         Context c = new Context(contextName);
         contextSet.add(c);
@@ -24,13 +25,13 @@ public class Controller {
         return new Context();
     }
 
-    public boolean removeContext(String contextName) {
+    public static boolean removeContext(String contextName) {
         return contextSet.remove(contextName);
     }
 
-    public static Context createContext(String contextName, PropositionSet hyps) throws ContextNameDuplicateException {
+    public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException {
         if (contextSet.getContext(contextName) != null) {
-            throw new ContextNameDuplicateException(contextName);
+            throw new DuplicateContextNameException(contextName);
         }
 
         // TODO: 01/04/18 check for contradiction in the hyps
@@ -39,25 +40,40 @@ public class Controller {
         return newContext;
     }
 
-    public static Context addPropToContext(String contextName, PropositionNode hyp) {
-        Context oldContext =  contextSet.getContext(contextName);
-        Context newContext;
-        PropositionSet hypSet;
 
-        if (oldContext != null) {
-            oldContext.removeName(contextName);
-        } else {
-            hypSet = contextSet.getContext(currContext).getHypothesisSet();
-        }
-        newContext = new Context(contextName, hypSet);
-        newContext = newContext.addProp(hyp);
+
+    public static Context addPropToContext(String contextName, PropositionNode hyp) throws ContextNameDoesntExist {
+        Context oldContext =  contextSet.getContext(contextName);
+
+        if (oldContext == null)
+            throw new ContextNameDoesntExist(contextName);
+
+        oldContext.removeName(contextName);
+        PropositionSet hypSet = oldContext.getHypothesisSet();
+        // TODO: 03/04/18 check for contradiction
+        hypSet = new PropositionSet(hypSet.getProps(), hyp.getId());
+
+        Context newContext = new Context(contextName, hypSet);
 
         contextSet.add(newContext);
 
         return newContext;
     }
 
-    public static Context addPropsToContext(String contextName, PropositionSet hyps) {
+    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExist {
+        Context oldContext =  contextSet.getContext(contextName);
+
+        if (oldContext == null)
+            throw new ContextNameDoesntExist(contextName);
+
+        oldContext.removeName(contextName);
+        PropositionSet hypSet = oldContext.getHypothesisSet();
+
+        Context newContext = new Context(contextName, hypSet.union(hyps));
+
+        contextSet.add(newContext);
+
+        return newContext;
 
     }
 
@@ -79,14 +95,14 @@ public class Controller {
 //        }
 //    }
 
-    public static Context addPropToCurrentContext(PropositionNode p) {
-        return addPropToContext(p, currContext);
+    public static Context addPropToCurrentContext(PropositionNode p) throws ContextNameDoesntExist {
+        return addPropToContext(currContext,p);
     }
 
-    public static Context setCurrentContext(String contextName) {
+    public static Context setCurrentContext(String contextName) throws DuplicateContextNameException {
         Context context = contextSet.getContext(contextName);
         if (context == null) {
-            context = addContext(contextName);
+            context = createContext(contextName);
         }
         currContext = contextName;
 
