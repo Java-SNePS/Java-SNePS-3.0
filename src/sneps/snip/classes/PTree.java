@@ -124,6 +124,29 @@ public class PTree extends RuisHandler {
 			root = rot;
 		}
 
+		public RuleUseInfoSet insert(RuleUseInfo rui) {
+			int pattern = rui.getFlagNodeSet().iterator().next().getNode()
+					.getId();
+			PTreeNode leaf = getLeafPattern(pattern, root);
+			RuleUseInfoSet res = new RuleUseInfoSet();
+			leaf.insertIntoTree(rui, res);
+			return res;
+		}
+
+		private PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
+			if (pNode.getLeftChild() == null)
+				return pNode;
+			PTreeNode left = pNode.getLeftChild(), right = pNode.getRightChild();
+			if (left.getPats().contains(pattern))
+				return getLeafPattern(pattern, left);
+			else
+				return getLeafPattern(pattern, right);
+		}
+
+		public RuleUseInfoSet getRootRUIS() {
+			return root.getRUIS(0);
+		}
+
 	}
 
 	private class PTreeNode {
@@ -138,6 +161,24 @@ public class PTree extends RuisHandler {
 			leftChild = null;		rightChild = null;
 		}
 		
+		public void insertIntoTree(RuleUseInfo rui, RuleUseInfoSet set) {
+			int key = insertRUI(rui);
+			// Since it has no sibling, it has no parent, and it is the root
+			if (sibling == null) {
+				set.add(rui);
+				return;
+			}
+			RuleUseInfoSet siblingSet = sibling.getRUIS(key);
+			if (siblingSet == null)
+				return;
+			for (RuleUseInfo tRui : siblingSet) {
+				RuleUseInfo combinedRui = rui.combine(tRui);
+				if (combinedRui == null)
+					continue;
+				parent.insertIntoTree(combinedRui, set);
+			}
+		}
+
 		public void insertLeftAndRight(PTreeNode leftNode, PTreeNode rightNode,
 				Set<Integer> intersection) {
 			leftNode.parent = this;
@@ -181,6 +222,10 @@ public class PTree extends RuisHandler {
 			return 0;
 		}
 
+		public RuleUseInfoSet getRUIS(int index) {
+			return new RuleUseInfoSet();//ruisMap.get(index);
+		}
+		
 		public PTreeNode getParent() {
 			return parent;
 		}
