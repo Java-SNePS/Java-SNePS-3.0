@@ -22,4 +22,9 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		return ruis.iterator();
 	}
 
+	
+	public void add(RuleUseInfo rui) {
+		ruis.add(rui);
+	}
+
 }
