@@ -42,8 +42,7 @@ public class ContextSet {
 
     public Context identicalContext(Context context) {
         for(Context c: contexts.values()) {
-            System.out.println(c.getHypothesisSet());
-            if(c.getHypothesisSet() != null && c.getHypothesisSet().equals(context))
+            if(c.getHypothesisSet().equals(context.getHypothesisSet()))
                 return c;
         }
         return context;

@@ -25,8 +25,13 @@ public class Controller {
         return new Context();
     }
 
-    public static boolean removeContext(String contextName) {
-        return contextSet.remove(contextName);
+    public static boolean removeContext(String contextName) throws ContextNameDoesntExist {
+        Context c = contextSet.getContext(contextName);
+        if (c == null)
+            throw new ContextNameDoesntExist(contextName);
+
+        boolean bool = c.removeName(contextName);
+        return contextSet.remove(contextName) && bool;
     }
 
     public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException {

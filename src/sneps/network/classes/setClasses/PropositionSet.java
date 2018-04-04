@@ -6,6 +6,10 @@ import java.util.Arrays;
 public class PropositionSet {
 	private int[] props;
 
+	public PropositionSet() {
+		this.props = new int[0];
+	}
+
 	public PropositionSet(int prop) {
 		this.props = new int[]{prop};
 	}
@@ -97,8 +101,13 @@ public class PropositionSet {
 
 		int [] output = Arrays.copyOfRange(props2, 0, k);
 		return new PropositionSet(output);
-		}
 	}
+
+	public PropositionSet remove(int prop) {
+		int [] output = new in
+	}
+
+}
 /*
 	public PropositionSet union(int[] props) {
 		int[] FirstSet = this.getProps();

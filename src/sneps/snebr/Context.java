@@ -12,11 +12,12 @@ public class Context {
 	private HashSet<String> names;
 
 	protected Context() {
-
+		names = new HashSet<String>();
+		this.hyps = new PropositionSet();
 	}
 
 	protected Context(String contextName) {
-		names = new HashSet<String>();
+		this();
 		names.add(contextName);
 	}
 
@@ -84,6 +85,10 @@ public class Context {
 		PropositionSet hyps = new PropositionSet(this.getHypothesisSet().getProps(), hyp.getId());
 		// TODO: check for contradiciton
 		return new Context(this.getName(), hyps);
+	}
+
+	public Context removeProp(PropositionNode hyp) {
+		PropositionSet hyps = this.hyps.remove(hyp);
 	}
 
 	/**

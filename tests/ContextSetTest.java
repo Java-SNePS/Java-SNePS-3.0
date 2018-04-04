@@ -1,6 +1,8 @@
 package tests;
 
+import org.junit.After;
 import org.junit.Test;
+import sneps.exceptions.ContextNameDoesntExist;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
@@ -14,12 +16,10 @@ import static org.junit.Assert.*;
 public class ContextSetTest {
 
     @Test
-    public void getContext() throws DuplicateContextNameException {
-        ContextSet set = new ContextSet();
+    public void getContext() throws DuplicateContextNameException, ContextNameDoesntExist {
         Context context = Controller.createContext("test context", new PropositionSet(4));
-        set.add(context);
-
-        assertEquals(context, set.getContext("test context"));
+        assertEquals(context, Controller.getContextByName("test context"));
+        Controller.removeContext("test context");
     }
 
     @Test
@@ -32,5 +32,7 @@ public class ContextSetTest {
 
     @Test
     public void identicalContext() {
+        Context c = new Context();
     }
+
 }

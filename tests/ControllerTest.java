@@ -27,11 +27,9 @@ public class ControllerTest {
     @Test
     public void createNewContextWithNoProps() throws DuplicateContextNameException {
        Context expectedContext = Controller.createContext(testContext);
-
        Context actualContext = Controller.getContextByName(testContext);
 
        assertEquals(expectedContext, actualContext);
-
     }
 
     @Test
