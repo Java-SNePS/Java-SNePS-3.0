@@ -1,13 +1,22 @@
 package sneps.snip.rules;
 
+import java.util.Set;
+
+import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.semantic.Proposition;
 import sneps.network.classes.term.Term;
 import sneps.setClasses.NodeSet;
+import sneps.snebr.Support;
+import sneps.snip.Report;
+import sneps.snip.channels.Channel;
 import sneps.snip.classes.RuleUseInfo;
 
 public class OrNode extends RuleNode {
 
+	private int ant,cq;
+	
 	public OrNode() {}
 
 	public OrNode(Term syn) {
@@ -17,6 +26,29 @@ public class OrNode extends RuleNode {
 	public OrNode(Semantic sym, Term syn) {
 		super(sym, syn);
 	}
+	
+	public void applyRuleHandler(Report request, Node node) {
+		
+		if(request.isPositive()) {
+			
+			Set<Support> originSupports = ((Proposition) this.getSemantic()).getOriginSupport();
+			Report report = new Report(request.getSubstitutions(), Support.combine(originSupport,request.getSupports()), true, request.getContextName());
+			
+			for (Channel outChannel : outgoingChannels)
+				outChannel.addReport(report);
+			
+		}
+		
+		if(request.isNegative()) {
+			
+			Set<Support> originSupports = ((Proposition) this.getSemantic()).getOriginSupport();
+			Report report = new Report(request.getSubstitutions(), Support.combine(originSupport,request.getSupports()), false, request.getContextName());
+			
+			for (Channel outChannel : outgoingChannels)
+				outChannel.addReport(report);return;
+		}
+	}
+
 
 	@Override
 	protected void sendRui(RuleUseInfo tRui, String contextID) {
