@@ -27,4 +27,9 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		ruis.add(rui);
 	}
 
+	public RuleUseInfoSet combine(RuleUseInfoSet second) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
