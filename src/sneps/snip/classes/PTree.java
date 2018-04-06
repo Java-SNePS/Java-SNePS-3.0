@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
@@ -17,6 +18,7 @@ public class PTree extends RuisHandler {
 	private Hashtable<Integer, Set<Node>> patternVariables,variablePatterns;
 	private Set<Integer> patterns,notProccessed;
 	private HashSet<PSubTree> subTrees;
+	private Hashtable<Integer, PSubTree> subTreesMap;
 
 	public PTree() {
 		patternVariables = new Hashtable<Integer, Set<Node>>();
@@ -28,6 +30,7 @@ public class PTree extends RuisHandler {
 
 
 	public void buildTree(NodeSet ants){
+		//TODO these are basic steps
 		fillPVandVP(ants);
 		
 		getPatternSequence();
@@ -96,6 +99,32 @@ public class PTree extends RuisHandler {
 		
 	}
 
+	@Override
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
+		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
+		PSubTree subTree = subTreesMap.get(pattern);
+		RuleUseInfoSet returned = subTree.insert(rui);
+		Stack<RuleUseInfoSet> stack = new Stack<RuleUseInfoSet>();
+		for (PSubTree sub : subTrees) {
+			if (sub == subTree)
+				continue;
+			RuleUseInfoSet tSet = sub.getRootRUIS();
+			if (tSet == null)
+				continue;
+			stack.push(tSet);
+		}
+		stack.push(returned);
+		return multiply(stack);
+	}
+	private RuleUseInfoSet multiply(Stack<RuleUseInfoSet> infoSets) {
+		RuleUseInfoSet first = infoSets.pop();
+		while (!infoSets.isEmpty()) {
+			RuleUseInfoSet second = infoSets.pop();
+			first = first.combine(second);
+		}
+		return first;
+	}
+	
 	private int peek(Set<Integer> set) {
 		return set.iterator().next();
 	}
@@ -153,6 +182,7 @@ public class PTree extends RuisHandler {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;
 		private HashSet<RuleUseInfo> ruis;
+		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
 		private Set<Integer> pats, vars;
 		private Set<Integer> siblingIntersection;
 
@@ -192,7 +222,6 @@ public class PTree extends RuisHandler {
 		}
 		
 		public int insertRUI(RuleUseInfo rui) {
-			/*TODO insertRUI
 			// Since it has no sibling, it has no parent, and it is the root
 			if (sibling == null) {
 				RuleUseInfoSet ruis = ruisMap.get(0);
@@ -209,7 +238,7 @@ public class PTree extends RuisHandler {
 			int[] ids = new int[siblingIntersection.size()];
 			int index = 0;
 			for (int id : siblingIntersection) {
-				ids[index++] = rui.getSub().termID(id);
+				ids[index++] = rui.getSubstitutions().termID(id);
 			}
 			int key = getKey(ids);
 			RuleUseInfoSet ruis = ruisMap.get(key);
@@ -218,12 +247,11 @@ public class PTree extends RuisHandler {
 				ruisMap.put(key, ruis);
 			}
 			ruis.add(rui);
-			return key;*/
-			return 0;
+			return key;
 		}
 
 		public RuleUseInfoSet getRUIS(int index) {
-			return new RuleUseInfoSet();//ruisMap.get(index);
+			return ruisMap.get(index);
 		}
 		
 		public PTreeNode getParent() {
