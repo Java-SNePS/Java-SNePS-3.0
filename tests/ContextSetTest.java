@@ -32,7 +32,8 @@ public class ContextSetTest {
 
     @Test
     public void identicalContext() {
-        Context c = new Context();
+//        Context c = Controller.createContext();
+
     }
 
 }

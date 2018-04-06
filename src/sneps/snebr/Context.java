@@ -1,5 +1,6 @@
 package sneps.snebr;
 
+import sneps.exceptions.NodeNotFoundException;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -42,6 +43,10 @@ public class Context {
 		this.hyps = hyps;
 	}
 
+	protected Context(Context c, PropositionSet hyps) {
+
+	}
+
 	protected PropositionSet getHypothesisSet() {
 		return hyps;
 	}
@@ -75,21 +80,6 @@ public class Context {
 //		}
 //		return asserted;
 //	}
-
-	/**
-	 * Creates a new Context with the propositionNode
-	 * @param hyp Propsosition Node to be added to the context's hyps
-	 * @return <code>true</code> if the hyp isn't a duplicate <code>false</code> otherwise.
-	 */
-	public Context addProp(PropositionNode hyp) {
-		PropositionSet hyps = new PropositionSet(this.getHypothesisSet().getProps(), hyp.getId());
-		// TODO: check for contradiciton
-		return new Context(this.getName(), hyps);
-	}
-
-	public Context removeProp(PropositionNode hyp) {
-		PropositionSet hyps = this.hyps.remove(hyp);
-	}
 
 	/**
 	 * Adds a name to the set of names of the context if not a duplicate.

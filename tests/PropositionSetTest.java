@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import sneps.exceptions.NodeNotFoundException;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.Arrays;
@@ -44,5 +45,14 @@ public class PropositionSetTest {
         PropositionSet expected = new PropositionSet(new int[] {1,2,3,4,5,6,7,9,10});
 
         assertArrayEquals(expected.getProps(), first.union(second).getProps());
+    }
+
+    @Test
+    public void remove() throws NodeNotFoundException {
+        PropositionSet first = new PropositionSet(new int[] {1,2,3,4,5,6});
+        PropositionSet actual = first.remove(3);
+        PropositionSet expected = new PropositionSet(new int[] {1,2,3,4,5,6,7,9,10});
+
+        assertArrayEquals(expected.getProps(), actual.getProps());
     }
 }

@@ -1,5 +1,7 @@
 package sneps.network.classes.setClasses;
 
+import sneps.exceptions.NodeNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -103,52 +105,28 @@ public class PropositionSet {
 		return new PropositionSet(output);
 	}
 
-	public PropositionSet remove(int prop) {
-		int [] output = new in
-	}
-
-}
-/*
-	public PropositionSet union(int[] props) {
-		int[] FirstSet = this.getProps();
-		int[] SecondSet = props;
-		int[] newSet = new int[FirstSet.length + SecondSet.length];
-		int i = 0, j = 0, q = 0, elements=0;
-		while (i < FirstSet.length || j < SecondSet.length) {
-			if (i == FirstSet.length) {
-				newSet[q++] = SecondSet[j++];
-				elements++;
+	public PropositionSet remove(int prop) throws NodeNotFoundException {
+		int[] current = this.getProps();
+		int[] newSet = new int[current.length - 1];
+		int j = 0;
+		boolean found = false;
+		for (int i = 0; i < current.length; i++) {
+			if (prop < current[i] && !found)
+				throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+			if (!(prop == current[i])) {
+				newSet[j] = current[i];
+				j++;
 			} else {
-				if (j == SecondSet.length) {
-					newSet[q++] = FirstSet[i++];
-					elements++;
-				} else {
-					if (FirstSet[i] < SecondSet[j]) {
-						newSet[q++] = FirstSet[i];
-						elements++;
-					} else {
-						if (FirstSet[i] > SecondSet[j]) {
-							newSet[q++] = SecondSet[j++];
-							elements++;
-						} else {
-							newSet[q++] = FirstSet[i++];
-							j++;
-							elements++;
-						}
-					}
-				}
+				found = true;
 			}
-
 		}
-		if(elements == newSet.length){
-			return new PropositionSet(newSet);
-		}else{
-			int[] smallSet = new int[elements];
-			for(int z = 0; z< smallSet.length; z++)
-				smallSet[z] = newSet[z];
-			return new PropositionSet(smallSet);
-		}
-
+		PropositionSet temp = new PropositionSet(newSet);
+		return temp;
 	}
+
+
+//	public PropositionSet remove(int prop) {
+//		int [] output = new in
+//	}
+
 }
-*/
