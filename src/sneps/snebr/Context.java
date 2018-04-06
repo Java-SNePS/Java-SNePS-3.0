@@ -43,10 +43,6 @@ public class Context {
 		this.hyps = hyps;
 	}
 
-	protected Context(Context c, PropositionSet hyps) {
-
-	}
-
 	protected PropositionSet getHypothesisSet() {
 		return hyps;
 	}

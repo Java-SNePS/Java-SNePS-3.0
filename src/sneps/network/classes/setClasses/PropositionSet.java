@@ -1,6 +1,7 @@
 package sneps.network.classes.setClasses;
 
 import sneps.exceptions.NodeNotFoundException;
+import sneps.network.PropositionNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,6 +111,8 @@ public class PropositionSet {
 		int[] newSet = new int[current.length - 1];
 		int j = 0;
 		boolean found = false;
+		if (props[props.length -1] < prop)
+			throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
 		for (int i = 0; i < current.length; i++) {
 			if (prop < current[i] && !found)
 				throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
@@ -120,13 +123,31 @@ public class PropositionSet {
 				found = true;
 			}
 		}
-		PropositionSet temp = new PropositionSet(newSet);
-		return temp;
+		return new PropositionSet(newSet);
 	}
 
 
-//	public PropositionSet remove(int prop) {
-//		int [] output = new in
+
+//	public PropositionSet remove(int prop) throws NodeNotFoundException {
+//		int [] props = this.getProps();
+//		int [] newProps = new int[props.length - 1];
+//		int j = 0;
+//		boolean found = false;
+//		if (props[props.length -1] < prop)
+//			throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+//
+//		for (int i = 0; i < props.length; i++) {
+//			if (props[i] >  prop && !found) {
+//				throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+//			}
+//			else if (props[i] == prop) {
+//				found = true;
+//			} else {
+//				newProps[j] = props[i];
+//				j++;
+//			}
+//		}
+//		return new PropositionSet(newProps);
 //	}
 
 }

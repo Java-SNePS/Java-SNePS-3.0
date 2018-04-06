@@ -1,5 +1,5 @@
-//package tests;
-//
+package tests;
+
 //import org.junit.Before;
 //import org.junit.Test;
 //import sneps.network.Network;
@@ -13,8 +13,7 @@
 //
 //import static org.junit.Assert.*;
 //import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-//
-//
+
 //public class ContextTest {
 //
 //    private Context context;
