@@ -1,7 +1,6 @@
 package sneps.snip.classes;
 
 import sneps.setClasses.FlagNodeSet;
-import sneps.setClasses.NodeSet;
 import sneps.snip.matching.Substitutions;
 
 public class RuleUseInfo {
