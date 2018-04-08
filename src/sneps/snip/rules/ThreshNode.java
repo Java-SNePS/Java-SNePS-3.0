@@ -21,7 +21,7 @@ public class ThreshNode extends RuleNode {
 	boolean sign = false;
 	
 	private int min, max, args;
-	private int positiveCount = 0;
+	int positiveCount = 0;
 	
 	public int getThreshMin() {
 		return min;
@@ -48,7 +48,49 @@ public class ThreshNode extends RuleNode {
 		super(sym, syn);
 	}
 
+	public void applyRuleHandler(Report request, Node node) {
+		
+		if(request.isPositive()==true)
+			positiveCount++;
+		
+		for (Channel outChannel : outgoingChannels)
+			outChannel.addReport(request);
+		
+	}
 	
+	
+	protected void sendRui(RuleUseInfo tRui, String contextID) {
+		
+		if(min!=max) {
+			if(positiveCount<min || positiveCount>max)
+				sign=true;
+			else
+				sign=false;
+		} else {
+			if(positiveCount>0 && positiveCount!=min)
+				sign=true;
+			else
+				sign=false;
+		}
+		
+		
+		
+		Set<Integer> consequents = new HashSet<Integer>();
+		for (FlagNode fn : tRui.getFlagNodeSet()) {
+			consequents.add(fn.getNode().getId());
+		}
+		
+		Set<Support> originSupports = ((PropositionNode) this.getSemantic()).getOriginSupport();
+		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
+		
+		for (Channel outChannel : outgoingChannels) {
+			if(!consequents.contains(outChannel.getRequester().getId()))
+			outChannel.addReport(forwardReport);
+		}
+		
+	}
+	
+	/*
 	public void applyRuleHandler(Report request, Node node) {
 		
 		if(request.isPositive()==true)
@@ -89,6 +131,8 @@ public class ThreshNode extends RuleNode {
 
 		}
 	}
+	*/
+
 
 	@Override
 	public NodeSet getDownAntNodeSet() {
