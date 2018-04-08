@@ -17,6 +17,11 @@ public class ContextSet {
         this.contexts.put(name, new Context(name));
     }
 
+    public ContextSet(Context context) {
+        this();
+        this.add(context);
+    }
+
     public Context getContext(String name) {
         return contexts.get(name);
     }
@@ -36,6 +41,7 @@ public class ContextSet {
         }
         c = newContext;
         for (String name: c.getNames()) {
+            System.out.println("hmm " + name);
             contexts.put(name, c);
         }
     }

@@ -25,10 +25,10 @@ public class Controller {
         return new Context();
     }
 
-    public static boolean removeContext(String contextName) throws ContextNameDoesntExist {
+    public static boolean removeContext(String contextName) {
         Context c = contextSet.getContext(contextName);
         if (c == null)
-            throw new ContextNameDoesntExist(contextName);
+            return false;
 
         boolean bool = c.removeName(contextName);
         return contextSet.remove(contextName) && bool;
