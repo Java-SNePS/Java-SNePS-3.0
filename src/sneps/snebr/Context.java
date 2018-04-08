@@ -1,5 +1,6 @@
 package sneps.snebr;
 
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundException;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -27,9 +28,9 @@ public class Context {
 		this.names = c.getNames();
 	}
 
-	protected Context(Context c, PropositionNode hyp) {
+	protected Context(Context c, int hyp) throws DuplicatePropositionException {
 		this.names = c.getNames();
-		PropositionSet propSet = new PropositionSet(c.getHypothesisSet().getProps(), hyp.getId());
+		PropositionSet propSet = new PropositionSet(PropositionSet.getPropsSafely(c.getHypothesisSet()), hyp);
 		this.hyps = propSet;
 	}
 
@@ -43,11 +44,11 @@ public class Context {
 		this.hyps = hyps;
 	}
 
-	protected PropositionSet getHypothesisSet() {
+	public PropositionSet getHypothesisSet() {
 		return hyps;
 	}
 
-	public HashSet<String> getNames() {
+	protected HashSet<String> getNames() {
 		return names;
 	}
 

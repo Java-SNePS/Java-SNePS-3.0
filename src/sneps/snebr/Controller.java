@@ -2,6 +2,7 @@ package sneps.snebr;
 
 import sneps.exceptions.ContextNameDoesntExist;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -17,8 +18,7 @@ public class Controller {
             throw new DuplicateContextNameException(contextName);
 
         Context c = new Context(contextName);
-        contextSet.add(c);
-        return c;
+        return contextSet.add(c);
     }
 
     public static Context createContext() {
@@ -41,13 +41,12 @@ public class Controller {
 
         // TODO: 01/04/18 check for contradiction in the hyps
         Context newContext = new Context(contextName, hyps);
-        contextSet.add(newContext);
-        return newContext;
+        return contextSet.add(newContext);
     }
 
 
 
-    public static Context addPropToContext(String contextName, PropositionNode hyp) throws ContextNameDoesntExist {
+    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExist, DuplicatePropositionException {
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
@@ -56,13 +55,12 @@ public class Controller {
         oldContext.removeName(contextName);
         PropositionSet hypSet = oldContext.getHypothesisSet();
         // TODO: 03/04/18 check for contradiction
-        hypSet = new PropositionSet(hypSet.getProps(), hyp.getId());
+        hypSet = new PropositionSet(PropositionSet.getPropsSafely(hypSet), hyp);
 
         Context newContext = new Context(contextName, hypSet);
 
-        contextSet.add(newContext);
+        return contextSet.add(newContext);
 
-        return newContext;
     }
 
     public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExist {
@@ -76,9 +74,7 @@ public class Controller {
 
         Context newContext = new Context(contextName, hypSet.union(hyps));
 
-        contextSet.add(newContext);
-
-        return newContext;
+        return contextSet.add(newContext);
 
     }
 
@@ -100,8 +96,12 @@ public class Controller {
 //        }
 //    }
 
-    public static Context addPropToCurrentContext(PropositionNode p) throws ContextNameDoesntExist {
+    public static Context addPropToCurrentContext(int p) throws ContextNameDoesntExist, DuplicatePropositionException {
         return addPropToContext(currContext,p);
+    }
+
+    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExist {
+        return addPropsToContext(currContext, hyps);
     }
 
     public static Context setCurrentContext(String contextName) throws DuplicateContextNameException {

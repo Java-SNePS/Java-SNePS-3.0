@@ -34,16 +34,16 @@ public class ContextSet {
      * updates the hashtable of names to the correct context moreover it ensures no duplicate contexts exists
      * @param c context to be added/merged in the contexts hashtable
     */
-    public void add(Context c) {
+    public Context add(Context c) {
         Context newContext = identicalContext(c); //check for a duplicate context (shares the same set of hyps)
         if (newContext != c) {
             newContext.addNames(c.getNames());
         }
         c = newContext;
         for (String name: c.getNames()) {
-            System.out.println("hmm " + name);
             contexts.put(name, c);
         }
+        return c;
     }
 
     public Context identicalContext(Context context) {

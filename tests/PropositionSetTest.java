@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundException;
 import sneps.network.Node;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 public class PropositionSetTest {
 
     @Test
-    public void testConstructor2() {
+    public void testConstructor() throws DuplicatePropositionException {
         int prop = 800;
         int [] props = new int[]{324,423,523,4200,7332,8888};
         PropositionSet set = new PropositionSet(props, prop);
@@ -27,6 +28,17 @@ public class PropositionSetTest {
         }
         PropositionSet testSet = new PropositionSet(testProps);
         assertTrue(testSet.equals(set));
+    }
+
+    @Test
+    public void testConstructorWithDuplicateThrowsException() {
+        int prop = 523;
+        int [] props = new int[]{324,423,523,4200,7332,8888};
+        try {
+            PropositionSet set = new PropositionSet(props, prop);
+            fail("should throw exception");
+        } catch (DuplicatePropositionException e) {
+        }
     }
 
     @Test
@@ -45,7 +57,7 @@ public class PropositionSetTest {
         PropositionSet second = new PropositionSet(new int[] {2,4,7,9,10});
         PropositionSet expected = new PropositionSet(new int[] {1,2,3,4,5,6,7,9,10});
 
-        assertArrayEquals(expected.getProps(), first.union(second).getProps());
+        assertArrayEquals(PropositionSet.getPropsSafely(expected), PropositionSet.getPropsSafely(first.union(second)));
     }
 
     @Test
@@ -54,7 +66,7 @@ public class PropositionSetTest {
         PropositionSet actual = set.remove(3);
         PropositionSet expected = new PropositionSet(new int[] {1,2,4,5,6});
 
-        assertArrayEquals(expected.getProps(), actual.getProps());
+        assertArrayEquals(PropositionSet.getPropsSafely(expected), PropositionSet.getPropsSafely(actual));
     }
 
     @Test

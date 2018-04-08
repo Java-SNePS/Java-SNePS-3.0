@@ -37,7 +37,6 @@ public class ContextSetTest {
     @Test
     public void add() throws DuplicateContextNameException {
         Context temp = Controller.createContext("temp context", new PropositionSet(new int [] {34,89}));
-        System.out.println("get ready");
         contextSet.add(temp);
         assertEquals(temp, contextSet.getContext("temp context"));
     }
