@@ -48,7 +48,6 @@ terminal ACTIVATE,
          SET_MODE_1,
          SET_MODE_2,
          SET_MODE_3,
-         OPTION_NIL,
          SHOW,
          TRACE,
          UNDEFINE_PATH,
@@ -319,14 +318,6 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 
 				:}
 				| SET_MODE_3 optionalDot
-				{: 
-
-				:}
-				| SET_MODE_3 OPTION_T optionalDot
-				{: 
-
-				:}
-				| SET_MODE_3 OPTION_NIL optionalDot
 				{: 
 
 				:}
