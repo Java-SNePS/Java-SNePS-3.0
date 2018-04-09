@@ -15,12 +15,12 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VariableSet;
 
-@SuppressWarnings("unused")//TODO Not final
+//@SuppressWarnings("unused")//TODO Not final
 public class PTree extends RuisHandler {
-	private Hashtable<Integer, Set<Variable>> patternVariables;
-	private Hashtable<Integer, Set<Integer>> variablePatterns;
-	private Hashtable<Integer, Node> patterns;
-	private Hashtable<Integer, Variable> vars;
+	private Hashtable<Integer, Set<Variable>> patternVariables;//PatId, Variables
+	private Hashtable<Integer, Set<Integer>> variablePatterns;//VarId, Patterns
+	private VariableSet vars;
+	private NodeSet nodes;
 	private Set<Integer> notProccessed;
 	private HashSet<PSubTree> subTrees;
 	private Hashtable<Integer, PSubTree> subTreesMap;
@@ -28,28 +28,28 @@ public class PTree extends RuisHandler {
 	public PTree() {
 		patternVariables = new Hashtable<Integer, Set<Variable>>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
-		patterns = new Hashtable<Integer, Node>();
-		vars = new Hashtable<Integer, Variable>();
+		vars = new VariableSet();
 		notProccessed = new HashSet<Integer>();
 		subTrees = new HashSet<PSubTree>();
 	}
 
 	public void buildTree(NodeSet ants){
-		//TODO Clear afterwards
+		//TODO Clear afterwards?
+		nodes = ants;
 		fillPVandVP(ants);
 
 		LinkedHashSet<Integer> patternSequence = getPatternSequence();
 		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
 		for (int pat : patternSequence) {
-			Set<Integer> patterns = new HashSet<Integer>();
-			patterns.add(pat);
+			Set<Integer> pats = new HashSet<Integer>();
+			pats.add(pat);
 			
-			Set<Variable> vars = patternVariables.get(pat);
+			Set<Variable> varSet = patternVariables.get(pat);
 			Set<Integer> proccessed = new HashSet<Integer>();
-			for(Variable var : vars)
+			for(Variable var : varSet)
 				proccessed.add(var.getId());
 			
-			treeNodes.add(new PTreeNode(patterns, proccessed));
+			treeNodes.add(new PTreeNode(pats, proccessed));
 		}
 
 		constructBottomUp(treeNodes);
@@ -60,8 +60,6 @@ public class PTree extends RuisHandler {
 		for(int i=0; i < ants.size(); i++){
 			Node pattern = ants.getNode(i);
 			int id = pattern.getId();
-			
-			patterns.put(id, pattern);
 
 			VariableNode patVarNode = null;
 			if(pattern instanceof VariableNode)
@@ -77,7 +75,7 @@ public class PTree extends RuisHandler {
 					for(Variable currentVar : patVars){
 						int varId = currentVar.getId();
 						
-						vars.put(varId, currentVar);
+						vars.addVariable(currentVar);
 						tempVars.add(currentVar);
 						notProccessed.add(varId);
 						
@@ -95,6 +93,7 @@ public class PTree extends RuisHandler {
 
 	}
 	private LinkedHashSet<Integer> getPatternSequence() {
+		//TODO Really, That's it?
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
 		//Set<String> proccessed = new HashSet<String>();
 		
@@ -134,7 +133,7 @@ public class PTree extends RuisHandler {
 			processSubTree(head);
 			return;
 		}
-		Queue<PTreeNode> newTnv = new LinkedList<PTreeNode>();
+		Queue<PTreeNode> newTreeNodes = new LinkedList<PTreeNode>();
 		boolean sharing = false;
 		while (!treeNodes.isEmpty()) {
 			PTreeNode second = treeNodes.poll();
@@ -142,33 +141,34 @@ public class PTree extends RuisHandler {
 				sharing = true;
 				Set<Integer> pats = union(head.getPats(), second.getPats());
 				Set<Integer> vars = union(head.getVars(), second.getVars());
-				PTreeNode tn = new PTreeNode(pats, vars);
+				PTreeNode treeNode = new PTreeNode(pats, vars);
 				Set<Integer> intersection = getSharedVars(head, second);
-				tn.insertLeftAndRight(head, second, intersection);
-				newTnv.add(tn);
+				treeNode.insertLeftAndRight(head, second, intersection);
+				newTreeNodes.add(treeNode);
 				head = treeNodes.poll();
 			} else {
-				newTnv.add(head);
+				newTreeNodes.add(head);
 				head = second;
 			}
 		}
 		if (head != null)
-			newTnv.add(head);
+			newTreeNodes.add(head);
 		if (sharing)
-			constructBottomUp(newTnv);
-		else
-			constructSubTree(newTnv);
+			constructBottomUp(newTreeNodes);
+		else{
+			for(PTreeNode subHead : newTreeNodes)
+				processSubTree(subHead);
+		}
 
 	}
 
 
-	private void processSubTree(PTreeNode head) {
-		// TODO Auto-generated method stub
-		
-	}
-	private void constructSubTree(Queue<PTreeNode> newTnv) {
-		// TODO Auto-generated method stub
-		
+	private void processSubTree(PTreeNode subHead) {
+		PSubTree subTree = new PSubTree(subHead);
+		subTrees.add(subTree);
+		for (int id : subHead.getPats()) {
+			subTreesMap.put(id, subTree);
+		}
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class PTree extends RuisHandler {
 		}
 		return union;
 	}
-		
+
 	private class PSubTree {
 		private PTreeNode root;
 
