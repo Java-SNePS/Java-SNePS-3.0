@@ -1,10 +1,12 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
+
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 import sneps.network.Node;
 
-public class Wire {
+public class Wire implements Serializable{
 
 	private Relation wireRelation;
 	private Node wireNode;
