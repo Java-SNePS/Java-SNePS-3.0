@@ -17,6 +17,13 @@ public class NodeSet implements Iterable<Node> {
 		return this.nodes.get(index);
 	}
 
+	public Node getById(int id){
+		for(Node node: nodes)
+			if(node.getId()==id)
+				return node;
+		return null;
+	}
+
 	public void addNode(Node node) {
 		if (!this.nodes.contains(node))
 			this.nodes.add(node);

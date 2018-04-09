@@ -43,6 +43,7 @@ import sneps.snip.rules.WhenDoNode;
 
 public class Network {
 
+	private static VariableSet variables = new VariableSet();
 
 	/* A hash table that stores all the nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
@@ -1945,6 +1946,17 @@ public class Network {
 		return result;
 	}
 
+	public static Variable getVariablebyId(int id){
+		for(Variable var : variables)
+			if (var.getId() == id)
+				return var;
+		return null;
+	}
+	
+	public VariableSet getVariables(){
+		return variables;
+	}
+	
 	public static NodeSet match(Node x) {
 		return new NodeSet();
 	}
