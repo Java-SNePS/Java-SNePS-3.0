@@ -734,7 +734,7 @@ terminalPunctuation ::= DOT
                     {:
            
                     :}
-                    | QUESTION_MARK OPEN_PARAN INT_LIT COMMA INT_LIT CLOSE_PARAN
+                    | QUESTION_MARK OPEN_PARAN INT_LIT INT_LIT CLOSE_PARAN
                     {:
            
                     :};
@@ -784,7 +784,7 @@ optionalPTermSet ::=	 pTermSet
 			
 				 :};		
 
-identifiers ::= COMMA IDENTIFIER identifiers
+identifiers ::= IDENTIFIER identifiers
             {:
             
             :}
