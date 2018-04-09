@@ -67,7 +67,7 @@ terminal ACTIVATE,
          IMPLICATION,
          OR_ENTAILMENT,
          AND_ENTAILMENT,
-         INT_ARROW,
+         NUMERICAL_ENTAILMENT,
          NOT,
          ANDOR,
          AND,
@@ -420,7 +420,7 @@ entailment ::= termSet IMPLICATION termSet
            {:
            
            :}
-           | termSet INT_ARROW termSet
+           | termSet NUMERICAL_ENTAILMENT termSet
            {:
            
            :};
