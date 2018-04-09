@@ -632,37 +632,37 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CO
              
              :};
 
-ifdoTerm ::= IFDO OPEN_PARAN wff COMMA wff CLOSE_PARAN
+ifdoTerm ::= IFDO OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
          {:
 			
 		 :};
 		 
-whendoTerm ::= WHENDO OPEN_PARAN wff COMMA wff CLOSE_PARAN
+whendoTerm ::= WHENDO OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
            {:
 			
 		   :};
 		   
-wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff COMMA wff CLOSE_PARAN
+wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
                {:
 			
 		       :};
 		   
-actplanTerm ::= ACTPLAN OPEN_PARAN wff COMMA wff CLOSE_PARAN
+actplanTerm ::= ACTPLAN OPEN_PARAN atomicTerm COMMA atomicTerm CLOSE_PARAN
             {:
 			
 		    :};
 		       
-effectTerm ::= EFFECT OPEN_PARAN wff COMMA wff CLOSE_PARAN
+effectTerm ::= EFFECT OPEN_PARAN atomicTerm COMMA wff CLOSE_PARAN
            {:
 			
 	       :};
 		       
-goalplanTerm ::= GOALPLAN OPEN_PARAN wff COMMA wff CLOSE_PARAN
+goalplanTerm ::= GOALPLAN OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
              {:
 			
 		     :};		     
 
-preconditionTerm ::= PRECONDITION OPEN_PARAN wff COMMA wff CLOSE_PARAN
+preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm COMMA wff CLOSE_PARAN
                  {:
 			
 		         :};
