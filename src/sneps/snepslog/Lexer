@@ -89,7 +89,7 @@ EQUALITY=(<=>)
 IMPLICATION=(=>)
 OR_ENTAILMENT=(v=>)
 AND_ENTAILMENT=(&=>)
-INT_ARROW=(INT_LIT=>)
+NUMERICAL_ENTAILMENT=(INT_LIT=>)
 NOT=(~)
 ANDOR=(andor)
 AND=(and)
@@ -301,8 +301,8 @@ PRECONDITION=(Precondition)
 <YYINITIAL> {AND_ENTAILMENT} { 
 	return (new Symbol(sym.AND_ENTAILMENT,yytext()));
 }
-<YYINITIAL> {INT_ARROW} { 
-	return (new Symbol(sym.INT_ARROW,yytext()));
+<YYINITIAL> {NUMERICAL_ENTAILMENT} { 
+	return (new Symbol(sym.NUMERICAL_ENTAILMENT,yytext()));
 }
 <YYINITIAL> {NOT} { 
 	return (new Symbol(sym.NOT,yytext()));
