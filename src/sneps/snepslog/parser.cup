@@ -103,7 +103,7 @@ nonterminal command,
             wffNameCommand,
             wffCommand,
             snepslogCommand,
-            snepslogFunction,
+            optionalSnepslogFunction,
             wff,
             infixedTerm,
             infixedTermHelper2,
@@ -334,7 +334,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| TRACE snepslogFunction optionalDot
+				| TRACE optionalSnepslogFunction optionalDot
 				{: 
 
 				:}
@@ -346,12 +346,12 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| UNTRACE snepslogFunction optionalDot
+				| UNTRACE optionalSnepslogFunction optionalDot
 				{: 
 
 				:};	
 
-snepslogFunction ::=	 INFERENCE
+optionalSnepslogFunction ::=	 INFERENCE
 		     	{:
 			
 		     	:}
@@ -366,6 +366,10 @@ snepslogFunction ::=	 INFERENCE
 		     	| PARSING
 		     	{:
 			
+		     	:}
+		     	|
+		     	{:
+		     	
 		     	:};	
 				
 wff ::= infixedTerm
