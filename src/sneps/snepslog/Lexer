@@ -70,7 +70,6 @@ SET_DEFAULT_CONTEXT=(set-default-context)
 SET_MODE_1=(set-mode-1)
 SET_MODE_2=(set-mode-2)
 SET_MODE_3=(set-mode-3)
-OPTION_NIL=(nil)
 SHOW=(show)
 TRACE=(trace)
 UNDEFINE_PATH=(undefine-path)
@@ -246,9 +245,6 @@ PRECONDITION=(Precondition)
 }
 <YYINITIAL> {SET_MODE_3} { 
 	return (new Symbol(sym.SET_MODE_3,yytext()));
-}
-<YYINITIAL> {OPTION_NIL} { 
-	return (new Symbol(sym.OPTION_NIL,yytext()));
 }
 <YYINITIAL> {SHOW} { 
 	return (new Symbol(sym.SHOW,yytext()));
