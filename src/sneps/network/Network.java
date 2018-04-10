@@ -844,8 +844,8 @@ public class Network implements Serializable {
 					continue;
 				} else {
 					if (!(((Relation) array[i][0]).getType().equals(
-							((Node) array[i][1]).getSemanticType()) || ((Node) array[i][1])
-							.getSemantic().getSuperClassesNames()
+							((Node) array[i][1]).getSemantic().getSemanticType()) || ((Node) array[i][1])
+							.getSemantic().getSemanticType()
 							.contains(((Relation) array[i][0]).getType()))) {
 						return false;
 
