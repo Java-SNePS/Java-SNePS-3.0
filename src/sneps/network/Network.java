@@ -511,7 +511,7 @@ public class Network implements Serializable {
 	 *
 	 * @return the newly created variable node.
 	 */
-	public static Node buildVariableNode(Semantic semantic) {
+	public static VariableNode buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
