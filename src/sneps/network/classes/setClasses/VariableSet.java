@@ -9,6 +9,7 @@ public class VariableSet implements Iterable<Variable> {
 	protected Vector<Variable> variables;
 
 	public VariableSet() {
+		variables = new Vector<Variable>();
 	}
 
 	@Override
@@ -32,6 +33,11 @@ public class VariableSet implements Iterable<Variable> {
 
 	public int size() {
 		return variables.size();
+	}
+
+
+	public boolean isEmpty() {
+		return variables.isEmpty();
 	}
 
 }
