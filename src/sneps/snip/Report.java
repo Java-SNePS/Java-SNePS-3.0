@@ -2,39 +2,35 @@ package sneps.snip;
 
 import java.util.Set;
 
-import sneps.snebr.Supports;
+import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
 public class Report {
 	private Substitutions substitution;
-	private Set<Supports> supports;
+	private Set<Support> supports;
 	private boolean sign;
-	private int contextID;
+	private String contextName;
 
-	public Report(Substitutions substitution, Set<Supports> set, boolean sign, int contextID) {
+	public Report(Substitutions substitution, Set<Support> set, boolean sign, String contextID) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
-		this.contextID = contextID;
+		this.contextName = contextID;
 	}
 
 	public Substitutions getSubstitutions() {
 		return substitution;
 	}
 
-	public Set<Supports> getSupports() {
+	public Set<Support> getSupports() {
 		return supports;
-	}
-
-	public int getContextID() {
-		return contextID;
 	}
 
 	@Override
 	public boolean equals(Object report) {
 		Report castedReport = (Report) report;
 		return this.substitution.equals(castedReport.substitution) && this.sign == castedReport.sign
-				&& this.contextID == castedReport.contextID;
+				&& this.contextName == castedReport.contextName;
 	}
 
 	public boolean getSign() {
@@ -50,6 +46,10 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextID + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
+		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
+	}
+
+	public String getContextName() {
+		return contextName;
 	}
 }
