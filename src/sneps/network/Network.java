@@ -40,6 +40,7 @@ import sneps.exceptions.CustomException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
+import sneps.snebr.Controller;
 
 public class Network implements Serializable {
 	
@@ -49,7 +50,7 @@ public class Network implements Serializable {
 	 */
 	private static Hashtable<String, Node> nodes = new Hashtable<String, Node>();
 
-	 /* A hash table that stores all the proposition nodes defined(available) in the network.
+	/* A hash table that stores all the proposition nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding proposition node object as the value.
 	 */
@@ -132,6 +133,13 @@ public class Network implements Serializable {
 	public static Hashtable<String, Node> getNodes() {
 		return nodes;
 	}
+
+	/**
+	 * This is created to reduce the search space when searching for only proposition nodes
+	 * @return the hash table that stores the proposition nodes defined in the network.
+	 */
+	public static Hashtable<String, PropositionNode> getPropositionNodes() {return propositionNodes;}
+
 
 	/**
 	 *
@@ -738,7 +746,7 @@ public class Network implements Serializable {
 			
 		}
 
-		LinkedList<Object[]> ns = find(temp, new Context());
+		LinkedList<Object[]> ns = find(temp, Controller.createContext());
 	
 		
 		for (int j = 0; j < ns.size(); j++) {

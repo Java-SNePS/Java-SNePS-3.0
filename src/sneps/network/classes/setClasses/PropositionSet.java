@@ -1,7 +1,16 @@
 package sneps.network.classes.setClasses;
 
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundException;
+
+import java.util.Arrays;
+
 public class PropositionSet {
 	private int[] props;
+
+	public PropositionSet() {
+		this.props = new int[0];
+	}
 
 	public PropositionSet(int prop) {
 		this.props = new int[]{prop};
@@ -14,7 +23,11 @@ public class PropositionSet {
 		}
 	}
 
-	public PropositionSet(int [] props, int prop) {
+	public PropositionSet (int [] props, int prop) throws DuplicatePropositionException {
+		for (int i = 0 ; i < props.length; i++)
+			if(props[i] == prop)
+				throw new DuplicatePropositionException();
+
 		int i = 0, j = 0;
 		this.props = new int[props.length + 1];
 		boolean inserted = false;
@@ -31,8 +44,12 @@ public class PropositionSet {
 
 	}
 
-	public int[] getProps() {
+	private int[] getProps() {
 		return props;
+	}
+
+	public static int[] getPropsSafely(PropositionSet set) {
+		return new PropositionSet(set.getProps()).props;
 	}
 
 	public boolean equals(Object obj) {
@@ -61,4 +78,60 @@ public class PropositionSet {
 		}
 		return i == this.props.length;
 	}
+
+	public PropositionSet union(PropositionSet propSet) {
+		int [] props = propSet.getProps();
+		int [] props1 = this.getProps();
+		int [] props2 = new int[props.length + props1.length];
+
+		int i = 0, j = 0, k = 0;
+
+		while (i < props.length || j < props1.length) {
+
+			if (i >= props.length) {
+				props2[k++] = props1[j++];
+				continue;
+			} else if (j >= props1.length) {
+				props2[k++] = props[i++];
+				continue;
+			}
+
+			if(props[i] == props1[j]) {
+				props2[k] = props[i];
+				i++;j++;
+			} else if (props[i] < props1[i]) {
+				props2[k] = props[i];
+				i++;
+			} else {
+				props2[k] = props1[j];
+				j++;
+			}
+			k++;
+		}
+
+		int [] output = Arrays.copyOfRange(props2, 0, k);
+		return new PropositionSet(output);
+	}
+
+	public PropositionSet remove(int prop) throws NodeNotFoundException {
+		int[] current = this.getProps();
+		int[] newSet = new int[current.length - 1];
+		int j = 0;
+		boolean found = false;
+		if (props[props.length -1] < prop)
+			throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+		for (int i = 0; i < current.length; i++) {
+			if (prop < current[i] && !found)
+				throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+			if (!(prop == current[i])) {
+				newSet[j] = current[i];
+				j++;
+			} else {
+				found = true;
+			}
+		}
+		return new PropositionSet(newSet);
+	}
+
+
 }
