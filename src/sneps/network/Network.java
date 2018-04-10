@@ -519,7 +519,7 @@ public class Network implements Serializable {
 	 *
 	 * @return the newly created variable node.
 	 */
-	public static Node buildVariableNode(Semantic semantic) {
+	public static VariableNode buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
@@ -852,8 +852,8 @@ public class Network implements Serializable {
 					continue;
 				} else {
 					if (!(((Relation) array[i][0]).getType().equals(
-							((Node) array[i][1]).getSemanticType()) || ((Node) array[i][1])
-							.getSemantic().getSuperClassesNames()
+							((Node) array[i][1]).getSemantic().getSemanticType()) || ((Node) array[i][1])
+							.getSemantic().getSemanticType()
 							.contains(((Relation) array[i][0]).getType()))) {
 						return false;
 

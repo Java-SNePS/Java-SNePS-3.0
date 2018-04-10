@@ -22,6 +22,6 @@ public class Molecular extends Term implements Serializable{
 	}
 
 	public DownCableSet getDownCableSet() {
-		return this.getDownCableSet();
+		return this.downCableSet;
 	}
 }
