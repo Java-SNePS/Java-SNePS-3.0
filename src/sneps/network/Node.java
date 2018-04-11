@@ -1,17 +1,20 @@
 package sneps.network;
 
+import java.io.Serializable;
+
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
+import sneps.snip.channels.Channel;
 import sneps.snip.matching.Substitutions;
 
-public class Node {
+public class Node implements Serializable {
 	
-	private Term term;
-	private Semantic semanticType;
+	protected Term term;
+	protected Semantic semanticType;
 	private static int count=0;
 	private int id;
 	
@@ -39,7 +42,7 @@ public class Node {
 	 * @return the instance of term class representing the term type
 	 *         of the current node.
 	 */
-	public Term getSyntactic() {
+	public Term getTerm() {
 		return this.term;
 	}
 
@@ -134,7 +137,19 @@ public class Node {
 		return true;
 	}
 
-
+	public void receiveRequest(Channel newChannel) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void processReports() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void processRequests() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public NodeSet getDominatingRules() {
 		NodeSet ret = new NodeSet();
 		UpCable consequentCable = this.getUpCableSet().getUpCable("cq");
@@ -207,11 +222,6 @@ public class Node {
 		// what to return here ?*/
 	}
 
-	
-	
-	public Term getTerm() {
-		return term;
-	}
 	public void setTerm(Term term) {
 		this.term = term;
 	}
@@ -240,4 +250,6 @@ public class Node {
 		this.term.setTemp(temp);
 	}
 
+
+	
 }

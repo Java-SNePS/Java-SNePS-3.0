@@ -1,8 +1,9 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Semantic {
+public class Semantic implements Serializable {
 	protected String semanticType; 
 
 	public Semantic() {	}
@@ -16,4 +17,15 @@ public class Semantic {
 		return null;
 	}
 
+	public String getSemanticType() {
+		return semanticType;
+	}
+
+	public boolean isAsserted(Object contextByName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+	
 }

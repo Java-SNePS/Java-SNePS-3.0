@@ -1,42 +1,35 @@
-/**
- * @(#)Binding.java
- *
- *
- * @author Mohamed Karam Gabr
- * @version 1.00 2010/3/14
- */
 package sneps.snip.matching;
 
 import sneps.network.Node;
-import sneps.network.classes.term.Variable;
+import sneps.network.VariableNode;
 
-public class Binding
-{
-        private Node node;
-        private Variable variable;
-        /**
-         *Creates new binding from variable and node
-         *@param node
-         *@param variablear
-         */
-    public Binding(Variable variable,Node node)
+public class Binding{
+	private Node node;
+    private VariableNode variable;
+    
+    /**
+     *Creates new binding from variable and node
+     *@param node
+     *@param variablear
+    */
+    public Binding(VariableNode variable,Node node)
     {
         this.node=node;
         this.variable=variable;
     }
    
     /**
-         *returns the variable of the binding
-         *@return variable
-         */
-    public Variable getVariable()
+      *returns the variable of the binding
+      *@return variable
+    */
+    public VariableNode getVariable()
     {
         return variable;
     }
     /**
-         *returns the node of the binding
-         *@return node
-         */
+     *returns the node of the binding
+     *@return node
+    */
     public Node getNode()
     {
         return node;
@@ -59,7 +52,7 @@ public class Binding
          *Set the value of the variable of the binding with m
          *@param m the new variable
          */
-    public void setVariable(Variable m)
+    public void setVariable(VariableNode m)
     {
         variable=m;
     }
