@@ -8,6 +8,66 @@ import sneps.snepslog.AP;
 public class SnepslogTest extends TestCase {
 
 	@Test
+    public void testActivate() {
+		try{
+		      AP.executeSnepslogCommand("activate dog(Fido)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testActivateBang() {
+		try{
+		      AP.executeSnepslogCommand("activate! dog(Fido)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testAsk() {
+		try{
+		      AP.executeSnepslogCommand("ask dog(Fido)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testAskIfNot() {
+		try{
+		      AP.executeSnepslogCommand("askifnot dog(Fido)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testAskWh() {
+		try{
+		      AP.executeSnepslogCommand("askwh dog(Fido)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testAskWhNot() {
+		try{
+		      AP.executeSnepslogCommand("askwhnot dog(Fido)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
     public void testClearInfer1() {
 		try{
 		      AP.executeSnepslogCommand("clear-infer");
