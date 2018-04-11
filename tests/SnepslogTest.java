@@ -168,6 +168,16 @@ public class SnepslogTest extends TestCase {
     }
 	
 	@Test
+    public void testDemo() {
+		try{
+		      AP.executeSnepslogCommand("demo");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
     public void testDescribeContext() {
 		try{
 		      AP.executeSnepslogCommand("describe-context mythology");
@@ -228,6 +238,16 @@ public class SnepslogTest extends TestCase {
     }
 	
 	@Test
+    public void testLoad() {
+		try{
+		      AP.executeSnepslogCommand("load test.snepslog");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
     public void testNormal() {
 		try{
 		      AP.executeSnepslogCommand("normal");
@@ -241,6 +261,26 @@ public class SnepslogTest extends TestCase {
     public void testPerform() {
 		try{
 		      AP.executeSnepslogCommand("perform kill(Enemy)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testSetContext() {
+		try{
+		      AP.executeSnepslogCommand("set-context mythology");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testSetDefaultContext() {
+		try{
+		      AP.executeSnepslogCommand("set-default-context mythology");
 		   }
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
@@ -271,6 +311,56 @@ public class SnepslogTest extends TestCase {
     public void testSetModeThree() {
 		try{
 		      AP.executeSnepslogCommand("set-mode-3");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testShow() {
+		try{
+		      AP.executeSnepslogCommand("show");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testTrace() {
+		try{
+		      AP.executeSnepslogCommand("trace parsing");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testUndefinePath() {
+		try{
+		      AP.executeSnepslogCommand("undefine-path member");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testUnlabeled() {
+		try{
+		      AP.executeSnepslogCommand("unlabeled");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testUntrace() {
+		try{
+		      AP.executeSnepslogCommand("untrace parsing");
 		   }
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
