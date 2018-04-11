@@ -138,6 +138,116 @@ public class SnepslogTest extends TestCase {
     }
 	
 	@Test
+    public void testDefineFrame() {
+		try{
+		      AP.executeSnepslogCommand("define-frame Entity cf (member class)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testDefinePath() {
+		try{
+		      AP.executeSnepslogCommand("define-path member FUnitPath");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testDefineSemantic() {
+		try{
+		      AP.executeSnepslogCommand("define-semantic prop");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testDescribeContext() {
+		try{
+		      AP.executeSnepslogCommand("describe-context mythology");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testDescribeTerms() {
+		try{
+		      AP.executeSnepslogCommand("describe-terms");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testExpert() {
+		try{
+		      AP.executeSnepslogCommand("expert");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testListAssertedWffs() {
+		try{
+		      AP.executeSnepslogCommand("list-asserted-wffs mythology");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testListContexts() {
+		try{
+		      AP.executeSnepslogCommand("list-contexts");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testListTerms() {
+		try{
+		      AP.executeSnepslogCommand("list-terms");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testNormal() {
+		try{
+		      AP.executeSnepslogCommand("normal");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
+    public void testPerform() {
+		try{
+		      AP.executeSnepslogCommand("perform kill(Enemy)");
+		   }
+		   catch(Exception e){
+		      fail("No exception is expected to be thrown");
+		   }
+    }
+	
+	@Test
     public void testSetModeOne() {
 		try{
 		      AP.executeSnepslogCommand("set-mode-1");
