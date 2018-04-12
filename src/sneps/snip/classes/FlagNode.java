@@ -5,16 +5,30 @@ import java.util.Set;
 import sneps.network.Node;
 import sneps.snebr.Support;
 
+
+
 public class FlagNode {
 	private Node node;
 	private Set<Support> supports;
 	private int flag;
 
-	public FlagNode(Node signature, Set<Support> supports, int i) {
-		// TODO Auto-generated constructor stub
+	/**
+	 * Create a new flag node
+	 * 
+	 * @param n
+	 *            node
+	 * @param set
+	 *            support
+	 * @param f
+	 *            true or false
+	 */
+	public FlagNode(Node n, Set<Support> set, int f) {
+		node = n;
+		supports = set;
+		flag = f;
 	}
 
-	
+
 	public boolean isEqual(FlagNode fn) {
 		return fn.node == node && fn.supports == supports && fn.flag == flag;
 	}

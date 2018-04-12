@@ -15,12 +15,11 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VariableSet;
 
-//@SuppressWarnings("unused")//TODO Not final
 public class PTree extends RuisHandler {
 	private Hashtable<Integer, Set<Variable>> patternVariables;//PatId, Variables
 	private Hashtable<Integer, Set<Integer>> variablePatterns;//VarId, Patterns
-	private VariableSet vars;
-	private NodeSet nodes;
+	/*private VariableSet vars;
+	private NodeSet nodes;*/
 	private Set<Integer> notProccessed;
 	private HashSet<PSubTree> subTrees;
 	private Hashtable<Integer, PSubTree> subTreesMap;
@@ -28,14 +27,14 @@ public class PTree extends RuisHandler {
 	public PTree() {
 		patternVariables = new Hashtable<Integer, Set<Variable>>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
-		vars = new VariableSet();
+		//vars = new VariableSet();
 		notProccessed = new HashSet<Integer>();
 		subTrees = new HashSet<PSubTree>();
 	}
 
 	public void buildTree(NodeSet ants){
 		//TODO Clear afterwards?
-		nodes = ants;
+		//nodes = ants;
 		fillPVandVP(ants);
 
 		LinkedHashSet<Integer> patternSequence = getPatternSequence();
@@ -75,7 +74,7 @@ public class PTree extends RuisHandler {
 					for(Variable currentVar : patVars){
 						int varId = currentVar.getId();
 						
-						vars.addVariable(currentVar);
+						//vars.addVariable(currentVar);
 						tempVars.add(currentVar);
 						notProccessed.add(varId);
 						
@@ -93,19 +92,22 @@ public class PTree extends RuisHandler {
 
 	}
 	private LinkedHashSet<Integer> getPatternSequence() {
-		//TODO Really, That's it?
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
-		//Set<String> proccessed = new HashSet<String>();
-		
+		//Set<Integer> proccessed = new HashSet<Integer>();
+
 		for(int currentVarId : notProccessed){
 			Set<Integer> vPatternsIds = variablePatterns.get(currentVarId);
 
 			for(int currentPatId : vPatternsIds)
-				if(!res.contains(currentVarId))
+				//Set<Variable> varSet = patternVariables.get(currentPatId);
+
+				if(!res.contains(currentPatId))
 					res.add(currentPatId);
+					//proccessed.add(currentVarId);
 			
 		}
 		return res;
+		
 		/*while (!notProccessed.isEmpty()) {
 			toBeProccessed.add(peek(notProccessed));
 			while (!toBeProccessed.isEmpty()) {
@@ -127,7 +129,6 @@ public class PTree extends RuisHandler {
 		res.addAll(patterns);*/
 	}
 	private void constructBottomUp(Queue<PTreeNode> treeNodes) {
-		// TODO constructBottomUp
 		PTreeNode head = treeNodes.poll();
 		if (treeNodes.isEmpty()) {
 			processSubTree(head);
@@ -197,9 +198,9 @@ public class PTree extends RuisHandler {
 		return first;
 	}
 
-	private String peek(Set<String> set) {
+	/*private String peek(Set<String> set) {
 		return set.iterator().next();
-	}
+	}*/
 	private boolean sharingVars(PTreeNode head, PTreeNode second) {
 		Set<Integer> smaller = null, bigger = null;
 		if (head.getVars().size() > second.getVars().size()) {
@@ -240,9 +241,9 @@ public class PTree extends RuisHandler {
 	private class PSubTree {
 		private PTreeNode root;
 
-		public PSubTree(){
+		/*public PSubTree(){
 			root = null;
-		}
+		}*/
 		public PSubTree(PTreeNode rot){
 			root = rot;
 		}
@@ -276,7 +277,7 @@ public class PTree extends RuisHandler {
 	private class PTreeNode {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;
-		private HashSet<RuleUseInfo> ruis;
+		//private HashSet<RuleUseInfo> ruis;
 		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
 		private Set<Integer> pats;
 		private Set<Integer> vars;

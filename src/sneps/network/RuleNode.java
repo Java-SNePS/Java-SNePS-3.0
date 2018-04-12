@@ -35,7 +35,7 @@ public abstract class RuleNode extends PropositionNode {
 	protected boolean shareVars;
 	protected Set<Integer> sharedVars;
 	protected ContextRuisSet contextRuisSet;
-	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
+	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
 	
 	public RuleNode(){}	
@@ -52,7 +52,7 @@ public abstract class RuleNode extends PropositionNode {
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Integer, RuleUseInfo>();
+		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 
 	protected void processNodes(NodeSet antNodes) {
@@ -202,7 +202,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	
-	public RuleUseInfo addConstantRuiToContext(int context, RuleUseInfo rui) {
+	public RuleUseInfo addConstantRuiToContext(Context context, RuleUseInfo rui) {
 		RuleUseInfo tRui = contextConstantRUI.get(context);
 		if (tRui != null)
 			tRui = rui.combine(tRui);
@@ -216,8 +216,8 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public RuleUseInfo getConstantRui(Context con) {
-		RuleUseInfo tRui = contextConstantRUI.get(/*con.getName()*/con);
-		return tRui;//TODO Change hashtable indexing
+		RuleUseInfo tRui = contextConstantRUI.get(con);
+		return tRui;
 	}
 
 	public RuleUseInfo getConstantRUI(int context) {

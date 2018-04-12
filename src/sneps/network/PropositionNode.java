@@ -187,7 +187,10 @@ public class PropositionNode extends Node {
 	}
 
 	public boolean alreadyWorking(Channel channel) {
-		return false;
+		/*if(channel != null)
+			return true;
+		else*/
+			return false;
 	}
 
 
