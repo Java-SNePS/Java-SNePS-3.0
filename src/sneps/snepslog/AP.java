@@ -26,6 +26,17 @@ public class AP {
 		return cf;
 	}
 	
+	public static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) throws CustomException {
+		LinkedList<Relation> rels = new LinkedList<Relation>();
+		Relation r = new Relation("| rel "+p+"|", "Entity");
+		rels.add(r);
+		for(int i=0;i<noOfArguments;i++) {
+			rels.add(new Relation("|rel-arg#"+p+(i+1)+"|", "Entity"));
+		}
+		CaseFrame cf = Network.defineCaseFrame("Entity", rels);
+		return cf;
+	}
+	
 	public static String executeSnepslogCommand(String command) throws Exception{
 		InputStream is = new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8));
 		DataInputStream dis = new DataInputStream(is);
