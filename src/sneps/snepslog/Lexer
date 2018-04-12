@@ -81,9 +81,8 @@ PARSING=(parsing)
 TRANSLATION=(translation)
 SNEPSPATH=(EmptyPath|FUnitPath|BUnitPath|CFResFUnitPath|CFResBUnitPath|ComposePath|ConversePath|KStarPath|KPlusPath|OrPath|AndPath|IrreflexiveRestrictPath|DomainRestrictPath|RangeRestrictPath|BangPath)
 FILEPATH=([A-Za-z0-9/]+\.snepslog)
-STRING_LIT=(\"[A-Za-z0-9]*\")
+STRING_LIT=(\"[A-Za-z0-9 ]*\")
 INT_LIT=([1-9][0-9]*)|(0)
-IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 EQUALITY=(<=>)
 IMPLICATION=(=>)
 OR_ENTAILMENT=(v=>)
@@ -117,6 +116,7 @@ ACTPLAN=(ActPlan)
 EFFECT=(Effect)
 GOALPLAN=(GoalPlan)
 PRECONDITION=(Precondition)
+IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 
 %% 
 <YYINITIAL> {COMMENT} {
@@ -282,9 +282,6 @@ PRECONDITION=(Precondition)
 <YYINITIAL> {FILEPATH} { 
 	return (new Symbol(sym.FILEPATH,yytext()));
 }
-<YYINITIAL> {IDENTIFIER} { 
-	return (new Symbol(sym.IDENTIFIER,yytext()));
-}
 <YYINITIAL> {EQUALITY} { 
 	return (new Symbol(sym.EQUALITY,yytext()));
 }
@@ -386,6 +383,9 @@ PRECONDITION=(Precondition)
 }
 <YYINITIAL> {PRECONDITION} { 
 	return (new Symbol(sym.PRECONDITION,yytext()));
+}
+<YYINITIAL> {IDENTIFIER} { 
+	return (new Symbol(sym.IDENTIFIER,yytext()));
 }
 <YYINITIAL> . {
   return new Symbol(sym.error, "Invalid input: " + yytext());
