@@ -29,6 +29,22 @@ public class AP {
 		return cf;
 	}
 	
+	protected static int getSnepslogMode() {
+		return snepslogMode;
+	}
+
+	protected static void setSnepslogMode(int snepslogMode) {
+		AP.snepslogMode = snepslogMode;
+	}
+
+	protected static String getPrintingMode() {
+		return printingMode;
+	}
+
+	protected static void setPrintingMode(String printingMode) {
+		AP.printingMode = printingMode;
+	}
+
 	public static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) throws CustomException {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		Relation r = new Relation("| rel "+p+"|", "Entity");
