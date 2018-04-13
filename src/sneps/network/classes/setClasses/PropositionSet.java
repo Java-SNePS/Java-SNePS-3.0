@@ -8,14 +8,26 @@ import java.util.Arrays;
 public class PropositionSet {
 	private int[] props;
 
+	/**
+	 * Constructs a new PropositionSet with an empty array of props
+	 */
 	public PropositionSet() {
 		this.props = new int[0];
 	}
 
+	/**
+	 * Constructs a new PropositionSet with an array containing a single prop
+	 * @param prop proposition to be added to the array of props in this PropositionSet
+	 */
 	public PropositionSet(int prop) {
 		this.props = new int[]{prop};
 	}
 
+	/**
+	 * Constructs a new PropositionSet with an array containing of propositions
+	 * deep cloning of the array occurs here.
+	 * @param props the array of props to propulate the props attirubte with
+	 */
 	public PropositionSet(int [] props) {
 		this.props = new int[props.length];
 		for (int i = 0; i < props.length ; i++) {
@@ -23,6 +35,12 @@ public class PropositionSet {
 		}
 	}
 
+	/**
+	 * Constructs a new PropositionSet with props array combined with a single prop
+	 * @param props the array of props
+	 * @param prop a single proposition to be combined with the props array
+	 * @throws DuplicatePropositionException if the prop is already in the props array
+	 */
 	public PropositionSet (int [] props, int prop) throws DuplicatePropositionException {
 		for (int i = 0 ; i < props.length; i++)
 			if(props[i] == prop)
@@ -44,14 +62,30 @@ public class PropositionSet {
 
 	}
 
+	/**
+	 * method for returning the props of the PropositionSet
+	 * @return an int array containing the props
+	 */
 	private int[] getProps() {
 		return props;
 	}
 
+	/**
+	 * Returns an array of the props in a given PropositionSet
+	 * but insures immutability through deep cloning of the props done by the
+	 * PropositionSet constructor.
+	 * @return a <b>new</b> int array of props
+	 */
 	public static int[] getPropsSafely(PropositionSet set) {
 		return new PropositionSet(set.getProps()).props;
 	}
 
+	/**
+	 * Checks if a given PropositionSet is equivalent to this.
+	 * It checks for equality by comparing the equivalence of the two props arrays.
+	 * @param obj
+	 * @return <code>true</code> if they are equal and <code>false</code> otherwise.
+	 */
 	public boolean equals(Object obj) {
 		PropositionSet propositionSet = (PropositionSet)obj;
 		int [] inputProps = propositionSet.getProps();
@@ -67,6 +101,11 @@ public class PropositionSet {
 		return true;
 	}
 
+	/**
+	 * Checks if this PropositionSet
+	 * @param propositionSet
+	 * @return
+	 */
 	public boolean isSubSet(PropositionSet propositionSet) {
 		int [] props =  propositionSet.getProps();
 		int i = 0, j = 0;

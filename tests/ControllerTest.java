@@ -132,7 +132,7 @@ public class ControllerTest {
         Context c = Controller.addPropsToCurrentContext(new PropositionSet(new int [] {3,5,6}));
         assertEquals(c, Controller.getContextByName("default"));
         int [] props = PropositionSet.getPropsSafely(c.getHypothesisSet());
-        assertEquals(props.length, length + 3); 
+        assertEquals(props.length, length + 3);
         assertArrayEquals(props, new int [] {3,5,6}); // TODO: 08/04/18 remove hyps when a mehtod for that is implemented
     }
 
