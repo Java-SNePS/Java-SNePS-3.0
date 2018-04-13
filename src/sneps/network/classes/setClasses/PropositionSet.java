@@ -102,9 +102,9 @@ public class PropositionSet {
 	}
 
 	/**
-	 * Checks if this PropositionSet
-	 * @param propositionSet
-	 * @return
+	 * Checks if this PropositionSet is a subset of a passed PropositionSet.
+	 * @param propositionSet the set that should be a superset of this PropositionSet
+	 * @return <code>true</code> if this is a subset of propositionSet, <code>false</code> otherwise.
 	 */
 	public boolean isSubSet(PropositionSet propositionSet) {
 		int [] props =  propositionSet.getProps();
@@ -118,6 +118,12 @@ public class PropositionSet {
 		return i == this.props.length;
 	}
 
+	/**
+	 * Performs a union of this PropositionSet and a passed PropositionSet and returns
+	 * a new PropositionSet with the union
+	 * @param propSet the PropositionSet to perform union with.
+	 * @return the union of the two PropositionSets
+	 */
 	public PropositionSet union(PropositionSet propSet) {
 		int [] props = propSet.getProps();
 		int [] props1 = this.getProps();
@@ -152,6 +158,12 @@ public class PropositionSet {
 		return new PropositionSet(output);
 	}
 
+	/**
+	 * Returns a new PropositionSet without the proposition passed as an argument.
+	 * @param prop the proposition that shouldn't be present in the returned PropositionSet
+	 * @return a new PropositionSet not having prop.
+	 * @throws NodeNotFoundException if prop is not found in this PropositionSet
+	 */
 	public PropositionSet remove(int prop) throws NodeNotFoundException {
 		int[] current = this.getProps();
 		int[] newSet = new int[current.length - 1];
