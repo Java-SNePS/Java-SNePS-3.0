@@ -29,6 +29,7 @@ public class PropositionSet {
 	 * @param props the array of props to propulate the props attirubte with
 	 */
 	public PropositionSet(int [] props) {
+		props = removeDuplicates(props);
 		this.props = new int[props.length];
 		for (int i = 0; i < props.length ; i++) {
 			this.props[i] = props[i];
@@ -42,6 +43,7 @@ public class PropositionSet {
 	 * @throws DuplicatePropositionException if the prop is already in the props array
 	 */
 	public PropositionSet (int [] props, int prop) throws DuplicatePropositionException {
+		props = removeDuplicates(props);
 		for (int i = 0 ; i < props.length; i++)
 			if(props[i] == prop)
 				throw new DuplicatePropositionException();
@@ -63,7 +65,27 @@ public class PropositionSet {
 	}
 
 	/**
-	 * method for returning the props of the PropositionSet
+	 * Returns a new props array having no duplicates
+	 * @param props the array of props that duplicates should be removed from if found
+	 * @return a new array of props having no duplicates
+	 */
+	public static int[] removeDuplicates(int [] props) {
+		int current = -1, j = 0;
+		int [] temp = new int[props.length];
+		for (int i = 0 ; i < props.length; i++) {
+			if (current == props[i])
+				continue;
+			else {
+				current = props[i];
+				temp[j] = current;
+				j++;
+			}
+		}
+		return Arrays.copyOfRange(temp, 0, j);
+	}
+
+	/**
+	 * Method for returning the props of the PropositionSet
 	 * @return an int array containing the props
 	 */
 	private int[] getProps() {

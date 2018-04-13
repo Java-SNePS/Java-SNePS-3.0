@@ -31,6 +31,12 @@ public class PropositionSetTest {
     }
 
     @Test
+    public void testRemoveDuplicates() {
+        int [] testArr = new int [] {1,2,3,3,3,4,5,6,7,7};
+        assertArrayEquals(PropositionSet.removeDuplicates(testArr), new int[]{1,2,3,4,5,6,7});
+    }
+
+    @Test
     public void testConstructorWithDuplicateThrowsException() {
         int prop = 523;
         int [] props = new int[]{324,423,523,4200,7332,8888};
