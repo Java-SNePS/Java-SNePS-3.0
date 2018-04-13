@@ -145,7 +145,7 @@ public class Controller {
     /**
      * Asserts a set of hyps in the current Context
      * @param hyps the set of hyps to be asserted
-     * @returna new Context object containing the old Context with the set of hyps asserted in it
+     * @return a new Context object containing the old Context with the set of hyps asserted in it
      * @throws ContextNameDoesntExist if no Context with this name exists in SNeBr's ContextSet
      */
     public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExist {
