@@ -15,6 +15,8 @@ import sneps.network.classes.Relation;
 @SuppressWarnings("deprecation")
 public class AP {
 
+	private static int snepslogMode = 1;
+	
 	public static CaseFrame createModeOneCaseFrame(int noOfArguments) throws CustomException {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		Relation r = new Relation("r", "Entity");
