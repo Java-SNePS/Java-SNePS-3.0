@@ -16,6 +16,7 @@ import sneps.network.classes.Relation;
 public class AP {
 
 	private static int snepslogMode = 1;
+	private static String printingMode = "normal";
 	
 	public static CaseFrame createModeOneCaseFrame(int noOfArguments) throws CustomException {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
