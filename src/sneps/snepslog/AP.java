@@ -68,7 +68,8 @@ public class AP {
 	}
 
 	/**
-	 * This method is create a customized case frame for mode 1.
+	 * This method is used to create a customized case frame for mode 1 
+	 *  with semantic type "Individual".
 	 *
 	 * @param noOfArguments
 	 *            the number of argument relations.
@@ -76,20 +77,42 @@ public class AP {
 	 * @throws CustomException
 	 *             if the case frame is already created.
 	 */
-	protected static CaseFrame createModeOneCaseFrame(int noOfArguments) throws CustomException {
+	protected static CaseFrame createModeOneIndividualCaseFrame(int noOfArguments) throws CustomException {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("r", "Entity");
+		Relation r = new Relation("r", "Individual");
 		rels.add(r);
 		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("a" + (i + 1), "Entity"));
+			rels.add(new Relation("a" + (i + 1), "Individual"));
 		}
-		CaseFrame cf = Network.defineCaseFrame("Entity", rels);
+		CaseFrame cf = Network.defineCaseFrame("Individual", rels);
 		return cf;
 	}
 
 	/**
-	 * This method is create a customized case frame for mode 2.
+	 * This method is used to create a customized case frame for mode 1 
+	 *  with semantic type "Proposition".
 	 *
+	 * @param noOfArguments
+	 *            the number of argument relations.
+	 *
+	 * @throws CustomException
+	 *             if the case frame is already created.
+	 */
+	protected static CaseFrame createModeOnePropositionCaseFrame(int noOfArguments) throws CustomException {
+		LinkedList<Relation> rels = new LinkedList<Relation>();
+		Relation r = new Relation("rp", "Individual");
+		rels.add(r);
+		for (int i = 0; i < noOfArguments; i++) {
+			rels.add(new Relation("ap" + (i + 1), "Individual"));
+		}
+		CaseFrame cf = Network.defineCaseFrame("Proposition", rels);
+		return cf;
+	}
+
+	
+	/**
+	 * This method is used to create a customized case frame for mode 2 
+	 *  with semantic type "Individual".
 	 * @param p
 	 *            the name of the p relation.
 	 *
@@ -99,17 +122,40 @@ public class AP {
 	 * @throws CustomException
 	 *             if the case frame is already created.
 	 */
-	protected static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) throws CustomException {
+	protected static CaseFrame createModeTwoIndividualCaseFrame(String p, int noOfArguments) throws CustomException {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("| rel " + p + "|", "Entity");
+		Relation r = new Relation("| rel " + p + "|", "Individual");
 		rels.add(r);
 		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("|rel-arg#" + p + (i + 1) + "|", "Entity"));
+			rels.add(new Relation("|rel-arg#" + p + (i + 1) + "|", "Individual"));
 		}
-		CaseFrame cf = Network.defineCaseFrame("Entity", rels);
+		CaseFrame cf = Network.defineCaseFrame("Individual", rels);
 		return cf;
 	}
 
+	/**
+	 * This method is used to create a customized case frame for mode 2 
+	 *  with semantic type "Proposition".
+	 * @param p
+	 *            the name of the p relation.
+	 *
+	 * @param noOfArguments
+	 *            the number of argument relations.
+	 *
+	 * @throws CustomException
+	 *             if the case frame is already created.
+	 */
+	protected static CaseFrame createModeTwoPropositionCaseFrame(String p, int noOfArguments) throws CustomException {
+		LinkedList<Relation> rels = new LinkedList<Relation>();
+		Relation r = new Relation("| rel " + p + "|", "Individual");
+		rels.add(r);
+		for (int i = 0; i < noOfArguments; i++) {
+			rels.add(new Relation("|rel-arg#" + p + (i + 1) + "|", "Individual"));
+		}
+		CaseFrame cf = Network.defineCaseFrame("Proposition", rels);
+		return cf;
+	}
+	
 	/**
 	 * This method is used to execute a snepslog command.
 	 * 
