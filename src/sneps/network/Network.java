@@ -2,6 +2,7 @@ package sneps.network;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -42,6 +43,8 @@ import sneps.network.paths.Path;
 import sneps.snebr.Context;
 
 public class Network implements Serializable {
+	
+	private static ArrayList<String> savedNetworks = new ArrayList<String>();
 	
 	 /* A hash table that stores all the nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
@@ -1416,7 +1419,6 @@ public class Network implements Serializable {
 		} else {
 			result.addAll(findUnion(path, nodeSet, context));
 		}
-		// System.out.println("yeeeah");
 		return result;
 	}
 
@@ -1475,7 +1477,7 @@ public class Network implements Serializable {
 	 * @return the newly created case frame signature.
 	 */
 	public CFSignature createCFSignature(String result,
-			LinkedList<SubDomainConstraint> rules, String caseframeId) {
+		LinkedList<SubDomainConstraint> rules, String caseframeId) {
 		CFSignature r = new CFSignature(result, rules, caseframeId);
 		return r;
 	}
@@ -2005,7 +2007,7 @@ public class Network implements Serializable {
 	}
 	
 	
-	public static void save(String relationsData, String caseFramesData, String nodesData) throws IOException {
+	public static void save(String relationsData, String caseFramesData, String nodesData, String mcd, String pcd, String vcd) throws IOException {
 		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
 		ros.writeObject(relations);
 		ros.close();
@@ -2019,9 +2021,48 @@ public class Network implements Serializable {
 		nodesOS.writeObject(nodes);
 		nodesOS.close();
 		
+		ObjectOutputStream mc = new ObjectOutputStream(new FileOutputStream(new File(mcd)));
+		mc.writeObject(molCounter);
+		mc.close();
+		
+		ObjectOutputStream pc = new ObjectOutputStream(new FileOutputStream(new File(pcd)));
+		pc.writeObject(patternCounter);
+		pc.close();
+		
+		ObjectOutputStream vc = new ObjectOutputStream(new FileOutputStream(new File(vcd)));
+		vc.writeObject(varCounter);
+		vc.close();
 	}
 	
-	public static void load(String relationsData, String caseFramesData, String nodesData) throws IOException, ClassNotFoundException {
+	public static void saveNetworks() throws IOException {
+		ObjectOutputStream networks = new ObjectOutputStream(new FileOutputStream(new File("Networks")));
+		networks.writeObject(savedNetworks);
+		networks.close();
+	}
+	
+	public static void loadNetworks() throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInputStream ns= new ObjectInputStream(new FileInputStream(new File("Networks")));
+		ArrayList<String> temp = (ArrayList<String>) ns.readObject();
+		Network.savedNetworks = temp;
+		ns.close();
+	}
+	
+	public static ArrayList<String> getSavedNetworks() {
+		return savedNetworks;
+	}
+
+	public static boolean addToSavedNetworks(String n) {
+		boolean r;
+		if(savedNetworks.contains(n)) {
+			r = false;
+		}else {
+			savedNetworks.add(n);
+			r = true;
+		}
+		return r;
+	}
+
+	public static void load(String relationsData, String caseFramesData, String nodesData, String mcd, String pcd, String vcd) throws IOException, ClassNotFoundException {
 		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
 		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
 		Network.relations = tempRelations;
@@ -2041,6 +2082,20 @@ public class Network implements Serializable {
 		nodesis.close();
 		tempNodes = null;
 		
+		ObjectInputStream mc= new ObjectInputStream(new FileInputStream(new File(mcd)));
+		int tempMC = (int) mc.readObject();
+		Network.molCounter = tempMC;
+		mc.close();
+		
+		ObjectInputStream pc= new ObjectInputStream(new FileInputStream(new File(pcd)));
+		int tempPC = (int) pc.readObject();
+		Network.patternCounter = tempPC;
+		pc.close();
+		
+		ObjectInputStream vc= new ObjectInputStream(new FileInputStream(new File(vcd)));
+		int tempVC = (int) vc.readObject();
+		Network.varCounter = tempVC;
+		vc.close();
 				
 	}
 }
