@@ -140,7 +140,6 @@ nonterminal command,
             snepslogSymbol,
             terminalPunctuation,
             optionalDot,
-            optionalBang,
             optionalTerminalPunctuation,
             optionalSnepslogSymbol,
             optionalPTermSet,
@@ -691,7 +690,7 @@ snepslogSymbols ::= COMMA snepslogSymbol snepslogSymbols
 			
 		        :};
 
-wffName ::= WFF INT_LIT optionalBang
+wffName ::= WFF INT_LIT 
 	    {:
 			
 	    :};
@@ -743,15 +742,6 @@ optionalDot ::= DOT
 			{:
 			
 			:};	
-			
-optionalBang ::= BANG
-			 {:
-			
-			 :}
-			 | 
-			 {:
-			
-			 :};	
 			
 optionalTerminalPunctuation ::= terminalPunctuation
 							{:
