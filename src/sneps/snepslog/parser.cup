@@ -57,11 +57,6 @@ terminal ACTIVATE,
          ACTING,
          PARSING,
          TRANSLATION,
-         SNEPSPATH,
-         FILEPATH,
-         STRING_LIT,
-         INT_LIT,
-         IDENTIFIER,
          EQUALITY,
          IMPLICATION,
          OR_ENTAILMENT,
@@ -95,6 +90,12 @@ terminal ACTIVATE,
          EFFECT,
          GOALPLAN,
          PRECONDITION;
+
+terminal String SNEPSPATH,
+         	    FILEPATH,
+                STRING_LIT,
+                INT_LIT,
+                IDENTIFIER;
 
 /* Non-terminals */
 
