@@ -700,7 +700,7 @@ qvar ::= QUESTION_MARK snepslogSymbol
 			
 	 :};
 
-snepslogSymbol ::= WFF INT_LIT
+snepslogSymbol ::= wffName
                {:
                
                :}
