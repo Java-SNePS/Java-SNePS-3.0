@@ -1,5 +1,12 @@
+package sneps.snepslog;
+
 import java.io.*;
 import java_cup.runtime.*;
+
+import java.util.ArrayList;
+import javafx.util.Pair;
+
+import sneps.network.Node;
 
 /*
 parser code {:
@@ -99,58 +106,62 @@ terminal String SNEPSPATH,
 
 /* Non-terminals */
 
-nonterminal command,
-            wffNameCommand,
-            wffCommand,
-            snepslogCommand,
-            optionalSnepslogFunction,
-            wff,
-            infixedTerm,
-            infixedTermHelper2,
-            infixedTermHelper1,
-            entailment,
-            pTermSet,
-            termSet,
-            termSequence,
-            prefixedTerms,
-            prefixedTerm,
-            negatedTerm,
-            andorTerm,
-            setTerm,
-            threshTerm,
-            allTerm,
-            nexistsTerm,
-            nexistsParameters,
-            atomicTerm,
-            withsomeTerm,
-            withallTerm,
-            ifdoTerm,
-            whendoTerm,
-            wheneverdoTerm,
-            actplanTerm,
-            effectTerm,
-            goalplanTerm,
-            preconditionTerm,
-            termSetSequence,
-            termSets,
-            symbolSequence,
-            snepslogSymbols,
-            wffName,
-            qvar,
-            snepslogSymbol,
-            terminalPunctuation,
-            optionalDot,
-            optionalTerminalPunctuation,
-            optionalSnepslogSymbol,
-            optionalPTermSet,
-            identifiers,
-            identifiers_list,
-            demoFirstOptionalOptionSet,
-            demoSecondOptionalOptionSet;
+nonterminal String command,
+                   wffNameCommand,
+                   wffCommand,
+                   snepslogCommand,
+                   optionalSnepslogFunction,
+                   nexistsParameters,
+                   terminalPunctuation,
+                   optionalDot,
+                   optionalTerminalPunctuation,
+                   identifiers,
+                   identifiers_list,
+                   demoFirstOptionalOptionSet,
+                   demoSecondOptionalOptionSet,
+                   andOrEquality,
+                   wffName;
+                               
+nonterminal Node wff,
+                 infixedTerm,
+                 entailment,
+                 prefixedTerm,
+                 negatedTerm, 
+                 andorTerm, 
+                 setTerm, 
+                 threshTerm, 
+                 allTerm, 
+                 nexistsTerm,
+                 atomicTerm,
+                 withsomeTerm,
+                 withallTerm,
+                 ifdoTerm,
+                 whendoTerm,
+                 wheneverdoTerm,
+                 actplanTerm,
+                 effectTerm,
+                 goalplanTerm,
+                 preconditionTerm,
+                 snepslogSymbol,
+                 optionalSnepslogSymbol,
+                 qvar;
+
+nonterminal ArrayList<Pair<String, Node>> infixedTerms;
+
+nonterminal ArrayList<Node> pTermSet,
+                            termSet,
+                            termSequence,
+                            prefixedTerms, 
+                            symbolSequence,
+                            snepslogSymbols,
+                            optionalPTermSet;
+                             
+nonterminal ArrayList<ArrayList<Node>> termSetSequence,
+                                       termSets;
 
 /* Precedences */
 
-precedence left COMMA,COLON,BANG,DOT,QUESTION_MARK;
+precedence left COMMA, COLON, BANG, DOT, QUESTION_MARK;
 
 /* The grammar */
 
@@ -376,21 +387,21 @@ wff ::= infixedTerm
     
     :};				
 
-infixedTerm ::= prefixedTerm infixedTermHelper2
+infixedTerm ::= prefixedTerm infixedTerms
             {:
     
             :};
 
-infixedTermHelper2 ::= infixedTermHelper1 prefixedTerm infixedTermHelper2
+infixedTerms ::= andOrEquality prefixedTerm infixedTerms
                    {:
               
                    :}
-                   | infixedTermHelper1 prefixedTerm
+                   | andOrEquality prefixedTerm
                    {:
                    
                    :};
 
-infixedTermHelper1 ::= AND
+andOrEquality ::= AND
                    {:
              
                    :}
