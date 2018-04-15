@@ -157,6 +157,13 @@ public class AP {
 	}
 	
 	/**
+	 * This method is used to clear the knowledge base entirely.
+	 */
+	protected static void clearKnowledgeBase() {
+		// TODO Finish building clearKnowledgeBase()
+	}
+	
+	/**
 	 * This method is used to execute a snepslog command.
 	 * 
 	 * @param command
