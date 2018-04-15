@@ -49,8 +49,9 @@ public class AndOrNode extends RuleNode {
 		// TODO Auto-generated constructor stub
 	}
 	
+	@Override
 	public void applyRuleHandler(Report report, Node node) {
-	
+		super.applyRuleHandler(report, node);
 		if(report.isPositive()==true)
 			positiveCount++;
 		

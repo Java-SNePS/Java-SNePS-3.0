@@ -9,6 +9,7 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
+import sneps.network.classes.term.Variable;
 import sneps.setClasses.ContextRuisSet;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
@@ -111,7 +112,7 @@ public abstract class RuleNode extends PropositionNode {
 		VariableNode n = (VariableNode) nodes.getNode(0);
 		boolean res = true;
 		for (int i = 1; i < nodes.size(); i++) {
-			if (!n.hasSameFreeVariablesAs((VariableNode) nodes.getNode(i))) {
+			if (!n.hasSameFreeVariableAs((VariableNode) nodes.getNode(i))) {
 				res = false;
 				break;
 			}
@@ -120,17 +121,33 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
-		/*if (nodes.isEmpty())
-			return new HashSet<VariableNode>();
-		VariableNode n = (VariableNode) nodes.getNode(0);
-		Set<VariableNode> res = ImmutableSet.copyOf(n.getFreeVariables());
+		Set<VariableNode> res = new HashSet<VariableNode>();
+		VariableSet vars = new VariableSet();
+		if (nodes.isEmpty())
+			return res;
+		/*
+		for(Node currentNode : nodes){
+			VariableNode n = (VariableNode) currentNode;
+			VariableSet currentVars = n.getFreeVariables();
+			if(!vars.isEmpty()){
+				for(Variable var: currentVars){
+					if(vars.contains(var))
+						res.add(n);
+					
+				}
+			}else{
+				vars.addAll(n.getFreeVariables());
+			}
+			
+		}
+		*/
+		/* = ImmutableSet.copyOf(n.getFreeVariables());
 		for (int i = 1; i < nodes.size(); i++) {
 			n = (VariableNode) nodes.getNode(i);
-			Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
-			res = Sets.intersection(res, temp);
-		}
-		return res;*/
-		return null;
+			//Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
+			//res = Sets.intersection(res, temp);
+		}*/
+		return res;
 	}
 
 	public Set<Integer> getSharedVarsInts(NodeSet nodes) {
@@ -225,7 +242,9 @@ public abstract class RuleNode extends PropositionNode {
 	}
 	
 	public static boolean isConstantNode(Node n) {
-		return !(n instanceof VariableNode) || n instanceof RuleNode || ((VariableNode) n).getFreeVariables().isEmpty();
+		return !(n instanceof VariableNode) ||
+				n instanceof RuleNode ||
+				((Variable) ((VariableNode) n).getTerm()) == null;//TODO check 1
 	}
 
 	@Override

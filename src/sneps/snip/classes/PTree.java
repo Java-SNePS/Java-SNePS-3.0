@@ -10,13 +10,11 @@ import java.util.Stack;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
-import sneps.network.classes.term.Variable;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
-import sneps.setClasses.VariableSet;
 
 public class PTree extends RuisHandler {
-	private Hashtable<Integer, Set<Variable>> patternVariables;//PatId, Variables
+	private Hashtable<Integer, Set<Integer>> patternVariables;//PatId, Variables
 	private Hashtable<Integer, Set<Integer>> variablePatterns;//VarId, Patterns
 	/*private VariableSet vars;
 	private NodeSet nodes;*/
@@ -25,7 +23,7 @@ public class PTree extends RuisHandler {
 	private Hashtable<Integer, PSubTree> subTreesMap;
 
 	public PTree() {
-		patternVariables = new Hashtable<Integer, Set<Variable>>();
+		patternVariables = new Hashtable<Integer, Set<Integer>>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
 		//vars = new VariableSet();
 		notProccessed = new HashSet<Integer>();
@@ -33,7 +31,7 @@ public class PTree extends RuisHandler {
 	}
 
 	public void buildTree(NodeSet ants){
-		//TODO Clear afterwards?
+		//TODO Clear afterwards + check 2
 		//nodes = ants;
 		fillPVandVP(ants);
 
@@ -43,11 +41,11 @@ public class PTree extends RuisHandler {
 			Set<Integer> pats = new HashSet<Integer>();
 			pats.add(pat);
 			
-			Set<Variable> varSet = patternVariables.get(pat);
 			Set<Integer> proccessed = new HashSet<Integer>();
+			/*Set<Variable> varSet = patternVariables.get(pat);
 			for(Variable var : varSet)
 				proccessed.add(var.getId());
-			
+			*/
 			treeNodes.add(new PTreeNode(pats, proccessed));
 		}
 
@@ -55,7 +53,7 @@ public class PTree extends RuisHandler {
 	}
 
 	private void fillPVandVP(NodeSet ants) {
-		Set<Variable> tempVars = null;
+		Set<Integer> tempVars = null;
 		for(int i=0; i < ants.size(); i++){
 			Node pattern = ants.getNode(i);
 			int id = pattern.getId();
@@ -65,7 +63,7 @@ public class PTree extends RuisHandler {
 				patVarNode = (VariableNode) pattern;
 
 			if(patVarNode != null){
-				VariableSet patVars = patVarNode.getFreeVariables();
+				/*VariableSet patVars = patVarNode.getFreeVariables();
 				tempVars = patternVariables.get(id);
 				
 				if(tempVars == null){
@@ -86,7 +84,7 @@ public class PTree extends RuisHandler {
 						variablePatterns.put(varId, pats);
 					}//VP filled
 					patternVariables.put(id, tempVars);
-				}//PV filled
+				}//PV filled*/
 			}
 		}
 
