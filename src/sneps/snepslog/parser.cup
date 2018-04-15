@@ -169,9 +169,9 @@ command ::= 	wffNameCommand
 		{: 
 				
 		:}
-		| snepslogCommand
+		| snepslogCommand:sc
 		{: 
-				
+			RESULT = sc;
 		:}
 		| wffCommand
 		{: 
@@ -190,11 +190,11 @@ wffCommand ::= wff terminalPunctuation
 				
 snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
-				
+					RESULT = "This functionality is still under development.";
 				:}
 				| ACTIVATE BANG wff optionalTerminalPunctuation
 				{: 
-
+                		RESULT = "This functionality is still under development.";
 				:}
 				| ADD_TO_CONTEXT snepslogSymbol termSet optionalDot
 				{: 
@@ -234,15 +234,16 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				:}
 				| CLEAR_INFER optionalDot
 				{: 
-
+					RESULT = "This functionality is still under development.";
 				:}
 				| CLEARKB optionalDot
 				{: 
-
+					AP.clearKnowledgeBase();
+					RESULT = "The knowledge base is cleared.";
 				:}
 				| COPYRIGHT optionalDot
 				{: 
-
+					RESULT = "copyright statement goes here.";
 				:}
 				| DEFINE_FRAME IDENTIFIER snepslogSymbol identifiers_list optionalDot
 				{: 
@@ -282,7 +283,12 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				:}
 				| EXPERT optionalDot
 				{: 
-
+					if(!AP.getPrintingMode().equals("expert")) {
+						AP.setPrintingMode("expert");
+						RESULT = "expert mode is turned on.";
+					}else{
+						RESULT = "expert mode is already in use.";
+					}
 				:}
 				| LIST_ASSERTED_WFFS optionalSnepslogSymbol optionalDot
 				{: 
@@ -302,7 +308,12 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				:}
 				| NORMAL optionalDot
 				{: 
-
+					if(!AP.getPrintingMode().equals("normal")) {
+						AP.setPrintingMode("normal");
+						RESULT = "normal mode is turned on.";
+					}else{
+						RESULT = "normal mode is already in use.";
+					}
 				:}
 				| PERFORM atomicTerm optionalDot
 				{: 
@@ -322,15 +333,33 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				:}
 				| SET_MODE_1 optionalDot
 				{: 
-
+					if(AP.getSnepslogMode()!=1) {
+						AP.clearKnowledgeBase();
+						AP.setSnepslogMode(1);
+						RESULT = "The knowledge base is cleared, and SNePSLOG is put into Mode 1.";
+					}else{
+						RESULT = "Mode 1 is already in use.";
+					}
 				:}
 				| SET_MODE_2 optionalDot
 				{: 
-
+					if(AP.getSnepslogMode()!=2) {
+						AP.clearKnowledgeBase();
+						AP.setSnepslogMode(2);
+						RESULT = "The knowledge base is cleared, and SNePSLOG is put into Mode 2.";
+					}else{
+						RESULT = "Mode 2 is already in use.";
+					}
 				:}
 				| SET_MODE_3 optionalDot
 				{: 
-
+					if(AP.getSnepslogMode()!=3) {
+						AP.clearKnowledgeBase();
+						AP.setSnepslogMode(3);
+						RESULT = "The knowledge base is cleared, and SNePSLOG is put into Mode 3.";
+					}else{
+						RESULT = "Mode 3 is already in use.";
+					}
 				:}
 				| SHOW optionalPTermSet optionalDot
 				{: 
@@ -346,7 +375,12 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				:}
 				| UNLABELED optionalDot
 				{: 
-
+					if(!AP.getPrintingMode().equals("unlabeled")) {
+						AP.setPrintingMode("unlabeled");
+						RESULT = "unlabeled mode is turned on.";
+					}else{
+						RESULT = "unlabeled mode is already in use.";
+					}
 				:}
 				| UNTRACE optionalSnepslogFunction optionalDot
 				{: 

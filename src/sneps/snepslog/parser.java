@@ -1016,8 +1016,11 @@ class CUP$parser$actions {
           case 2: // command ::= snepslogCommand 
             {
               String RESULT =null;
+		int scleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int scright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String sc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-				
+			RESULT = sc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1061,7 +1064,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-				
+					RESULT = "This functionality is still under development.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1072,7 +1075,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+                		RESULT = "This functionality is still under development.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1182,7 +1185,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					RESULT = "This functionality is still under development.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1193,7 +1196,8 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					AP.clearKnowledgeBase();
+					RESULT = "The knowledge base is cleared.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1204,7 +1208,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					RESULT = "copyright statement goes here.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1314,7 +1318,12 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					if(!AP.getPrintingMode().equals("expert")) {
+						AP.setPrintingMode("expert");
+						RESULT = "expert mode is turned on.";
+					}else{
+						RESULT = "expert mode is already in use.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1369,7 +1378,12 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					if(!AP.getPrintingMode().equals("normal")) {
+						AP.setPrintingMode("normal");
+						RESULT = "normal mode is turned on.";
+					}else{
+						RESULT = "normal mode is already in use.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1424,7 +1438,13 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					if(AP.getSnepslogMode()!=1) {
+						AP.clearKnowledgeBase();
+						AP.setSnepslogMode(1);
+						RESULT = "The knowledge base is cleared, and SNePSLOG is put into Mode 1.";
+					}else{
+						RESULT = "Mode 1 is already in use.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1435,7 +1455,13 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					if(AP.getSnepslogMode()!=2) {
+						AP.clearKnowledgeBase();
+						AP.setSnepslogMode(2);
+						RESULT = "The knowledge base is cleared, and SNePSLOG is put into Mode 2.";
+					}else{
+						RESULT = "Mode 2 is already in use.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1446,7 +1472,13 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					if(AP.getSnepslogMode()!=3) {
+						AP.clearKnowledgeBase();
+						AP.setSnepslogMode(3);
+						RESULT = "The knowledge base is cleared, and SNePSLOG is put into Mode 3.";
+					}else{
+						RESULT = "Mode 3 is already in use.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1490,7 +1522,12 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					if(!AP.getPrintingMode().equals("unlabeled")) {
+						AP.setPrintingMode("unlabeled");
+						RESULT = "unlabeled mode is turned on.";
+					}else{
+						RESULT = "unlabeled mode is already in use.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
