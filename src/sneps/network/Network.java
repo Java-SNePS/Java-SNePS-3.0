@@ -258,7 +258,6 @@ public class Network implements Serializable {
 	}
 
 	public static Node getNodeById(int id) throws CustomException {
-		System.out.println(" the size of the node " +nodesIndex.size());
 		if (nodesIndex.get(id) != null) {
 			return nodesIndex.get(id);
 		} else {
