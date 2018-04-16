@@ -10,17 +10,16 @@ import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Base;
-
 import static org.junit.Assert.*;
 
 public class NetworkTest {
      Semantic semantic;
     final static String semanticType = "PropositionNode";
+    
 
     @Before
-    public void setUp(){
+    public void setUp() throws CustomException{
     	semantic = new Semantic(semanticType);
-    	
     }
 
     @Test
@@ -31,13 +30,6 @@ public class NetworkTest {
         assertEquals(n0, Network.getNodeById(0));
         assertTrue(n0.getTerm() instanceof Base);
     }
-    
-    @Test
-    public void buildMolNode() {
-        
-    }
-
-   
 
     @After
     public void removeNodes() throws CustomException {
