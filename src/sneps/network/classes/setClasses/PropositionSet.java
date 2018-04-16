@@ -49,12 +49,8 @@ public class PropositionSet {
 		}
 	}
 
-	public PropositionSet add(int prop) {
+	public PropositionSet add(int prop) throws DuplicatePropositionException {
 		return new PropositionSet(this.getProps(), prop);
-	}
-
-	private int[] getProps() {
-		return props;
 	}
 
 	public static int[] getPropsSafely(PropositionSet set) {

@@ -554,6 +554,12 @@ public class Network implements Serializable {
 			
 		} else {
 			Base b = new Base(identifier);
+			if(semantic.getSemanticType().equals("PropositionNode")){
+				PropositionNode propNode;
+				propNode = new PropositionNode(b);
+				nodes.put(identifier, propNode);
+				nodesIndex.add(propNode.getId(), propNode);
+			}else{
 			Node node;
       /*if (semantic.getSemanticType().equals("Action")) {
 				if (semantic.getSemanticType().equals("ControlAction")) {
@@ -567,7 +573,7 @@ public class Network implements Serializable {
 			node = new Node(semantic, b);
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
-
+			}
 			if (isMolName(identifier) > -1)
 				userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
 			if (isPatName(identifier) > -1)
@@ -627,6 +633,21 @@ public class Network implements Serializable {
 		// check that the down cable set is following the case frame
 		// System.out.println("done 3rd");
 		// create the Molecular Node
+		if(caseFrame.getSemanticClass().equals("PropositionNode")){
+			PropositionNode propNode;
+			if (isToBePattern(array)) {
+				//System.out.println("building patt");
+				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
+			}else {
+				//System.out.println("building closed");
+				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
+			}
+			nodes.put(propNode.getIdentifier(), propNode);
+			nodesIndex.add(propNode.getId(), propNode);
+			Molecular molecular = (Molecular)propNode.getTerm();
+			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
+			return propNode;
+		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
 			//System.out.println("building patt");
@@ -640,6 +661,7 @@ public class Network implements Serializable {
 		Molecular molecular = (Molecular)mNode.getTerm();
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
+		}
 	} 
 	
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
@@ -668,6 +690,21 @@ public class Network implements Serializable {
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// System.out.println("done 3rd");
 		// create the Molecular Node
+		if(caseFrame.getSemanticClass().equals("PropositionNode")){
+			PropositionNode propNode;
+			if (isToBePattern(array)) {
+				System.out.println("building patt");
+				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
+			}else {
+				System.out.println("building closed");
+				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
+			}
+			nodes.put(propNode.getIdentifier(), propNode);
+			nodesIndex.add(propNode.getId(), propNode);
+			Molecular molecular = (Molecular)propNode.getTerm();
+			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
+			return propNode;
+		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
 			System.out.println("building patt");
@@ -681,6 +718,7 @@ public class Network implements Serializable {
 		Molecular molecular = (Molecular)mNode.getTerm();
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
+		}
 	}
 
 
@@ -1035,7 +1073,7 @@ public class Network implements Serializable {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("PropositionNode")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = null;
@@ -1168,7 +1206,7 @@ public class Network implements Serializable {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("PropositionNode")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = null;

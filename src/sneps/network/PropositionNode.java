@@ -35,13 +35,18 @@ public class PropositionNode extends Node {
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
+		basicSupport = new Support(this.getId());
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
 	}
 
 	public PropositionNode(Term trm) {
-		this();
+		super(trm);
+		basicSupport = new Support(this.getId());
+		outgoingChannels = new ChannelSet();
+		incomingChannels = new ChannelSet();
+		knownInstances = new ReportSet();
 		setTerm(trm);
 	}
 	
@@ -212,6 +217,10 @@ public class PropositionNode extends Node {
 	}
 	public void setKnownInstances(ReportSet knownInstances) {
 		this.knownInstances = knownInstances;
+	}
+	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
+		return basicSupport.getAssumptionBasedSupport();
+		
 	}
 
 
