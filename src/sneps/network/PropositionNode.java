@@ -26,7 +26,7 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class PropositionNode extends Node {
+public class  	PropositionNode extends Node {
 	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;

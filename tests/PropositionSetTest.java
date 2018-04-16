@@ -2,8 +2,11 @@ package tests;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundException;
+import sneps.exceptions.NotAPropositionNodeException;
+import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -13,21 +16,11 @@ import java.util.Arrays;
 public class PropositionSetTest {
 
     @Test
-    public void testConstructor() throws DuplicatePropositionException {
+    public void testAdd() throws NotAPropositionNodeException, CustomException {
         int prop = 800;
         int [] props = new int[]{324,423,523,4200,7332,8888};
-        PropositionSet set = new PropositionSet(props, prop);
-        int [] testProps = new int[props.length + 1];
-        for (int i = 0, j = 0 ; i < props.length; i++, j++) {
-            if (j== 3) {
-                testProps[j++] = prop;
-                testProps[j] = props[i];
-            } else {
-                testProps[j] = props[i];
-            }
-        }
-        PropositionSet testSet = new PropositionSet(testProps);
-        assertTrue(testSet.equals(set));
+        Network.buildBaseNode()
+        PropositionSet set = new PropositionSet(props);
     }
 
     @Test

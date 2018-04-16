@@ -1,8 +1,13 @@
 package sneps.network.classes.setClasses;
 
+import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundException;
+import sneps.exceptions.NotAPropositionNodeException;
+import sneps.network.Network;
+import sneps.network.PropositionNode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PropositionSet {
@@ -19,49 +24,26 @@ public class PropositionSet {
 	 * Constructs a new PropositionSet with an array containing a single prop
 	 * @param prop proposition to be added to the array of props in this PropositionSet
 	 */
-	public PropositionSet(int prop) {
+	public PropositionSet(int prop) throws CustomException, NotAPropositionNodeException {
+		if(!(Network.getNodeById(prop) instanceof PropositionNode)) {
+			throw new NotAPropositionNodeException();
+		}
 		this.props = new int[]{prop};
 	}
 
 	/**
 	 * Constructs a new PropositionSet with an array containing of propositions
 	 * deep cloning of the array occurs here.
-	 * @param props the array of props to propulate the props attirubte with
+	 * @param props the array of props to populate the props attribute with
 	 */
-	public PropositionSet(int [] props) {
-		props = removeDuplicates(props);
-		this.props = new int[props.length];
-		for (int i = 0; i < props.length ; i++) {
-			this.props[i] = props[i];
-		}
-	}
+	public PropositionSet(int [] props) throws NotAPropositionNodeException, CustomException {
+		for (int i = 0; i < props.length; i++)
+			if(!(Network.getNodeById(props[i]) instanceof PropositionNode))
+				throw new NotAPropositionNodeException();
 
-	/**
-	 * Constructs a new PropositionSet with props array combined with a single prop
-	 * @param props the array of props
-	 * @param prop a single proposition to be combined with the props array
-	 * @throws DuplicatePropositionException if the prop is already in the props array
-	 */
-	public PropositionSet (int [] props, int prop) throws DuplicatePropositionException {
-		props = removeDuplicates(props);
-		for (int i = 0 ; i < props.length; i++)
-			if(props[i] == prop)
-				throw new DuplicatePropositionException();
+		this.props = removeDuplicates(props);
 
-		int i = 0, j = 0;
-		this.props = new int[props.length + 1];
-		boolean inserted = false;
-		while (i < props.length) {
-			if(!inserted && prop < props[i]) {
-				this.props[j++] = prop;
-				inserted = true;
-			} else {
-				this.props[j++] = props[i++];
-			}
-		}
-		if(!inserted)
-			this.props[j] = prop;
-
+		Arrays.sort(this.props);
 	}
 
 	/**
@@ -98,7 +80,7 @@ public class PropositionSet {
 	 * PropositionSet constructor.
 	 * @return a <b>new</b> int array of props
 	 */
-	public static int[] getPropsSafely(PropositionSet set) {
+	public static int[] getPropsSafely(PropositionSet set) throws NotAPropositionNodeException, CustomException {
 		return new PropositionSet(set.getProps()).props;
 	}
 
@@ -146,7 +128,7 @@ public class PropositionSet {
 	 * @param propSet the PropositionSet to perform union with.
 	 * @return the union of the two PropositionSets
 	 */
-	public PropositionSet union(PropositionSet propSet) {
+	public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, CustomException {
 		int [] props = propSet.getProps();
 		int [] props1 = this.getProps();
 		int [] props2 = new int[props.length + props1.length];
@@ -186,7 +168,7 @@ public class PropositionSet {
 	 * @return a new PropositionSet not having prop.
 	 * @throws NodeNotFoundException if prop is not found in this PropositionSet
 	 */
-	public PropositionSet remove(int prop) throws NodeNotFoundException {
+	public PropositionSet remove(int prop) throws NodeNotFoundException, NotAPropositionNodeException, CustomException {
 		int[] current = this.getProps();
 		int[] newSet = new int[current.length - 1];
 		int j = 0;
@@ -205,6 +187,37 @@ public class PropositionSet {
 		}
 		return new PropositionSet(newSet);
 	}
+
+	/**
+	 * Creates a new PropositionSet with a prop if it isn't a duplicate.
+	 * @param prop The proposition that is desired to be added.
+	 * @return A new PropositionSet with the added prop.
+	 * @throws DuplicatePropositionException If the prop is a duplicate
+	 */
+	public PropositionSet add(int prop) throws DuplicatePropositionException, NotAPropositionNodeException, CustomException {
+		int [] props = this.props;
+		int [] props2 = new int[props.length + 1];
+		int i = 0, j = 0;
+		boolean inserted = false;
+		while(i < props.length ) {
+			if (props[i] == prop)
+				throw new DuplicatePropositionException();
+
+			if(!inserted && prop < props[i]) {
+				props2[j++] = prop;
+				inserted = true;
+			} else {
+				props2[j++] = props[i++];
+			}
+		}
+
+		if(!inserted)
+			props2[j] = prop;
+
+		return new PropositionSet(props2);
+
+	}
+
 
 
 }

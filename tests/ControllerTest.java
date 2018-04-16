@@ -18,8 +18,8 @@ import java.util.HashSet;
 
 public class ControllerTest {
 
-    private static final String testContextName = "test context";
-    private static final String testContext2 = "test context2";
+    private static final String testContextName = "Test context";
+    private static final String testContext2 = "Test context2";
 
     @Before
     public void setUp() throws DuplicateContextNameException {
@@ -67,9 +67,9 @@ public class ControllerTest {
 
     @Test
     public void removeContext() throws DuplicateContextNameException {
-        Controller.createContext("test context3");
-        Controller.removeContext("test context3");
-        assertNull(Controller.getContextByName("test context3"));
+        Controller.createContext("Test context3");
+        Controller.removeContext("Test context3");
+        assertNull(Controller.getContextByName("Test context3"));
     }
 
     @Test
