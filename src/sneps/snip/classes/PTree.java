@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
+import sneps.network.classes.term.Variable;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 
@@ -40,12 +41,12 @@ public class PTree extends RuisHandler {
 		for (int pat : patternSequence) {
 			Set<Integer> pats = new HashSet<Integer>();
 			pats.add(pat);
-			
+
 			Set<Integer> proccessed = new HashSet<Integer>();
 			/*Set<Variable> varSet = patternVariables.get(pat);
 			for(Variable var : varSet)
 				proccessed.add(var.getId());
-			*/
+			 */
 			treeNodes.add(new PTreeNode(pats, proccessed));
 		}
 
@@ -58,32 +59,32 @@ public class PTree extends RuisHandler {
 			Node pattern = ants.getNode(i);
 			int id = pattern.getId();
 
-			VariableNode patVarNode = null;
-			if(pattern instanceof VariableNode)
-				patVarNode = (VariableNode) pattern;
 
-			if(patVarNode != null){
-				/*VariableSet patVars = patVarNode.getFreeVariables();
+			if(pattern instanceof VariableNode){
+				VariableNode patVarNode = (VariableNode) pattern;
+				Variable patVars = (Variable) patVarNode.getTerm();
 				tempVars = patternVariables.get(id);
-				
-				if(tempVars == null){
+
+				/*if(tempVars == null){
 					tempVars = new HashSet<Variable>();
-					
+
 					for(Variable currentVar : patVars){
 						int varId = currentVar.getId();
-						
+
 						//vars.addVariable(currentVar);
 						tempVars.add(currentVar);
 						notProccessed.add(varId);
-						
+
 						Set<Integer> pats = variablePatterns.get(varId);
 						if (pats == null)
 							pats = new HashSet<Integer>();
 						pats.add(pattern.getId());
-						
+
 						variablePatterns.put(varId, pats);
 					}//VP filled
 					patternVariables.put(id, tempVars);
+				}else{
+
 				}//PV filled*/
 			}
 		}
@@ -101,11 +102,11 @@ public class PTree extends RuisHandler {
 
 				if(!res.contains(currentPatId))
 					res.add(currentPatId);
-					//proccessed.add(currentVarId);
-			
+			//proccessed.add(currentVarId);
+
 		}
 		return res;
-		
+
 		/*while (!notProccessed.isEmpty()) {
 			toBeProccessed.add(peek(notProccessed));
 			while (!toBeProccessed.isEmpty()) {

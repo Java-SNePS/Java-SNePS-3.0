@@ -1,13 +1,19 @@
 package sneps.network;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
 import sneps.setClasses.ChannelSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.setClasses.ReportSet;
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;
@@ -87,18 +93,18 @@ public class PropositionNode extends Node {
 
 	public void processSingleRequest(Channel currentChannel) {
 		//TODO check correctness
-		/*
+		
 		PropositionSet propSet = new PropositionSet();
 		propSet.addProposition((PropositionNode) this);
 
-		Context desiredContext = SNeBR.getContextByID(currentChannel.getContextID());
+		Context desiredContext = (Context) Controller.getContextByName(currentChannel.getContextName());
 		if (propSet.assertedInContext(desiredContext)) {
 			// TODO change the subs to hashsubs
 			// System.out.println("#$#$#$#$# -1 " + desiredContext.getId());
 			Set<Support> support = new HashSet<Support>();
 			support.add(new Support((PropositionNode) this));
-			Report reply = new Report(new LinearSubstitutions(), support, true, currentChannel.getContextID());
-			knownInstances.add(reply);
+			Report reply = new Report(new LinearSubstitutions(), support, true, currentChannel.getContextName());
+			knownInstances.addReport(reply);
 			broadcastReport(reply);
 		} else {
 			boolean sentAtLeastOne = false;
@@ -113,7 +119,7 @@ public class PropositionNode extends Node {
 				if (!alreadyWorking(currentChannel)) {
 					NodeSet dominatingRules = getDominatingRules();
 					sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(),
-							currentChannel.getContextID(), ChannelTypes.RuleCons);
+							currentChannel.getContextName(), ChannelTypes.RuleCons);
 					// System.out.println("#$#$#$#$# 1");
 					if (!(currentChannel instanceof MatchChannel)) {
 						try {
@@ -124,7 +130,7 @@ public class PropositionNode extends Node {
 									Pair newPair = new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
 									matches.add(newPair);
 								}
-								sendRequests(matches, currentChannel.getContextID(), ChannelTypes.MATCHED);
+								sendRequests(matches, currentChannel.getContextName(), ChannelTypes.MATCHED);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -133,7 +139,6 @@ public class PropositionNode extends Node {
 				}
 			}
 		}
-*/
 	}
 
 	public void processRequests() {

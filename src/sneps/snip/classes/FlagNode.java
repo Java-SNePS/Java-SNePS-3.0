@@ -5,8 +5,6 @@ import java.util.Set;
 import sneps.network.Node;
 import sneps.snebr.Support;
 
-
-
 public class FlagNode {
 	private Node node;
 	private Set<Support> supports;
@@ -46,4 +44,5 @@ public class FlagNode {
 	public Set<Support> getSupports() {
 		return supports;
 	}	
+
 }
