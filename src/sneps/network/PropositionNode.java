@@ -8,12 +8,8 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Hashtable;
 
-
-import sneps.network.Node;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;
@@ -26,7 +22,7 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class  	PropositionNode extends Node {
+public class PropositionNode extends Node {
 	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;
@@ -35,13 +31,18 @@ public class  	PropositionNode extends Node {
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
+		basicSupport = new Support(this.getId());
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
 	}
 
 	public PropositionNode(Term trm) {
-		this();
+		super(trm);
+		basicSupport = new Support(this.getId());
+		outgoingChannels = new ChannelSet();
+		incomingChannels = new ChannelSet();
+		knownInstances = new ReportSet();
 		setTerm(trm);
 	}
 	
@@ -212,6 +213,10 @@ public class  	PropositionNode extends Node {
 	}
 	public void setKnownInstances(ReportSet knownInstances) {
 		this.knownInstances = knownInstances;
+	}
+	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
+		return basicSupport.getAssumptionBasedSupport();
+		
 	}
 
 

@@ -10,11 +10,13 @@
  */
 package sneps.network.classes;
 
+import java.io.Serializable;
+
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 import sneps.network.paths.Path;
 
-public class Relation { 
+public class Relation implements Serializable{ 
 	
 	public static Relation andAnt, ant, cq, arg, min, max, i, threshMax,
 			thresh, action, obj, precondition, act, when, doo, iff, effect,

@@ -2,16 +2,16 @@ package sneps.network.classes.setClasses;
 
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
-import sneps.exceptions.NodeNotFoundException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PropositionSet {
 	private int[] props;
+	private String hash = "";
 
 	/**
 	 * Constructs a new PropositionSet with an empty array of props
@@ -24,11 +24,12 @@ public class PropositionSet {
 	 * Constructs a new PropositionSet with an array containing a single prop
 	 * @param prop proposition to be added to the array of props in this PropositionSet
 	 */
-	public PropositionSet(int prop) throws CustomException, NotAPropositionNodeException {
-		if(!(Network.getNodeById(prop) instanceof PropositionNode)) {
-			throw new NotAPropositionNodeException();
-		}
+	public PropositionSet(int prop)  {
+//		if(!(Network.getNodeById(prop) instanceof PropositionNode)) {
+//			throw new NotAPropositionNodeException();
+//		}
 		this.props = new int[]{prop};
+		hash = prop + ", ";
 	}
 
 	/**
@@ -42,9 +43,12 @@ public class PropositionSet {
 				throw new NotAPropositionNodeException();
 
 		this.props = removeDuplicates(props);
-
 		Arrays.sort(this.props);
+		for (int i = 0; i < this.props.length; i++) {
+			hash = this.props[i] + ",";
+		}
 	}
+
 
 	/**
 	 * Returns a new props array having no duplicates
@@ -73,7 +77,7 @@ public class PropositionSet {
 	private int[] getProps() {
 		return props;
 	}
-
+	
 	/**
 	 * Returns an array of the props in a given PropositionSet
 	 * but insures immutability through deep cloning of the props done by the
@@ -91,13 +95,12 @@ public class PropositionSet {
 	 * @return <code>true</code> if they are equal and <code>false</code> otherwise.
 	 */
 	public boolean equals(Object obj) {
-		PropositionSet propositionSet = (PropositionSet)obj;
-		int [] inputProps = propositionSet.getProps();
+		PropositionSet propositionSet = (PropositionSet) obj;
+		int[] inputProps = propositionSet.getProps();
 		if (inputProps.length != this.props.length) {
 			return false;
-		}
-		else {
-			for (int i = 0; i < this.props.length; i ++) {
+		} else {
+			for (int i = 0; i < this.props.length; i++) {
 				if (this.props[i] != inputProps[i])
 					return false;
 			}
@@ -111,9 +114,9 @@ public class PropositionSet {
 	 * @return <code>true</code> if this is a subset of propositionSet, <code>false</code> otherwise.
 	 */
 	public boolean isSubSet(PropositionSet propositionSet) {
-		int [] props =  propositionSet.getProps();
+		int[] props = propositionSet.getProps();
 		int i = 0, j = 0;
-		while(i < this.props.length && j < props.length) {
+		while (i < this.props.length && j < props.length) {
 			if (this.props[i] == props[j])
 				i++;
 			else
@@ -162,22 +165,34 @@ public class PropositionSet {
 		return new PropositionSet(output);
 	}
 
+	public boolean isEmpty() {
+		return props.length == 0;
+	}
+
+	public PropositionSet clearSet() {
+		return new PropositionSet();
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
 	/**
 	 * Returns a new PropositionSet without the proposition passed as an argument.
 	 * @param prop the proposition that shouldn't be present in the returned PropositionSet
 	 * @return a new PropositionSet not having prop.
-	 * @throws NodeNotFoundException if prop is not found in this PropositionSet
+	 * @throws NodeNotFoundInPropSetException if prop is not found in this PropositionSet
 	 */
-	public PropositionSet remove(int prop) throws NodeNotFoundException, NotAPropositionNodeException, CustomException {
+	public PropositionSet remove(int prop) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, CustomException {
 		int[] current = this.getProps();
 		int[] newSet = new int[current.length - 1];
 		int j = 0;
 		boolean found = false;
 		if (props[props.length -1] < prop)
-			throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+			throw new NodeNotFoundInPropSetException("The Node You Are Trying To Remove is Not Found");
 		for (int i = 0; i < current.length; i++) {
 			if (prop < current[i] && !found)
-				throw new NodeNotFoundException("The Node You Are Trying To Remove is Not Found");
+				throw new NodeNotFoundInPropSetException("The Node You Are Trying To Remove is Not Found");
 			if (!(prop == current[i])) {
 				newSet[j] = current[i];
 				j++;
@@ -213,6 +228,8 @@ public class PropositionSet {
 
 		if(!inserted)
 			props2[j] = prop;
+
+		hash = hash + ",";
 
 		return new PropositionSet(props2);
 

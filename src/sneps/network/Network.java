@@ -1,13 +1,18 @@
 package sneps.network;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-import sneps.network.Node;
-import sneps.network.PropositionNode;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -35,8 +40,7 @@ import sneps.network.paths.Path;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 
-public class Network {
-	
+public class Network implements Serializable {
 	
 	 /* A hash table that stores all the nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
@@ -254,6 +258,7 @@ public class Network {
 	}
 
 	public static Node getNodeById(int id) throws CustomException {
+		System.out.println(" the size of the node " +nodesIndex.size());
 		if (nodesIndex.get(id) != null) {
 			return nodesIndex.get(id);
 		} else {
@@ -513,7 +518,7 @@ public class Network {
 	 *
 	 * @return the newly created variable node.
 	 */
-	public static Node buildVariableNode(Semantic semantic) {
+	public static VariableNode buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
@@ -548,6 +553,15 @@ public class Network {
 			
 		} else {
 			Base b = new Base(identifier);
+			if(semantic.getSemanticType().equals("PropositionNode")){
+				PropositionNode propNode =  new PropositionNode(b);
+				nodes.put(identifier, propNode);
+				try {
+					nodesIndex.add(propNode.getId(), propNode);
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("wohoo");
+				}
+			}else{
 			Node node;
       /*if (semantic.getSemanticType().equals("Action")) {
 				if (semantic.getSemanticType().equals("ControlAction")) {
@@ -561,7 +575,7 @@ public class Network {
 			node = new Node(semantic, b);
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
-
+			}
 			if (isMolName(identifier) > -1)
 				userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
 			if (isPatName(identifier) > -1)
@@ -621,6 +635,21 @@ public class Network {
 		// check that the down cable set is following the case frame
 		// System.out.println("done 3rd");
 		// create the Molecular Node
+		if(caseFrame.getSemanticClass().equals("PropositionNode")){
+			PropositionNode propNode;
+			if (isToBePattern(array)) {
+				//System.out.println("building patt");
+				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
+			}else {
+				//System.out.println("building closed");
+				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
+			}
+			nodes.put(propNode.getIdentifier(), propNode);
+			nodesIndex.add(propNode.getId(), propNode);
+			Molecular molecular = (Molecular)propNode.getTerm();
+			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
+			return propNode;
+		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
 			//System.out.println("building patt");
@@ -634,6 +663,7 @@ public class Network {
 		Molecular molecular = (Molecular)mNode.getTerm();
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
+		}
 	} 
 	
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
@@ -662,6 +692,21 @@ public class Network {
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// System.out.println("done 3rd");
 		// create the Molecular Node
+		if(caseFrame.getSemanticClass().equals("PropositionNode")){
+			PropositionNode propNode;
+			if (isToBePattern(array)) {
+				System.out.println("building patt");
+				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
+			}else {
+				System.out.println("building closed");
+				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
+			}
+			nodes.put(propNode.getIdentifier(), propNode);
+			nodesIndex.add(propNode.getId(), propNode);
+			Molecular molecular = (Molecular)propNode.getTerm();
+			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
+			return propNode;
+		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
 			System.out.println("building patt");
@@ -675,6 +720,7 @@ public class Network {
 		Molecular molecular = (Molecular)mNode.getTerm();
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
+		}
 	}
 
 
@@ -846,8 +892,8 @@ public class Network {
 					continue;
 				} else {
 					if (!(((Relation) array[i][0]).getType().equals(
-							((Node) array[i][1]).getSemanticType()) || ((Node) array[i][1])
-							.getSemantic().getSuperClassesNames()
+							((Node) array[i][1]).getSemantic().getSemanticType()) || ((Node) array[i][1])
+							.getSemantic().getSemanticType()
 							.contains(((Relation) array[i][0]).getType()))) {
 						return false;
 
@@ -1029,7 +1075,7 @@ public class Network {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("PropositionNode")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = null;
@@ -1162,7 +1208,7 @@ public class Network {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("PropositionNode")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = null;
@@ -1998,12 +2044,51 @@ public class Network {
 		return new NodeSet();
 	}
 	
-	/*public static void defineDefaults() throws CustomException {
+	public static void defineDefaults() throws CustomException {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
-		CaseFrame.createDefaultCaseFrames();
-		SNeBR.getContextSet().add(SNeBR.getCurrentContext());
-		ControlActionNode.initControlActions();
-	}*/
-
+		//CaseFrame.createDefaultCaseFrames();
+		//SNeBR.getContextSet().add(SNeBR.getCurrentContext());
+		//ControlActionNode.initControlActions();
+	}
+	
+	
+	public static void save(String relationsData, String caseFramesData, String nodesData) throws IOException {
+		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
+		ros.writeObject(relations);
+		ros.close();
+		
+		ObjectOutputStream cFos = new ObjectOutputStream(new FileOutputStream(new File(caseFramesData)));
+		cFos.writeObject(caseFrames);
+		cFos.close();
+		
+		
+		ObjectOutputStream nodesOS = new ObjectOutputStream(new FileOutputStream(new File(nodesData)));
+		nodesOS.writeObject(nodes);
+		nodesOS.close();
+		
+	}
+	
+	public static void load(String relationsData, String caseFramesData, String nodesData) throws IOException, ClassNotFoundException {
+		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
+		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
+		Network.relations = tempRelations;
+		ris.close();
+		tempRelations = null;
+		
+		ObjectInputStream cFis= new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
+		Hashtable<String, CaseFrame> tempcF = (Hashtable<String, CaseFrame>) cFis.readObject();
+		Network.caseFrames = tempcF;
+		cFis.close();
+		tempcF = null;
+		
+		
+		ObjectInputStream nodesis= new ObjectInputStream(new FileInputStream(new File(nodesData)));
+		Hashtable<String, Node> tempNodes = (Hashtable<String, Node>) nodesis.readObject();
+		Network.nodes = tempNodes;
+		nodesis.close();
+		tempNodes = null;
+		
+				
+	}
 }

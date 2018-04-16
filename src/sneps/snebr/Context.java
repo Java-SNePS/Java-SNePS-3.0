@@ -1,6 +1,8 @@
 package sneps.snebr;
 
+import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
@@ -43,10 +45,9 @@ public class Context {
 	 * @param hyp the hyp to be asserted in the new Context
 	 * @throws DuplicatePropositionException if the hyp is present in the context c
 	 */
-	protected Context(Context c, int hyp) throws DuplicatePropositionException {
+	protected Context(Context c, int hyp) throws NotAPropositionNodeException, CustomException, DuplicatePropositionException {
 		this.names = c.getNames();
-		PropositionSet propSet = new PropositionSet(PropositionSet.getPropsSafely(c.getHypothesisSet()), hyp);
-		this.hyps = propSet;
+		this.hyps = c.getHypothesisSet().add(hyp);
 	}
 
 	/**

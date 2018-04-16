@@ -5,10 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import sneps.exceptions.ContextNameDoesntExist;
-import sneps.exceptions.DuplicateContextNameException;
-import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.*;
+import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
@@ -20,10 +20,13 @@ public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
+    private static final Semantic semantic = new Semantic("PropositionNode");
 
     @Before
     public void setUp() throws DuplicateContextNameException {
         Controller.createContext(testContextName);
+        for (int i = 0; i < 8889; i++)
+            Network.buildBaseNode("n"+i, semantic);
     }
 
 
@@ -57,7 +60,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void createContextWithHyps() throws DuplicateContextNameException {
+    public void createContextWithHyps() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException {
         Context expectedContext = Controller.createContext(testContext2, new PropositionSet(new int[] {1,3,4,5}));
         Context actualContext = Controller.getContextByName(testContext2);
         assertEquals(expectedContext, actualContext);
@@ -73,7 +76,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addSingleHypToContext() throws ContextNameDoesntExist, DuplicatePropositionException {
+    public void addSingleHypToContext() throws ContextNameDoesntExist, DuplicatePropositionException, NotAPropositionNodeException, CustomException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropToContext(testContextName, 4);
@@ -95,7 +98,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToContext() throws ContextNameDoesntExist {
+    public void addHypsToContext() throws ContextNameDoesntExist, NotAPropositionNodeException, CustomException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToContext(testContextName, new PropositionSet(new int [] {3,4,5,6}));
@@ -106,7 +109,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addSingleHypToCurrentContext() throws ContextNameDoesntExist, DuplicatePropositionException {
+    public void addSingleHypToCurrentContext() throws ContextNameDoesntExist, DuplicatePropositionException, NotAPropositionNodeException, CustomException {
         Context cxt = Controller.getContextByName("default");
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropToCurrentContext( 4);
@@ -126,14 +129,14 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToCurrentContext() throws ContextNameDoesntExist {
+    public void addHypsToCurrentContext() throws ContextNameDoesntExist, NotAPropositionNodeException, CustomException {
         Context cxt = Controller.getContextByName("default");
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToCurrentContext(new PropositionSet(new int [] {3,5,6}));
         assertEquals(c, Controller.getContextByName("default"));
         int [] props = PropositionSet.getPropsSafely(c.getHypothesisSet());
         assertEquals(props.length, length + 3);
-        assertArrayEquals(props, new int [] {3,5,6}); // TODO: 08/04/18 remove hyps when a mehtod for that is implemented
+        assertArrayEquals(props, new int [] {3,5,6});
     }
 
     @Test

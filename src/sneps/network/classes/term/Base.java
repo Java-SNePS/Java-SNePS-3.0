@@ -1,10 +1,10 @@
 package sneps.network.classes.term;
 
-public class Base extends Term {
+import java.io.Serializable;
+
+public class Base extends Term implements Serializable{
 
 	public Base(String idenitifier) {
 		super(idenitifier);
 	}
-
-
 }
