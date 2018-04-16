@@ -2,13 +2,16 @@ package sneps.snip.classes;
 
 import sneps.setClasses.RuleUseInfoSet;
 
-public class RuisHandler {
-	
-	public RuisHandler(){}
+public abstract class RuisHandler {
+		protected String context;
 
-	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		// TODO Auto-generated method stub
-		return null;
+	public RuisHandler(String contextID) {
+		this.context = contextID;
 	}
 
+	public String getContext() {
+		return context;
+	}
+
+	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
 }

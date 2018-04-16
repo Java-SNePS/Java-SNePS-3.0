@@ -49,12 +49,15 @@ public class AndNode extends RuleNode {
 		ruisNotSent.clear();
 	}
 
-	public 
+	
 	public NodeSet getConsequents() {
 		return consequents;
 	}
 	public void setConsequents(NodeSet consequents) {
 		this.consequents = consequents;
+	}
+	public Hashtable<Integer, Set<RuleUseInfo>> getRuisNotSent() {
+		return ruisNotSent;
 	}
 
 }

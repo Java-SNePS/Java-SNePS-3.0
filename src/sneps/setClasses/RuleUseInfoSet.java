@@ -10,11 +10,8 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 	private HashSet<RuleUseInfo> ruis;
 
 	public RuleUseInfoSet(String contextName, boolean b) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public RuleUseInfoSet() {
-		// TODO Auto-generated constructor stub
+		super(contextName);
+		ruis = new HashSet<RuleUseInfo>();
 	}
 
 	@Override
@@ -30,6 +27,12 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 	public RuleUseInfoSet combine(RuleUseInfoSet second) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
+		ruis.add(rui);
+		return this;
 	}
 
 }
