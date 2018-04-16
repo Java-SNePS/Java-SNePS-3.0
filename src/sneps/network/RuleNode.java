@@ -181,7 +181,7 @@ public abstract class RuleNode extends PropositionNode {
 				si = new SIndex(contextName, sharedVars, getSIndexContextType(), getParentNodes());
 			return this.addContextRUIS(si);
 		} else {
-			return this.addContextRUIS(createContextRUISNonShared(contextName));
+			return this.addContextRUIS(createRuisHandler(contextName));
 		}
 	}
 
@@ -196,7 +196,7 @@ public abstract class RuleNode extends PropositionNode {
 		return cRuis;
 	}
 
-	protected RuisHandler createContextRUISNonShared(String contextName) {
+	protected RuisHandler createRuisHandler(String contextName) {
 		return new RuleUseInfoSet(contextName, false);
 	}
 

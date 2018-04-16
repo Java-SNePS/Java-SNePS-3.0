@@ -51,6 +51,11 @@ public class PTree extends RuisHandler {
 		}
 
 		constructBottomUp(treeNodes);
+		
+		patternVariables = new Hashtable<Integer, Set<Integer>>();
+		variablePatterns = new Hashtable<Integer, Set<Integer>>();
+		//vars = new VariableSet();
+		notProccessed = new HashSet<Integer>();
 	}
 
 	private void fillPVandVP(NodeSet ants) {
@@ -65,7 +70,7 @@ public class PTree extends RuisHandler {
 				}
 			}else{
 				Set<Integer> vars = patternVariables.get(id);
-				if(vars == null || vars.isEmpty() ){
+				if(vars == null || vars.isEmpty()){
 					vars = new HashSet<Integer>();
 					patternVariables.put(id, vars);
 				}

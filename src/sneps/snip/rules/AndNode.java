@@ -32,8 +32,9 @@ public class AndNode extends RuleNode {
 
 	}
 
-	public RuisHandler createRuisHandler() {
-		PTree tree = new PTree();
+	@Override
+	public RuisHandler createRuisHandler(String context) {
+		PTree tree = new PTree(context);
 		tree.buildTree(antNodesWithVars);
 		return this.addContextRUIS(tree);
 	};
