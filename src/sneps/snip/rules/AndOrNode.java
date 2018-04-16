@@ -59,7 +59,7 @@ public class AndOrNode extends RuleNode {
 	}
 	
 	
-	protected void sendRui(RuleUseInfo tRui, String contextID) {
+	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
 		if(positiveCount>=min && positiveCount<=max)
 			sign=true;

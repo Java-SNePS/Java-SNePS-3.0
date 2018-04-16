@@ -20,7 +20,7 @@ public class DoIfNode extends RuleNode {
 
 
 	@Override
-	protected void sendRui(RuleUseInfo tRui, String contextID) {
+	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		// TODO Auto-generated method stub
 		
 	}

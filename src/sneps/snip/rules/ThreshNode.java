@@ -59,7 +59,7 @@ public class ThreshNode extends RuleNode {
 	}
 	
 	
-	protected void sendRui(RuleUseInfo tRui, String contextID) {
+	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
 		if(min!=max) {
 			if(positiveCount<min || positiveCount>max)

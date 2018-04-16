@@ -93,11 +93,11 @@ public abstract class RuleNode extends PropositionNode {
 		if (res == null)
 			res = new RuleUseInfoSet();
 		for (RuleUseInfo tRui : res) {
-			sendRui(tRui, contextID);
+			applyRuleOnRui(tRui, contextID);
 		}
 	}
 
-	abstract protected void sendRui(RuleUseInfo tRui, String contextID);
+	abstract protected void applyRuleOnRui(RuleUseInfo tRui, String contextID);
 
 	
 	public void clear() {
@@ -237,7 +237,7 @@ public abstract class RuleNode extends PropositionNode {
 		return tRui;
 	}
 
-	public RuleUseInfo getConstantRUI(int context) {
+	public RuleUseInfo getConstantRUI(String context) {
 		return contextConstantRUI.get(context);
 	}
 	
