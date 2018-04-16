@@ -10,7 +10,6 @@ import java.util.Stack;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
-import sneps.network.classes.term.Variable;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 
@@ -23,7 +22,8 @@ public class PTree extends RuisHandler {
 	private HashSet<PSubTree> subTrees;
 	private Hashtable<Integer, PSubTree> subTreesMap;
 
-	public PTree() {
+	public PTree(String context) {
+		super(context);
 		patternVariables = new Hashtable<Integer, Set<Integer>>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
 		//vars = new VariableSet();
@@ -54,38 +54,21 @@ public class PTree extends RuisHandler {
 	}
 
 	private void fillPVandVP(NodeSet ants) {
-		Set<Integer> tempVars = null;
-		for(int i=0; i < ants.size(); i++){
-			Node pattern = ants.getNode(i);
+		for(Node pattern : ants){
 			int id = pattern.getId();
 
-
 			if(pattern instanceof VariableNode){
-				VariableNode patVarNode = (VariableNode) pattern;
-				Variable patVars = (Variable) patVarNode.getTerm();
-				tempVars = patternVariables.get(id);
-
-				/*if(tempVars == null){
-					tempVars = new HashSet<Variable>();
-
-					for(Variable currentVar : patVars){
-						int varId = currentVar.getId();
-
-						//vars.addVariable(currentVar);
-						tempVars.add(currentVar);
-						notProccessed.add(varId);
-
-						Set<Integer> pats = variablePatterns.get(varId);
-						if (pats == null)
-							pats = new HashSet<Integer>();
-						pats.add(pattern.getId());
-
-						variablePatterns.put(varId, pats);
-					}//VP filled
-					patternVariables.put(id, tempVars);
-				}else{
-
-				}//PV filled*/
+				Set<Integer> pats = variablePatterns.get(id);
+				if(pats == null || pats.isEmpty() ){
+					pats = new HashSet<Integer>();
+					variablePatterns.put(id, pats);
+				}
+			}else{
+				Set<Integer> vars = patternVariables.get(id);
+				if(vars == null || vars.isEmpty() ){
+					vars = new HashSet<Integer>();
+					patternVariables.put(id, vars);
+				}
 			}
 		}
 

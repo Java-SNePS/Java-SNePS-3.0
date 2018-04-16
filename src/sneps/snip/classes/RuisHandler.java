@@ -3,8 +3,9 @@ package sneps.snip.classes;
 import sneps.setClasses.RuleUseInfoSet;
 
 public abstract class RuisHandler {
-		protected String context;
+	protected String context;
 
+	public RuisHandler(){}
 	public RuisHandler(String contextID) {
 		this.context = contextID;
 	}

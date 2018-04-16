@@ -14,6 +14,8 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		ruis = new HashSet<RuleUseInfo>();
 	}
 
+	public RuleUseInfoSet() {}
+
 	@Override
 	public Iterator<RuleUseInfo> iterator() {
 		return ruis.iterator();
