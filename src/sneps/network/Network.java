@@ -1,5 +1,12 @@
 package sneps.network;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -33,9 +40,9 @@ import sneps.exceptions.CustomException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
+import sneps.snebr.Controller;
 
-public class Network {
-	
+public class Network implements Serializable {
 	
 	 /* A hash table that stores all the nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
@@ -43,7 +50,7 @@ public class Network {
 	 */
 	private static Hashtable<String, Node> nodes = new Hashtable<String, Node>();
 
-	 /* A hash table that stores all the proposition nodes defined(available) in the network.
+	/* A hash table that stores all the proposition nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding proposition node object as the value.
 	 */
@@ -126,6 +133,13 @@ public class Network {
 	public static Hashtable<String, Node> getNodes() {
 		return nodes;
 	}
+
+	/**
+	 * This is created to reduce the search space when searching for only proposition nodes
+	 * @return the hash table that stores the proposition nodes defined in the network.
+	 */
+	public static Hashtable<String, PropositionNode> getPropositionNodes() {return propositionNodes;}
+
 
 	/**
 	 *
@@ -505,7 +519,7 @@ public class Network {
 	 *
 	 * @return the newly created variable node.
 	 */
-	public static Node buildVariableNode(Semantic semantic) {
+	public static VariableNode buildVariableNode(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
@@ -732,7 +746,7 @@ public class Network {
 			
 		}
 
-		LinkedList<Object[]> ns = find(temp, new Context());
+		LinkedList<Object[]> ns = find(temp, Controller.createContext());
 	
 		
 		for (int j = 0; j < ns.size(); j++) {
@@ -838,8 +852,8 @@ public class Network {
 					continue;
 				} else {
 					if (!(((Relation) array[i][0]).getType().equals(
-							((Node) array[i][1]).getSemanticType()) || ((Node) array[i][1])
-							.getSemantic().getSuperClassesNames()
+							((Node) array[i][1]).getSemantic().getSemanticType()) || ((Node) array[i][1])
+							.getSemantic().getSemanticType()
 							.contains(((Relation) array[i][0]).getType()))) {
 						return false;
 
@@ -1990,12 +2004,51 @@ public class Network {
 		return new NodeSet();
 	}
 	
-	/*public static void defineDefaults() throws CustomException {
+	public static void defineDefaults() throws CustomException {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
-		CaseFrame.createDefaultCaseFrames();
-		SNeBR.getContextSet().add(SNeBR.getCurrentContext());
-		ControlActionNode.initControlActions();
-	}*/
-
+		//CaseFrame.createDefaultCaseFrames();
+		//SNeBR.getContextSet().add(SNeBR.getCurrentContext());
+		//ControlActionNode.initControlActions();
+	}
+	
+	
+	public static void save(String relationsData, String caseFramesData, String nodesData) throws IOException {
+		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
+		ros.writeObject(relations);
+		ros.close();
+		
+		ObjectOutputStream cFos = new ObjectOutputStream(new FileOutputStream(new File(caseFramesData)));
+		cFos.writeObject(caseFrames);
+		cFos.close();
+		
+		
+		ObjectOutputStream nodesOS = new ObjectOutputStream(new FileOutputStream(new File(nodesData)));
+		nodesOS.writeObject(nodes);
+		nodesOS.close();
+		
+	}
+	
+	public static void load(String relationsData, String caseFramesData, String nodesData) throws IOException, ClassNotFoundException {
+		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
+		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
+		Network.relations = tempRelations;
+		ris.close();
+		tempRelations = null;
+		
+		ObjectInputStream cFis= new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
+		Hashtable<String, CaseFrame> tempcF = (Hashtable<String, CaseFrame>) cFis.readObject();
+		Network.caseFrames = tempcF;
+		cFis.close();
+		tempcF = null;
+		
+		
+		ObjectInputStream nodesis= new ObjectInputStream(new FileInputStream(new File(nodesData)));
+		Hashtable<String, Node> tempNodes = (Hashtable<String, Node>) nodesis.readObject();
+		Network.nodes = tempNodes;
+		nodesis.close();
+		tempNodes = null;
+		
+				
+	}
 }

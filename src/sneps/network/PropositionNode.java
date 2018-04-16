@@ -39,6 +39,7 @@ public class PropositionNode extends Node {
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
 	}
+
 	public PropositionNode(Term trm) {
 		this();
 		setTerm(trm);

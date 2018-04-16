@@ -1,8 +1,9 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Semantic {
+public class Semantic implements Serializable {
 	protected String semanticType; 
 
 	public Semantic() {	}
