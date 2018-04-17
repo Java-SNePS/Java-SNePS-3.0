@@ -1,11 +1,11 @@
 package sneps.snebr;
 
-
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import sneps.exceptions.CustomException;
-import sneps.exceptions.NodeNotFoundException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -16,7 +16,7 @@ public class Support {
 	private Hashtable<String, PropositionSet> justificationSupport;
 	private Hashtable<String, PropositionSet> assumptionBasedSupport;
 	private boolean hasChildren;
-	
+
 	public Support(int id){
 		assumptionBasedSupport = new Hashtable<String, PropositionSet>();
 		justificationSupport = new Hashtable<String, PropositionSet>();
@@ -28,12 +28,12 @@ public class Support {
 	public boolean HasChildren() {
 		return hasChildren;
 	}
-	
-	//clean
-	
-	//union kol el combinations bta3et el justifications bta3et el  assumptions 
 
-	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundException {
+	//clean
+
+	//union kol el combinations bta3et el justifications bta3et el  assumptions
+
+	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, CustomException {
 		if(!hasChildren){
 			assumptionBasedSupport = new Hashtable<String, PropositionSet>();
 		}
@@ -41,7 +41,7 @@ public class Support {
 		if(!justificationSupport.contains(hash)){
 			justificationSupport.put(hash, propSet);
 			hasChildren = true;
-			int [] nodes = propSet.getProps();
+			int [] nodes = PropositionSet.getPropsSafely(propSet);
 			PropositionSet setSofar = new PropositionSet();
 			for(int i = 0; i < nodes.length ; i++){
 				try {
@@ -51,7 +51,7 @@ public class Support {
 					while(it.hasNext())
 						setSofar = setSofar.union(it.next());
 				} catch (CustomException e) {
-					throw new NodeNotFoundException("Nodes are not in the Network. 'Supports Class'");
+					throw new NodeNotFoundInPropSetException("Nodes are not in the Network. 'Supports Class'");
 				}
 			}
 			assumptionBasedSupport.put(setSofar.getHash(), setSofar);
@@ -64,7 +64,7 @@ public class Support {
 //		Iterator<PropositionSet> it = assumptionBasedSupport.values().iterator();
 //		while(it.hasNext()){
 //		PropositionSet allsupports = it.next();
-//		int[] 
+//		int[]
 //		while(alls)
 //		}
 //		return assumptionBasedSupport;
@@ -73,7 +73,7 @@ public class Support {
 		return assumptionBasedSupport;
 	}
 	//toString for UI SNePSlog
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NotAPropositionNodeException {
 		Semantic sem = new Semantic("PropositionNode");
 		Network net = new Network();
 		net.buildBaseNode("a", sem);
@@ -83,7 +83,7 @@ public class Support {
 		net.buildBaseNode("e", sem);
 		net.buildBaseNode("f", sem);
 		net.buildBaseNode("g", sem);
-		
+
 		try {
 			Node n1 = net.getNode("a");
 			Node n2 = net.getNode("b");
@@ -92,11 +92,11 @@ public class Support {
 			Node n5 = net.getNode("e");
 			Node n6 = net.getNode("f");
 			Node n7 = net.getNode("g");
-			
-			
-			Iterator<PropositionSet> it = ((PropositionNode)n1).getBasicSupport().getAssumptionBasedSupport().values().iterator();
-			System.out.println(it.next().getProps()[0]);
-			
+
+
+			Iterator<PropositionSet> it = ((PropositionNode)n4).getBasicSupport().getAssumptionBasedSupport().values().iterator();
+			System.out.println(PropositionSet.getPropsSafely(it.next())[0]);
+
 		} catch (CustomException e) {
 			System.out.println("Not founddddd");
 		}
