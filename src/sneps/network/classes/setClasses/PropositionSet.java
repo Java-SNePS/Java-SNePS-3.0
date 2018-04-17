@@ -10,6 +10,11 @@ import sneps.network.PropositionNode;
 import java.util.Arrays;
 
 public class PropositionSet {
+	@Override
+	public String toString() {
+		return "PropositionSet [props=" + Arrays.toString(props) + "]";
+	}
+
 	private int[] props;
 	private String hash = "";
 
@@ -29,7 +34,7 @@ public class PropositionSet {
 //			throw new NotAPropositionNodeException();
 //		}
 		this.props = new int[]{prop};
-		hash = prop + ", ";
+		hash = prop + ",";
 	}
 
 	/**
@@ -38,14 +43,16 @@ public class PropositionSet {
 	 * @param props the array of props to populate the props attribute with
 	 */
 	public PropositionSet(int [] props) throws NotAPropositionNodeException, CustomException {
-		for (int i = 0; i < props.length; i++)
+		for (int i = 0; i < props.length; i++){
+			System.out.println(props[i]);
 			if(!(Network.getNodeById(props[i]) instanceof PropositionNode))
 				throw new NotAPropositionNodeException();
+		}
 
 		this.props = removeDuplicates(props);
 		Arrays.sort(this.props);
 		for (int i = 0; i < this.props.length; i++) {
-			hash = this.props[i] + ",";
+			hash += this.props[i] + ",";
 		}
 	}
 
