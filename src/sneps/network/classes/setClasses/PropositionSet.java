@@ -43,11 +43,9 @@ public class PropositionSet {
 	 * @param props the array of props to populate the props attribute with
 	 */
 	public PropositionSet(int [] props) throws NotAPropositionNodeException, CustomException {
-		for (int i = 0; i < props.length; i++){
-			System.out.println(props[i]);
+		for (int i = 0; i < props.length; i++)
 			if(!(Network.getNodeById(props[i]) instanceof PropositionNode))
 				throw new NotAPropositionNodeException();
-		}
 
 		this.props = removeDuplicates(props);
 		Arrays.sort(this.props);
