@@ -13,8 +13,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-import sneps.network.Node;
-import sneps.network.PropositionNode;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -555,10 +553,13 @@ public class Network implements Serializable {
 		} else {
 			Base b = new Base(identifier);
 			if(semantic.getSemanticType().equals("PropositionNode")){
-				PropositionNode propNode;
-				propNode = new PropositionNode(b);
+				PropositionNode propNode =  new PropositionNode(b);
 				nodes.put(identifier, propNode);
-				nodesIndex.add(propNode.getId(), propNode);
+				try {
+					nodesIndex.add(propNode.getId(), propNode);
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("wohoo");
+				}
 			}else{
 			Node node;
       /*if (semantic.getSemanticType().equals("Action")) {

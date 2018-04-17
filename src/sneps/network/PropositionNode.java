@@ -8,12 +8,8 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Hashtable;
 
-
-import sneps.network.Node;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;

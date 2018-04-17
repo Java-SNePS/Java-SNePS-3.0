@@ -14,6 +14,6 @@ coverage:
         flags: null
         paths: null
 script:
-  - ant compile test-compile test
+  - ant compile Test-compile Test
 after_success:
   - bash <(curl -s https://codecov.io/bash)

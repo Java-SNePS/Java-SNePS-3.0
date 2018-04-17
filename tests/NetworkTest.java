@@ -18,7 +18,7 @@ public class NetworkTest {
     
 
     @Before
-    public void setUp() throws CustomException{
+    public void setUp() {
     	semantic = new Semantic(semanticType);
     }
 
