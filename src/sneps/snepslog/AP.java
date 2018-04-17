@@ -26,14 +26,14 @@ import sneps.network.classes.Relation;
 public class AP {
 
 	/**
-	 * an integer which holds the number of the snepslog mode currently in use. It 
+	 * an integer which holds the number of the snepslog mode currently in use. It
 	 * is initially set to 1.
 	 */
 	private static int snepslogMode = 1;
-	
+
 	/**
-	 * a String which holds the name of the printing mode currently in use. It 
-	 * is initially set to normal.
+	 * a String which holds the name of the printing mode currently in use. It is
+	 * initially set to normal.
 	 */
 	private static String printingMode = "normal";
 
@@ -68,8 +68,8 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 1 
-	 *  with semantic type "Individual".
+	 * This method is used to create a customized case frame for mode 1 with
+	 * semantic type "Individual".
 	 *
 	 * @param noOfArguments
 	 *            the number of argument relations.
@@ -89,8 +89,8 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 1 
-	 *  with semantic type "Proposition".
+	 * This method is used to create a customized case frame for mode 1 with
+	 * semantic type "Proposition".
 	 *
 	 * @param noOfArguments
 	 *            the number of argument relations.
@@ -109,10 +109,10 @@ public class AP {
 		return cf;
 	}
 
-	
 	/**
-	 * This method is used to create a customized case frame for mode 2 
-	 *  with semantic type "Individual".
+	 * This method is used to create a customized case frame for mode 2 with
+	 * semantic type "Individual".
+	 * 
 	 * @param p
 	 *            the name of the p relation.
 	 *
@@ -134,8 +134,9 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 2 
-	 *  with semantic type "Proposition".
+	 * This method is used to create a customized case frame for mode 2 with
+	 * semantic type "Proposition".
+	 * 
 	 * @param p
 	 *            the name of the p relation.
 	 *
@@ -155,14 +156,14 @@ public class AP {
 		CaseFrame cf = Network.defineCaseFrame("Proposition", rels);
 		return cf;
 	}
-	
+
 	/**
 	 * This method is used to clear the knowledge base entirely.
 	 */
 	protected static void clearKnowledgeBase() {
 		// TODO Finish building clearKnowledgeBase()
 	}
-	
+
 	/**
 	 * This method is used to execute a snepslog command.
 	 * 
@@ -178,6 +179,7 @@ public class AP {
 		InputStream is = new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8));
 		DataInputStream dis = new DataInputStream(is);
 		parser parser = new parser(new Lexer(dis));
+		parser.command = command;
 		Symbol res = parser.parse();
 		String output = (String) res.value;
 		is.close();

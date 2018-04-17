@@ -8,9 +8,10 @@ import javafx.util.Pair;
 
 import sneps.network.Node;
 
-/*
+
 parser code {:
-:};*/
+String command;
+:};
 	
 /* Terminals (tokens returned by the scanner). */
 
@@ -167,7 +168,7 @@ precedence left COMMA, COLON, BANG, DOT, QUESTION_MARK;
 
 command ::= 	wffNameCommand
 		{: 
-				
+
 		:}
 		| snepslogCommand:sc
 		{: 

@@ -963,6 +963,10 @@ public class parser extends java_cup.runtime.lr_parser {
   public int error_sym() {return 1;}
 
 
+
+String command;
+
+
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
 class CUP$parser$actions {
@@ -992,7 +996,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-				
+
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
