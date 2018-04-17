@@ -1,9 +1,6 @@
 package sneps.snebr;
 
 
-import java.lang.reflect.Method;
-
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -45,15 +42,19 @@ public class Support {
 			justificationSupport.put(hash, propSet);
 			hasChildren = true;
 			int [] nodes = propSet.getProps();
+			PropositionSet setSofar = new PropositionSet();
 			for(int i = 0; i < nodes.length ; i++){
 				try {
 					PropositionNode node = (PropositionNode)Network.getNodeById(nodes[i]);
 					Hashtable<String, PropositionSet> NodeAssumptions = node.getAssumptionBasedSupport();
-					this.assumptionBasedSupport.putAll(NodeAssumptions);
+					Iterator<PropositionSet> it = NodeAssumptions.values().iterator();
+					while(it.hasNext())
+						setSofar = setSofar.union(it.next());
 				} catch (CustomException e) {
 					throw new NodeNotFoundException("Nodes are not in the Network. 'Supports Class'");
 				}
 			}
+			assumptionBasedSupport.put(setSofar.getHash(), setSofar);
 		}
 	}
 
@@ -93,7 +94,7 @@ public class Support {
 			Node n7 = net.getNode("g");
 			
 			
-			Iterator<PropositionSet> it = ((PropositionNode)n4).getBasicSupport().getAssumptionBasedSupport().values().iterator();
+			Iterator<PropositionSet> it = ((PropositionNode)n1).getBasicSupport().getAssumptionBasedSupport().values().iterator();
 			System.out.println(it.next().getProps()[0]);
 			
 		} catch (CustomException e) {
