@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import sneps.exceptions.CaseFrameAlreadyExistException;
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 
@@ -287,7 +288,7 @@ public class RelationsRestrictedCaseFrame extends CaseFrame{
 		return id;
 	}
 
-	public static void createDefaultCaseFrames() throws CustomException {
+	public static void createDefaultCaseFrames() throws CaseFrameAlreadyExistException {
 		if (RCFP.andAnt == null)
 			RCFP.createDefaultProperties();
 		LinkedList<RCFP> and = new LinkedList<RCFP>();

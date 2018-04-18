@@ -191,7 +191,7 @@ public class Relation implements Serializable{
 		return this.name;
 	}
 
-	public static void createDefaultRelations() throws CustomException {
+	public static void createDefaultRelations() {
 		andAnt = Network.defineRelation("&ant", "Proposition", "none", 1);
 		ant = Network.defineRelation("ant", "Proposition", "none", 1);
 		cq = Network.defineRelation("cq", "Proposition", "none", 1);
