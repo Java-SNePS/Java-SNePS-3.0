@@ -2,6 +2,9 @@ package sneps.network;
 
 import java.util.ArrayList;
 
+import sneps.exceptions.CustomException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -31,7 +34,6 @@ public class PropositionNode extends Node {
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
-		basicSupport = new Support(this.getId());
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -39,7 +41,6 @@ public class PropositionNode extends Node {
 
 	public PropositionNode(Term trm) {
 		super(trm);
-		basicSupport = new Support(this.getId());
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -193,8 +194,8 @@ public class PropositionNode extends Node {
 	public Support getBasicSupport() {
 		return basicSupport;
 	}
-	public void setBasicSupport(Support basicSupport) {
-		this.basicSupport = basicSupport;
+	public void setBasicSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		this.basicSupport = new Support(this.getId());
 	}
 	public ChannelSet getOutgoingChannels() {
 		return outgoingChannels;

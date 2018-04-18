@@ -2,6 +2,7 @@ package sneps.snebr;
 
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -44,8 +45,9 @@ public class Context {
 	 * @param c  the context to be used for constructing this new Context
 	 * @param hyp the hyp to be asserted in the new Context
 	 * @throws DuplicatePropositionException if the hyp is present in the context c
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	protected Context(Context c, int hyp) throws NotAPropositionNodeException, CustomException, DuplicatePropositionException {
+	protected Context(Context c, int hyp) throws NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
 		this.names = c.getNames();
 		this.hyps = c.getHypothesisSet().add(hyp);
 	}

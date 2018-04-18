@@ -68,14 +68,15 @@ public class Controller {
      * @param contextName the name of the context to assert the hyp in
      * @param hyp the hyp to be asserted
      * @return a new Context object containing the old Context with the hyp asserted in it
-     * @throws ContextNameDoesntExist if no Context with this name exists in SNeBr's ContextSet
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
      * @throws DuplicatePropositionException if the hyp to be asserted in the Context is already asserted
+     * @throws NodeNotFoundInNetworkException 
      */
-    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExist, NotAPropositionNodeException, CustomException, DuplicatePropositionException {
+    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExistException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
-            throw new ContextNameDoesntExist(contextName);
+            throw new ContextNameDoesntExistException(contextName);
 
         oldContext.removeName(contextName);
         PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
@@ -92,13 +93,15 @@ public class Controller {
      * @param contextName the name of the context to assert the hyp in
      * @param hyps the set of hyps to be asserted
      * @return a new Context object containing the old Context with the set of hyps asserted in it
-     * @throws ContextNameDoesntExist if no Context with this name exists in SNeBr's ContextSet
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
+     * @throws NodeNotFoundInNetworkException 
+     * @throws CustomException 
      */
-    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExist, NotAPropositionNodeException, CustomException {
+    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
-            throw new ContextNameDoesntExist(contextName);
+            throw new ContextNameDoesntExistException(contextName);
 
         oldContext.removeName(contextName);
         PropositionSet hypSet = oldContext.getHypothesisSet();
@@ -131,10 +134,11 @@ public class Controller {
      * Asserts a hyp in the current Context
      * @param hyp the hyp to be asserted in the current Context
      * @return a new Context object containing the asserted hyp
-     * @throws ContextNameDoesntExist if no Context with this name exists in SNeBr's ContextSet
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
      * @throws DuplicatePropositionException if the hyp to be asserted in the Context is already asserted
+     * @throws NodeNotFoundInNetworkException 
      */
-    public static Context addPropToCurrentContext(int hyp) throws ContextNameDoesntExist, DuplicatePropositionException, NotAPropositionNodeException, CustomException {
+    public static Context addPropToCurrentContext(int hyp) throws ContextNameDoesntExistException, DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         return addPropToContext(currContext,hyp);
     }
 
@@ -142,9 +146,11 @@ public class Controller {
      * Asserts a set of hyps in the current Context
      * @param hyps the set of hyps to be asserted
      * @return a new Context object containing the old Context with the set of hyps asserted in it
-     * @throws ContextNameDoesntExist if no Context with this name exists in SNeBr's ContextSet
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
+     * @throws NodeNotFoundInNetworkException 
+     * @throws CustomException 
      */
-    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExist, NotAPropositionNodeException, CustomException {
+    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
         return addPropsToContext(currContext, hyps);
     }
 

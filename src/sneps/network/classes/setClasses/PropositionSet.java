@@ -2,6 +2,7 @@ package sneps.network.classes.setClasses;
 
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
@@ -28,11 +29,14 @@ public class PropositionSet {
 	/**
 	 * Constructs a new PropositionSet with an array containing a single prop
 	 * @param prop proposition to be added to the array of props in this PropositionSet
+	 * @throws NotAPropositionNodeException 
+	 * @throws NodeNotFoundInNetworkException 
+	 * @throws CustomException 
 	 */
-	public PropositionSet(int prop)  {
-//		if(!(Network.getNodeById(prop) instanceof PropositionNode)) {
-//			throw new NotAPropositionNodeException();
-//		}
+	public PropositionSet(int prop) throws NotAPropositionNodeException, NodeNotFoundInNetworkException  {
+		if(!(Network.getNodeById(prop) instanceof PropositionNode)) {
+			throw new NotAPropositionNodeException();
+		}
 		this.props = new int[]{prop};
 		hash = prop + ",";
 	}
@@ -41,8 +45,9 @@ public class PropositionSet {
 	 * Constructs a new PropositionSet with an array containing of propositions
 	 * deep cloning of the array occurs here.
 	 * @param props the array of props to populate the props attribute with
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public PropositionSet(int [] props) throws NotAPropositionNodeException, CustomException {
+	public PropositionSet(int [] props) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		for (int i = 0; i < props.length; i++)
 			if(!(Network.getNodeById(props[i]) instanceof PropositionNode))
 				throw new NotAPropositionNodeException();
@@ -88,8 +93,9 @@ public class PropositionSet {
 	 * but insures immutability through deep cloning of the props done by the
 	 * PropositionSet constructor.
 	 * @return a <b>new</b> int array of props
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public static int[] getPropsSafely(PropositionSet set) throws NotAPropositionNodeException, CustomException {
+	public static int[] getPropsSafely(PropositionSet set) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return new PropositionSet(set.getProps()).props;
 	}
 
@@ -135,8 +141,9 @@ public class PropositionSet {
 	 * a new PropositionSet with the union
 	 * @param propSet the PropositionSet to perform union with.
 	 * @return the union of the two PropositionSets
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, CustomException {
+	public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
 		int [] props = propSet.getProps();
 		int [] props1 = this.getProps();
 		int [] props2 = new int[props.length + props1.length];
@@ -187,8 +194,9 @@ public class PropositionSet {
 	 * @param prop the proposition that shouldn't be present in the returned PropositionSet
 	 * @return a new PropositionSet not having prop.
 	 * @throws NodeNotFoundInPropSetException if prop is not found in this PropositionSet
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public PropositionSet remove(int prop) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, CustomException {
+	public PropositionSet remove(int prop) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		int[] current = this.getProps();
 		int[] newSet = new int[current.length - 1];
 		int j = 0;
@@ -213,8 +221,9 @@ public class PropositionSet {
 	 * @param prop The proposition that is desired to be added.
 	 * @return A new PropositionSet with the added prop.
 	 * @throws DuplicatePropositionException If the prop is a duplicate
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public PropositionSet add(int prop) throws DuplicatePropositionException, NotAPropositionNodeException, CustomException {
+	public PropositionSet add(int prop) throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		int [] props = this.props;
 		int [] props2 = new int[props.length + 1];
 		int i = 0, j = 0;
