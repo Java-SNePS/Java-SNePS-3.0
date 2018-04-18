@@ -2,6 +2,7 @@ package sneps.network.classes.term;
 
 import java.util.Enumeration;
 
+import sneps.network.Node;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.Relation;
@@ -57,9 +58,17 @@ public class Open extends Molecular {
 						Enumeration<DownCable> dCs = dCableSet.getDownCables().elements();
 						while(dCs.hasMoreElements()){
 							DownCable d = dCs.nextElement();
-							// TODO implement contains and remove in VariableSet
-							/*if (d.getNodeSet().contains(variable))
-								patternFVars.remove(variable);*/
+							VariableSet vars = new VariableSet();
+							NodeSet nodes = d.getNodeSet();
+							for(Node node : nodes){
+								Term term = node.getTerm();
+								if(term instanceof Variable)
+									vars.addVariable((Variable) term);
+								if(term instanceof Open)
+									vars.addAll(((Open)term).getFreeVariables());
+							}
+							if (vars.contains(variable))
+								patternFVars.remove(variable);
 						}
 					}
 					this.variables.addAll(patternFVars);

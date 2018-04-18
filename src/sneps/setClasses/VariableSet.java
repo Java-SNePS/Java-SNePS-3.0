@@ -42,4 +42,8 @@ public class VariableSet implements Iterable<Variable> {
 		return variables.isEmpty();
 	}
 
+	public void remove(Variable variable) {
+		variables.remove(variable);
+	}
+
 }

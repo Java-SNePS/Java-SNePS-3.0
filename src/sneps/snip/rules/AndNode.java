@@ -74,7 +74,7 @@ public class AndNode extends RuleNode {
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
 		addNotSentRui(Rui, contextID);
 		if (Rui.getPosCount() != antNodesWithVars.size() + antNodesWithoutVars.size())
-			return;
+			return;//TODO Error
 		Support originSupports = this.getBasicSupport();
 		HashSet<Support> sup = new HashSet<Support>();
 		sup.add(originSupports);
@@ -94,21 +94,25 @@ public class AndNode extends RuleNode {
 	private void sendSavedRUIs(String contextID) {
 		RuleUseInfo addedConstant = getConstantRUI(contextID);
 		if (addedConstant == null && antNodesWithoutVars.size() != 0)
-			return;
-		if (addedConstant != null && addedConstant.getPosCount() != this.antNodesWithoutVars.size())
-			return;
+			return;//TODO Error
+
+		if (antNodesWithoutVars.size() != addedConstant.getPosCount())
+			return;//TODO Error
+		
 		RuleUseInfoSet ruis = ruisNotSent.get(contextID);
 		if (ruis == null) {
 			applyRuleOnRui(addedConstant, contextID);
 			return;
 		}
+
 		RuleUseInfo combined;
 		for (RuleUseInfo info : ruis) {
 			combined = info.combine(addedConstant);
-			if (combined == null){
+			if (combined != null){
+				applyRuleOnRui(combined, contextID);	
+			}else{
 				//TODO Error
 			}
-			applyRuleOnRui(combined, contextID);
 		}
 	}
 

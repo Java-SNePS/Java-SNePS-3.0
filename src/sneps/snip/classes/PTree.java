@@ -36,22 +36,10 @@ public class PTree extends RuisHandler {
 		//nodes = ants;
 		fillPVandVP(ants);
 
-		LinkedHashSet<Integer> patternSequence = getPatternSequence();
-		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
-		for (int pat : patternSequence) {
-			Set<Integer> pats = new HashSet<Integer>();
-			pats.add(pat);
+		Queue<PTreeNode> patternSequence = getPatternSequence();		
 
-			Set<Integer> proccessed = new HashSet<Integer>();
-			/*Set<Variable> varSet = patternVariables.get(pat);
-			for(Variable var : varSet)
-				proccessed.add(var.getId());
-			 */
-			treeNodes.add(new PTreeNode(pats, proccessed));
-		}
+		constructBottomUp(patternSequence);
 
-		constructBottomUp(treeNodes);
-		
 		patternVariables = new Hashtable<Integer, Set<Integer>>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
 		//vars = new VariableSet();
@@ -78,23 +66,29 @@ public class PTree extends RuisHandler {
 		}
 
 	}
-	private LinkedHashSet<Integer> getPatternSequence() {
+	private Queue<PTreeNode> getPatternSequence() {
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
+		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
 		//Set<Integer> proccessed = new HashSet<Integer>();
 
 		for(int currentVarId : notProccessed){
 			Set<Integer> vPatternsIds = variablePatterns.get(currentVarId);
 
 			for(int currentPatId : vPatternsIds)
-				//Set<Variable> varSet = patternVariables.get(currentPatId);
 
-				if(!res.contains(currentPatId))
+				if(!res.contains(currentPatId)){
 					res.add(currentPatId);
-			//proccessed.add(currentVarId);
+
+					Set<Integer> pats = new HashSet<Integer>();
+					pats.add(currentVarId);
+
+					Set<Integer> proccessed = new HashSet<Integer>();
+
+					treeNodes.add(new PTreeNode(pats, proccessed));
+				}
 
 		}
-		return res;
-
+		return treeNodes;
 		/*while (!notProccessed.isEmpty()) {
 			toBeProccessed.add(peek(notProccessed));
 			while (!toBeProccessed.isEmpty()) {
