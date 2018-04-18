@@ -189,6 +189,8 @@ public class AP {
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
 			ArrayList<Node> consequents, String optionalI) throws Exception {
+		// possible conflict in identifiers
+		// Check semantic and syntactic type
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -219,12 +221,10 @@ public class AP {
 			for (int j = 0; j < consequents.size(); j++) {
 				wires.add(new Wire(Relation.cq, consequents.get(j)));
 			}
-			//possible conflict in identifiers
-			// Check semantic and syntactic type
 			wires.add(new Wire(Relation.i, Network.buildBaseNode(optionalI, new Semantic("Individual"))));
 			break;
 		case "Implication":
-			//check the case frame in use
+			// check the case frame in use
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.numericalRule;
 			for (int i = 0; i < antecedents.size(); i++) {
 				wires.add(new Wire(Relation.andAnt, antecedents.get(i)));
@@ -232,13 +232,70 @@ public class AP {
 			for (int j = 0; j < consequents.size(); j++) {
 				wires.add(new Wire(Relation.cq, consequents.get(j)));
 			}
-			//possible conflict in identifiers
-			// Check semantic and syntactic type
 			wires.add(new Wire(Relation.i, Network.buildBaseNode("1", new Semantic("Individual"))));
 			break;
 		}
 		Node entailmentNode = Network.buildMolecularNode(wires, caseFrame);
 		return entailmentNode;
+	}
+
+	/**
+	 * This method is used to construct the nodes representing setTerms in the
+	 * network.
+	 * 
+	 * @param type
+	 *            a String specifying the type of the setTerm. It should have one of
+	 *            the following values: and, or, nand, nor, xor or iff.
+	 * @param arguments
+	 *            an ArrayList of the nodes representing the arguments.
+	 * @return a molecular node representing a setTerm
+	 * @throws Exception
+	 */
+	protected static Node buildSetTerm(String type, ArrayList<Node> arguments) throws Exception {
+		// possible conflict in identifiers
+		// Check semantic and syntactic type
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		RelationsRestrictedCaseFrame caseFrame = null;
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		for (int i = 0; i < arguments.size(); i++) {
+			wires.add(new Wire(Relation.arg, arguments.get(i)));
+		}
+		switch (type) {
+		case "and":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode(arguments.size() + "", new Semantic("Individual"))));
+			break;
+		case "or":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Individual"))));
+			break;
+		case "nand":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max,
+					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Individual"))));
+			break;
+		case "nor":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Individual"))));
+			break;
+		case "xor":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("1", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Individual"))));
+			break;
+		case "iff":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
+			wires.add(new Wire(Relation.threshMax,
+					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", new Semantic("Individual"))));
+			break;
+		}
+		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
+		return setTermNode;
 	}
 
 	/**
