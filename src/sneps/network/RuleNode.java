@@ -242,8 +242,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 	
 	public static boolean isConstantNode(Node n) {
-		return !((((Variable) ((VariableNode) n).getTerm()) == null) && n instanceof VariableNode) ||
-				n instanceof RuleNode;
+		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);//TODO check
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import java.util.LinkedList;
 
 import sneps.network.classes.CaseFrame;
 
-public class DownCableSet {
+public class DownCableSet{
 	
 	/**
 	 * A hash table of the down cables that this down cable set includes. Each
@@ -138,6 +138,7 @@ public class DownCableSet {
             }
             return s;
     }
-	
-	
+
+
+
 }

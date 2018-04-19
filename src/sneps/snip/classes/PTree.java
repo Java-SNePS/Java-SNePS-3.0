@@ -10,11 +10,18 @@ import java.util.Stack;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
+import sneps.network.cables.DownCable;
+import sneps.network.cables.DownCableSet;
+import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
+import sneps.network.classes.term.Term;
+import sneps.network.classes.term.Variable;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
+import sneps.setClasses.VariableSet;
 
 public class PTree extends RuisHandler {
-	private Hashtable<Integer, Set<Integer>> patternVariables;//PatId, Variables
+	private Hashtable<Integer, VariableSet> patternVariables;//PatId, Variables
 	private Hashtable<Integer, Set<Integer>> variablePatterns;//VarId, Patterns
 	/*private VariableSet vars;
 	private NodeSet nodes;*/
@@ -24,7 +31,7 @@ public class PTree extends RuisHandler {
 
 	public PTree(String context) {
 		super(context);
-		patternVariables = new Hashtable<Integer, Set<Integer>>();
+		patternVariables = new Hashtable<Integer, VariableSet>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
 		//vars = new VariableSet();
 		notProccessed = new HashSet<Integer>();
@@ -40,26 +47,59 @@ public class PTree extends RuisHandler {
 
 		constructBottomUp(patternSequence);
 
-		patternVariables = new Hashtable<Integer, Set<Integer>>();
+		patternVariables = new Hashtable<Integer, VariableSet>();
 		variablePatterns = new Hashtable<Integer, Set<Integer>>();
 		//vars = new VariableSet();
 		notProccessed = new HashSet<Integer>();
 	}
 
-	private void fillPVandVP(NodeSet ants) {
+	private void fillPVandVP(NodeSet ants) {//TODO help!
 		for(Node pattern : ants){
 			int id = pattern.getId();
+			Term term = pattern.getTerm();
 
-			if(pattern instanceof VariableNode){
+			if(term instanceof Variable){
+				VariableSet vars = patternVariables.get(id);
+				if(vars == null || vars.isEmpty()){
+					vars = new VariableSet();
+					patternVariables.put(id, vars);
+				}
+				vars.addVariable((Variable)term);
+				patternVariables.put(id, vars);
+
 				Set<Integer> pats = variablePatterns.get(id);
 				if(pats == null || pats.isEmpty() ){
 					pats = new HashSet<Integer>();
 					variablePatterns.put(id, pats);
 				}
-			}else{
-				Set<Integer> vars = patternVariables.get(id);
+			}
+
+			if(term instanceof Open){
+				VariableSet freeVars = ((Open)term).getFreeVariables();
+
+				VariableSet vars = patternVariables.get(id);
 				if(vars == null || vars.isEmpty()){
-					vars = new HashSet<Integer>();
+					vars = new VariableSet();
+					patternVariables.put(id, vars);
+				}
+				vars.addAll(freeVars);
+				patternVariables.put(id, vars);
+
+				Set<Integer> pats = variablePatterns.get(id);
+				if(pats == null || pats.isEmpty() ){
+					pats = new HashSet<Integer>();
+					variablePatterns.put(id, pats);
+				}
+			}
+			if(term instanceof Molecular){
+				DownCableSet dcs = ((Molecular)term).getDownCableSet();
+				for(int i = 0; i<dcs.size(); i++){
+					Hashtable<String, DownCable> dc = dcs.getDownCables();
+					//dc.get()
+				}
+				VariableSet vars = patternVariables.get(id);
+				if(vars == null || vars.isEmpty()){
+					vars = new VariableSet();
 					patternVariables.put(id, vars);
 				}
 			}
@@ -89,25 +129,7 @@ public class PTree extends RuisHandler {
 
 		}
 		return treeNodes;
-		/*while (!notProccessed.isEmpty()) {
-			toBeProccessed.add(peek(notProccessed));
-			while (!toBeProccessed.isEmpty()) {
-				String varId = peek(toBeProccessed);
-				Iterator<Integer> varPatsIter = variablePatterns.get(varId)
-						.iterator();
-				while (varPatsIter.hasNext()) {
-					int pat = varPatsIter.next();
-					if (res.contains(pat))
-						continue;
-					res.add(pat);
-					Set<Variable> patVarSet = patternVariables.get(pat);
-					toBeProccessed.addAll(patVarSet);
-				}
-				toBeProccessed.remove(varId);
-				notProccessed.remove(varId);
-			}
-		}
-		res.addAll(patterns);*/
+		
 	}
 	private void constructBottomUp(Queue<PTreeNode> treeNodes) {
 		PTreeNode head = treeNodes.poll();

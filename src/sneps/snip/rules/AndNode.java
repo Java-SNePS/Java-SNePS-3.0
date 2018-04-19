@@ -82,6 +82,7 @@ public class AndNode extends RuleNode {
 		Report reply = new Report(Rui.getSub(), Rui.getSupport(sup), true, contextID);
 		broadcastReport(reply);
 	}
+
 	public void addNotSentRui(RuleUseInfo rui, String contxt){
 		RuleUseInfoSet set = ruisNotSent.get(contxt);
 		if (set == null) {
@@ -90,7 +91,6 @@ public class AndNode extends RuleNode {
 		}
 		set.add(rui);
 	}
-
 	private void sendSavedRUIs(String contextID) {
 		RuleUseInfo addedConstant = getConstantRUI(contextID);
 		if (addedConstant == null && antNodesWithoutVars.size() != 0)
