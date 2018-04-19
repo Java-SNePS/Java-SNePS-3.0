@@ -5,7 +5,7 @@ import sneps.snip.matching.Substitutions;
 
 public class RuleToConsequentChannel extends Channel {
 
-	public RuleToConsequentChannel(Substitutions switchSubstitution, Substitutions filterSubstitutions, int contextID,
+	public RuleToConsequentChannel(Substitutions switchSubstitution, Substitutions filterSubstitutions, String contextID,
 			Node requester, Node reporter, boolean v) {
 		super(switchSubstitution, filterSubstitutions, contextID, requester, reporter, v);
 	}

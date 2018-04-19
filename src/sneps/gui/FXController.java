@@ -1,7 +1,13 @@
 package sneps.gui;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -11,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,10 +31,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -36,22 +43,28 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
+import javafx.scene.web.WebView;
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 import sneps.network.Node;
+import sneps.network.cables.DownCable;
+import sneps.network.cables.DownCableSet;
+import sneps.network.cables.UpCable;
+import sneps.network.cables.UpCableSet;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
+import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Base;
+import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 
 public class FXController implements Initializable {
@@ -60,6 +73,7 @@ public class FXController implements Initializable {
 	private double curX, curY, wireXStart, wireXEnd, wireYStart, wireYEnd;
 	private ArrayList<Wire> wires = new ArrayList<Wire>();
 	private CaseFrame curCF = null;
+	private RelationsRestrictedCaseFrame curRRCF = null;
 	boolean moveMode = false;
 	boolean deleteMode = false;
 	boolean wireMode = false;
@@ -69,7 +83,11 @@ public class FXController implements Initializable {
 	private ArrayList<Label> drawnRelationsList = new ArrayList<Label>();
 	private ArrayList<Circle> arrows = new ArrayList<Circle>();
 	private Hashtable<String, BaseNodeShape> tableOfBaseNodesDrawn = new Hashtable<String, BaseNodeShape>();
+	private Hashtable<String, VarNodeShape> tableOfVarNodesDrawn = new Hashtable<String, VarNodeShape>();
+	private ArrayList<MolNodeShape> listOfMolNodesDrawn = new ArrayList<MolNodeShape>();
 	private LinkedList<RCFP> rrcflist = new LinkedList<RCFP>();
+	private int ocp;
+	private int ncp;
 	
 	@FXML
 	private TextArea console;
@@ -96,8 +114,12 @@ public class FXController implements Initializable {
 	private Button drawModeBtn, deleteModeBtn, moveModeBtn;
 	@FXML
 	private Rectangle wireBtnRect;
-
-
+	@FXML
+	private WebView webView;
+	@FXML
+	Tab displayNetTab;
+	
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
@@ -149,6 +171,20 @@ public class FXController implements Initializable {
 			//e.printStackTrace();
 		}
 		
+		displayNetTab.setOnSelectionChanged(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event e) {
+				try {
+					generateNetwork();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+		});
+		
 	}
 
 	
@@ -170,12 +206,20 @@ public class FXController implements Initializable {
 					
 					String cmd = lines.get(lines.size() - 1);
 					String res = "Result will be here";
-					console.setText(console.getText() + " \n" + res);
+					console.setText(console.getText() + "\n" + res);
 					console.positionCaret(console.getLength());
+					ocp = console.getCaretPosition();
 					ScrollDown();
 					//System.out.println(cmd);
 				}
 				
+				if(event.getCode() == KeyCode.BACK_SPACE) {
+					ncp = console.getCaretPosition();
+					if(ncp > ocp) {
+						console.deletePreviousChar();
+					}
+					event.consume();
+				}
 			}
 			
 		});
@@ -344,6 +388,7 @@ public class FXController implements Initializable {
 			e.printStackTrace();
 		}
 		MolNodeShape mns = new MolNodeShape(curX, curY, cf);
+		listOfMolNodesDrawn.add(mns);
 		Group shape = mns.drawShape();
 		shape.setLayoutX(curX - 50);
 		shape.setLayoutY(curY - 40);
@@ -424,6 +469,22 @@ public class FXController implements Initializable {
 				        	double newY = l.getStartY() + (d*vny);
 				        	c.setCenterX(newX);
 				        	c.setCenterY(newY);
+				        	
+				            double ax = l.getStartX() - l.getEndX();
+				            double ay = l.getStartY() - l.getEndY();
+				            double bx = l.getStartX() - (l.getStartX() + 5);
+				            double by = 0;
+				            double a = Math.sqrt((ax*ax) + (ay*ay));
+				            double b = Math.sqrt((bx*bx) + (by*by));
+				            double ab = (ax*bx) + (ay*by);
+				            double abn = a * b;
+				            double angle = Math.acos(ab/abn) * (180/Math.PI);
+				            if(l.getEndY() < l.getStartY()) {
+				            	c.setRotate(-angle);
+				            }
+				            else {
+				            	c.setRotate(angle);
+				            }
 	                	}
 	                	else if(l.getEndX() == oldPosX && l.getEndY() == oldPosY) {
 	                		l.setEndX(shape.getLayoutX() + 50);
@@ -441,6 +502,23 @@ public class FXController implements Initializable {
 				        	double newY = l.getStartY() + (d*vny);
 				        	c.setCenterX(newX);
 				        	c.setCenterY(newY);
+				        	
+				        	double ax = l.getStartX() - l.getEndX();
+				            double ay = l.getStartY() - l.getEndY();
+				            double bx = l.getStartX() - (l.getStartX() + 5);
+				            double by = 0;
+				            double a = Math.sqrt((ax*ax) + (ay*ay));
+				            double b = Math.sqrt((bx*bx) + (by*by));
+				            double ab = (ax*bx) + (ay*by);
+				            double abn = a * b;
+				            double angle = Math.acos(ab/abn) * (180/Math.PI);
+				            if(l.getEndY() < l.getStartY()) {
+				            	c.setRotate(-angle);
+				            }
+				            else {
+				            	c.setRotate(angle);
+				            }
+				            
 	                	}
 	                }
 	                event.consume();
@@ -471,8 +549,24 @@ public class FXController implements Initializable {
 			        	Circle cir = new Circle();
 			        	cir.setCenterX(newX);
 			        	cir.setCenterY(newY);
-			        	cir.setRadius(10);
-			        	cir.setFill(Color.RED);
+			        	cir.setRadius(12.5);
+			        	Image img = new Image("sneps/gui/AH.png");
+			        	cir.setFill(new ImagePattern(img));
+			            double ax = wireXStart - wireXEnd;
+			            double ay = wireYStart - wireYEnd;
+			            double bx = wireXStart - (wireXStart + 5);
+			            double by = wireYStart - wireYStart;
+			            double a = Math.sqrt((ax*ax) + (ay*ay));
+			            double b = Math.sqrt((bx*bx) + (by*by));
+			            double ab = (ax*bx) + (ay*by);
+			            double abn = a * b;
+			            double angle = Math.acos(ab/abn) * (180/Math.PI);
+			            if(wireYEnd < wireYStart) {
+			            	cir.setRotate(-angle);
+			            }
+			            else {
+			            	cir.setRotate(angle);
+			            }
 			        	drawArea.getChildren().add(l);
 			        	drawArea.getChildren().add(cir);
 			        	l.toBack();
@@ -526,6 +620,7 @@ public class FXController implements Initializable {
 		Semantic s = n.getSemanticType();
 		String semType = s.getSemanticType();
 		BaseNodeShape baseNode = new BaseNodeShape(identifier, semType, curX, curY);
+		tableOfBaseNodesDrawn.put(identifier, baseNode);
 		Group shape = baseNode.makeShape();
 		shape.setLayoutX(curX-50);
 		shape.setLayoutY(curY-40);
@@ -588,6 +683,21 @@ public class FXController implements Initializable {
 				        	double newY = l.getStartY() + (d*vny);
 				        	c.setCenterX(newX);
 				        	c.setCenterY(newY);
+				        	double ax = l.getStartX() - l.getEndX();
+				            double ay = l.getStartY() - l.getEndY();
+				            double bx = l.getStartX() - (l.getStartX() + 5);
+				            double by = 0;
+				            double a = Math.sqrt((ax*ax) + (ay*ay));
+				            double b = Math.sqrt((bx*bx) + (by*by));
+				            double ab = (ax*bx) + (ay*by);
+				            double abn = a * b;
+				            double angle = Math.acos(ab/abn) * (180/Math.PI);
+				            if(l.getEndY() < l.getStartY()) {
+				            	c.setRotate(-angle);
+				            }
+				            else {
+				            	c.setRotate(angle);
+				            }
 				        	
 	                	}
 	                }
@@ -620,8 +730,24 @@ public class FXController implements Initializable {
 			        	Circle cir = new Circle();
 			        	cir.setCenterX(newX);
 			        	cir.setCenterY(newY);
-			        	cir.setRadius(10);
-			        	cir.setFill(Color.RED);
+			        	cir.setRadius(12.5);
+			        	Image img = new Image("sneps/gui/AH.png");
+			        	cir.setFill(new ImagePattern(img));
+			            double ax = wireXStart - wireXEnd;
+			            double ay = wireYStart - wireYEnd;
+			            double bx = wireXStart - (wireXStart + 5);
+			            double by = wireYStart - wireYStart;
+			            double a = Math.sqrt((ax*ax) + (ay*ay));
+			            double b = Math.sqrt((bx*bx) + (by*by));
+			            double ab = (ax*bx) + (ay*by);
+			            double abn = a * b;
+			            double angle = Math.acos(ab/abn) * (180/Math.PI);
+			            if(wireYEnd < wireYStart) {
+			            	cir.setRotate(-angle);
+			            }
+			            else {
+			            	cir.setRotate(angle);
+			            }
 			        	drawArea.getChildren().add(l);
 			        	drawArea.getChildren().add(cir);
 			        	l.toBack();
@@ -726,6 +852,21 @@ public class FXController implements Initializable {
 				        	double newY = l.getStartY() + (d*vny);
 				        	c.setCenterX(newX);
 				        	c.setCenterY(newY);
+				        	double ax = l.getStartX() - l.getEndX();
+				            double ay = l.getStartY() - l.getEndY();
+				            double bx = l.getStartX() - (l.getStartX() + 5);
+				            double by = 0;
+				            double a = Math.sqrt((ax*ax) + (ay*ay));
+				            double b = Math.sqrt((bx*bx) + (by*by));
+				            double ab = (ax*bx) + (ay*by);
+				            double abn = a * b;
+				            double angle = Math.acos(ab/abn) * (180/Math.PI);
+				            if(l.getEndY() < l.getStartY()) {
+				            	c.setRotate(-angle);
+				            }
+				            else {
+				            	c.setRotate(angle);
+				            }
 	                	}
 	                }
 	                event.consume();
@@ -756,8 +897,24 @@ public class FXController implements Initializable {
 			        	Circle cir = new Circle();
 			        	cir.setCenterX(newX);
 			        	cir.setCenterY(newY);
-			        	cir.setRadius(10);
-			        	cir.setFill(Color.RED);
+			        	cir.setRadius(12.5);
+			        	Image img = new Image("sneps/gui/AH.png");
+			        	cir.setFill(new ImagePattern(img));
+			            double ax = wireXStart - wireXEnd;
+			            double ay = wireYStart - wireYEnd;
+			            double bx = wireXStart - (wireXStart + 5);
+			            double by = wireYStart - wireYStart;
+			            double a = Math.sqrt((ax*ax) + (ay*ay));
+			            double b = Math.sqrt((bx*bx) + (by*by));
+			            double ab = (ax*bx) + (ay*by);
+			            double abn = a * b;
+			            double angle = Math.acos(ab/abn) * (180/Math.PI);
+			            if(wireYEnd < wireYStart) {
+			            	cir.setRotate(-angle);
+			            }
+			            else {
+			            	cir.setRotate(angle);
+			            }
 			        	drawArea.getChildren().add(l);
 			        	drawArea.getChildren().add(cir);
 			        	l.toBack();
@@ -804,6 +961,7 @@ public class FXController implements Initializable {
 			}
 			String identifier = n.getIdentifier();
 			VarNodeShape varNodeS = new VarNodeShape(identifier, curX, curY);
+			tableOfVarNodesDrawn.put(identifier, varNodeS);
 			Group shape = varNodeS.makeShape();
 			shape.setLayoutX(curX-50);
 			shape.setLayoutY(curY-40);
@@ -866,6 +1024,21 @@ public class FXController implements Initializable {
 				        	double newY = l.getStartY() + (d*vny);
 				        	c.setCenterX(newX);
 				        	c.setCenterY(newY);
+				        	double ax = l.getStartX() - l.getEndX();
+				            double ay = l.getStartY() - l.getEndY();
+				            double bx = l.getStartX() - (l.getStartX() + 5);
+				            double by = 0;
+				            double a = Math.sqrt((ax*ax) + (ay*ay));
+				            double b = Math.sqrt((bx*bx) + (by*by));
+				            double ab = (ax*bx) + (ay*by);
+				            double abn = a * b;
+				            double angle = Math.acos(ab/abn) * (180/Math.PI);
+				            if(l.getEndY() < l.getStartY()) {
+				            	c.setRotate(-angle);
+				            }
+				            else {
+				            	c.setRotate(angle);
+				            }
 	                	}
 	                }
 	                event.consume();
@@ -896,8 +1069,24 @@ public class FXController implements Initializable {
 			        	Circle cir = new Circle();
 			        	cir.setCenterX(newX);
 			        	cir.setCenterY(newY);
-			        	cir.setRadius(10);
-			        	cir.setFill(Color.RED);
+			        	cir.setRadius(12.5);
+			        	Image img = new Image("sneps/gui/AH.png");
+			        	cir.setFill(new ImagePattern(img));
+			            double ax = wireXStart - wireXEnd;
+			            double ay = wireYStart - wireYEnd;
+			            double bx = wireXStart - (wireXStart + 5);
+			            double by = wireYStart - wireYStart;
+			            double a = Math.sqrt((ax*ax) + (ay*ay));
+			            double b = Math.sqrt((bx*bx) + (by*by));
+			            double ab = (ax*bx) + (ay*by);
+			            double abn = a * b;
+			            double angle = Math.acos(ab/abn) * (180/Math.PI);
+			            if(wireYEnd < wireYStart) {
+			            	cir.setRotate(-angle);
+			            }
+			            else {
+			            	cir.setRotate(angle);
+			            }
 			        	drawArea.getChildren().add(l);
 			        	drawArea.getChildren().add(cir);
 			        	l.toBack();
@@ -1000,6 +1189,21 @@ public class FXController implements Initializable {
 				        	double newY = l.getStartY() + (d*vny);
 				        	c.setCenterX(newX);
 				        	c.setCenterY(newY);
+				        	double ax = l.getStartX() - l.getEndX();
+				            double ay = l.getStartY() - l.getEndY();
+				            double bx = l.getStartX() - (l.getStartX() + 5);
+				            double by = 0;
+				            double a = Math.sqrt((ax*ax) + (ay*ay));
+				            double b = Math.sqrt((bx*bx) + (by*by));
+				            double ab = (ax*bx) + (ay*by);
+				            double abn = a * b;
+				            double angle = Math.acos(ab/abn) * (180/Math.PI);
+				            if(l.getEndY() < l.getStartY()) {
+				            	c.setRotate(-angle);
+				            }
+				            else {
+				            	c.setRotate(angle);
+				            }
 	                	}
 	                }
 	                event.consume();
@@ -1030,8 +1234,24 @@ public class FXController implements Initializable {
 			        	Circle cir = new Circle();
 			        	cir.setCenterX(newX);
 			        	cir.setCenterY(newY);
-			        	cir.setRadius(10);
-			        	cir.setFill(Color.RED);
+			        	cir.setRadius(12.5);
+			        	Image img = new Image("sneps/gui/AH.png");
+			        	cir.setFill(new ImagePattern(img));
+			            double ax = wireXStart - wireXEnd;
+			            double ay = wireYStart - wireYEnd;
+			            double bx = wireXStart - (wireXStart + 5);
+			            double by = wireYStart - wireYStart;
+			            double a = Math.sqrt((ax*ax) + (ay*ay));
+			            double b = Math.sqrt((bx*bx) + (by*by));
+			            double ab = (ax*bx) + (ay*by);
+			            double abn = a * b;
+			            double angle = Math.acos(ab/abn) * (180/Math.PI);
+			            if(wireYEnd < wireYStart) {
+			            	cir.setRotate(-angle);
+			            }
+			            else {
+			            	cir.setRotate(angle);
+			            }
 			        	drawArea.getChildren().add(l);
 			        	drawArea.getChildren().add(cir);
 			        	l.toBack();
@@ -1125,6 +1345,72 @@ public class FXController implements Initializable {
 		updateNodesList();
 	}
 
+	//Create the drawn molecular nodes in the network
+	public void submitDrawMolNodes() {
+		for(int i = 0; i<listOfMolNodesDrawn.size(); i++) {
+			MolNodeShape temp = listOfMolNodesDrawn.get(i);
+			ArrayList<Wire> wires = new ArrayList<Wire>();
+			RelationsRestrictedCaseFrame cf = (RelationsRestrictedCaseFrame) temp.getCf();
+			double x = temp.getX();
+			double y = temp.getY();
+			for(int j = 0; j<drawnWiresList.size(); j++) {
+				Line l = drawnWiresList.get(j);
+				double xStart = l.getStartX();
+				double yStart = l.getStartY();
+				double xEnd = l.getEndX();
+				double yEnd = l.getEndY();
+				if((x == xStart) && (y == yStart)) {
+					//System.out.println("Node == line start");
+					for (Entry<String, BaseNodeShape> entry : tableOfBaseNodesDrawn.entrySet()) {
+						String key = entry.getKey();
+						BaseNodeShape tempBase = entry.getValue();
+						double xPos = tempBase.x;
+						double yPos = tempBase.y;
+						if((xPos == xEnd) && (yPos == yEnd)) {
+							//System.out.println("There is a base node here!!");
+							Label lbl = drawnRelationsList.get(j);
+							String rname = lbl.getText();
+							System.out.println(rname);
+							Relation r = null;
+							try {
+								r = Network.getRelation(rname);
+							} catch (CustomException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							Node n = null;
+							try {
+								n = Network.getNode(key);
+							} catch (CustomException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							System.out.println(n.getIdentifier());
+							Wire w = new Wire(r, n);
+							wires.add(w);
+						}
+					}
+				}
+			}
+			try {
+				Network.buildMolecularNode(wires, cf);
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	//submit drawn Nodes
+	public void submitDrawnNodes() {
+		submitDrawnBaseNodes();
+		submitDrawMolNodes();
+		updateNodesList();
+	}
+	
 	//Selects the wire mode
 	public void wireMode() {
 		wireModeBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -1223,13 +1509,10 @@ public class FXController implements Initializable {
 		Hashtable<String, Relation> relations = Network.getRelations();
 		relationSetList.getItems().clear();
 		relationSetList1.getItems().clear();
-		relationSetList2.getItems().clear();
 		for (Entry<String, Relation> entry : relations.entrySet()) {
 		    String key = entry.getKey();
 		    relationSetList.getItems().add(key);
 		    relationSetList1.getItems().add(key);
-		    relationSetList2.getItems().add(key);
-
 		}
 	}
 
@@ -1293,6 +1576,7 @@ public class FXController implements Initializable {
 					try {
 						CaseFrame cf = Network.getCaseFrame(item.getText());
 						curCF = cf;
+						curRRCF = (RelationsRestrictedCaseFrame) cf;
 						LinkedList<Relation> relations = cf.getRelations();
 						caseFrameRelationList.getItems().clear();
 						for(Relation r : relations) {
@@ -1399,8 +1683,10 @@ public class FXController implements Initializable {
 	
 	//Builds the molecular node in the network
 	public void buildMolecularNode() {
+		//CaseFrame cf = (CaseFrame) curCF;
+		//System.out.println(cf.getRelations());
 		try {
-			Network.buildMolecularNode(wires, curCF);
+			Network.buildMolecularNode(wires, curRRCF);
 			updateNodesList();
 			wiresList.getItems().clear();
 			wires.clear();
@@ -1451,22 +1737,44 @@ public class FXController implements Initializable {
 
 	//Adds an overridden a relation to rr case frame
 	public void addOverriddenRelationToCaseFrame() {
-		String selectedRelation = relationSetList2.getSelectionModel().getSelectedItem();
+		String selectedRelation = relationSetList1.getSelectionModel().getSelectedItem();
 		if(selectedRelation != null) {
 			String adjust = overrideAdjust.getText();
-			int limit = Integer.parseInt(overrideLimit.getText());
-			Relation r = null;
-			try {
-				r = Network.getRelation(selectedRelation);
-			} catch (CustomException e) {
-				e.printStackTrace();
+			String limitS = overrideLimit.getText();
+			
+			if((adjust.length() == 0) && (limitS.length() == 0)) {
+				Relation r = null;
+				try {
+					r = Network.getRelation(selectedRelation);
+					
+				} catch (CustomException e) {
+					e.printStackTrace();
+				}
+				
+				String ra = r.getAdjust();
+				int rl = r.getLimit();
+				RCFP rcfp = new RCFP(r,ra,rl);
+				rrcflist.add(rcfp);
+				cfRS.getItems().add(selectedRelation);
+				relationSetList1.getItems().remove(selectedRelation);
+				overrideAdjust.setText("");
+				overrideLimit.setText("");
+				
+			}else {
+				int limit = Integer.parseInt(overrideLimit.getText());
+				Relation r = null;
+				try {
+					r = Network.getRelation(selectedRelation);
+				} catch (CustomException e) {
+					e.printStackTrace();
+				}
+				RCFP rcfp = new RCFP(r,adjust,limit);
+				rrcflist.add(rcfp);
+				cfRS.getItems().add(selectedRelation);
+				relationSetList1.getItems().remove(selectedRelation);
+				overrideAdjust.setText("");
+				overrideLimit.setText("");
 			}
-			RCFP rcfp = new RCFP(r,adjust,limit);
-			rrcflist.add(rcfp);
-			rrcfrslist.getItems().add(selectedRelation);
-			relationSetList2.getItems().remove(selectedRelation);
-			overrideAdjust.setText("");
-			overrideLimit.setText("");
 		}
 	}
 	
@@ -1478,8 +1786,8 @@ public class FXController implements Initializable {
 		    	  Relation r = rcfp.getRelation();
 		    	  if(r.getName() == selectedRelation) {
 		    		  rrcflist.remove(rcfp);
-		    		  relationSetList2.getItems().add(selectedRelation);
-		    		  rrcfrslist.getItems().remove(selectedRelation);
+		    		  relationSetList1.getItems().add(selectedRelation);
+		    		  cfRS.getItems().remove(selectedRelation);
 		    	  }
 		    }
 
@@ -1497,10 +1805,29 @@ public class FXController implements Initializable {
 		updateCaseFramesList();
 		updateRelationSetList();
 		rrcflist.clear();
-		rrcfrslist.getItems().clear();
+		cfRS.getItems().clear();
 		rrcfSem.setText("");
 	}
 	
+	public void deleteNode() {
+		String identifier = nodesList.getSelectionModel().getSelectedItem().toString();
+		Node n = null;
+		try {
+			n = Network.getNode(identifier);
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			Network.removeNode(n);
+			updateNodesList();
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 //..........END Of Traditional Menu Methods.............................	
 
@@ -1517,11 +1844,17 @@ public class FXController implements Initializable {
 		String relations = name + "relations";
 		String caseFrames = name + "caseFrames";
 		String nodes = name + "nodes";
+		String molnodes = name + "molNodes";
 		String mc = name + "mc";
 		String pc = name + "pc";
 		String vc = name + "vc";
+		String pn = name + "pn";
+		String ni = name + "ni";
+		String udms = name + "udms";
+		String udps = name + "udps";
+		String udvs = name + "udvs";
 		try {
-			Network.save(relations, caseFrames, nodes, mc, pc, vc);
+			Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
 			System.out.println("saved");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1533,11 +1866,17 @@ public class FXController implements Initializable {
 		String relations = name + "relations";
 		String caseFrames = name + "caseFrames";
 		String nodes = name + "nodes";
+		String molnodes = name + "molNodes";
 		String mc = name + "mc";
 		String pc = name + "pc";
 		String vc = name + "vc";
+		String pn = name + "pn";
+		String ni = name + "ni";
+		String udms = name + "udms";
+		String udps = name + "udps";
+		String udvs = name + "udvs";
 		try {
-			Network.load(relations , caseFrames, nodes, mc, pc, vc);
+			Network.load(relations , caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
 			updateNodesList();
 			updateCaseFramesList();
 			updateRelationSetList();
@@ -1608,8 +1947,75 @@ public class FXController implements Initializable {
 	
 	
 	
+//..........Displaying the network method...............................
+	public void generateNetwork() throws IOException {
+		String data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=gray20;";
+		File f = new File("bin/sneps/gui/displayData.html");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+        bw.write("<!DOCTYPE html>");
+        bw.write("<html>");
+        bw.write("<head>");
+        bw.write("<title>Test</title>");
+        bw.write("<style>body {background-color: #333333;}</style>");
+        bw.write("<script src='viz.js'></script>");
+        bw.write("</head>");
+        bw.write("<body>");
+        bw.write("<script>");
+        bw.write(data);
+        
+        Hashtable<String, NodeSet> nodes = Network.getMolecularNodes();
+		for (Entry<String, NodeSet> entry : nodes.entrySet()) {
+			NodeSet ns = entry.getValue();
+			for(int i = 0; i<ns.size(); i++) {
+				Molecular molNode = (Molecular) ns.getNode(i).getTerm();
+				System.out.println(molNode.getIdentifier());
+				DownCableSet dcs = molNode.getDownCableSet();
+				Hashtable<String, DownCable> downCables = dcs.getDownCables();
+				for(Entry<String, DownCable> entry1 : downCables.entrySet()) {
+					String rname = entry1.getKey();
+					System.out.println(rname);
+					DownCable dc = entry1.getValue();
+					NodeSet cableNodes = dc.getNodeSet();
+					for(int j = 0; j<cableNodes.size(); j++) {
+						Node n = cableNodes.getNode(j);
+						String nodeShape = " " + n.getIdentifier() + " [style=filled,color=white];";
+						if(n.getTerm() instanceof Molecular) {
+							nodeShape = " " + n.getIdentifier() + " [style=filled,color=dodgerblue];";
+						}
+						else if(n.getTerm() instanceof Base) {
+							nodeShape = " " + n.getIdentifier() + " [style=filled,color=yellow];";
+						}
+						else if(n.getTerm() instanceof Variable) {
+							nodeShape = " " + n.getIdentifier() + " [style=filled,color=green];";
+						}
+						System.out.println(n.getIdentifier());
+						String nodeName = n.getIdentifier();
+						String relation= "[style=filled, color=red, label=\"" + rname + "\", fontcolor=red]";
+						String molShape = " " + molNode.getIdentifier() + " [style=filled,color=dodgerblue];";
+						String dotSyntax = " " + molNode.getIdentifier() + " -> " + nodeName + relation + ";";
+						bw.write(nodeShape);
+						bw.write(molShape);
+						bw.write(dotSyntax);
+					}
+					
+				}
+			}
+		}
+		bw.write("}');");
+		bw.write("</script></body></html>");
+		bw.close();
+		//System.out.println("Generating Network..");
+	}
 	
 	
+	
+	public void displayNetwork() {
+		String url = this.getClass().getResource("displayData.html").toExternalForm();
+		webView.getEngine().load(url);
+		//System.out.println(url.toString());
+	}
+	
+
 	public void createDefaults() {
 		try {
 			Network.defineDefaults();

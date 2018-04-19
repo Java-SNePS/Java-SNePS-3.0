@@ -12,6 +12,7 @@
  */
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -20,7 +21,7 @@ import java.util.LinkedList;
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 
-public class RelationsRestrictedCaseFrame extends CaseFrame{
+public class RelationsRestrictedCaseFrame extends CaseFrame implements Serializable{
 	public static CaseFrame andRule, orRule, andOrRule, threshRule,
 			numericalRule, act, act1, act2, act3, act4, act5, act6,
 			act7, act8, act9, preconditionAct, whenDo, doIf, actEffect,

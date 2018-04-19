@@ -1,14 +1,16 @@
 package sneps.network.classes.setClasses;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Vector;
 
 import sneps.network.classes.term.Variable;
 
-public class VariableSet implements Iterable<Variable> {
+public class VariableSet implements Iterable<Variable>, Serializable {
 	protected Vector<Variable> variables;
 
 	public VariableSet() {
+		variables = new Vector<Variable>();
 	}
 
 	@Override
@@ -32,6 +34,11 @@ public class VariableSet implements Iterable<Variable> {
 
 	public int size() {
 		return variables.size();
+	}
+
+
+	public boolean isEmpty() {
+		return variables.isEmpty();
 	}
 
 }
