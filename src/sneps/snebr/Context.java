@@ -4,8 +4,11 @@ import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.network.Network;
+import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 
@@ -98,7 +101,7 @@ public class Context {
 //		Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
 //		PropositionSet asserted = new PropositionSet();
 //		for (PropositionNode node : allPropositionNodes) {
-//			if (this.hyps.getNodes().contains(node)) {
+//			if (this.hyps.(node)) {
 //				asserted.add(node);
 //			} else {
 //				Collection<PropositionSet> justificationSets = node.getBasicSupport()
