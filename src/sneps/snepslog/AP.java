@@ -336,6 +336,29 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to construct the nodes representing a negatedTerm in the
+	 * network.
+	 * 
+	 * @param node
+	 *            a node to be negated.
+	 * @return a molecular node representing a negatedTerm.
+	 * @throws Exception
+	 */
+	protected static Node buildNegatedTerm(Node node) throws Exception {
+		// possible conflict in identifiers
+		// Check semantic and syntactic type
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		wires.add(new Wire(Relation.arg, node));
+		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Individual"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Individual"))));
+
+		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
+		return setTermNode;
+	}
+
+	/**
 	 * This method is used to create a case frame for mode 3 and stores it in a
 	 * hashtable using the name as key.
 	 * 
