@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedList;
 
 import java_cup.runtime.Symbol;
@@ -29,6 +30,12 @@ import sneps.network.classes.Wire;
 
 @SuppressWarnings("deprecation")
 public class AP {
+
+	/**
+	 * This is a hashtable to store the case frames used in mode 3 where the key is
+	 * the name used in creating the case frame.
+	 */
+	private static Hashtable<String, CaseFrame> modeThreeCaseFrames;
 
 	/**
 	 * an integer which holds the number of the snepslog mode currently in use. It
