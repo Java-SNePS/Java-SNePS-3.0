@@ -372,8 +372,8 @@ public class AP {
 		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Infimum"))));
 		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
-		return setTermNode;
+		Node negatedNode = Network.buildMolecularNode(wires, caseFrame);
+		return negatedNode;
 	}
 
 	/**
@@ -401,8 +401,8 @@ public class AP {
 		}
 		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
-		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
-		return andorNode;
+		Node threshNode = Network.buildMolecularNode(wires, caseFrame);
+		return threshNode;
 	}
 
 	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2) throws Exception {
