@@ -306,6 +306,36 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to construct the nodes representing an andTerm in the
+	 * network.
+	 * 
+	 * @param i
+	 *            the andor min.
+	 * @param j
+	 *            the andor max.
+	 * @param arguments
+	 *            an ArrayList of the nodes representing the arguments.
+	 * @return a molecular node representing an andorTerm.
+	 * @throws Exception
+	 */
+	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments) throws Exception {
+		// possible conflict in identifiers
+		// Check semantic and syntactic type
+		// TODO i j checks
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		for (int a = 0; a < arguments.size(); a++) {
+			wires.add(new Wire(Relation.arg, arguments.get(a)));
+		}
+		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+		wires.add(new Wire(Relation.max, Network.buildBaseNode(j, new Semantic("Individual"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode(i, new Semantic("Individual"))));
+
+		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
+		return andorNode;
+	}
+
+	/**
 	 * This method is used to create a case frame for mode 3 and stores it in a
 	 * hashtable using the name as key.
 	 * 
@@ -342,7 +372,7 @@ public class AP {
 		modeThreeCaseFrames.put(name, cf);
 		return cf;
 	}
-	
+
 	/**
 	 * This method is used to execute a snepslog command.
 	 * 
