@@ -196,8 +196,6 @@ public class AP {
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
 			ArrayList<Node> consequents, String optionalI) throws Exception {
-		// possible conflict in identifiers
-		// Check semantic and syntactic type
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -228,10 +226,9 @@ public class AP {
 			for (int j = 0; j < consequents.size(); j++) {
 				wires.add(new Wire(Relation.cq, consequents.get(j)));
 			}
-			wires.add(new Wire(Relation.i, Network.buildBaseNode(optionalI, new Semantic("Individual"))));
+			wires.add(new Wire(Relation.i, Network.buildBaseNode(optionalI, new Semantic("Infimum"))));
 			break;
 		case "Implication":
-			// check the case frame in use
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.numericalRule;
 			for (int i = 0; i < antecedents.size(); i++) {
 				wires.add(new Wire(Relation.andAnt, antecedents.get(i)));
@@ -239,7 +236,7 @@ public class AP {
 			for (int j = 0; j < consequents.size(); j++) {
 				wires.add(new Wire(Relation.cq, consequents.get(j)));
 			}
-			wires.add(new Wire(Relation.i, Network.buildBaseNode("1", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.i, Network.buildBaseNode("1", new Semantic("Infimum"))));
 			break;
 		}
 		Node entailmentNode = Network.buildMolecularNode(wires, caseFrame);
@@ -259,8 +256,6 @@ public class AP {
 	 * @throws Exception
 	 */
 	protected static Node buildSetTerm(String type, ArrayList<Node> arguments) throws Exception {
-		// possible conflict in identifiers
-		// Check semantic and syntactic type
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -270,35 +265,35 @@ public class AP {
 		switch (type) {
 		case "and":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Individual"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode(arguments.size() + "", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode(arguments.size() + "", new Semantic("Infimum"))));
 			break;
 		case "or":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Individual"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Infimum"))));
 			break;
 		case "nand":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 			wires.add(new Wire(Relation.max,
-					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Individual"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Individual"))));
+					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
 			break;
 		case "nor":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Individual"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
 			break;
 		case "xor":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode("1", new Semantic("Individual"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Individual"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Infimum"))));
 			break;
 		case "iff":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
 			wires.add(new Wire(Relation.threshMax,
-					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Individual"))));
-			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", new Semantic("Individual"))));
+					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", new Semantic("Infimum"))));
 			break;
 		}
 		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
@@ -319,18 +314,15 @@ public class AP {
 	 * @throws Exception
 	 */
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments) throws Exception {
-		// possible conflict in identifiers
-		// Check semantic and syntactic type
 		// TODO i j checks
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
 		}
+		wires.add(new Wire(Relation.max, Network.buildBaseNode(j, new Semantic("Infimum"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode(i, new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-		wires.add(new Wire(Relation.max, Network.buildBaseNode(j, new Semantic("Individual"))));
-		wires.add(new Wire(Relation.min, Network.buildBaseNode(i, new Semantic("Individual"))));
-
 		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
 		return andorNode;
 	}
@@ -345,15 +337,12 @@ public class AP {
 	 * @throws Exception
 	 */
 	protected static Node buildNegatedTerm(Node node) throws Exception {
-		// possible conflict in identifiers
-		// Check semantic and syntactic type
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, node));
+		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Infimum"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Individual"))));
-		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Individual"))));
-
 		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
 		return setTermNode;
 	}
@@ -383,12 +372,10 @@ public class AP {
 		String[] rs = relations.split(" ");
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		if (!rs[0].equals("nil")) {
-			// check semantic types
 			Relation r = new Relation(rs[0], "Individual");
 			rels.add(r);
 		}
 		for (int i = 1; i < rs.length; i++) {
-			// check semantic types
 			rels.add(new Relation(rs[i], "Individual"));
 		}
 		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
