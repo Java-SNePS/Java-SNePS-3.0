@@ -103,6 +103,13 @@ public class Context {
         return null;
     }
 
+    /**
+     * Checks if a propositions is asserted in this context
+     * @param p the proposition to be checked for assertion.
+     * @return <code>true</code> if the proposition exists, otherwise <code>false</code>
+     * @throws NotAPropositionNodeException If the node p is not a proposition.
+     * @throws NodeNotFoundInNetworkException If the node p doesn't exist in the network.
+     */
     public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int hyp = p.getId();
 
@@ -116,7 +123,7 @@ public class Context {
 
     }
 
-    public boolean isSupported(PropositionNode node) {
+    private boolean isSupported(PropositionNode node) {
         Collection<PropositionSet> assumptionSet = node.getBasicSupport()
                 .getAssumptionBasedSupport()
                 .values();

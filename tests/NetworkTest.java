@@ -5,6 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneps.exceptions.CustomException;
+import sneps.exceptions.NodeCannotBeRemovedException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -23,7 +26,7 @@ public class NetworkTest {
     }
 
     @Test
-    public void buildBaseNode() throws CustomException {
+    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         Network.buildBaseNode("n0", semantic);
         Node n0 =  Network.getNode("n0");
         assertTrue(Network.getNodeById(0) instanceof PropositionNode);
@@ -32,7 +35,7 @@ public class NetworkTest {
     }
 
     @After
-    public void removeNodes() throws CustomException {
+    public void removeNodes() throws NodeNotFoundInNetworkException, NodeCannotBeRemovedException {
         Network.removeNode(Network.getNode("n0"));
     }
 
