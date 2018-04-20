@@ -343,7 +343,7 @@ public class AP {
 	 * @throws Exception
 	 */
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments) throws Exception {
-		// TODO i j checks
+		// TODO andor i j checks
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
@@ -374,6 +374,35 @@ public class AP {
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
 		return setTermNode;
+	}
+
+	/**
+	 * This method is used to construct the nodes representing a threshTerm in the
+	 * network.
+	 * 
+	 * @param thresh
+	 *            the thresh min.
+	 * @param threshmax
+	 *            the thresh max.
+	 * @param arguments
+	 *            an ArrayList of the nodes representing the arguments.
+	 * @return a molecular node representing a threshTerm.
+	 * @throws Exception
+	 */
+	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments) throws Exception {
+		// TODO thresh i j checks
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		for (int a = 0; a < arguments.size(); a++) {
+			wires.add(new Wire(Relation.arg, arguments.get(a)));
+		}
+		if (threshmax != null) {
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(threshmax, new Semantic("Infimum"))));
+		}
+		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, new Semantic("Infimum"))));
+		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
+		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
+		return andorNode;
 	}
 
 	/**
