@@ -405,6 +405,46 @@ public class AP {
 		return andorNode;
 	}
 
+	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2) throws Exception {
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		RelationsRestrictedCaseFrame caseFrame = null;
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		switch (type) {
+		case "ifdo":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.doIf;
+			wires.add(new Wire(Relation.iff, arg1));
+			wires.add(new Wire(Relation.doo, arg2));
+			break;
+		case "whendo":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.whenDo;
+			wires.add(new Wire(Relation.when, arg1));
+			wires.add(new Wire(Relation.doo, arg2));
+			break;
+		case "ActPlan":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.planAct;
+			wires.add(new Wire(Relation.act, arg1));
+			wires.add(new Wire(Relation.plan, arg2));
+			break;
+		case "Effect":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.actEffect;
+			wires.add(new Wire(Relation.act, arg1));
+			wires.add(new Wire(Relation.effect, arg2));
+			break;
+		case "GoalPlan":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.planGoal;
+			wires.add(new Wire(Relation.goal, arg1));
+			wires.add(new Wire(Relation.plan, arg2));
+			break;
+		case "Precondition":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.preconditionAct;
+			wires.add(new Wire(Relation.act, arg1));
+			wires.add(new Wire(Relation.precondition, arg2));
+			break;
+		}
+		Node snereTerm = Network.buildMolecularNode(wires, caseFrame);
+		return snereTerm;
+	}
+
 	/**
 	 * This method is used to clear the knowledge base entirely.
 	 */
