@@ -306,6 +306,44 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to create a case frame for mode 3 and stores it in a
+	 * hashtable using the name as key.
+	 * 
+	 * @param semanticType
+	 *            this specifies the semantic type of the case frame.
+	 * @param name
+	 *            this acts as an identifier for the case frame.
+	 * @param relations
+	 *            this String contains the relations that is used to create a case
+	 *            frame.
+	 * @return the case frame after being created.
+	 */
+	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, String relations)
+			throws CustomException {
+		// check if already exists
+		if (modeThreeCaseFrames.containsKey(name)) {
+			return modeThreeCaseFrames.get(name);
+		}
+		// remove the brackets
+		relations = relations.substring(1, relations.length());
+		// divide the relations
+		String[] rs = relations.split(" ");
+		LinkedList<Relation> rels = new LinkedList<Relation>();
+		if (!rs[0].equals("nil")) {
+			// check semantic types
+			Relation r = new Relation(rs[0], "Individual");
+			rels.add(r);
+		}
+		for (int i = 1; i < rs.length; i++) {
+			// check semantic types
+			rels.add(new Relation(rs[i], "Individual"));
+		}
+		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
+		modeThreeCaseFrames.put(name, cf);
+		return cf;
+	}
+	
+	/**
 	 * This method is used to execute a snepslog command.
 	 * 
 	 * @param command
