@@ -405,6 +405,21 @@ public class AP {
 		return threshNode;
 	}
 
+	/**
+	 * This method is used to construct the nodes representing a SNeRE TERM in the
+	 * network.
+	 * 
+	 * @param type
+	 *            a String specifying the type of the SNeRE term. It should have one
+	 *            of the following values: ifdo, whendo, ActPlan, Effect, GoalPlan
+	 *            or Precondition.
+	 * @param arg1
+	 *            the first argument node.
+	 * @param arg2
+	 *            the second argument node.
+	 * @return a molecular node representing the SNeRE term.
+	 * @throws Exception
+	 */
 	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2) throws Exception {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
