@@ -461,6 +461,127 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to construct the act nodes in the network.
+	 * 
+	 * @param action
+	 *            this is the action node.
+	 * @param objects
+	 *            this is an arraylist of an arraylist of nodes contains the object
+	 *            nodes.
+	 * @return a molecular node representing an act node.
+	 * @throws Exception
+	 */
+	protected static Node buildAct(Node action, ArrayList<ArrayList<Node>> objects) throws Exception {
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		RelationsRestrictedCaseFrame caseFrame = null;
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		ArrayList<Node> objs = new ArrayList<Node>();
+		for (int i = 0; i < objects.size(); i++) {
+			for (int j = 0; j < objects.get(i).size(); j++) {
+				objs.add(objects.get(i).get(j));
+			}
+		}
+		switch (objs.size()) {
+		case 1:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj, objs.get(0)));
+			break;
+		case 2:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act1;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			break;
+		case 3:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act2;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			break;
+		case 4:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act3;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			break;
+		case 5:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act4;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			wires.add(new Wire(Relation.obj5, objs.get(4)));
+			break;
+		case 6:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act5;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			wires.add(new Wire(Relation.obj5, objs.get(4)));
+			wires.add(new Wire(Relation.obj6, objs.get(5)));
+			break;
+		case 7:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act6;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			wires.add(new Wire(Relation.obj5, objs.get(4)));
+			wires.add(new Wire(Relation.obj6, objs.get(5)));
+			wires.add(new Wire(Relation.obj7, objs.get(6)));
+			break;
+		case 8:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act7;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			wires.add(new Wire(Relation.obj5, objs.get(4)));
+			wires.add(new Wire(Relation.obj6, objs.get(5)));
+			wires.add(new Wire(Relation.obj7, objs.get(6)));
+			wires.add(new Wire(Relation.obj8, objs.get(7)));
+			break;
+		case 9:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act8;
+			wires.add(new Wire(Relation.action, action));
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			wires.add(new Wire(Relation.obj5, objs.get(4)));
+			wires.add(new Wire(Relation.obj6, objs.get(5)));
+			wires.add(new Wire(Relation.obj7, objs.get(6)));
+			wires.add(new Wire(Relation.obj8, objs.get(7)));
+			wires.add(new Wire(Relation.obj9, objs.get(8)));
+			break;
+		case 10:
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.act9;
+			wires.add(new Wire(Relation.obj1, objs.get(0)));
+			wires.add(new Wire(Relation.obj2, objs.get(1)));
+			wires.add(new Wire(Relation.obj3, objs.get(2)));
+			wires.add(new Wire(Relation.obj4, objs.get(3)));
+			wires.add(new Wire(Relation.obj5, objs.get(4)));
+			wires.add(new Wire(Relation.obj6, objs.get(5)));
+			wires.add(new Wire(Relation.obj7, objs.get(6)));
+			wires.add(new Wire(Relation.obj8, objs.get(7)));
+			wires.add(new Wire(Relation.obj9, objs.get(8)));
+			wires.add(new Wire(Relation.obj10, objs.get(9)));
+			break;
+		}
+		Node actNode = Network.buildMolecularNode(wires, caseFrame);
+		return actNode;
+	}
+
+	/**
 	 * This method is used to clear the knowledge base entirely.
 	 */
 	protected static void clearKnowledgeBase() {
