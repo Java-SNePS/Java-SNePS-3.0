@@ -99,7 +99,7 @@ public abstract class RuleNode extends PropositionNode {
 
 	abstract protected void applyRuleOnRui(RuleUseInfo tRui, String contextID);
 
-	
+
 	public void clear() {
 		contextRuisSet.clear();
 		contextConstantRUI.clear();
@@ -219,8 +219,9 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	
-	public RuleUseInfo addConstantRuiToContext(Context context, RuleUseInfo rui) {
-		RuleUseInfo tRui = contextConstantRUI.get(context);
+	public RuleUseInfo addConstantRuiToContext(String context, RuleUseInfo rui) {
+		Context contxt = (Context) Controller.getContextByName(context);
+		RuleUseInfo tRui = contextConstantRUI.get(contxt);
 		if (tRui != null)
 			tRui = rui.combine(tRui);
 		else
@@ -228,7 +229,7 @@ public abstract class RuleNode extends PropositionNode {
 		if (tRui == null)
 			throw new NullPointerException(
 					"The existed RUI could not be merged " + "with the given rui so check your code again");
-		contextConstantRUI.put(context, tRui);
+		contextConstantRUI.put(contxt, tRui);
 		return tRui;
 	}
 

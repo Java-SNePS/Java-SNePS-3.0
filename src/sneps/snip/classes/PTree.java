@@ -39,7 +39,7 @@ public class PTree extends RuisHandler {
 	}
 
 	public void buildTree(NodeSet ants){
-		//TODO Clear afterwards + check 2
+		//TODO check 2
 		//nodes = ants;
 		fillPVandVP(ants);
 
@@ -95,7 +95,7 @@ public class PTree extends RuisHandler {
 				DownCableSet dcs = ((Molecular)term).getDownCableSet();
 				for(int i = 0; i<dcs.size(); i++){
 					Hashtable<String, DownCable> dc = dcs.getDownCables();
-					//dc.get()
+					//TODO dc.get by Values
 				}
 				VariableSet vars = patternVariables.get(id);
 				if(vars == null || vars.isEmpty()){

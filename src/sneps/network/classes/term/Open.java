@@ -10,7 +10,7 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.VariableSet;
 
 public class Open extends Molecular {
-	protected VariableSet variables;
+	protected VariableSet variables;//TODO NodeSet
 
 	/**
 	 * The constructor of this class.
