@@ -232,7 +232,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| BELIEFS_ABOUT pTermSet optionalDot
+				| BELIEFS_ABOUT IDENTIFIER pTermSet optionalDot
 				{: 
 
 				:}
