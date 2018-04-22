@@ -258,14 +258,13 @@ public class AP {
 			wires.add(new Wire(Relation.i, Network.buildBaseNode(optionalI, new Semantic("Infimum"))));
 			break;
 		case "Implication":
-			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.numericalRule;
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.orRule;
 			for (int i = 0; i < antecedents.size(); i++) {
-				wires.add(new Wire(Relation.andAnt, antecedents.get(i)));
+				wires.add(new Wire(Relation.ant, antecedents.get(i)));
 			}
 			for (int j = 0; j < consequents.size(); j++) {
 				wires.add(new Wire(Relation.cq, consequents.get(j)));
 			}
-			wires.add(new Wire(Relation.i, Network.buildBaseNode("1", new Semantic("Infimum"))));
 			break;
 		}
 		Node entailmentNode = Network.buildMolecularNode(wires, caseFrame);
