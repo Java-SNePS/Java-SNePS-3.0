@@ -475,15 +475,10 @@ public class FXController implements Initializable {
 			}
 		}
 		
-		try {
-			Network.defineCaseFrame(semanticType, caseFrameList);
-			updateCaseFramesList();
-			updateRelationSetList();
-			cfRS.getItems().clear();
-		} catch (CustomException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Network.defineCaseFrame(semanticType, caseFrameList);
+		updateCaseFramesList();
+		updateRelationSetList();
+		cfRS.getItems().clear();
 	}
 
 	

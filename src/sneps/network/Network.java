@@ -357,11 +357,10 @@ public class Network implements Serializable {
 		 *             is already defined in the network.
 		 */
 		public static RelationsRestrictedCaseFrame defineCaseFrameWithConstraints(String semanticType,
-				LinkedList<RCFP> relationSet) throws CustomException {
+				LinkedList<RCFP> relationSet) {
 			RelationsRestrictedCaseFrame caseFrame = new RelationsRestrictedCaseFrame(semanticType, relationSet);
 			if (caseFrames.containsKey(caseFrame.getId())) {
-				throw new CustomException(
-						"This case frame already exists in the network");
+				return (RelationsRestrictedCaseFrame)caseFrames.get(caseFrame.getId());
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
@@ -372,11 +371,10 @@ public class Network implements Serializable {
 		} 
 		
 		public static CaseFrame defineCaseFrame(String semanticType,
-				LinkedList<Relation> relationSet) throws CustomException {
+				LinkedList<Relation> relationSet) {
 			CaseFrame caseFrame = new CaseFrame(semanticType, relationSet);
 			if (caseFrames.containsKey(caseFrame.getId())) {
-				throw new CustomException(
-						"This case frame already exists in the network");
+				return caseFrames.get(caseFrame.getId());
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
@@ -2051,4 +2049,23 @@ public class Network implements Serializable {
 		
 				
 	}
+	
+	/**
+	 * This method is used to clear the network entirely.
+	 */
+	public static void clearNetwork() {
+		nodes.clear();
+		propositionNodes.clear();
+		nodesIndex.clear();
+		molecularNodes.clear();
+		caseFrames.clear();
+		relations.clear();
+		molCounter = 0;
+		patternCounter = 0;
+		varCounter = 0;
+		userDefinedMolSuffix.clear();
+		userDefinedPatSuffix.clear();
+		userDefinedVarSuffix.clear();
+	}
+	
 }
