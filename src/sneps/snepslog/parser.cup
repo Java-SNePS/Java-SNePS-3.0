@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javafx.util.Pair;
 
 import sneps.network.Node;
+import sneps.network.paths.Path;
 
 
 parser code {:
@@ -94,10 +95,22 @@ terminal ACTIVATE,
          ACTPLAN,
          EFFECT,
          GOALPLAN,
-         PRECONDITION;
+         PRECONDITION,
+         KPLUS,
+         KSTAR,
+         COMPOSE,
+         CONVERSE,
+         IRREFLEXIVE_RESTRICT,
+         DOMAIN_RESTRICT,
+         RANGE_RESTRICT,
+         FUNIT,
+         BUNIT,
+         CFRESFUNIT,
+         CFRESBUNIT,
+         BANGPATH,
+         EMPTYPATH;
 
-terminal String SNEPSPATH,
-         	    FILEPATH,
+terminal String FILEPATH,
                 STRING_LIT,
                 INT_LIT,
                 IDENTIFIER,
@@ -119,6 +132,9 @@ nonterminal String command,
                    demoSecondOptionalOptionSet,
                    andOrEquality,
                    wffName;
+                   
+nonterminal Path path;
+nonterminal ArrayList<Path> paths;
                                
 nonterminal Node wff,
                  infixedTerm,
@@ -250,7 +266,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DEFINE_PATH IDENTIFIER SNEPSPATH optionalDot
+				| DEFINE_PATH IDENTIFIER path optionalDot
 				{: 
 
 				:}
@@ -849,4 +865,86 @@ demoSecondOptionalOptionSet ::= OPTION_T
 				          {:
 			
 				          :};					          	
-																																																																																																																																																																
+						
+path ::=	 BANGPATH
+     {:
+     
+     :}
+     | EMPTYPATH
+	 {:
+			
+     :}
+     | FUNIT OPEN_PARAN IDENTIFIER CLOSE_PARAN
+	 {:
+			
+     :}
+     | BUNIT OPEN_PARAN IDENTIFIER CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | CFRESFUNIT OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | CFRESBUNIT OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | KPLUS OPEN_PARAN path CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | KSTAR OPEN_PARAN path CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | AND OPEN_PARAN paths CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | AND OPEN_PARAN CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | OR OPEN_PARAN paths CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | OR OPEN_PARAN CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | COMPOSE OPEN_PARAN paths CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | COMPOSE OPEN_PARAN CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | CONVERSE OPEN_PARAN path CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | IRREFLEXIVE_RESTRICT OPEN_PARAN path CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | DOMAIN_RESTRICT OPEN_PARAN path OPEN_PARAN wff CLOSE_PARAN COMMA path CLOSE_PARAN
+	 {:
+			
+	 :}
+	 | RANGE_RESTRICT OPEN_PARAN path COMMA path OPEN_PARAN wff CLOSE_PARAN CLOSE_PARAN
+	 {:
+			
+	 :};
+	 
+paths ::= path COMMA paths
+      {:
+      
+      :}
+      | path
+      {:
+      
+      :};
+				 																																																																																																																																																										

@@ -12,20 +12,23 @@ public class sym {
   public static final int CLEAR_INFER = 14;
   public static final int UNDEFINE_PATH = 45;
   public static final int UNTRACE = 47;
-  public static final int IDENTIFIER = 86;
+  public static final int IDENTIFIER = 98;
   public static final int NORMAL = 35;
   public static final int AND_ENTAILMENT = 55;
   public static final int CLOSE_PARAN = 69;
   public static final int TRACE = 44;
+  public static final int BANGPATH = 93;
+  public static final int BUNIT = 90;
   public static final int LIST_CONTEXTS = 32;
   public static final int ASKWH = 8;
   public static final int ASK = 6;
-  public static final int INT_LIT = 85;
-  public static final int STRING_LIT = 84;
-  public static final int NUMERICAL_ENTAILMENT = 87;
+  public static final int INT_LIT = 97;
+  public static final int STRING_LIT = 96;
+  public static final int NUMERICAL_ENTAILMENT = 99;
   public static final int MANUAL = 13;
   public static final int CLOSE_CURLY = 71;
   public static final int BELIEFS_ABOUT = 10;
+  public static final int CFRESBUNIT = 92;
   public static final int DEFINE_SEMANTIC = 19;
   public static final int COMMA = 66;
   public static final int ADD_TO_CONTEXT = 5;
@@ -34,20 +37,28 @@ public class sym {
   public static final int UNLABELED = 46;
   public static final int DESCRIBE_TERMS = 29;
   public static final int ALL = 65;
+  public static final int IRREFLEXIVE_RESTRICT = 86;
   public static final int BR_MODE = 11;
   public static final int IFDO = 75;
   public static final int NOT = 56;
+  public static final int FUNIT = 89;
   public static final int NOR = 61;
   public static final int OR_ENTAILMENT = 54;
   public static final int PARSING = 50;
+  public static final int KPLUS = 82;
   public static final int IMPLICATION = 53;
+  public static final int DOMAIN_RESTRICT = 87;
   public static final int EQUALITY = 52;
+  public static final int EMPTYPATH = 94;
   public static final int ANDOR = 57;
   public static final int WHENEVERDO = 77;
+  public static final int CFRESFUNIT = 91;
+  public static final int KSTAR = 83;
   public static final int EXPERT = 30;
   public static final int REMOVE_FROM_CONTEXT = 37;
   public static final int ACTING = 49;
-  public static final int FILEPATH = 83;
+  public static final int FILEPATH = 95;
+  public static final int CONVERSE = 85;
   public static final int LIST_TERMS = 33;
   public static final int OPEN_PARAN = 68;
   public static final int WFF = 74;
@@ -62,11 +73,13 @@ public class sym {
   public static final int LOAD = 34;
   public static final int PERFORM = 36;
   public static final int SHOW = 43;
+  public static final int RANGE_RESTRICT = 88;
   public static final int THRESH = 64;
   public static final int EOF = 0;
   public static final int SET_DEFAULT_CONTEXT = 39;
   public static final int BANG = 3;
   public static final int OPEN_CURLY = 70;
+  public static final int COMPOSE = 84;
   public static final int OPTION_T = 22;
   public static final int DEMO = 20;
   public static final int DEFINE_FRAME = 17;
@@ -79,7 +92,6 @@ public class sym {
   public static final int LIST_ASSERTED_WFFS = 31;
   public static final int ACTPLAN = 78;
   public static final int COLON = 67;
-  public static final int SNEPSPATH = 82;
   public static final int TRANSLATION = 51;
   public static final int WHENDO = 76;
   public static final int OPTION_AV = 26;
@@ -179,7 +191,19 @@ public class sym {
   "EFFECT",
   "GOALPLAN",
   "PRECONDITION",
-  "SNEPSPATH",
+  "KPLUS",
+  "KSTAR",
+  "COMPOSE",
+  "CONVERSE",
+  "IRREFLEXIVE_RESTRICT",
+  "DOMAIN_RESTRICT",
+  "RANGE_RESTRICT",
+  "FUNIT",
+  "BUNIT",
+  "CFRESFUNIT",
+  "CFRESBUNIT",
+  "BANGPATH",
+  "EMPTYPATH",
   "FILEPATH",
   "STRING_LIT",
   "INT_LIT",

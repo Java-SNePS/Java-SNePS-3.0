@@ -81,7 +81,6 @@ INFERENCE=(inference)
 ACTING=(acting)
 PARSING=(parsing)
 TRANSLATION=(translation)
-SNEPSPATH=(EmptyPath|FUnitPath|BUnitPath|CFResFUnitPath|CFResBUnitPath|ComposePath|ConversePath|KStarPath|KPlusPath|OrPath|AndPath|IrreflexiveRestrictPath|DomainRestrictPath|RangeRestrictPath|BangPath)
 FILEPATH=([A-Za-z0-9/]+\.snepslog)
 STRING_LIT=(\"[A-Za-z0-9 ]*\")
 INT_LIT=([1-9][0-9]*)|(0)
@@ -116,6 +115,19 @@ ACTPLAN=(ActPlan)
 EFFECT=(Effect)
 GOALPLAN=(GoalPlan)
 PRECONDITION=(Precondition)
+KPLUS=(kplus)
+KSTAR=(kstar)
+COMPOSE=(compose)
+CONVERSE=(converse)
+IRREFLEXIVE_RESTRICT=(irreflexive-restrict)
+DOMAIN_RESTRICT=(domain-restrict)
+RANGE_RESTRICT=(range-restrict)
+FUNIT=(forward-unit)
+BUNIT=(backward-unit)
+CFRESFUNIT=(caseframe-restrict-forward-unit)
+CFRESBUNIT=(caseframe-restrict-backward-unit)
+BANGPATH=(bang)
+EMPTYPATH=(empty)
 IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 
 %% 
@@ -273,9 +285,6 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 <YYINITIAL> {TRANSLATION} { 
 	return (new Symbol(sym.TRANSLATION,yytext()));
 }
-<YYINITIAL> {SNEPSPATH} { 
-	return (new Symbol(sym.SNEPSPATH,yytext()));
-}
 <YYINITIAL> {STRING_LIT} { 
 	return (new Symbol(sym.STRING_LIT,yytext()));
 }
@@ -377,6 +386,45 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 }
 <YYINITIAL> {PRECONDITION} { 
 	return (new Symbol(sym.PRECONDITION,yytext()));
+}
+<YYINITIAL> {KPLUS} { 
+	return (new Symbol(sym.KPLUS,yytext()));
+}
+<YYINITIAL> {KSTAR} { 
+	return (new Symbol(sym.KSTAR,yytext()));
+}
+<YYINITIAL> {COMPOSE} { 
+	return (new Symbol(sym.COMPOSE,yytext()));
+}
+<YYINITIAL> {CONVERSE} { 
+	return (new Symbol(sym.CONVERSE,yytext()));
+}
+<YYINITIAL> {IRREFLEXIVE_RESTRICT} { 
+	return (new Symbol(sym.IRREFLEXIVE_RESTRICT,yytext()));
+}
+<YYINITIAL> {DOMAIN_RESTRICT} { 
+	return (new Symbol(sym.DOMAIN_RESTRICT,yytext()));
+}
+<YYINITIAL> {RANGE_RESTRICT} { 
+	return (new Symbol(sym.RANGE_RESTRICT,yytext()));
+}
+<YYINITIAL> {FUNIT} { 
+	return (new Symbol(sym.FUNIT,yytext()));
+}
+<YYINITIAL> {BUNIT} { 
+	return (new Symbol(sym.BUNIT,yytext()));
+}
+<YYINITIAL> {CFRESFUNIT} { 
+	return (new Symbol(sym.CFRESFUNIT,yytext()));
+}
+<YYINITIAL> {CFRESBUNIT} { 
+	return (new Symbol(sym.CFRESBUNIT,yytext()));
+}
+<YYINITIAL> {BANGPATH} { 
+	return (new Symbol(sym.BANGPATH,yytext()));
+}
+<YYINITIAL> {EMPTYPATH} { 
+	return (new Symbol(sym.EMPTYPATH,yytext()));
 }
 <YYINITIAL> {IDENTIFIER} { 
 	return (new Symbol(sym.IDENTIFIER,yytext()));
