@@ -34,6 +34,10 @@ terminal ACTIVATE,
          DEFINE_FRAME,
          DEFINE_PATH,
          DEFINE_SEMANTIC,
+         DEFINE_RELATION,
+         EXPAND,
+         REDUCE,
+         NONE,
          DEMO,
          QUESTION_MARK,
          OPTION_T,
@@ -279,6 +283,22 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 
 				:}
 				| DEFINE_SEMANTIC IDENTIFIER IDENTIFIER identifiers_list
+				{: 
+
+				:}
+				| DEFINE_RELATION IDENTIFIER IDENTIFIER
+				{: 
+
+				:}
+				| DEFINE_RELATION IDENTIFIER IDENTIFIER EXPAND INT_LIT
+				{: 
+
+				:}
+				| DEFINE_RELATION IDENTIFIER IDENTIFIER REDUCE INT_LIT
+				{: 
+
+				:}
+				| DEFINE_RELATION IDENTIFIER IDENTIFIER NONE INT_LIT
 				{: 
 
 				:}

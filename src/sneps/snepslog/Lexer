@@ -49,6 +49,7 @@ COPYRIGHT=(copyright)
 DEFINE_FRAME=(define-frame)
 DEFINE_PATH=(define-path)
 DEFINE_SEMANTIC=(define-semantic)
+DEFINE_RELATION=(define-relation)
 DEMO=(demo)
 QUESTION_MARK=(\?)
 OPTION_T=(t)
@@ -128,6 +129,9 @@ CFRESFUNIT=(caseframe-restrict-forward-unit)
 CFRESBUNIT=(caseframe-restrict-backward-unit)
 BANGPATH=(bang)
 EMPTYPATH=(empty)
+EXPAND=(expand)
+REDUCE=(reduce)
+NONE=(none)
 IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 
 %% 
@@ -188,6 +192,9 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 }
 <YYINITIAL> {DEFINE_SEMANTIC} { 
 	return (new Symbol(sym.DEFINE_SEMANTIC,yytext()));
+}
+<YYINITIAL> {DEFINE_RELATION} { 
+	return (new Symbol(sym.DEFINE_RELATION,yytext()));
 }
 <YYINITIAL> {DEMO} { 
 	return (new Symbol(sym.DEMO,yytext()));
@@ -425,6 +432,15 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 }
 <YYINITIAL> {EMPTYPATH} { 
 	return (new Symbol(sym.EMPTYPATH,yytext()));
+}
+<YYINITIAL> {EXPAND} { 
+	return (new Symbol(sym.EXPAND,yytext()));
+}
+<YYINITIAL> {REDUCE} { 
+	return (new Symbol(sym.REDUCE,yytext()));
+}
+<YYINITIAL> {NONE} { 
+	return (new Symbol(sym.NONE,yytext()));
 }
 <YYINITIAL> {IDENTIFIER} { 
 	return (new Symbol(sym.IDENTIFIER,yytext()));
