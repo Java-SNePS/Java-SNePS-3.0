@@ -134,7 +134,8 @@ nonterminal String command,
                    demoFirstOptionalOptionSet,
                    demoSecondOptionalOptionSet,
                    andOrEquality,
-                   wffName;
+                   wffName,
+                   optionalIdentifier;
                    
 nonterminal Path path;
 nonterminal ArrayList<Path> paths;
@@ -229,7 +230,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| BELIEFS_ABOUT IDENTIFIER pTermSet optionalDot
+				| BELIEFS_ABOUT pTermSet optionalDot
 				{: 
 
 				:}
@@ -302,11 +303,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DESCRIBE_CONTEXT IDENTIFIER optionalDot
-				{: 
-
-				:}
-				| DESCRIBE_CONTEXT optionalDot
+				| DESCRIBE_CONTEXT optionalIdentifier optionalDot
 				{: 
 
 				:}
@@ -323,11 +320,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 						RESULT = "expert mode is already in use.";
 					}
 				:}
-				| LIST_ASSERTED_WFFS IDENTIFIER optionalDot
-				{: 
-
-				:}
-				| LIST_ASSERTED_WFFS optionalDot
+				| LIST_ASSERTED_WFFS optionalIdentifier optionalDot
 				{: 
 
 				:}
@@ -785,6 +778,15 @@ optionalDot ::= DOT
 			{:
 			
 			:};	
+
+optionalIdentifier ::= IDENTIFIER
+			       {:
+			       
+			       :}
+			       |
+			       {:
+			       
+			       :};
 			
 optionalTerminalPunctuation ::= terminalPunctuation
 							{:
