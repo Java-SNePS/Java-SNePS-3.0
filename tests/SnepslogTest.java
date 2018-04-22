@@ -150,7 +150,7 @@ public class SnepslogTest extends TestCase {
 	@Test
     public void testDefinePath() {
 		try{
-		      AP.executeSnepslogCommand("define-path member funit(member)");
+		      AP.executeSnepslogCommand("define-path member forward-unit(member)");
 		   }
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
