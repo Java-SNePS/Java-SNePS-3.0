@@ -8,53 +8,52 @@ package sneps.snepslog;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int WITHSOME = 75;
+  public static final int WITHSOME = 72;
   public static final int CLEAR_INFER = 14;
   public static final int UNDEFINE_PATH = 45;
   public static final int UNTRACE = 47;
-  public static final int IDENTIFIER = 89;
+  public static final int IDENTIFIER = 86;
   public static final int NORMAL = 35;
-  public static final int CLOSE_PARAN = 72;
   public static final int AND_ENTAILMENT = 55;
+  public static final int CLOSE_PARAN = 69;
   public static final int TRACE = 44;
   public static final int LIST_CONTEXTS = 32;
   public static final int ASKWH = 8;
   public static final int ASK = 6;
-  public static final int INT_LIT = 88;
-  public static final int STRING_LIT = 87;
-  public static final int NUMERICAL_ENTAILMENT = 56;
+  public static final int INT_LIT = 85;
+  public static final int STRING_LIT = 84;
+  public static final int NUMERICAL_ENTAILMENT = 87;
   public static final int MANUAL = 13;
-  public static final int CLOSE_CURLY = 74;
+  public static final int CLOSE_CURLY = 71;
   public static final int BELIEFS_ABOUT = 10;
   public static final int DEFINE_SEMANTIC = 19;
-  public static final int COMMA = 69;
+  public static final int COMMA = 66;
   public static final int ADD_TO_CONTEXT = 5;
   public static final int DEFINE_PATH = 18;
-  public static final int WITHALL = 76;
+  public static final int WITHALL = 73;
   public static final int UNLABELED = 46;
   public static final int DESCRIBE_TERMS = 29;
-  public static final int ALL = 66;
+  public static final int ALL = 65;
   public static final int BR_MODE = 11;
-  public static final int IFDO = 78;
-  public static final int NOT = 57;
-  public static final int NOR = 62;
+  public static final int IFDO = 75;
+  public static final int NOT = 56;
+  public static final int NOR = 61;
   public static final int OR_ENTAILMENT = 54;
   public static final int PARSING = 50;
   public static final int IMPLICATION = 53;
   public static final int EQUALITY = 52;
-  public static final int ANDOR = 58;
-  public static final int WHENEVERDO = 80;
+  public static final int ANDOR = 57;
+  public static final int WHENEVERDO = 77;
   public static final int EXPERT = 30;
   public static final int REMOVE_FROM_CONTEXT = 37;
   public static final int ACTING = 49;
-  public static final int NEXISTS = 67;
-  public static final int FILEPATH = 86;
+  public static final int FILEPATH = 83;
   public static final int LIST_TERMS = 33;
-  public static final int OPEN_PARAN = 71;
-  public static final int WFF = 77;
+  public static final int OPEN_PARAN = 68;
+  public static final int WFF = 74;
   public static final int CLEARKB = 15;
   public static final int ASKIFNOT = 7;
-  public static final int GOALPLAN = 83;
+  public static final int GOALPLAN = 80;
   public static final int SET_MODE_3 = 42;
   public static final int SET_MODE_2 = 41;
   public static final int SET_MODE_1 = 40;
@@ -63,41 +62,40 @@ public class sym {
   public static final int LOAD = 34;
   public static final int PERFORM = 36;
   public static final int SHOW = 43;
-  public static final int THRESH = 65;
+  public static final int THRESH = 64;
   public static final int EOF = 0;
   public static final int SET_DEFAULT_CONTEXT = 39;
   public static final int BANG = 3;
-  public static final int OPEN_CURLY = 73;
-  public static final int UNDERSCORE = 68;
+  public static final int OPEN_CURLY = 70;
   public static final int OPTION_T = 22;
   public static final int DEMO = 20;
   public static final int DEFINE_FRAME = 17;
   public static final int OPTION_N = 27;
   public static final int OPTION_BV = 24;
-  public static final int OR = 60;
+  public static final int OR = 59;
   public static final int error = 1;
   public static final int OPTION_B = 23;
   public static final int OPTION_A = 25;
   public static final int LIST_ASSERTED_WFFS = 31;
-  public static final int ACTPLAN = 81;
-  public static final int COLON = 70;
-  public static final int SNEPSPATH = 85;
+  public static final int ACTPLAN = 78;
+  public static final int COLON = 67;
+  public static final int SNEPSPATH = 82;
   public static final int TRANSLATION = 51;
-  public static final int WHENDO = 79;
+  public static final int WHENDO = 76;
   public static final int OPTION_AV = 26;
   public static final int QUESTION_MARK = 21;
   public static final int DESCRIBE_CONTEXT = 28;
-  public static final int PRECONDITION = 84;
+  public static final int PRECONDITION = 81;
   public static final int COPYRIGHT = 16;
-  public static final int AND = 59;
+  public static final int AND = 58;
   public static final int SET_CONTEXT = 38;
   public static final int ACTIVATE = 2;
   public static final int ASKWHNOT = 9;
-  public static final int IFF = 64;
+  public static final int IFF = 63;
   public static final int AUTO = 12;
-  public static final int NAND = 61;
-  public static final int XOR = 63;
-  public static final int EFFECT = 82;
+  public static final int NAND = 60;
+  public static final int XOR = 62;
+  public static final int EFFECT = 79;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -155,7 +153,6 @@ public class sym {
   "IMPLICATION",
   "OR_ENTAILMENT",
   "AND_ENTAILMENT",
-  "NUMERICAL_ENTAILMENT",
   "NOT",
   "ANDOR",
   "AND",
@@ -166,8 +163,6 @@ public class sym {
   "IFF",
   "THRESH",
   "ALL",
-  "NEXISTS",
-  "UNDERSCORE",
   "COMMA",
   "COLON",
   "OPEN_PARAN",
@@ -188,7 +183,8 @@ public class sym {
   "FILEPATH",
   "STRING_LIT",
   "INT_LIT",
-  "IDENTIFIER"
+  "IDENTIFIER",
+  "NUMERICAL_ENTAILMENT"
   };
 }
 

@@ -79,8 +79,6 @@ terminal ACTIVATE,
          IFF,
          THRESH,
          ALL,
-         NEXISTS,
-         UNDERSCORE,
          COMMA,
          COLON,
          OPEN_PARAN,
@@ -112,7 +110,6 @@ nonterminal String command,
                    wffCommand,
                    snepslogCommand,
                    optionalSnepslogFunction,
-                   nexistsParameters,
                    terminalPunctuation,
                    optionalDot,
                    optionalTerminalPunctuation,
@@ -132,7 +129,6 @@ nonterminal Node wff,
                  setTerm, 
                  threshTerm, 
                  allTerm, 
-                 nexistsTerm,
                  atomicTerm,
                  withsomeTerm,
                  withallTerm,
@@ -514,10 +510,6 @@ prefixedTerm ::= negatedTerm
 			 {:
 			
 		     :}
-		     | nexistsTerm
-			 {:
-			
-		     :}
 		     | atomicTerm
 			 {:
 			
@@ -599,24 +591,6 @@ allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN
 		{:
 			
 		:};
-		
-nexistsTerm ::= NEXISTS nexistsParameters OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN termSet COLON termSet CLOSE_PARAN
-		    {:
-			
-		    :};
-		    
-nexistsParameters ::= OPEN_PARAN INT_LIT COMMA INT_LIT COMMA INT_LIT CLOSE_PARAN
-		          {:
-		          
-		          :}
-		          | OPEN_PARAN UNDERSCORE COMMA INT_LIT COMMA UNDERSCORE CLOSE_PARAN
-		          {:
-		          
-			      :}
-			      | OPEN_PARAN INT_LIT COMMA UNDERSCORE COMMA INT_LIT CLOSE_PARAN
-		          {:
-		          
-			      :};
 
 atomicTerm ::= wffName
            {:

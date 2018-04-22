@@ -100,8 +100,6 @@ XOR=(xor)
 IFF=(iff)
 THRESH=(thresh)
 ALL=(all)
-NEXISTS=(nexists)
-UNDERSCORE=(_)
 COMMA=(,)
 COLON=(:)
 OPEN_PARAN=(\()
@@ -328,12 +326,6 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 }
 <YYINITIAL> {ALL} { 
 	return (new Symbol(sym.ALL,yytext()));
-}
-<YYINITIAL> {NEXISTS} { 
-	return (new Symbol(sym.NEXISTS,yytext()));
-}
-<YYINITIAL> {UNDERSCORE} { 
-	return (new Symbol(sym.UNDERSCORE,yytext()));
 }
 <YYINITIAL> {INT_LIT} { 
 	return (new Symbol(sym.INT_LIT,yytext()));
