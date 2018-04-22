@@ -69,7 +69,6 @@ terminal ACTIVATE,
          INFERENCE,
          ACTING,
          PARSING,
-         TRANSLATION,
          EQUALITY,
          IMPLICATION,
          OR_ENTAILMENT,
@@ -428,18 +427,10 @@ optionalSnepslogFunction ::=	 INFERENCE
 		     	{:
 			
 		     	:}
-		     	| TRANSLATION
-		     	{:
-			
-		     	:}
 		     	| PARSING
 		     	{:
 			
-		     	:}
-		     	|
-		     	{:
-		     	
-		     	:};	
+		     	:};
 				
 wff ::= infixedTerm
     {:

@@ -81,7 +81,6 @@ UNTRACE=(untrace)
 INFERENCE=(inference)
 ACTING=(acting)
 PARSING=(parsing)
-TRANSLATION=(translation)
 FILEPATH=([A-Za-z0-9/]+\.snepslog)
 STRING_LIT=(\"[A-Za-z0-9 ]*\")
 INT_LIT=([1-9][0-9]*)|(0)
@@ -288,9 +287,6 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 }
 <YYINITIAL> {PARSING} { 
 	return (new Symbol(sym.PARSING,yytext()));
-}
-<YYINITIAL> {TRANSLATION} { 
-	return (new Symbol(sym.TRANSLATION,yytext()));
 }
 <YYINITIAL> {STRING_LIT} { 
 	return (new Symbol(sym.STRING_LIT,yytext()));
