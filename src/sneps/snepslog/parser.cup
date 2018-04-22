@@ -125,7 +125,7 @@ nonterminal String command,
                    wffNameCommand,
                    wffCommand,
                    snepslogCommand,
-                   optionalSnepslogFunction,
+                   snepslogFunction,
                    terminalPunctuation,
                    optionalDot,
                    optionalTerminalPunctuation,
@@ -159,7 +159,6 @@ nonterminal Node wff,
                  goalplanTerm,
                  preconditionTerm,
                  snepslogSymbol,
-                 optionalSnepslogSymbol,
                  qvar;
 
 nonterminal ArrayList<Pair<String, Node>> infixedTerms;
@@ -212,7 +211,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
                 		RESULT = "This functionality is still under development.";
 				:}
-				| ADD_TO_CONTEXT snepslogSymbol termSet optionalDot
+				| ADD_TO_CONTEXT IDENTIFIER termSet optionalDot
 				{: 
 
 				:}
@@ -261,11 +260,11 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 					RESULT = "copyright statement goes here.";
 				:}
-				| DEFINE_FRAME IDENTIFIER snepslogSymbol identifiers_list optionalDot
+				| DEFINE_FRAME IDENTIFIER IDENTIFIER identifiers_list optionalDot
 				{: 
 
 				:}
-				| DEFINE_FRAME IDENTIFIER snepslogSymbol identifiers_list STRING_LIT optionalDot
+				| DEFINE_FRAME IDENTIFIER IDENTIFIER identifiers_list STRING_LIT optionalDot
 				{: 
 
 				:}
@@ -305,7 +304,11 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DESCRIBE_CONTEXT optionalSnepslogSymbol optionalDot
+				| DESCRIBE_CONTEXT IDENTIFIER optionalDot
+				{: 
+
+				:}
+				| DESCRIBE_CONTEXT optionalDot
 				{: 
 
 				:}
@@ -322,7 +325,11 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 						RESULT = "expert mode is already in use.";
 					}
 				:}
-				| LIST_ASSERTED_WFFS optionalSnepslogSymbol optionalDot
+				| LIST_ASSERTED_WFFS IDENTIFIER optionalDot
+				{: 
+
+				:}
+				| LIST_ASSERTED_WFFS optionalDot
 				{: 
 
 				:}
@@ -351,15 +358,15 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| REMOVE_FROM_CONTEXT snepslogSymbol pTermSet
+				| REMOVE_FROM_CONTEXT IDENTIFIER pTermSet
 				{: 
 
 				:}
-				| SET_CONTEXT snepslogSymbol optionalPTermSet
+				| SET_CONTEXT IDENTIFIER optionalPTermSet
 				{: 
 
 				:}
-				| SET_DEFAULT_CONTEXT snepslogSymbol
+				| SET_DEFAULT_CONTEXT IDENTIFIER
 				{: 
 
 				:}
@@ -397,7 +404,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| TRACE optionalSnepslogFunction optionalDot
+				| TRACE snepslogFunction optionalDot
 				{: 
 
 				:}
@@ -414,12 +421,12 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 						RESULT = "unlabeled mode is already in use.";
 					}
 				:}
-				| UNTRACE optionalSnepslogFunction optionalDot
+				| UNTRACE snepslogFunction optionalDot
 				{: 
 
 				:};	
 
-optionalSnepslogFunction ::=	 INFERENCE
+snepslogFunction ::=	 INFERENCE
 		     	{:
 			
 		     	:}
@@ -797,16 +804,7 @@ optionalTerminalPunctuation ::= terminalPunctuation
 							| 
 							{:
 			
-							:};				
-
-optionalSnepslogSymbol ::= snepslogSymbol
-					   {:
-			
-					   :}
-					   | 
-					   {:
-			
-					   :};		
+							:};					
 							
 optionalPTermSet ::=	 pTermSet
 				 {:
