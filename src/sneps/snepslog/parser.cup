@@ -161,8 +161,6 @@ nonterminal Node wff,
                  snepslogSymbol,
                  qvar;
 
-nonterminal ArrayList<Pair<String, Node>> infixedTerms;
-
 nonterminal ArrayList<Node> pTermSet,
                             termSet,
                             termSequence,
@@ -176,7 +174,7 @@ nonterminal ArrayList<ArrayList<Node>> termSetSequence,
 
 /* Precedences */
 
-precedence left COMMA, COLON, BANG, DOT, QUESTION_MARK;
+precedence left COMMA, BANG, DOT, QUESTION_MARK;
 
 /* The grammar */
 
@@ -446,25 +444,16 @@ wff ::= infixedTerm
     | entailment
     {:
     
-    :}
-    | prefixedTerm
-    {:
-    
     :};				
 
-infixedTerm ::= prefixedTerm infixedTerms
+infixedTerm ::= prefixedTerm andOrEquality infixedTerm
             {:
     
+            :}
+            | prefixedTerm
+            {:
+            
             :};
-
-infixedTerms ::= andOrEquality prefixedTerm infixedTerms
-                   {:
-              
-                   :}
-                   | andOrEquality prefixedTerm
-                   {:
-                   
-                   :};
 
 andOrEquality ::= AND
                    {:
