@@ -206,6 +206,45 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to construct the nodes representing an infixedTerm in the
+	 * network.
+	 * 
+	 * @param type
+	 *            a String specifying the type of the infixed term. It should have one
+	 *            of the following values: and, or, or equality.
+	 * @param arg1
+	 *            the first argument node.
+	 * @param arg2
+	 *            the second argument node.
+	 * @return a molecular node representing the infixed term.
+	 * @throws Exception
+	 */
+	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2) throws Exception {
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		RelationsRestrictedCaseFrame caseFrame = null;
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		switch (type) {
+		case "and":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("2", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("2", new Semantic("Infimum"))));
+			break;
+		case "or":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("2", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			break;
+		case "equality":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
+			wires.add(new Wire(Relation.threshMax, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			break;
+		}
+		Node infixedTermNode = Network.buildMolecularNode(wires, caseFrame);
+		return infixedTermNode;
+	}
+	
+	/**
 	 * This method is used to construct the nodes representing entailments in the
 	 * network.
 	 * 
