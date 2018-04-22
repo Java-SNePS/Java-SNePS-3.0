@@ -411,8 +411,8 @@ public class AP {
 	 * 
 	 * @param type
 	 *            a String specifying the type of the SNeRE term. It should have one
-	 *            of the following values: ifdo, whendo, ActPlan, Effect, GoalPlan
-	 *            or Precondition.
+	 *            of the following values: ifdo, whendo, wheneverdo, ActPlan,
+	 *            Effect, GoalPlan or Precondition.
 	 * @param arg1
 	 *            the first argument node.
 	 * @param arg2
@@ -433,6 +433,11 @@ public class AP {
 		case "whendo":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.whenDo;
 			wires.add(new Wire(Relation.when, arg1));
+			wires.add(new Wire(Relation.doo, arg2));
+			break;
+		case "wheneverdo":
+			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.wheneverDo;
+			wires.add(new Wire(Relation.whenever, arg1));
 			wires.add(new Wire(Relation.doo, arg2));
 			break;
 		case "ActPlan":
