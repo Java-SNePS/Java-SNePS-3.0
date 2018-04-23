@@ -143,7 +143,7 @@ public class PropositionSet {
 	 * @return the union of the two PropositionSets
 	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
+	public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		int [] props = propSet.getProps();
 		int [] props1 = this.getProps();
 		int [] props2 = new int[props.length + props1.length];
