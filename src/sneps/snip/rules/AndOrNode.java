@@ -22,7 +22,6 @@ public class AndOrNode extends RuleNode {
 	
 	private int min, max, args;
 	
-	int positiveCount = 0;
 	public int getAndOrMin() {
 		return min;
 	}
@@ -35,47 +34,50 @@ public class AndOrNode extends RuleNode {
 		return args;
 	}
 
-	public AndOrNode() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public AndOrNode(Term syn) {
 		super(syn);
-		// TODO Auto-generated constructor stub
+		NodeSet minNode = this.getDownNodeSet("min");
+		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
+		NodeSet maxNode = this.getDownNodeSet("max");
+		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
+		NodeSet antNodes = this.getDownNodeSet("arg");
+		args = antNodes.size();
+
+		this.processNodes(antNodes);
 	}
 
 	public AndOrNode(Semantic sym, Term syn) {
 		super(sym, syn);
-		// TODO Auto-generated constructor stub
+		NodeSet minNode = this.getDownNodeSet("min");
+		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
+		NodeSet maxNode = this.getDownNodeSet("max");
+		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
+		NodeSet antNodes = this.getDownNodeSet("arg");
+		args = antNodes.size();
+
+		this.processNodes(antNodes);
 	}
 	
-	@Override
-	public void applyRuleHandler(Report report, Node node) {
-		super.applyRuleHandler(report, node);
-		if(report.isPositive()==true)
-			positiveCount++;
-		
 	
-	}
 	
 	
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
-		if(positiveCount>=min && positiveCount<=max)
-			sign=true;
-		else
-			sign=false;
+		if (tRui.getNegCount() == args - min)
+			sign = true;
+		else if (tRui.getPosCount() != max)
+			return;
 		
-		Set<Integer> consequents = new HashSet<Integer>();
+		Set<Integer> nodesSentReports = new HashSet<Integer>();
 		for (FlagNode fn : tRui.getFlagNodeSet()) {
-			consequents.add(fn.getNode().getId());
+			nodesSentReports.add(fn.getNode().getId());
 		}
 		
 		Set<Support> originSupports = ((PropositionNode) this.getSemantic()).getOriginSupport();
 		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
-			if(!consequents.contains(outChannel.getRequester().getId()))
+			if(!nodesSentReports.contains(outChannel.getRequester().getId()))
 			outChannel.addReport(forwardReport);
 		}
 		
@@ -83,57 +85,7 @@ public class AndOrNode extends RuleNode {
 	
 	
 	public NodeSet getDownAntNodeSet() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	/*
-	public void applyRuleHandler(Report request, Node node) {
-	
-		
-		if(request.isPositive()==true)
-			positiveCount++;
-		
+		return this.getDownNodeSet("Xant");
 	}
 	
-	@Override
-	protected void sendRui(RuleUseInfo tRui, String contextID) {
-		
-		if(positiveCount>=min && positiveCount<=max)
-			sign=true;
-		else
-			sign=false;
-		
-		
-		Set<Integer> consequents = new HashSet<Integer>();
-		for (FlagNode fn : tRui.getFlagNodeSet()) {
-			if (antNodesWithVarsIDs.contains(fn.getNode().getId()))
-				continue;
-			if (antNodesWithoutVarsIDs.contains(fn.getNode().getId()))
-				continue;
-			consequents.add(fn.getNode().getId());
-		}
-		Set<Support> originSupports = ((PropositionNode) this.getSemantic()).getOriginSupport();
-		Report report = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
-		for (Channel outChannel : outgoingChannels) {
-			if (!consequents.contains(outChannel.getRequester().getId()))
-				continue;
-			outChannel.addReport(report);
-
-		}
-	}
-
-	@Override
-	public NodeSet getDownAntNodeSet() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public void sendReport(Report report) {
-		
-	}
-	
-	//Node node = fn.getNode().getDominatingRules().getNode(1);
-	 
-	//if(tRui.getFlagNodeSet().isMember())
-*/
 }
