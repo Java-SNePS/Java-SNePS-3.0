@@ -62,6 +62,9 @@ public class PropositionNode extends Node {
 					currentReport.getSign(), currentReport.getContextName());
 			if (knownInstances.contains(alteredReport)) {
 				continue;
+			}else{
+				newInstances.addReport(alteredReport);
+				knownInstances.addReport(alteredReport);
 			}
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(alteredReport);
@@ -102,6 +105,7 @@ public class PropositionNode extends Node {
 			Set<Support> support = new HashSet<Support>();
 			support.add(new Support((PropositionNode) this));
 			Report reply = new Report(new LinearSubstitutions(), support, true, currentChannel.getContextName());
+			newInstances.addReport(reply);
 			knownInstances.addReport(reply);
 			broadcastReport(reply);
 		} else {

@@ -6,7 +6,7 @@ import java.util.Iterator;
 import sneps.snip.classes.RuisHandler;
 
 public class ContextRuisSet implements Iterable<RuisHandler> {
-	private HashSet<RuisHandler> ruisHandlers;//HAshTable, context
+	private HashSet<RuisHandler> ruisHandlers;
 
 	public ContextRuisSet() {
 		ruisHandlers = new HashSet<RuisHandler>();

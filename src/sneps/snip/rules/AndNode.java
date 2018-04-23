@@ -48,17 +48,15 @@ public class AndNode extends RuleNode {
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 
 		String contxt = report.getContextName();
-
+		Context context = (Context) Controller.getContextByName(contxt);
 		if (isConstantNode(signature)) {
 			addConstantRuiToContext(contxt, rui);
 			sendSavedRUIs(contxt);
 			return;
 		}
 
-		RuisHandler crtemp = null;
-		if (this.getContextRUISSet().hasContext(contxt)) {
-			crtemp = this.getContextRUISSet().getContextRUIS(contxt);
-		} else {
+		RuisHandler crtemp = this.getContextRUISSet(context).getContextRUIS(contxt);
+		if(crtemp == null){
 			crtemp = addContextRUIS(contxt);
 		}
 
@@ -122,10 +120,11 @@ public class AndNode extends RuleNode {
 
 	@Override
 	public RuisHandler createRuisHandler(String context) {
+		Context contxt = (Context) Controller.getContextByName(context);
 		PTree tree = new PTree(context);
 		tree.buildTree(antNodesWithVars);
-		return this.addContextRUIS(tree);
-	};
+		return this.addContextRUIS(contxt, tree);
+	}
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");//ants for & TODO name convention
