@@ -1,9 +1,5 @@
 package sneps.snebr;
 
-import sneps.exceptions.ContextNameDoesntExist;
-import sneps.exceptions.DuplicateContextNameException;
-import sneps.exceptions.DuplicatePropositionException;
-import sneps.network.PropositionNode;
 import sneps.exceptions.*;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -35,7 +31,6 @@ public class Controller {
     public static Context createContext() {
         return new Context();
     }
-
 
     /**
      * Removes a context from SNeBR's ContextSet.
@@ -134,14 +129,6 @@ public class Controller {
 //
 //        }
 //    }
-
-    public static Context addPropToCurrentContext(int p) throws ContextNameDoesntExist, DuplicatePropositionException {
-        return addPropToContext(currContext,p);
-    }
-
-    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExist {
-        return addPropsToContext(currContext, hyps);
-    }
 
     /**
      * Asserts a hyp in the current Context
