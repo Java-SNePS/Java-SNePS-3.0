@@ -71,7 +71,7 @@ public class FXController implements Initializable {
 	@FXML
 	private ScrollPane logScroll;
 	@FXML
-	private TextField newRN, newRT, newRA, newRL, buodauodseNodeIdentPop, baseNodeSemTyPop,
+	private TextField newRN, newRT, newRA, newRL, baseNodeIdentPop, baseNodeSemTyPop,
 	caseFrameSTN, baseNodeSemType, baseNodeID;
 	@FXML
 	private ListView<String> relationSetList, relationSetList1, cfRS, caseFramesList,
@@ -490,7 +490,9 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
+
 	
 	//Update all list of case frames
 	public void updateCaseFramesList() {
