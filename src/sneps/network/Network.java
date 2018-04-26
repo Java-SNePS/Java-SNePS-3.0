@@ -390,6 +390,7 @@ public class Network implements Serializable {
 			if (caseFrames.containsKey(caseFrame.getId())) {
 				throw new CaseFrameAlreadyExistException(
 						"This case frame already exists in the network");
+
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
@@ -2102,4 +2103,23 @@ public class Network implements Serializable {
 		
 				
 	}
+	
+	/**
+	 * This method is used to clear the network entirely.
+	 */
+	public static void clearNetwork() {
+		nodes.clear();
+		propositionNodes.clear();
+		nodesIndex.clear();
+		molecularNodes.clear();
+		caseFrames.clear();
+		relations.clear();
+		molCounter = 0;
+		patternCounter = 0;
+		varCounter = 0;
+		userDefinedMolSuffix.clear();
+		userDefinedPatSuffix.clear();
+		userDefinedVarSuffix.clear();
+	}
+	
 }
