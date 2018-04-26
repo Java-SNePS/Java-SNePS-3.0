@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.classes.Semantic;
@@ -22,7 +23,7 @@ public class ContextSetTest {
     private final Semantic semantic = new Semantic("PropositionNode");
 
     @Before
-    public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException {
+    public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n"+i, semantic);
         context = Controller.createContext(contextName, new PropositionSet(new int [] {1,3,4}));
@@ -41,14 +42,14 @@ public class ContextSetTest {
     }
 
     @Test
-    public void add() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException {
+    public void add() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
         Context temp = Controller.createContext("temp context", new PropositionSet(new int [] {34,89}));
         contextSet.add(temp);
         assertEquals(temp, contextSet.getContext("temp context"));
     }
 
     @Test
-    public void identicalContext() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException {
+    public void identicalContext() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
         Context c2 = Controller.createContext("context 2", new PropositionSet(new int [] {1,3,4}));
         assertEquals(contextSet.identicalContext(c2), context);
     }
