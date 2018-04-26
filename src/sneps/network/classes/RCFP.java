@@ -79,7 +79,7 @@ public class RCFP {
 		return s;
 	}
 
-	public static void createDefaultProperties() throws CustomException {
+	public static void createDefaultProperties() {
 		if (Relation.andAnt == null)
 			Relation.createDefaultRelations();
 		andAnt = Network.defineRelationPropertiesForCF(Relation.andAnt, "none", 1);
