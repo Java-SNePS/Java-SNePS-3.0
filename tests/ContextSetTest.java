@@ -3,7 +3,6 @@ package tests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import sneps.exceptions.ContextNameDoesntExist;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.NotAPropositionNodeException;
