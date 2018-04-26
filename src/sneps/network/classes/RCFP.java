@@ -80,6 +80,7 @@ public class RCFP {
 	}
 
 	public static void createDefaultProperties() {
+
 		if (Relation.andAnt == null)
 			Relation.createDefaultRelations();
 		andAnt = Network.defineRelationPropertiesForCF(Relation.andAnt, "none", 1);
