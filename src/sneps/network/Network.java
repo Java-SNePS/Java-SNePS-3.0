@@ -13,8 +13,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-import sneps.network.Node;
-import sneps.network.PropositionNode;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -36,7 +34,17 @@ import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
+import sneps.exceptions.CannotBuildNodeException;
+import sneps.exceptions.CaseFrameAlreadyExistException;
+import sneps.exceptions.CaseFrameCannotBeRemovedException;
+import sneps.exceptions.CaseFrameMissMatchException;
+import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
+import sneps.exceptions.DuplicateNodeException;
+import sneps.exceptions.NodeCannotBeRemovedException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.RelationDoesntExistException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -208,15 +216,16 @@ public class Network implements Serializable {
 	 *            the name of the relation that will be retrieved.
 	 *
 	 * @return the relation with the specified name if it exists.
+	 * @throws RelationDoesntExistException 
 	 *
 	 * @throws CustomException
 	 *             if the requested relation does not exist.
 	 */
-	public static Relation getRelation(String name) throws CustomException {
+	public static Relation getRelation(String name) throws RelationDoesntExistException  {
 		if (relations.containsKey(name)) {
 			return relations.get(name);
 		} else {
-			throw new CustomException(
+			throw new RelationDoesntExistException(
 					"There is no relation with the following name: " + name);
 		}
 	}
@@ -230,12 +239,13 @@ public class Network implements Serializable {
 	 *
 	 * @throws CustomException
 	 *             if the requested frame does not exist.
+	 * @throws CaseFrameWithSetOfRelationsNotFoundException 
 	 */
-	public static CaseFrame getCaseFrame(String id) throws CustomException {
+	public static CaseFrame getCaseFrame(String id) throws CaseFrameWithSetOfRelationsNotFoundException {
 		if (caseFrames.containsKey(id)) {
 			return caseFrames.get(id);
 		} else {
-			throw new CustomException(
+			throw new CaseFrameWithSetOfRelationsNotFoundException(
 					"There is no case frame defined with such set of relations");
 		}
 	}
@@ -249,21 +259,22 @@ public class Network implements Serializable {
 	 *
 	 * @throws CustomException
 	 *             if the requested node does not exist.
+	 * @throws NodeNotFoundInNetworkException 
 	 */
-	public static Node getNode(String identifier) throws CustomException {
+	public static Node getNode(String identifier) throws NodeNotFoundInNetworkException {
 		if (nodes.containsKey(identifier)) {
 			return nodes.get(identifier);
 		} else {
-			throw new CustomException("There is no node named '" + identifier
+			throw new NodeNotFoundInNetworkException("There is no node named '" + identifier
 					+ "' in the network");
 		}
 	}
 
-	public static Node getNodeById(int id) throws CustomException {
+	public static Node getNodeById(int id) throws NodeNotFoundInNetworkException {
 		if (nodesIndex.get(id) != null) {
 			return nodesIndex.get(id);
 		} else {
-			throw new CustomException("There is no node named '" + id
+			throw new NodeNotFoundInNetworkException("There is no node named '" + id
 					+ "' in the network");
 		}
 	}
@@ -289,7 +300,7 @@ public class Network implements Serializable {
 	 *             defined in the network.
 	 */
 	public static Relation defineRelation(String name, String type,
-			String adjust, int limit) throws CustomException {
+			String adjust, int limit) {
 		if (relations.containsKey(name)) {
 			return relations.get(name);
 			// throw new CustomException("The relation named " + name +
@@ -300,7 +311,7 @@ public class Network implements Serializable {
 		return relations.get(name);
 	}
 
-	public static Relation defineRelation(String name, String type) throws CustomException {
+	public static Relation defineRelation(String name, String type) {
 		if (relations.containsKey(name)) {
 			return relations.get(name);
 			// throw new CustomException("The relation named " + name +
@@ -316,12 +327,13 @@ public class Network implements Serializable {
 	 *
 	 * @param name
 	 *            the name of the relation that will be deleted.
+	 * @throws CaseFrameCannotBeRemovedException 
 	 *
 	 * @throws CustomException
 	 *             if the relation cannot be removed because one of the case
 	 *             frames that contains it cannot be removed.
 	 */
-	public static void undefineRelation(String name) throws CustomException {
+	public static void undefineRelation(String name) throws CaseFrameCannotBeRemovedException {
 		Relation r = relations.get(name);
 
 		// removing the case frames that have this relation before removing the
@@ -355,12 +367,14 @@ public class Network implements Serializable {
 		 * @throws CustomException
 		 *             if another case frame with the same given relations (same id)
 		 *             is already defined in the network.
+		 * @throws CaseFrameAlreadyExistException 
 		 */
 		public static RelationsRestrictedCaseFrame defineCaseFrameWithConstraints(String semanticType,
-				LinkedList<RCFP> relationSet) {
+				LinkedList<RCFP> relationSet) throws CaseFrameAlreadyExistException {
 			RelationsRestrictedCaseFrame caseFrame = new RelationsRestrictedCaseFrame(semanticType, relationSet);
 			if (caseFrames.containsKey(caseFrame.getId())) {
-				return (RelationsRestrictedCaseFrame)caseFrames.get(caseFrame.getId());
+				throw new CaseFrameAlreadyExistException(
+						"This case frame already exists in the network");
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
@@ -371,10 +385,12 @@ public class Network implements Serializable {
 		} 
 		
 		public static CaseFrame defineCaseFrame(String semanticType,
-				LinkedList<Relation> relationSet) {
+				LinkedList<Relation> relationSet) throws CaseFrameAlreadyExistException {
 			CaseFrame caseFrame = new CaseFrame(semanticType, relationSet);
 			if (caseFrames.containsKey(caseFrame.getId())) {
-				return caseFrames.get(caseFrame.getId());
+				throw new CaseFrameAlreadyExistException(
+						"This case frame already exists in the network");
+
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
@@ -394,15 +410,16 @@ public class Network implements Serializable {
 	 *             if the specified case frame cannot be removed because there
 	 *             are nodes implementing this case frame and they need to be
 	 *             removed first.
+	 * @throws CaseFrameCannotBeRemovedException 
 	 */
-	public static void undefineCaseFrame(String id) throws CustomException {
+	public static void undefineCaseFrame(String id) throws CaseFrameCannotBeRemovedException {
 		// first check if there are nodes implementing this case frame .. they
 		// must be removed first
 		if (molecularNodes.get(id).isEmpty()) {
 			caseFrames.remove(id);
 			molecularNodes.remove(id);
 		} else {
-			throw new CustomException("Case frame can not be removed .. "
+			throw new CaseFrameCannotBeRemovedException("Case frame can not be removed .. "
 					+ "remove the nodes implementing this case frame first");
 		}
 	}
@@ -439,11 +456,12 @@ public class Network implements Serializable {
 	 *
 	 * @throws CustomException
 	 *             if the node cannot be removed because it is not isolated.
+	 * @throws NodeCannotBeRemovedException 
 	 */
-	public static void removeNode(Node node) throws CustomException {
+	public static void removeNode(Node node) throws NodeCannotBeRemovedException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
-			throw new CustomException("Cannot remove the node named '"
+			throw new NodeCannotBeRemovedException("Cannot remove the node named '"
 					+ node.getIdentifier() + "' because it is not isolated");
 		}
 
@@ -535,12 +553,14 @@ public class Network implements Serializable {
 	 *            new base node.
 	 *
 	 * @return the newly created base node.
+	 * @throws NotAPropositionNodeException 
+	 * @throws NodeNotFoundInNetworkException 
 	 *
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in
 	 *             the network.
 	 */
-	public static Node buildBaseNode(String identifier, Semantic semantic) {
+	public static Node buildBaseNode(String identifier, Semantic semantic) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		if (semantic.getSemanticType().equals("Act")) {
 			System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
@@ -552,6 +572,16 @@ public class Network implements Serializable {
 			
 		} else {
 			Base b = new Base(identifier);
+			if(semantic.getSemanticType().equals("PropositionNode")){
+				PropositionNode propNode =  new PropositionNode(b);
+				nodes.put(identifier, propNode);
+				try {
+					nodesIndex.add(propNode.getId(), propNode);
+					propNode.setBasicSupport();
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("wohoo");
+				}
+			}else{
 			Node node;
       /*if (semantic.getSemanticType().equals("Action")) {
 				if (semantic.getSemanticType().equals("ControlAction")) {
@@ -565,7 +595,7 @@ public class Network implements Serializable {
 			node = new Node(semantic, b);
 			nodes.put(identifier, node);
 			nodesIndex.add(node.getId(), node);
-
+			}
 			if (isMolName(identifier) > -1)
 				userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
 			if (isPatName(identifier) > -1)
@@ -593,38 +623,47 @@ public class Network implements Serializable {
 	 * @throws Exception
 	 *             if the invoked methods to create a pattern node or closed
 	 *             node throw an Exception.
-	 * @throws CustomException
-	 *             if the node cannot be built due to one of the following
-	 *             reasons: - another node with the same specified down cable
-	 *             set already exists in the system. - the given relations-node
-	 *             pairs are not valid. - the given down cable set is not
-	 *             following the specifications of the given case frame.
 	 */
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
-			CaseFrame caseFrame) throws Exception, CustomException {
+			CaseFrame caseFrame) throws Exception {
 		Object[][] array = turnWiresIntoArray(wires);  
 	    Object[] result = downCableSetExists(array);
 		//System.out.println("Downcable set exists > "+ downCableSetExists(array)); 
 		
 		if (((Boolean)result[0]==true)&&(result[1]==null))
-			throw new CustomException(
+			throw new CannotBuildNodeException(
 					"Cannot build the node .. down cable set already exists");  
 
 		if(((Boolean)result[0]==true)&&(result[1]!=null)){
-			throw new CustomException(
+			throw new DuplicateNodeException(
 					"This node has an equivalent node in the Network : " + result[1]);
 		}
 				
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
-			throw new CustomException(
+			throw new CannotBuildNodeException(
 					"Cannot build the node .. the relation node pairs are not valid");
 		// System.out.println("done 2nd");
 		Object[][] relNodeSet = turnIntoRelNodeSet(array); 
 		// check that the down cable set is following the case frame
 		// System.out.println("done 3rd");
 		// create the Molecular Node
+		if(caseFrame.getSemanticClass().equals("PropositionNode")){
+			PropositionNode propNode;
+			if (isToBePattern(array)) {
+				//System.out.println("building patt");
+				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
+			}else {
+				//System.out.println("building closed");
+				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
+			}
+			nodes.put(propNode.getIdentifier(), propNode);
+			nodesIndex.add(propNode.getId(), propNode);
+			Molecular molecular = (Molecular)propNode.getTerm();
+			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
+			return propNode;
+		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
 			//System.out.println("building patt");
@@ -638,6 +677,7 @@ public class Network implements Serializable {
 		Molecular molecular = (Molecular)mNode.getTerm();
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
+		}
 	} 
 	
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
@@ -647,25 +687,40 @@ public class Network implements Serializable {
 		//System.out.println("Downcable set exists > "+ downCableSetExists(array)); 
 		
 		if (((Boolean)result[0]==true)&&(result[1]==null))
-			throw new CustomException(
+			throw new CannotBuildNodeException(
 					"Cannot build the node .. down cable set already exists"); 
 		if(((Boolean)result[0]==true)&&(result[1]!=null)){
-			throw new CustomException(
+			throw new DuplicateNodeException(
 					"This node has an equivalent node in the Network : " + result[1]);
 		}
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
-			throw new CustomException(
+			throw new CannotBuildNodeException(
 					"Cannot build the node .. the relation node pairs are not valid");
 		// System.out.println("done 2nd");
 		Object[][] relNodeSet = turnIntoRelNodeSet(array); 
 		// check that the down cable set is following the case frame
 		if (!followingCaseFrame(relNodeSet, caseFrame))
-			throw new CustomException(
+			throw new CaseFrameMissMatchException(
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// System.out.println("done 3rd");
 		// create the Molecular Node
+		if(caseFrame.getSemanticClass().equals("PropositionNode")){
+			PropositionNode propNode;
+			if (isToBePattern(array)) {
+				System.out.println("building patt");
+				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
+			}else {
+				System.out.println("building closed");
+				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
+			}
+			nodes.put(propNode.getIdentifier(), propNode);
+			nodesIndex.add(propNode.getId(), propNode);
+			Molecular molecular = (Molecular)propNode.getTerm();
+			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
+			return propNode;
+		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
 			System.out.println("building patt");
@@ -679,6 +734,7 @@ public class Network implements Serializable {
 		Molecular molecular = (Molecular)mNode.getTerm();
 		molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 		return mNode;
+		}
 	}
 
 
@@ -1020,7 +1076,6 @@ public class Network implements Serializable {
 	@SuppressWarnings("rawtypes")
 	private static Node createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
-		System.out.println("mtooo");
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -1033,7 +1088,7 @@ public class Network implements Serializable {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("PropositionNode")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = null;
@@ -1077,7 +1132,6 @@ public class Network implements Serializable {
 	
 	private static Node createPatNode(Object[][] relNodeSet,
 			RelationsRestrictedCaseFrame caseFrame) throws Exception {
-		System.out.println("mtooo");
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -1166,7 +1220,7 @@ public class Network implements Serializable {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("PropositionNode")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = null;
