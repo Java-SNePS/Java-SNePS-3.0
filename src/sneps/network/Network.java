@@ -390,6 +390,7 @@ public class Network implements Serializable {
 			if (caseFrames.containsKey(caseFrame.getId())) {
 				throw new CaseFrameAlreadyExistException(
 						"This case frame already exists in the network");
+
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
