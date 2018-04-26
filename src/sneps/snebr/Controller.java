@@ -4,6 +4,7 @@ import sneps.exceptions.ContextNameDoesntExist;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.network.PropositionNode;
+import sneps.exceptions.*;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
@@ -13,6 +14,12 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
 
+    /**
+     * Creates a new Context given its name and adds it to SNeBR's ContextSet.
+     * @param contextName the name of the Context to be created
+     * @return the newly Created Context object
+     * @throws DuplicateContextNameException If a context with the same name exists in SNeBR's ContextSet
+     */
     public static Context createContext(String contextName) throws DuplicateContextNameException {
         if (contextSet.getContext(contextName) != null)
             throw new DuplicateContextNameException(contextName);
@@ -21,10 +28,20 @@ public class Controller {
         return contextSet.add(c);
     }
 
+    /**
+     * Creates a new empty Context
+     * @return new Context object
+     */
     public static Context createContext() {
         return new Context();
     }
 
+
+    /**
+     * Removes a context from SNeBR's ContextSet.
+     * @param contextName name of the context desired to be removed
+     * @return <code>true</code> if a context with this name exists, <code>false</code> otherwise
+     */
     public static boolean removeContext(String contextName) {
         Context c = contextSet.getContext(contextName);
         if (c == null)
@@ -34,6 +51,13 @@ public class Controller {
         return contextSet.remove(contextName) && bool;
     }
 
+    /**
+     * Creates a new Context given its name and  a set of hyps, and adds it to SNeBR's ContextSet.
+     * @param contextName name of the Context to be created
+     * @param hyps the set of hyps to be asserted in this Context
+     * @return the created Context
+     * @throws DuplicateContextNameException if a Context with this name exists in SNeBr's ContextSet
+     */
     public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException {
         if (contextSet.getContext(contextName) != null) {
             throw new DuplicateContextNameException(contextName);
@@ -44,18 +68,24 @@ public class Controller {
         return contextSet.add(newContext);
     }
 
-
-
-    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExist, DuplicatePropositionException {
+    /**
+     * Asserts a hyp in an existing Context
+     * @param contextName the name of the context to assert the hyp in
+     * @param hyp the hyp to be asserted
+     * @return a new Context object containing the old Context with the hyp asserted in it
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
+     * @throws DuplicatePropositionException if the hyp to be asserted in the Context is already asserted
+     * @throws NodeNotFoundInNetworkException 
+     */
+    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExistException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
-            throw new ContextNameDoesntExist(contextName);
+            throw new ContextNameDoesntExistException(contextName);
 
         oldContext.removeName(contextName);
-        PropositionSet hypSet = oldContext.getHypothesisSet();
+        PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
         // TODO: 03/04/18 check for contradiction
-        hypSet = new PropositionSet(PropositionSet.getPropsSafely(hypSet), hyp);
 
         Context newContext = new Context(contextName, hypSet);
 
@@ -63,11 +93,20 @@ public class Controller {
 
     }
 
-    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExist {
+    /**
+     * Asserts a set of hyps in an existing Context
+     * @param contextName the name of the context to assert the hyp in
+     * @param hyps the set of hyps to be asserted
+     * @return a new Context object containing the old Context with the set of hyps asserted in it
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
+     * @throws NodeNotFoundInNetworkException 
+     * @throws CustomException 
+     */
+    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
-            throw new ContextNameDoesntExist(contextName);
+            throw new ContextNameDoesntExistException(contextName);
 
         oldContext.removeName(contextName);
         PropositionSet hypSet = oldContext.getHypothesisSet();
@@ -104,6 +143,36 @@ public class Controller {
         return addPropsToContext(currContext, hyps);
     }
 
+=======
+    /**
+     * Asserts a hyp in the current Context
+     * @param hyp the hyp to be asserted in the current Context
+     * @return a new Context object containing the asserted hyp
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
+     * @throws DuplicatePropositionException if the hyp to be asserted in the Context is already asserted
+     * @throws NodeNotFoundInNetworkException 
+     */
+    public static Context addPropToCurrentContext(int hyp) throws ContextNameDoesntExistException, DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        return addPropToContext(currContext,hyp);
+    }
+
+    /**
+     * Asserts a set of hyps in the current Context
+     * @param hyps the set of hyps to be asserted
+     * @return a new Context object containing the old Context with the set of hyps asserted in it
+     * @throws ContextNameDoesntExistException if no Context with this name exists in SNeBr's ContextSet
+     * @throws NodeNotFoundInNetworkException 
+     * @throws CustomException 
+     */
+    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
+        return addPropsToContext(currContext, hyps);
+    }
+
+    /**
+     * Sets the current context to some Context by the Context's name
+     * @param contextName the name of the Context to be set as the current Context
+     * @return Context object containing the current Context
+     */
     public static Context setCurrentContext(String contextName) throws DuplicateContextNameException {
         Context context = contextSet.getContext(contextName);
         if (context == null) {
@@ -114,6 +183,10 @@ public class Controller {
         return  context;
     }
 
+    /**
+     * Returns the current Context object
+     * @return Context object of the current Context
+     */
     public static Context getCurrentContext() {
         return contextSet.getContext(currContext);
     }
@@ -122,6 +195,11 @@ public class Controller {
         // TODO: 13/03/18
     }
 
+    /**
+     * Returns a Context given its name
+     * @param contextName the name of the Context to be returned
+     * @return Context object
+     */
     public static Context getContextByName(String contextName) {
         return contextSet.getContext(contextName);
     }
