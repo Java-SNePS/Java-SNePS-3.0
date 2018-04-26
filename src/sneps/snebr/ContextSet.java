@@ -1,12 +1,12 @@
 package sneps.snebr;
 
+import sneps.snebr.Context;
 
 import java.util.Hashtable;
 
 public class ContextSet {
 
     private Hashtable<String, Context> contexts;
-
     /**
      * Constructs an empty ContextSet
      */
@@ -38,6 +38,7 @@ public class ContextSet {
      * @param name name of the context to return
      * @return A context that is mapped to the passed name.
      */
+
     public Context getContext(String name) {
         return contexts.get(name);
     }

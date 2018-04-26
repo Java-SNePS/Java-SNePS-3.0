@@ -2,6 +2,7 @@ package sneps.network;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -52,6 +53,8 @@ import sneps.snebr.Controller;
 
 public class Network implements Serializable {
 	
+	private static ArrayList<String> savedNetworks = new ArrayList<String>();
+
 	 /* A hash table that stores all the nodes defined(available) in the network.
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding node object as the value.
@@ -689,10 +692,12 @@ public class Network implements Serializable {
 		if (((Boolean)result[0]==true)&&(result[1]==null))
 			throw new CannotBuildNodeException(
 					"Cannot build the node .. down cable set already exists"); 
+		
 		if(((Boolean)result[0]==true)&&(result[1]!=null)){
 			throw new DuplicateNodeException(
 					"This node has an equivalent node in the Network : " + result[1]);
 		}
+
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
@@ -701,6 +706,7 @@ public class Network implements Serializable {
 		// System.out.println("done 2nd");
 		Object[][] relNodeSet = turnIntoRelNodeSet(array); 
 		// check that the down cable set is following the case frame
+
 		if (!followingCaseFrame(relNodeSet, caseFrame))
 			throw new CaseFrameMissMatchException(
 					"Not following the case frame .. wrong node set size or wrong set of relations");
@@ -723,10 +729,10 @@ public class Network implements Serializable {
 		}else{
 		Node mNode;
 		if (isToBePattern(array)) {
-			System.out.println("building patt");
+			//System.out.println("building patt");
 			mNode = createPatNode(relNodeSet, caseFrame);
 		}else {
-			System.out.println("building closed");
+			//System.out.println("building closed");
 			mNode = createClosedNode(relNodeSet, caseFrame);
 		}
 		nodes.put(mNode.getIdentifier(), mNode);
@@ -736,7 +742,6 @@ public class Network implements Serializable {
 		return mNode;
 		}
 	}
-
 
 	/**
 	 * checks whether the given down cable set already exists in the network or
@@ -2064,8 +2069,7 @@ public class Network implements Serializable {
 		//ControlActionNode.initControlActions();
 	}
 	
-	
-	public static void save(String relationsData, String caseFramesData, String nodesData) throws IOException {
+	public static void save(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException {
 		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
 		ros.writeObject(relations);
 		ros.close();
@@ -2079,9 +2083,72 @@ public class Network implements Serializable {
 		nodesOS.writeObject(nodes);
 		nodesOS.close();
 		
+		ObjectOutputStream molNodesOs = new ObjectOutputStream(new FileOutputStream(new File(molData)));
+		molNodesOs.writeObject(molecularNodes);
+		molNodesOs.close();
+		
+		ObjectOutputStream mc = new ObjectOutputStream(new FileOutputStream(new File(mcd)));
+		mc.writeObject(molCounter);
+		mc.close();
+		
+		ObjectOutputStream pc = new ObjectOutputStream(new FileOutputStream(new File(pcd)));
+		pc.writeObject(patternCounter);
+		pc.close();
+		
+		ObjectOutputStream vc = new ObjectOutputStream(new FileOutputStream(new File(vcd)));
+		vc.writeObject(varCounter);
+		vc.close();
+
+		ObjectOutputStream pnd = new ObjectOutputStream(new FileOutputStream(new File(pNData)));
+		pnd.writeObject(propositionNodes);
+		pnd.close();
+
+		ObjectOutputStream ni = new ObjectOutputStream(new FileOutputStream(new File(nodesIndexData)));
+		ni.writeObject(nodesIndex);
+		ni.close();
+
+		ObjectOutputStream udms = new ObjectOutputStream(new FileOutputStream(new File(userDefinedMolSuffixData)));
+		udms.writeObject(userDefinedMolSuffix);
+		udms.close();
+
+		ObjectOutputStream udps = new ObjectOutputStream(new FileOutputStream(new File(userDefinedPatSuffixData)));
+		udps.writeObject(userDefinedPatSuffix);
+		udps.close();
+
+		ObjectOutputStream udvs = new ObjectOutputStream(new FileOutputStream(new File(userDefinedVarSuffixData)));
+		udvs.writeObject(userDefinedVarSuffix);
+		udvs.close();
 	}
 	
-	public static void load(String relationsData, String caseFramesData, String nodesData) throws IOException, ClassNotFoundException {
+	public static void saveNetworks() throws IOException {
+		ObjectOutputStream networks = new ObjectOutputStream(new FileOutputStream(new File("Networks")));
+		networks.writeObject(savedNetworks);
+		networks.close();
+	}
+	
+	public static void loadNetworks() throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInputStream ns= new ObjectInputStream(new FileInputStream(new File("Networks")));
+		ArrayList<String> temp = (ArrayList<String>) ns.readObject();
+		Network.savedNetworks = temp;
+		ns.close();
+	}
+	
+	public static ArrayList<String> getSavedNetworks() {
+		return savedNetworks;
+	}
+
+	public static boolean addToSavedNetworks(String n) {
+		boolean r;
+		if(savedNetworks.contains(n)) {
+			r = false;
+		}else {
+			savedNetworks.add(n);
+			r = true;
+		}
+		return r;
+	}
+
+	public static void load(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException, ClassNotFoundException {
 		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
 		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
 		Network.relations = tempRelations;
@@ -2101,6 +2168,52 @@ public class Network implements Serializable {
 		nodesis.close();
 		tempNodes = null;
 		
+
+		ObjectInputStream molNodesis= new ObjectInputStream(new FileInputStream(new File(molData)));
+		Hashtable<String, NodeSet> tempMolNodes = (Hashtable<String, NodeSet>) molNodesis.readObject();
+		Network.molecularNodes = tempMolNodes;
+		molNodesis.close();
+		tempMolNodes = null;
+		
+		ObjectInputStream mc= new ObjectInputStream(new FileInputStream(new File(mcd)));
+		int tempMC = (int) mc.readObject();
+		Network.molCounter = tempMC;
+		mc.close();
+		
+		ObjectInputStream pc= new ObjectInputStream(new FileInputStream(new File(pcd)));
+		int tempPC = (int) pc.readObject();
+		Network.patternCounter = tempPC;
+		pc.close();
+		
+		ObjectInputStream vc= new ObjectInputStream(new FileInputStream(new File(vcd)));
+		int tempVC = (int) vc.readObject();
+		Network.varCounter = tempVC;
+		vc.close();
+
+		ObjectInputStream pn= new ObjectInputStream(new FileInputStream(new File(pNData)));
+		Hashtable<String, PropositionNode> temppn = (Hashtable<String, PropositionNode>) pn.readObject();
+		Network.propositionNodes = temppn;
+		pn.close();
+
+		ObjectInputStream niis= new ObjectInputStream(new FileInputStream(new File(nodesIndexData)));
+		ArrayList<Node> tempni = (ArrayList<Node>) niis.readObject();
+		Network.nodesIndex = tempni;
+		niis.close();
+
+		ObjectInputStream udmsis= new ObjectInputStream(new FileInputStream(new File(userDefinedMolSuffixData)));
+		LinkedList<Integer> tempudms = (LinkedList<Integer>) udmsis.readObject();
+		Network.userDefinedMolSuffix = tempudms;
+		udmsis.close();
+
+		ObjectInputStream udpsis= new ObjectInputStream(new FileInputStream(new File(userDefinedPatSuffixData)));
+		LinkedList<Integer> tempudps = (LinkedList<Integer>) udpsis.readObject();
+		Network.userDefinedPatSuffix = tempudps;
+		udpsis.close();
+
+		ObjectInputStream udvsis= new ObjectInputStream(new FileInputStream(new File(userDefinedVarSuffixData)));
+		LinkedList<Integer> tempudvs = (LinkedList<Integer>) udvsis.readObject();
+		Network.userDefinedVarSuffix = tempudvs;
+		udvsis.close();
 				
 	}
 	

@@ -1,5 +1,9 @@
 package sneps.snebr;
 
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundException;
+import sneps.network.PropositionNode;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -14,9 +18,8 @@ import java.util.HashSet;
 
 
 public class Context {
-    private PropositionSet hyps;
-
-    private HashSet<String> names;
+	private PropositionSet hyps;
+	private HashSet<String> names;
 
     /**
      * Constructs a new empty Context

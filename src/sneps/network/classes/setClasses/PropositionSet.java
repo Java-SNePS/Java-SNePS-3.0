@@ -1,5 +1,4 @@
 package sneps.network.classes.setClasses;
-
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -24,7 +23,7 @@ public class PropositionSet {
 	 */
 	public PropositionSet() {
 		this.props = new int[0];
-	}
+  }
 
 	/**
 	 * Constructs a new PropositionSet with an array containing a single prop
@@ -145,7 +144,6 @@ public class PropositionSet {
 	 */
 
 	public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-
 		int [] props = propSet.getProps();
 		int [] props1 = this.getProps();
 		int [] props2 = new int[props.length + props1.length];
@@ -179,6 +177,7 @@ public class PropositionSet {
 		return new PropositionSet(output);
 	}
 
+
 	public boolean isEmpty() {
 		return props.length == 0;
 	}
@@ -204,7 +203,7 @@ public class PropositionSet {
 		int j = 0;
 		boolean found = false;
 		if (props[props.length -1] < prop)
-			throw new NodeNotFoundInPropSetException("The Node You Are Trying To Remove is Not Found");
+      throw new NodeNotFoundInPropSetException("The Node You Are Trying To Remove is Not Found");
 		for (int i = 0; i < current.length; i++) {
 			if (prop < current[i] && !found)
 				throw new NodeNotFoundInPropSetException("The Node You Are Trying To Remove is Not Found");
@@ -217,6 +216,7 @@ public class PropositionSet {
 		}
 		return new PropositionSet(newSet);
 	}
+
 
 	/**
 	 * Creates a new PropositionSet with a prop if it isn't a duplicate.
