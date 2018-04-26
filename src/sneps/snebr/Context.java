@@ -108,7 +108,6 @@ public class Context {
 	protected boolean removeName(String name) {
 		return this.names.remove(name);
 	}
-=======
     private PropositionSet hyps;
 
     private HashSet<String> names;
