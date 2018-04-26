@@ -143,7 +143,6 @@ public class Controller {
         return addPropsToContext(currContext, hyps);
     }
 
-=======
     /**
      * Asserts a hyp in the current Context
      * @param hyp the hyp to be asserted in the current Context
