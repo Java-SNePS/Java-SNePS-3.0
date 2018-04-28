@@ -80,50 +80,26 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 1 with
-	 * semantic type "Individual".
+	 * This method is used to create a customized case frame for mode 1.
 	 *
 	 * @param noOfArguments
 	 *            the number of argument relations.
 	 *
-	 * @throws CustomException
-	 *             if the case frame is already created.
+	 * @return the case frame after being created.
 	 */
-	protected static CaseFrame createModeOneIndividualCaseFrame(int noOfArguments) throws CustomException {
+	protected static CaseFrame createModeOnePropositionCaseFrame(int noOfArguments) {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("r", "Individual");
+		Relation r = new Relation("rp", "Proposition");
 		rels.add(r);
 		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("a" + (i + 1), "Individual"));
-		}
-		CaseFrame cf = Network.defineCaseFrame("Individual", rels);
-		return cf;
-	}
-
-	/**
-	 * This method is used to create a customized case frame for mode 1 with
-	 * semantic type "Proposition".
-	 *
-	 * @param noOfArguments
-	 *            the number of argument relations.
-	 *
-	 * @throws CustomException
-	 *             if the case frame is already created.
-	 */
-	protected static CaseFrame createModeOnePropositionCaseFrame(int noOfArguments) throws CustomException {
-		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("rp", "Individual");
-		rels.add(r);
-		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("ap" + (i + 1), "Individual"));
+			rels.add(new Relation("ap" + (i + 1), "Proposition"));
 		}
 		CaseFrame cf = Network.defineCaseFrame("Proposition", rels);
 		return cf;
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 2 with
-	 * semantic type "Individual".
+	 * This method is used to create a customized case frame for mode 2.
 	 * 
 	 * @param p
 	 *            the name of the p relation.
@@ -131,39 +107,14 @@ public class AP {
 	 * @param noOfArguments
 	 *            the number of argument relations.
 	 *
-	 * @throws CustomException
-	 *             if the case frame is already created.
+	 * @return the case frame after being created.
 	 */
-	protected static CaseFrame createModeTwoIndividualCaseFrame(String p, int noOfArguments) throws CustomException {
+	protected static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) throws CustomException {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("| rel " + p + "|", "Individual");
+		Relation r = new Relation("| rel " + p + "|", "Proposition");
 		rels.add(r);
 		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("|rel-arg#" + p + (i + 1) + "|", "Individual"));
-		}
-		CaseFrame cf = Network.defineCaseFrame("Individual", rels);
-		return cf;
-	}
-
-	/**
-	 * This method is used to create a customized case frame for mode 2 with
-	 * semantic type "Proposition".
-	 * 
-	 * @param p
-	 *            the name of the p relation.
-	 *
-	 * @param noOfArguments
-	 *            the number of argument relations.
-	 *
-	 * @throws CustomException
-	 *             if the case frame is already created.
-	 */
-	protected static CaseFrame createModeTwoPropositionCaseFrame(String p, int noOfArguments) throws CustomException {
-		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("| rel " + p + "|", "Individual");
-		rels.add(r);
-		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("|rel-arg#" + p + (i + 1) + "|", "Individual"));
+			rels.add(new Relation("|rel-arg#" + p + (i + 1) + "|", "Proposition"));
 		}
 		CaseFrame cf = Network.defineCaseFrame("Proposition", rels);
 		return cf;
@@ -181,6 +132,8 @@ public class AP {
 	 *            this String contains the relations that is used to create a case
 	 *            frame.
 	 * @return the case frame after being created.
+	 * @throws CustomException
+	 *             if a relation was not defined in the Network.
 	 */
 	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, String relations)
 			throws CustomException {
@@ -194,11 +147,10 @@ public class AP {
 		String[] rs = relations.split(" ");
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		if (!rs[0].equals("nil")) {
-			Relation r = new Relation(rs[0], "Individual");
-			rels.add(r);
+			rels.add(Network.getRelation(rs[0]));
 		}
 		for (int i = 1; i < rs.length; i++) {
-			rels.add(new Relation(rs[i], "Individual"));
+			rels.add(Network.getRelation(rs[i]));
 		}
 		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
 		modeThreeCaseFrames.put(name, cf);
@@ -210,8 +162,8 @@ public class AP {
 	 * network.
 	 * 
 	 * @param type
-	 *            a String specifying the type of the infixed term. It should have one
-	 *            of the following values: and, or, or equality.
+	 *            a String specifying the type of the infixed term. It should have
+	 *            one of the following values: and, or, or equality.
 	 * @param arg1
 	 *            the first argument node.
 	 * @param arg2
@@ -243,7 +195,7 @@ public class AP {
 		Node infixedTermNode = Network.buildMolecularNode(wires, caseFrame);
 		return infixedTermNode;
 	}
-	
+
 	/**
 	 * This method is used to construct the nodes representing entailments in the
 	 * network.
@@ -329,7 +281,7 @@ public class AP {
 		Node negatedNode = Network.buildMolecularNode(wires, caseFrame);
 		return negatedNode;
 	}
-	
+
 	/**
 	 * This method is used to construct the nodes representing an andTerm in the
 	 * network.
@@ -356,7 +308,7 @@ public class AP {
 		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
 		return andorNode;
 	}
-	
+
 	/**
 	 * This method is used to construct the nodes representing setTerms in the
 	 * network.
