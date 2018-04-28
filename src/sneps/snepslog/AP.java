@@ -109,7 +109,7 @@ public class AP {
 	 *
 	 * @return the case frame after being created.
 	 */
-	protected static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) throws CustomException {
+	protected static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		Relation r = new Relation("| rel " + p + "|", "Proposition");
 		rels.add(r);
