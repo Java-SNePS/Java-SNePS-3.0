@@ -89,10 +89,10 @@ public class AP {
 	 */
 	protected static CaseFrame createModeOneCaseFrame(int noOfArguments) {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
-		Relation r = new Relation("rp", "Proposition");
+		Relation r = new Relation("r", "Proposition");
 		rels.add(r);
 		for (int i = 0; i < noOfArguments; i++) {
-			rels.add(new Relation("ap" + (i + 1), "Proposition"));
+			rels.add(new Relation("a" + (i + 1), "Proposition"));
 		}
 		CaseFrame cf = Network.defineCaseFrame("Proposition", rels);
 		return cf;
