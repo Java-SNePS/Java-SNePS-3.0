@@ -87,7 +87,7 @@ public class AP {
 	 *
 	 * @return the case frame after being created.
 	 */
-	protected static CaseFrame createModeOnePropositionCaseFrame(int noOfArguments) {
+	protected static CaseFrame createModeOneCaseFrame(int noOfArguments) {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		Relation r = new Relation("rp", "Proposition");
 		rels.add(r);
