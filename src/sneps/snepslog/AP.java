@@ -386,12 +386,7 @@ public class AP {
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
 		}
-		if (threshmax != null) {
-			wires.add(new Wire(Relation.max, Network.buildBaseNode(threshmax, new Semantic("Infimum"))));
-		} else {
-			wires.add(
-					new Wire(Relation.max, Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Infimum"))));
-		}
+		wires.add(new Wire(Relation.max, Network.buildBaseNode(threshmax, new Semantic("Infimum"))));
 		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
 		Node threshNode = Network.buildMolecularNode(wires, caseFrame);
@@ -463,6 +458,15 @@ public class AP {
 	 */
 	protected static void clearKnowledgeBase() {
 		// TODO Finish building clearKnowledgeBase()
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> match(Node node) {
+		// TODO A wrapper for match
+		ArrayList<Node> output = new ArrayList<Node>();
+		return output;
 	}
 
 	/**
