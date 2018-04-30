@@ -357,14 +357,4 @@ public class SnepslogTest extends TestCase {
 		   }
     }
 	
-	@Test
-    public void testOrEntailment() {
-		try{
-		      AP.executeSnepslogCommand("{in(Hilda, Boston), in(Kathy, Las_Vegas)} v=> {in(Eve, Providence)}.");
-		   }
-		   catch(Exception e){
-		      fail("No exception is expected to be thrown");
-		   }
-    }
-	
 }
