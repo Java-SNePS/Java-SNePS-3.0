@@ -33,10 +33,10 @@ import sneps.network.paths.Path;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.VariableSet;
 import sneps.snebr.Context;
-import sneps.snip.rules.AndNode;
+import sneps.snip.rules.AndEntailment;
 import sneps.snip.rules.AndOrNode;
 import sneps.snip.rules.DoIfNode;
-import sneps.snip.rules.NumericalNode;
+import sneps.snip.rules.NumericalEntailment;
 import sneps.snip.rules.OrNode;
 import sneps.snip.rules.ThreshNode;
 import sneps.snip.rules.WhenDoNode;
@@ -1030,7 +1030,7 @@ public class Network {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = new AndNode(open);
+				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
 				propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
@@ -1038,7 +1038,7 @@ public class Network {
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
 				propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = new NumericalNode(open);	
+				propNode = new NumericalEntailment(open);	
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
 				propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
@@ -1074,7 +1074,7 @@ public class Network {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = new AndNode(open);
+				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
 				propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
@@ -1082,7 +1082,7 @@ public class Network {
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
 				propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = new NumericalNode(open);	
+				propNode = new NumericalEntailment(open);	
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
 				propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
@@ -1135,7 +1135,7 @@ public class Network {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) 
-				propNode = new AndNode(c);
+				propNode = new AndEntailment(c);
 			
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule) 
 				propNode = new OrNode(c);
@@ -1147,7 +1147,7 @@ public class Network {
 				propNode = new ThreshNode(c);
 			
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) 
-				propNode = new NumericalNode(c);
+				propNode = new NumericalEntailment(c);
 			
 			else
 				propNode = new PropositionNode(c);
@@ -1179,7 +1179,7 @@ public class Network {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) 
-				propNode = new AndNode(c);
+				propNode = new AndEntailment(c);
 			
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule) 
 				propNode = new OrNode(c);
@@ -1191,7 +1191,7 @@ public class Network {
 				propNode = new ThreshNode(c);
 			
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) 
-				propNode = new NumericalNode(c);
+				propNode = new NumericalEntailment(c);
 			
 			else
 				propNode = new PropositionNode(c);

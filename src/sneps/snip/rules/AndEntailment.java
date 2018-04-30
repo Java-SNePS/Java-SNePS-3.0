@@ -19,64 +19,42 @@ import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
-@SuppressWarnings("unused")
-public class AndNode extends RuleNode {
+//@SuppressWarnings("unused")
+public class AndEntailment extends RuleNode {
 	private Hashtable<String, RuleUseInfoSet> ruisNotSent;
 	private NodeSet consequents;
 
-	public AndNode(Term syn) {
+	public AndEntailment(Term syn) {
 		super(syn);
 		ruisNotSent = new Hashtable<String, RuleUseInfoSet>();
 		setConsequents(new NodeSet());
 	}
-	public AndNode(Semantic sym, Term syn) {
+	public AndEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 		ruisNotSent = new Hashtable<String, RuleUseInfoSet>();
 		setConsequents(new NodeSet());
 	}
 
 
-	@Override//TODO Read Extensive!
+	@Override
 	public void applyRuleHandler(Report report, Node signature) {
-		if (!report.getSign()) {
-			return;//TODO Error
+		if (report.isPositive()) {
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.putIn(new FlagNode(signature, report.getSupports(), 1));
+			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
+					1, 0, fns);
+			String contxt = report.getContextName();
+			addNotSentRui(rui, contxt);
 		}
-
-		FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
-		FlagNodeSet fns = new FlagNodeSet();
-		fns.putIn(fn);
-		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
-
-		String contxt = report.getContextName();
-		Context context = (Context) Controller.getContextByName(contxt);
-		if (isConstantNode(signature)) {
-			addConstantRuiToContext(contxt, rui);
-			sendSavedRUIs(contxt);
-			return;
-		}
-
-		RuisHandler crtemp = this.getContextRUISSet(context).getContextRUIS(contxt);
-		if(crtemp == null){
-			crtemp = addContextRUIS(contxt);
-		}
-
-		RuleUseInfoSet res = crtemp.insertRUI(rui);
-		if (res == null) {
-			res = new RuleUseInfoSet();
-		}
-		for (RuleUseInfo tRui : res) {
-			if (tRui.getPosCount() == antNodesWithVars.size())
-				addNotSentRui(tRui, contxt);
-		}
-
-		sendSavedRUIs(contxt);
+		if (ruisNotSent.size() == antNodesWithoutVars.size() + antNodesWithVars.size())
+			sendSavedRUIs(report.getContextName());
 	}
 
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
 		addNotSentRui(Rui, contextID);
 		if (Rui.getPosCount() != antNodesWithVars.size() + antNodesWithoutVars.size())
-			return;//TODO Error
+			return;
 		Support originSupports = this.getBasicSupport();
 		HashSet<Support> sup = new HashSet<Support>();
 		sup.add(originSupports);
@@ -96,10 +74,10 @@ public class AndNode extends RuleNode {
 	private void sendSavedRUIs(String contextID) {
 		RuleUseInfo addedConstant = getConstantRUI(contextID);
 		if (addedConstant == null && antNodesWithoutVars.size() != 0)
-			return;//TODO Error
+			return;
 
 		if (antNodesWithoutVars.size() != addedConstant.getPosCount())
-			return;//TODO Error
+			return;
 
 		RuleUseInfoSet ruis = ruisNotSent.get(contextID);
 		if (ruis == null) {
@@ -112,8 +90,6 @@ public class AndNode extends RuleNode {
 			combined = info.combine(addedConstant);
 			if (combined != null){
 				applyRuleOnRui(combined, contextID);	
-			}else{
-				//TODO Error
 			}
 		}
 	}
@@ -122,7 +98,9 @@ public class AndNode extends RuleNode {
 	public RuisHandler createRuisHandler(String context) {
 		Context contxt = (Context) Controller.getContextByName(context);
 		PTree tree = new PTree(context);
-		tree.buildTree(antNodesWithVars);
+		NodeSet ants = antNodesWithoutVars;
+		ants.addAll(antNodesWithVars);
+		tree.buildTree(ants);
 		return this.addContextRUIS(contxt, tree);
 	}
 	@Override

@@ -46,4 +46,11 @@ public class VariableSet implements Iterable<Variable> {
 		variables.remove(variable);
 	}
 
+	public static VariableSet union(VariableSet v1, VariableSet v2){
+		VariableSet v3 = v2;
+		for(Variable var : v1)
+			if(!v3.contains(var))
+				v3.addVariable(var);
+		return v3;
+	}
 }

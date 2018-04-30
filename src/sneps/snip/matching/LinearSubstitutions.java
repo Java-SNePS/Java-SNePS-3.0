@@ -469,12 +469,12 @@ public class LinearSubstitutions implements Substitutions {
         }
 
 		
-		public int termID(int variableID) {
+		/*public int termID(int variableID) {
 			for (int i = 0; i < sub.size(); i++) 
 				if(sub.get(i).getVariable().getId()==variableID)
 					return sub.get(i).getNode().getId();
 			return -1;
-		}
+		}*/
 
 		@Override
 		public void insertOrUpdate(Binding mb) {

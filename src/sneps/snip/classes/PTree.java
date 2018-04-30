@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import sneps.network.Node;
-import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.term.Molecular;
@@ -22,24 +21,23 @@ import sneps.setClasses.VariableSet;
 
 public class PTree extends RuisHandler {
 	private Hashtable<Integer, VariableSet> patternVariables;//PatId, Variables
-	private Hashtable<Integer, Set<Integer>> variablePatterns;//VarId, Patterns
+	private Hashtable<Variable, Set<Integer>> variablePatterns;//VarId, Patterns
 	/*private VariableSet vars;
 	private NodeSet nodes;*/
-	private Set<Integer> notProccessed;
+	private VariableSet notProccessed;
 	private HashSet<PSubTree> subTrees;
 	private Hashtable<Integer, PSubTree> subTreesMap;
 
 	public PTree(String context) {
 		super(context);
 		patternVariables = new Hashtable<Integer, VariableSet>();
-		variablePatterns = new Hashtable<Integer, Set<Integer>>();
+		variablePatterns = new Hashtable<Variable, Set<Integer>>();
 		//vars = new VariableSet();
-		notProccessed = new HashSet<Integer>();
+		notProccessed = new VariableSet();
 		subTrees = new HashSet<PSubTree>();
 	}
 
 	public void buildTree(NodeSet ants){
-		//TODO check 2
 		//nodes = ants;
 		fillPVandVP(ants);
 
@@ -48,85 +46,69 @@ public class PTree extends RuisHandler {
 		constructBottomUp(patternSequence);
 
 		patternVariables = new Hashtable<Integer, VariableSet>();
-		variablePatterns = new Hashtable<Integer, Set<Integer>>();
+		variablePatterns = new Hashtable<Variable, Set<Integer>>();
 		//vars = new VariableSet();
-		notProccessed = new HashSet<Integer>();
+		notProccessed = new VariableSet();
 	}
 
-	private void fillPVandVP(NodeSet ants) {//TODO help!
+	private void fillPVandVP(NodeSet ants) {
 		for(Node pattern : ants){
 			int id = pattern.getId();
 			Term term = pattern.getTerm();
+			VariableSet vars = patternVariables.get(id);
+			if(vars == null || vars.isEmpty())
+				vars = new VariableSet();
+				//patternVariables.put(id, vars);
+			Set<Integer> pats = variablePatterns.get(id);
+			if(pats == null || pats.isEmpty() )
+				pats = new HashSet<Integer>();
+				//variablePatterns.put(, pats);
 
 			if(term instanceof Variable){
-				VariableSet vars = patternVariables.get(id);
-				if(vars == null || vars.isEmpty()){
-					vars = new VariableSet();
-					patternVariables.put(id, vars);
-				}
-				vars.addVariable((Variable)term);
-				patternVariables.put(id, vars);
-
-				Set<Integer> pats = variablePatterns.get(id);
-				if(pats == null || pats.isEmpty() ){
-					pats = new HashSet<Integer>();
-					variablePatterns.put(id, pats);
-				}
+				vars.addVariable((Variable) term);
+				notProccessed.addVariable((Variable) term);
 			}
 
 			if(term instanceof Open){
 				VariableSet freeVars = ((Open)term).getFreeVariables();
-
-				VariableSet vars = patternVariables.get(id);
-				if(vars == null || vars.isEmpty()){
-					vars = new VariableSet();
-					patternVariables.put(id, vars);
-				}
 				vars.addAll(freeVars);
-				patternVariables.put(id, vars);
-
-				Set<Integer> pats = variablePatterns.get(id);
-				if(pats == null || pats.isEmpty() ){
-					pats = new HashSet<Integer>();
-					variablePatterns.put(id, pats);
-				}
+				notProccessed.addAll(freeVars);
 			}
-			if(term instanceof Molecular){
-				DownCableSet dcs = ((Molecular)term).getDownCableSet();
-				for(int i = 0; i<dcs.size(); i++){
-					Hashtable<String, DownCable> dc = dcs.getDownCables();
-					//TODO dc.get by Values
-				}
-				VariableSet vars = patternVariables.get(id);
-				if(vars == null || vars.isEmpty()){
-					vars = new VariableSet();
-					patternVariables.put(id, vars);
+			patternVariables.put(id, vars);	
+		}
+
+		Set<Integer> pats = patternVariables.keySet();
+		for(int curPat : pats){
+			VariableSet vars = patternVariables.get(curPat);
+			if(!(vars.isEmpty()) || !(vars == null)){
+				for(Variable curVar : vars){
+					Set<Integer> pat = variablePatterns.get(curVar);
+					if(!pat.contains(curPat)){
+						pat.add(curPat);
+						variablePatterns.put(curVar, pat);
+					}
 				}
 			}
 		}
-
 	}
 	private Queue<PTreeNode> getPatternSequence() {
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
 		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
-		//Set<Integer> proccessed = new HashSet<Integer>();
 
-		for(int currentVarId : notProccessed){
-			Set<Integer> vPatternsIds = variablePatterns.get(currentVarId);
+		for(Variable currentVar : notProccessed){
+			Set<Integer> vPatternsIds = variablePatterns.get(currentVar);
 
 			for(int currentPatId : vPatternsIds)
-
 				if(!res.contains(currentPatId)){
 					res.add(currentPatId);
 
+					VariableSet vs = new VariableSet();
+					vs.addVariable(currentVar);
 					Set<Integer> pats = new HashSet<Integer>();
-					pats.add(currentVarId);
+					pats.add(currentPatId);
 
-					Set<Integer> proccessed = new HashSet<Integer>();
-
-					treeNodes.add(new PTreeNode(pats, proccessed));
+					treeNodes.add(new PTreeNode(pats, vs));
 				}
-
 		}
 		return treeNodes;
 		
@@ -144,9 +126,9 @@ public class PTree extends RuisHandler {
 			if (sharingVars(head, second)) {
 				sharing = true;
 				Set<Integer> pats = union(head.getPats(), second.getPats());
-				Set<Integer> vars = union(head.getVars(), second.getVars());
+				VariableSet vars = VariableSet.union(head.getVars(), second.getVars());
 				PTreeNode treeNode = new PTreeNode(pats, vars);
-				Set<Integer> intersection = getSharedVars(head, second);
+				VariableSet intersection = getSharedVars(head, second);
 				treeNode.insertLeftAndRight(head, second, intersection);
 				newTreeNodes.add(treeNode);
 				head = treeNodes.poll();
@@ -163,7 +145,6 @@ public class PTree extends RuisHandler {
 			for(PTreeNode subHead : newTreeNodes)
 				processSubTree(subHead);
 		}
-
 	}
 
 
@@ -205,7 +186,7 @@ public class PTree extends RuisHandler {
 		return set.iterator().next();
 	}*/
 	private boolean sharingVars(PTreeNode head, PTreeNode second) {
-		Set<Integer> smaller = null, bigger = null;
+		VariableSet smaller = null, bigger = null;
 		if (head.getVars().size() > second.getVars().size()) {
 			smaller = second.getVars();
 			bigger = head.getVars();
@@ -213,13 +194,13 @@ public class PTree extends RuisHandler {
 			bigger = second.getVars();
 			smaller = head.getVars();
 		}
-		for (int i : smaller)
+		for (Variable i : smaller)
 			if (bigger.contains(i))
 				return true;
 		return false;
 	}
-	private Set<Integer> getSharedVars(PTreeNode first, PTreeNode second) {
-		Set<Integer> smaller = null, bigger = null, intersection = new HashSet<Integer>();
+	private VariableSet getSharedVars(PTreeNode first, PTreeNode second) {
+		VariableSet smaller = null, bigger = null, intersection = new VariableSet();
 		if (first.getVars().size() > second.getVars().size()) {
 			smaller = second.getVars();
 			bigger = first.getVars();
@@ -227,9 +208,9 @@ public class PTree extends RuisHandler {
 			bigger = second.getVars();
 			smaller = first.getVars();
 		}
-		for (int i : smaller)
+		for (Variable i : smaller)
 			if (bigger.contains(i))
-				intersection.add(i);
+				intersection.addVariable(i);
 		return intersection;
 	}
 	private Set<Integer> union(Set<Integer> vars1, Set<Integer> vars2) {
@@ -283,8 +264,8 @@ public class PTree extends RuisHandler {
 		//private HashSet<RuleUseInfo> ruis;
 		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
 		private Set<Integer> pats;
-		private Set<Integer> vars;
-		private Set<Integer> siblingIntersection;
+		private VariableSet vars;
+		private VariableSet siblingIntersection;
 
 		public PTreeNode(){
 			ruisMap = new Hashtable<Integer, RuleUseInfoSet>();
@@ -292,7 +273,7 @@ public class PTree extends RuisHandler {
 			leftChild = null;		rightChild = null;
 			pats = null;			vars = null;
 		}
-		public PTreeNode(Set<Integer> p, Set<Integer> v){
+		public PTreeNode(Set<Integer> p, VariableSet v){
 			this();
 			pats = p;				vars = v;
 		}
@@ -315,7 +296,7 @@ public class PTree extends RuisHandler {
 		}
 
 		public void insertLeftAndRight(PTreeNode leftNode, PTreeNode rightNode,
-				Set<Integer> intersection) {
+				VariableSet intersection) {
 			leftNode.parent = this;
 			rightNode.parent = this;
 			leftNode.sibling = rightNode;
@@ -337,12 +318,11 @@ public class PTree extends RuisHandler {
 				return 0;
 			}
 
-			int[] ids = new int[siblingIntersection.size()];
+			int[] vs = new int[siblingIntersection.size()];
 			int index = 0;
-			for (int id : siblingIntersection)
-				ids[index++] = rui.getSubstitutions().termID(id);
-
-			int key = getKey(ids);
+			for (Variable var : siblingIntersection)
+				vs[index++] = rui.getSubstitutions();//TODO Get int
+			int key = getKey(vs);
 			RuleUseInfoSet ruis = ruisMap.get(key);
 			if (ruis == null) {
 				ruis = new RuleUseInfoSet();
@@ -365,7 +345,7 @@ public class PTree extends RuisHandler {
 		public Set<Integer> getPats() {
 			return pats;
 		}
-		public Set<Integer> getVars() {
+		public VariableSet getVars() {
 			return vars;
 		}
 		private int getKey(int[] x) {
