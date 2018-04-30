@@ -168,16 +168,6 @@ public class SnepslogTest extends TestCase {
     }
 	
 	@Test
-    public void testDemo() {
-		try{
-		      AP.executeSnepslogCommand("demo");
-		   }
-		   catch(Exception e){
-		      fail("No exception is expected to be thrown");
-		   }
-    }
-	
-	@Test
     public void testDescribeContext() {
 		try{
 		      AP.executeSnepslogCommand("describe-context mythology");
