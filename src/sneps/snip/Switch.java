@@ -1,7 +1,7 @@
 package sneps.snip;
 
 
-import sneps.network.VariableNode;
+import sneps.network.classes.term.Variable;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
@@ -25,7 +25,7 @@ public class Switch {
 			System.out.println(this.substitution.getBinding(i).getVariable());
 			System.out.println("i: " + i + " binding: " + b);
 			if (b != null) {
-				b.setVariable( (VariableNode) this.substitution.getBinding(i).getNode());
+				b.setVariable( (Variable) this.substitution.getBinding(i).getNode().getTerm());
 			}else {
 				System.out.println("there u go " + this.substitution.getBinding(i));
 				r.getSubstitutions().putIn(this.substitution.getBinding(i));

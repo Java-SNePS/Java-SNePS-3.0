@@ -1,18 +1,18 @@
 package sneps.snip.matching;
 
 import sneps.network.Node;
-import sneps.network.VariableNode;
+import sneps.network.classes.term.Variable;
 
 public class Binding{
 	private Node node;
-    private VariableNode variable;
+    private Variable variable;
     
     /**
      *Creates new binding from variable and node
      *@param node
      *@param variablear
     */
-    public Binding(VariableNode variable,Node node)
+    public Binding(Variable variable,Node node)
     {
         this.node=node;
         this.variable=variable;
@@ -22,7 +22,7 @@ public class Binding{
       *returns the variable of the binding
       *@return variable
     */
-    public VariableNode getVariable()
+    public Variable getVariable()
     {
         return variable;
     }
@@ -52,7 +52,7 @@ public class Binding{
          *Set the value of the variable of the binding with m
          *@param m the new variable
          */
-    public void setVariable(VariableNode m)
+    public void setVariable(Variable m)
     {
         variable=m;
     }

@@ -321,7 +321,7 @@ public class PTree extends RuisHandler {
 			int[] vs = new int[siblingIntersection.size()];
 			int index = 0;
 			for (Variable var : siblingIntersection)
-				vs[index++] = rui.getSubstitutions();//TODO Get int
+				vs[index++] = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
 			int key = getKey(vs);
 			RuleUseInfoSet ruis = ruisMap.get(key);
 			if (ruis == null) {
