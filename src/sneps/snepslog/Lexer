@@ -50,14 +50,7 @@ DEFINE_FRAME=(define-frame)
 DEFINE_PATH=(define-path)
 DEFINE_SEMANTIC=(define-semantic)
 DEFINE_RELATION=(define-relation)
-DEMO=(demo)
 QUESTION_MARK=(\?)
-OPTION_T=(t)
-OPTION_B=(b)
-OPTION_BV=(bv)
-OPTION_A=(a)
-OPTION_AV=(av)
-OPTION_N=(n)
 DESCRIBE_CONTEXT=(describe-context)
 DESCRIBE_TERMS=(describe-terms)
 EXPERT=(expert)
@@ -195,29 +188,8 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 <YYINITIAL> {DEFINE_RELATION} { 
 	return (new Symbol(sym.DEFINE_RELATION,yytext()));
 }
-<YYINITIAL> {DEMO} { 
-	return (new Symbol(sym.DEMO,yytext()));
-}
 <YYINITIAL> {QUESTION_MARK} { 
 	return (new Symbol(sym.QUESTION_MARK,yytext()));
-}
-<YYINITIAL> {OPTION_T} { 
-	return (new Symbol(sym.OPTION_T,yytext()));
-}
-<YYINITIAL> {OPTION_B} { 
-	return (new Symbol(sym.OPTION_B,yytext()));
-}
-<YYINITIAL> {OPTION_BV} { 
-	return (new Symbol(sym.OPTION_BV,yytext()));
-}
-<YYINITIAL> {OPTION_A} { 
-	return (new Symbol(sym.OPTION_A,yytext()));
-}
-<YYINITIAL> {OPTION_AV} { 
-	return (new Symbol(sym.OPTION_AV,yytext()));
-}
-<YYINITIAL> {OPTION_N} { 
-	return (new Symbol(sym.OPTION_N,yytext()));
 }
 <YYINITIAL> {DESCRIBE_CONTEXT} { 
 	return (new Symbol(sym.DESCRIBE_CONTEXT,yytext()));
