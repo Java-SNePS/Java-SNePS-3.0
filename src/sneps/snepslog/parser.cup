@@ -4,7 +4,6 @@ import java.io.*;
 import java_cup.runtime.*;
 
 import java.util.ArrayList;
-import javafx.util.Pair;
 
 import sneps.network.Node;
 import sneps.network.paths.Path;
@@ -38,14 +37,7 @@ terminal ACTIVATE,
          EXPAND,
          REDUCE,
          NONE,
-         DEMO,
          QUESTION_MARK,
-         OPTION_T,
-         OPTION_B,
-         OPTION_BV,
-         OPTION_A,
-         OPTION_AV,
-         OPTION_N,
          DESCRIBE_CONTEXT,
          DESCRIBE_TERMS,
          EXPERT,
@@ -131,8 +123,6 @@ nonterminal String command,
                    optionalTerminalPunctuation,
                    identifiers,
                    identifiers_list,
-                   demoFirstOptionalOptionSet,
-                   demoSecondOptionalOptionSet,
                    andOrEquality,
                    wffName,
                    optionalIdentifier;
@@ -299,10 +289,6 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DEMO demoFirstOptionalOptionSet demoSecondOptionalOptionSet optionalDot
-				{: 
-
-				:}
 				| DESCRIBE_CONTEXT optionalIdentifier optionalDot
 				{: 
 
@@ -430,178 +416,233 @@ snepslogFunction ::=	 INFERENCE
 			
 		     	:};
 				
-wff ::= infixedTerm
+wff ::= infixedTerm:it
     {:
-    
+    		RESULT = it;
     :}
-    | entailment
+    | entailment:e
     {:
-    
+    		RESULT = e;
     :};				
 
-infixedTerm ::= prefixedTerm andOrEquality infixedTerm
+infixedTerm ::= prefixedTerm:arg1 andOrEquality:type infixedTerm:arg2
             {:
-    
+    				RESULT = AP.buildInfixedTerm(type, arg1, arg2);
             :}
-            | prefixedTerm
+            | prefixedTerm:pt
             {:
-            
+            		RESULT = pt;
             :};
 
 andOrEquality ::= AND
                    {:
-             
+             			RESULT = "and";
                    :}
                    | OR
                    {:
-             
+             			RESULT = "or";
                    :}
                    | EQUALITY
                    {:
-             
+             			RESULT = "equality";
                    :};
 
-entailment ::= termSet IMPLICATION termSet
+entailment ::= termSet:antecedents IMPLICATION termSet:consequents
            {:
-    
+    				RESULT = AP.buildEntailment("Implication", antecedents, consequents, null);
            :}
-           | termSet OR_ENTAILMENT termSet
+           | termSet:antecedents OR_ENTAILMENT termSet:consequents
            {:
-           
+           		RESULT = AP.buildEntailment("OrEntailment", antecedents, consequents, null);
            :}
-           | termSet AND_ENTAILMENT termSet
+           | termSet:antecedents AND_ENTAILMENT termSet:consequents
            {:
-           
+           		RESULT = AP.buildEntailment("AndEntailment", antecedents, consequents, null);
            :}
-           | termSet NUMERICAL_ENTAILMENT termSet
+           | termSet:antecedents NUMERICAL_ENTAILMENT:ne termSet:consequents
            {:
-           
+           		RESULT = AP.buildEntailment("NumericalEntailment", antecedents, consequents, ne.substring(0,ne.length()-2));
            :};
 		
-pTermSet ::= termSet
+pTermSet ::= termSet:ts
          {:
-    
+    			ArrayList<Node> out = new ArrayList<Node>();
+			for (int i = 0; i < ts.size(); i++) {
+				ArrayList<Node> temp = AP.match(ts.get(i));
+				for (int j = 0; j < temp.size(); j++) {
+					out.add(temp.get(j));
+				}
+			}
+			RESULT = out;
          :};		
 
-termSet ::=	prefixedTerm
+termSet ::=	prefixedTerm:pt
 		{:
-			
+			ArrayList<Node> temp = new ArrayList<Node>();
+			temp.add(pt);
+			RESULT = temp;
 		:}
-		| OPEN_CURLY termSequence CLOSE_CURLY
+		| OPEN_CURLY termSequence:ts CLOSE_CURLY
 		{:
-			
+			RESULT = ts;
 		:};
 		
-termSequence ::= prefixedTerm prefixedTerms
+termSequence ::= prefixedTerm:pt prefixedTerms:pts
              {:
-             
+             	ArrayList<Node> out = new ArrayList<Node>();
+             	out.add(pt);
+				for (int i = 0; i < pts.size(); i++) {
+					out.add(pts.get(i));				
+				}
+				RESULT = out;
              :};
 	     	
-prefixedTerms ::= COMMA prefixedTerm prefixedTerms
+prefixedTerms ::= COMMA prefixedTerm:pt prefixedTerms:pts
 			  {:
-			
+					ArrayList<Node> out = new ArrayList<Node>();
+             		out.add(pt);
+					for (int i = 0; i < pts.size(); i++) {
+						out.add(pts.get(i));				
+					}
+					RESULT = out;
 			  :}
 			  | 
 			  {:
-			
+					ArrayList<Node> out = new ArrayList<Node>();
+					RESULT = out;
 		      :};
 		     
-prefixedTerm ::= negatedTerm
+prefixedTerm ::= negatedTerm:t
 			 {:
-			
+				RESULT = t;
 			 :}
-			 | andorTerm
+			 | andorTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | setTerm
+		     | setTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | threshTerm
+		     | threshTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | allTerm
+		     | ifdoTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | atomicTerm
+		     | whendoTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | ifdoTerm
+		     | wheneverdoTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | whendoTerm
+		     | actplanTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | wheneverdoTerm
+		     | effectTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | actplanTerm
+		     | goalplanTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | effectTerm
+		     | preconditionTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | goalplanTerm
+		     | allTerm:t
 			 {:
-			
+				RESULT = t;
 		     :}
-		     | preconditionTerm
+		     | atomicTerm:t
 			 {:
-			
+				RESULT = t;
 		     :};
 		     
-negatedTerm ::= NOT atomicTerm
+negatedTerm ::= NOT atomicTerm:node
 		    {:
-			
+				RESULT = AP.buildNegatedTerm(node);
 			:};
 			
-andorTerm ::= ANDOR OPEN_PARAN INT_LIT COMMA INT_LIT CLOSE_PARAN termSet
+andorTerm ::= ANDOR OPEN_PARAN INT_LIT:i COMMA INT_LIT:j CLOSE_PARAN termSet:arguments
 		  {:
-			
+				RESULT = AP.buildAndorTerm(i, j, arguments);
 		  :};
 	
-setTerm ::= AND termSet
+setTerm ::= AND termSet:arguments
         {:
-             
+             RESULT = AP.buildSetTerm("and", arguments);
         :}
-        | OR termSet
+        | OR termSet:arguments
         {:
-             
+             RESULT = AP.buildSetTerm("or", arguments);
         :}
-        | NAND termSet
+        | NAND termSet:arguments
         {:
-             
+             RESULT = AP.buildSetTerm("nand", arguments);
         :}
-        | NOR termSet
+        | NOR termSet:arguments
         {:
-             
+             RESULT = AP.buildSetTerm("nor", arguments);
         :}
-        | XOR termSet
+        | XOR termSet:arguments
         {:
-             
+             RESULT = AP.buildSetTerm("xor", arguments);
         :}
-        | IFF termSet
+        | IFF termSet:arguments
         {:
-             
+             RESULT = AP.buildSetTerm("iff", arguments);
         :};
 
-threshTerm ::= THRESH OPEN_PARAN INT_LIT COMMA INT_LIT CLOSE_PARAN termSet
+threshTerm ::= THRESH OPEN_PARAN INT_LIT:thresh COMMA INT_LIT:threshmax CLOSE_PARAN termSet:arguments
            {:
-             
+             	RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
            :}
-           | THRESH OPEN_PARAN INT_LIT CLOSE_PARAN termSet
+           | THRESH OPEN_PARAN INT_LIT:thresh CLOSE_PARAN termSet:arguments
            {:
-             
+             	RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
            :};
+
+ifdoTerm ::= IFDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
+         {:
+				RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+		 :};
+		 
+whendoTerm ::= WHENDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
+           {:
+				RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+		   :};
+		   
+wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
+               {:
+					RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
+		       :};
+		   
+actplanTerm ::= ACTPLAN OPEN_PARAN atomicTerm:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
+            {:
+				RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+		    :};
+		       
+effectTerm ::= EFFECT OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
+           {:
+				RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+	       :};
+		       
+goalplanTerm ::= GOALPLAN OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
+             {:
+				RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+		     :};		     
+
+preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
+                 {:
+					RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
+		         :};
 
 allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN
 		{:
@@ -662,41 +703,6 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CO
              {:
              
              :};
-
-ifdoTerm ::= IFDO OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
-         {:
-			
-		 :};
-		 
-whendoTerm ::= WHENDO OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
-           {:
-			
-		   :};
-		   
-wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
-               {:
-			
-		       :};
-		   
-actplanTerm ::= ACTPLAN OPEN_PARAN atomicTerm COMMA atomicTerm CLOSE_PARAN
-            {:
-			
-		    :};
-		       
-effectTerm ::= EFFECT OPEN_PARAN atomicTerm COMMA wff CLOSE_PARAN
-           {:
-			
-	       :};
-		       
-goalplanTerm ::= GOALPLAN OPEN_PARAN wff COMMA atomicTerm CLOSE_PARAN
-             {:
-			
-		     :};		     
-
-preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm COMMA wff CLOSE_PARAN
-                 {:
-			
-		         :};
 		         
 termSetSequence ::= termSet termSets
                 {:
@@ -818,53 +824,7 @@ identifiers ::= IDENTIFIER identifiers
 identifiers_list ::= OPEN_PARAN IDENTIFIER identifiers CLOSE_PARAN
                  {:
                  
-                 :};
-
-demoFirstOptionalOptionSet ::= FILEPATH
-						  {:
-						  
-						  :}
-						  | QUESTION_MARK
-				          {:
-			
-				          :}
-				          | INT_LIT
-				          {:
-			
-				          :}
-				          |
-				          {:
-			
-				          :};
-				          
-demoSecondOptionalOptionSet ::= OPTION_T
-						  {:
-						  
-						  :}
-						  | OPTION_B
-				          {:
-			
-				          :}
-				          | OPTION_BV
-				          {:
-			
-				          :}
-				           | OPTION_A
-				          {:
-			
-				          :}
-				           | OPTION_AV
-				          {:
-			
-				          :}
-				           | OPTION_N
-				          {:
-			
-				          :}
-				          |
-				          {:
-			
-				          :};					          	
+                 :};			          	
 						
 path ::=	 BANGPATH
      {:
