@@ -6,6 +6,7 @@ import java_cup.runtime.*;
 import java.util.ArrayList;
 
 import sneps.network.Node;
+import sneps.network.Network;
 import sneps.network.paths.Path;
 
 
@@ -98,10 +99,7 @@ terminal ACTIVATE,
          IRREFLEXIVE_RESTRICT,
          DOMAIN_RESTRICT,
          RANGE_RESTRICT,
-         FUNIT,
-         BUNIT,
-         CFRESFUNIT,
-         CFRESBUNIT,
+         CFRES,
          BANGPATH,
          EMPTYPATH;
 
@@ -121,13 +119,15 @@ nonterminal String command,
                    terminalPunctuation,
                    optionalDot,
                    optionalTerminalPunctuation,
-                   identifiers,
-                   identifiers_list,
                    andOrEquality,
                    wffName,
                    optionalIdentifier;
                    
-nonterminal Path path;
+nonterminal ArrayList<String>  identifiers,
+                               identifiers_list;
+                   
+nonterminal Path path,
+                 snepsPath;
 nonterminal ArrayList<Path> paths;
                                
 nonterminal Node wff,
@@ -257,7 +257,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DEFINE_PATH IDENTIFIER path optionalDot
+				| DEFINE_PATH IDENTIFIER snepsPath optionalDot
 				{: 
 
 				:}
@@ -677,7 +677,11 @@ atomicTerm ::= wffName
            {:
            
            :}
-           | snepslogSymbol OPEN_PARAN termSetSequence CLOSE_PARAN
+           | IDENTIFIER OPEN_PARAN termSetSequence CLOSE_PARAN
+           {:
+           
+           :}
+           | wffName OPEN_PARAN termSetSequence CLOSE_PARAN
            {:
            
            :}
@@ -704,200 +708,215 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CO
              
              :};
 		         
-termSetSequence ::= termSet termSets
+termSetSequence ::= termSet:ts termSets:tss
                 {:
-			
+					ArrayList<ArrayList<Node>> out = new ArrayList<ArrayList<Node>>();
+             		out.add(ts);
+					for (int i = 0; i < tss.size(); i++) {
+						out.add(tss.get(i));				
+					}
+					RESULT = out;
 		        :};
 
-termSets ::= COMMA termSet termSets
+termSets ::= COMMA termSet:ts termSets:tss
 	     {:
-			
+			tss.add(ts);
+			RESULT = tss;
 	     :}
 	     | 
 		 {:
-			
+			RESULT = new ArrayList<ArrayList<Node>>();
 		 :};
 		 
-symbolSequence ::= snepslogSymbol snepslogSymbols
+symbolSequence ::= snepslogSymbol:ss snepslogSymbols:sss
                {:
-			
+					ArrayList<Node> out = new ArrayList<Node>();
+             		out.add(ss);
+					for (int i = 0; i < sss.size(); i++) {
+						out.add(sss.get(i));				
+					}
+					RESULT = out;
 		       :};
 
-snepslogSymbols ::= COMMA snepslogSymbol snepslogSymbols
+snepslogSymbols ::= COMMA snepslogSymbol:ss snepslogSymbols:sss
 	            {:
-			
+	            		sss.add(ss);
+					RESULT = sss;
 	            :}
 	            | 
 		        {:
-			
+					RESULT = new ArrayList<Node>();
 		        :};
 
-wffName ::= WFF INT_LIT 
+wffName ::= WFF INT_LIT:il
 	    {:
-			
+			RESULT = "wff"+il;
 	    :};
 	    
-qvar ::= QUESTION_MARK snepslogSymbol
+qvar ::= QUESTION_MARK snepslogSymbol:ss
 	 {:
-			
+		RESULT = ss;
 	 :};
 
-snepslogSymbol ::= wffName
+snepslogSymbol ::= wffName:wn
                {:
-               
+               		RESULT = Network.buildVariableNode();
                :}
                | IDENTIFIER
                {:
-               
+               		RESULT = Network.buildVariableNode();
                :};
 
 terminalPunctuation ::= DOT
                     {:
-           
+           				RESULT = ".";
                     :}
                     | BANG
                     {:
-           
+                     	RESULT = "!";
                     :}
                     | QUESTION_MARK QUESTION_MARK
                     {:
-           
+           				RESULT = "??";
                     :}
                     | QUESTION_MARK
                     {:
-           
+           				RESULT = "?";
                     :}
-                    | QUESTION_MARK OPEN_PARAN INT_LIT CLOSE_PARAN
+                    | QUESTION_MARK OPEN_PARAN INT_LIT:il CLOSE_PARAN
                     {:
-           
+           				RESULT = "ONE"+il;
                     :}
-                    | QUESTION_MARK OPEN_PARAN INT_LIT INT_LIT CLOSE_PARAN
+                    | QUESTION_MARK OPEN_PARAN INT_LIT:il1 INT_LIT:il2 CLOSE_PARAN
                     {:
-           
+           				RESULT = "TWO"+il1+","+il2;
                     :};
 							
 optionalDot ::= DOT
 			{:
-			
+				RESULT = ".";
 			:}
 			| 
 			{:
-			
+				RESULT = null;
 			:};	
 
-optionalIdentifier ::= IDENTIFIER
+optionalIdentifier ::= IDENTIFIER:id
 			       {:
-			       
+			       		RESULT = id;
 			       :}
 			       |
 			       {:
-			       
+			       		RESULT = null;
 			       :};
 			
-optionalTerminalPunctuation ::= terminalPunctuation
+optionalTerminalPunctuation ::= terminalPunctuation:tp
 							{:
-			
+								RESULT = tp;
 							:}
 							| 
 							{:
-			
+								RESULT = null;
 							:};					
 							
-optionalPTermSet ::=	 pTermSet
+optionalPTermSet ::=	 pTermSet:pts
 				 {:
-			
+					RESULT = pts;
 				 :}
 				 | 
 				 {:
-			
+					RESULT = null;
 				 :};		
 
-identifiers ::= IDENTIFIER identifiers
+identifiers ::= IDENTIFIER:id identifiers:ids
             {:
-            
+            		ids.add(id);
+            		RESULT = ids;
             :}
             |
             {:
-            
+				RESULT = new ArrayList<String>();
             :};
 
-identifiers_list ::= OPEN_PARAN IDENTIFIER identifiers CLOSE_PARAN
+identifiers_list ::= OPEN_PARAN IDENTIFIER:id identifiers:ids CLOSE_PARAN
                  {:
-                 
+                 	ArrayList<String> out = new ArrayList<String>();
+             		out.add(id);
+					for (int i = 0; i < ids.size(); i++) {
+						out.add(ids.get(i));				
+					}
+					RESULT = out;
                  :};			          	
-						
-path ::=	 BANGPATH
+
+path ::= snepsPath
+     {:
+     
+     :}
+     | BANGPATH
      {:
      
      :}
      | EMPTYPATH
-	 {:
+     {:
+     
+     :};
+						
+snepsPath ::= IDENTIFIER
+	      {:
 			
-     :}
-     | FUNIT OPEN_PARAN IDENTIFIER CLOSE_PARAN
-	 {:
+          :}
+	      | CFRES OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN
+        	  {:
 			
-     :}
-     | BUNIT OPEN_PARAN IDENTIFIER CLOSE_PARAN
-	 {:
+	      :}
+     	  | KPLUS OPEN_PARAN path CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | CFRESFUNIT OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN
-	 {:
+	      :}
+	      | KSTAR OPEN_PARAN path CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | CFRESBUNIT OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN
-	 {:
+	      :}
+	      | AND OPEN_PARAN paths CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | KPLUS OPEN_PARAN path CLOSE_PARAN
-	 {:
+	      :}
+	      | AND OPEN_PARAN CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | KSTAR OPEN_PARAN path CLOSE_PARAN
-	 {:
+	      :}
+	      | OR OPEN_PARAN paths CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | AND OPEN_PARAN paths CLOSE_PARAN
-	 {:
+     	 :}
+	      | OR OPEN_PARAN CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | AND OPEN_PARAN CLOSE_PARAN
-	 {:
+	      :}
+	      | COMPOSE OPEN_PARAN paths CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | OR OPEN_PARAN paths CLOSE_PARAN
-	 {:
+	      :}
+	      | COMPOSE OPEN_PARAN CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | OR OPEN_PARAN CLOSE_PARAN
-	 {:
+	      :}
+	      | CONVERSE OPEN_PARAN path CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | COMPOSE OPEN_PARAN paths CLOSE_PARAN
-	 {:
+	      :}
+	      | IRREFLEXIVE_RESTRICT OPEN_PARAN path CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | COMPOSE OPEN_PARAN CLOSE_PARAN
-	 {:
+	      :}
+	      | DOMAIN_RESTRICT OPEN_PARAN path OPEN_PARAN wff CLOSE_PARAN COMMA path CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | CONVERSE OPEN_PARAN path CLOSE_PARAN
-	 {:
+	      :}
+	      | RANGE_RESTRICT OPEN_PARAN path COMMA path OPEN_PARAN wff CLOSE_PARAN CLOSE_PARAN
+	      {:
 			
-	 :}
-	 | IRREFLEXIVE_RESTRICT OPEN_PARAN path CLOSE_PARAN
-	 {:
-			
-	 :}
-	 | DOMAIN_RESTRICT OPEN_PARAN path OPEN_PARAN wff CLOSE_PARAN COMMA path CLOSE_PARAN
-	 {:
-			
-	 :}
-	 | RANGE_RESTRICT OPEN_PARAN path COMMA path OPEN_PARAN wff CLOSE_PARAN CLOSE_PARAN
-	 {:
-			
-	 :};
+	      :};
 	 
 paths ::= path COMMA paths
       {:

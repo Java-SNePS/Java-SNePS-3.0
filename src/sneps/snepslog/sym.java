@@ -12,24 +12,22 @@ public class sym {
   public static final int CLEAR_INFER = 14;
   public static final int UNDEFINE_PATH = 42;
   public static final int UNTRACE = 44;
-  public static final int IDENTIFIER = 94;
+  public static final int IDENTIFIER = 91;
   public static final int NORMAL = 32;
   public static final int AND_ENTAILMENT = 51;
   public static final int CLOSE_PARAN = 65;
   public static final int DEFINE_RELATION = 20;
   public static final int TRACE = 41;
-  public static final int BANGPATH = 89;
-  public static final int BUNIT = 86;
+  public static final int BANGPATH = 86;
   public static final int LIST_CONTEXTS = 29;
   public static final int ASKWH = 8;
   public static final int ASK = 6;
-  public static final int INT_LIT = 93;
-  public static final int STRING_LIT = 92;
-  public static final int NUMERICAL_ENTAILMENT = 95;
+  public static final int INT_LIT = 90;
+  public static final int STRING_LIT = 89;
+  public static final int NUMERICAL_ENTAILMENT = 92;
   public static final int MANUAL = 13;
   public static final int CLOSE_CURLY = 67;
   public static final int BELIEFS_ABOUT = 10;
-  public static final int CFRESBUNIT = 88;
   public static final int DEFINE_SEMANTIC = 19;
   public static final int COMMA = 62;
   public static final int ADD_TO_CONTEXT = 5;
@@ -43,7 +41,6 @@ public class sym {
   public static final int IFDO = 71;
   public static final int EXPAND = 21;
   public static final int NOT = 52;
-  public static final int FUNIT = 85;
   public static final int NOR = 57;
   public static final int OR_ENTAILMENT = 50;
   public static final int PARSING = 47;
@@ -51,15 +48,14 @@ public class sym {
   public static final int IMPLICATION = 49;
   public static final int DOMAIN_RESTRICT = 83;
   public static final int EQUALITY = 48;
-  public static final int EMPTYPATH = 90;
+  public static final int EMPTYPATH = 87;
   public static final int ANDOR = 53;
   public static final int WHENEVERDO = 73;
-  public static final int CFRESFUNIT = 87;
   public static final int KSTAR = 79;
   public static final int EXPERT = 27;
   public static final int REMOVE_FROM_CONTEXT = 34;
   public static final int ACTING = 46;
-  public static final int FILEPATH = 91;
+  public static final int FILEPATH = 88;
   public static final int CONVERSE = 81;
   public static final int LIST_TERMS = 30;
   public static final int OPEN_PARAN = 64;
@@ -103,6 +99,7 @@ public class sym {
   public static final int AUTO = 12;
   public static final int NAND = 56;
   public static final int XOR = 58;
+  public static final int CFRES = 85;
   public static final int EFFECT = 75;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -190,10 +187,7 @@ public class sym {
   "IRREFLEXIVE_RESTRICT",
   "DOMAIN_RESTRICT",
   "RANGE_RESTRICT",
-  "FUNIT",
-  "BUNIT",
-  "CFRESFUNIT",
-  "CFRESBUNIT",
+  "CFRES",
   "BANGPATH",
   "EMPTYPATH",
   "FILEPATH",
