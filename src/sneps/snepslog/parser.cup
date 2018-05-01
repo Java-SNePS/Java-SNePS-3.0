@@ -275,8 +275,12 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				:}
 				| DEFINE_PATH IDENTIFIER:id snepsPath:sp optionalDot
 				{: 
-					Network.definePath(Network.getRelation(id),sp);
-					RESULT = "";
+					if(AP.getSnepslogMode()==3){
+						Network.definePath(Network.getRelation(id),sp);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
 				| DEFINE_SEMANTIC IDENTIFIER
 				{: 
@@ -398,13 +402,19 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| TRACE snepslogFunction optionalDot
+				| TRACE snepslogFunction:sf optionalDot
 				{: 
-
+					AP.activateTracing(sf);
+					RESULT = "";
 				:}
-				| UNDEFINE_PATH IDENTIFIER optionalDot
+				| UNDEFINE_PATH IDENTIFIER:id optionalDot
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						Network.undefinePath(Network.getRelation(id));
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
 				| UNLABELED optionalDot
 				{: 
@@ -415,22 +425,23 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 						RESULT = "unlabeled mode is already in use.";
 					}
 				:}
-				| UNTRACE snepslogFunction optionalDot
+				| UNTRACE snepslogFunction:sf optionalDot
 				{: 
-
+					AP.deactivateTracing(sf);
+					RESULT = "";
 				:};	
 
 snepslogFunction ::=	 INFERENCE
 		     	{:
-			
+					RESULT = "inference";
 		     	:}
 		      	| ACTING
 		     	{:
-			
+					RESULT = "acting";
 		     	:}
 		     	| PARSING
 		     	{:
-			
+					RESULT = "parsing";
 		     	:};
 				
 wff ::= infixedTerm:it

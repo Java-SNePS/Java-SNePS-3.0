@@ -1279,8 +1279,12 @@ class CUP$parser$actions {
 		int spright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Path sp = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					Network.definePath(Network.getRelation(id),sp);
-					RESULT = "";
+					if(AP.getSnepslogMode()==3){
+						Network.definePath(Network.getRelation(id),sp);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1571,8 +1575,12 @@ class CUP$parser$actions {
           case 46: // snepslogCommand ::= TRACE snepslogFunction optionalDot 
             {
               String RESULT =null;
+		int sfleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int sfright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String sf = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					AP.activateTracing(sf);
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1582,8 +1590,16 @@ class CUP$parser$actions {
           case 47: // snepslogCommand ::= UNDEFINE_PATH IDENTIFIER optionalDot 
             {
               String RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					if(AP.getSnepslogMode()==3){
+						Network.undefinePath(Network.getRelation(id));
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1609,8 +1625,12 @@ class CUP$parser$actions {
           case 49: // snepslogCommand ::= UNTRACE snepslogFunction optionalDot 
             {
               String RESULT =null;
+		int sfleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int sfright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String sf = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					AP.deactivateTracing(sf);
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1621,7 +1641,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		
-			
+					RESULT = "inference";
 		     	
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogFunction",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1632,7 +1652,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		
-			
+					RESULT = "acting";
 		     	
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogFunction",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1643,7 +1663,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		
-			
+					RESULT = "parsing";
 		     	
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogFunction",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
