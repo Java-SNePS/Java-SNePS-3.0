@@ -276,6 +276,7 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				| DEFINE_PATH IDENTIFIER:id snepsPath:sp optionalDot
 				{: 
 					Network.definePath(Network.getRelation(id),sp);
+					RESULT = "";
 				:}
 				| DEFINE_SEMANTIC IDENTIFIER
 				{: 
