@@ -62,4 +62,8 @@ public class SIndex extends RuisHandler {
 		return tempRui;
 	}	
 	
+	public int getSize() {
+		return map.size();
+	}
+	
 }

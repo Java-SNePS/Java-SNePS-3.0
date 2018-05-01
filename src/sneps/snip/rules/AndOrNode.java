@@ -73,8 +73,10 @@ public class AndOrNode extends RuleNode {
 			nodesSentReports.add(fn.getNode().getId());
 		}
 		
-		Set<Support> originSupports = ((PropositionNode) this.getSemantic()).getOriginSupport();
-		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
+		Support originSupports = this.getBasicSupport();
+		HashSet<Support> sup = new HashSet<Support>();
+		sup.add(originSupports);
+		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(sup), sign,contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
 			if(!nodesSentReports.contains(outChannel.getRequester().getId()))

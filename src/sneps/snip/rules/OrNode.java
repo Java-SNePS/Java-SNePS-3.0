@@ -1,5 +1,6 @@
 package sneps.snip.rules;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import sneps.network.Node;
@@ -34,8 +35,10 @@ public class OrNode extends RuleNode {
 		
 		if(report.isPositive()) {
 			
-			Set<Support> originSupports = ((Proposition) this.getSemantic()).getOriginSupport();
-			Report reply = new Report(report.getSubstitutions(), Support.combine(originSupports,report.getSupports()), true, report.getContextName());
+			Support originSupports = this.getBasicSupport();
+			HashSet<Support> sup = new HashSet<Support>();
+			sup.add(originSupports);
+			Report reply = new Report(report.getSubstitutions(), sup, true, report.getContextName());
 			
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(reply);

@@ -73,8 +73,10 @@ public class ThreshNode extends RuleNode {
 			nodesSentReports.add(fn.getNode().getId());
 		}
 		
-		Support originSupports = ((PropositionNode) this).getSemantic().getBasicSupport();
-		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
+		Support originSupports = this.getBasicSupport();
+		HashSet<Support> sup = new HashSet<Support>();
+		sup.add(originSupports);
+		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(sup), sign,contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
 			if(!nodesSentReports.contains(outChannel.getRequester().getId()))
