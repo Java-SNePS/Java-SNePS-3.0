@@ -115,16 +115,13 @@ CONVERSE=(converse)
 IRREFLEXIVE_RESTRICT=(irreflexive-restrict)
 DOMAIN_RESTRICT=(domain-restrict)
 RANGE_RESTRICT=(range-restrict)
-FUNIT=(forward-unit)
-BUNIT=(backward-unit)
-CFRESFUNIT=(caseframe-restrict-forward-unit)
-CFRESBUNIT=(caseframe-restrict-backward-unit)
+CFRES=(caseframe-restrict)
 BANGPATH=(bang)
 EMPTYPATH=(empty)
 EXPAND=(expand)
 REDUCE=(reduce)
 NONE=(none)
-IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
+IDENTIFIER=([A-Za-z][A-Za-z0-9_"-"]*)
 
 %% 
 <YYINITIAL> {COMMENT} {
@@ -383,17 +380,8 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_]*)
 <YYINITIAL> {RANGE_RESTRICT} { 
 	return (new Symbol(sym.RANGE_RESTRICT,yytext()));
 }
-<YYINITIAL> {FUNIT} { 
-	return (new Symbol(sym.FUNIT,yytext()));
-}
-<YYINITIAL> {BUNIT} { 
-	return (new Symbol(sym.BUNIT,yytext()));
-}
-<YYINITIAL> {CFRESFUNIT} { 
-	return (new Symbol(sym.CFRESFUNIT,yytext()));
-}
-<YYINITIAL> {CFRESBUNIT} { 
-	return (new Symbol(sym.CFRESBUNIT,yytext()));
+<YYINITIAL> {CFRES} { 
+	return (new Symbol(sym.CFRES,yytext()));
 }
 <YYINITIAL> {BANGPATH} { 
 	return (new Symbol(sym.BANGPATH,yytext()));
