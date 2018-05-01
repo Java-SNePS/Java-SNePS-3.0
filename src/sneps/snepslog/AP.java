@@ -478,15 +478,6 @@ public class AP {
 	}
 
 	/**
-	 * Docs goes here
-	 */
-	protected static ArrayList<Node> match(Node node) {
-		// TODO A wrapper for match
-		ArrayList<Node> output = new ArrayList<Node>();
-		return output;
-	}
-
-	/**
 	 * This method is used to execute a snepslog command.
 	 * 
 	 * @param command
@@ -528,4 +519,43 @@ public class AP {
 		wffNameCounter++;
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> match(Node node) {
+		// TODO A wrapper for match
+		ArrayList<Node> output = new ArrayList<Node>();
+		return output;
+	}
+	
+	/**
+	 * Docs goes here
+	 */
+	protected static void activateTracing(String type) {
+		// TODO A wrapper for setting tacing variables to true
+		switch(type) {
+		case"inference":
+			break;
+		case"acting":
+			break;
+		case"parsing":
+			break;
+		}
+	}
+	
+	/**
+	 * Docs goes here
+	 */
+	protected static void deactivateTracing(String type) {
+		// TODO A wrapper for setting tracing variables to false
+		switch(type) {
+		case"inference":
+			break;
+		case"acting":
+			break;
+		case"parsing":
+			break;
+		}
+	}
+	
 }
