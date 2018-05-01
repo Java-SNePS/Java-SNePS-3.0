@@ -8,9 +8,25 @@ package sneps.snepslog;
 import java.io.*;
 import java_cup.runtime.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import sneps.network.Node;
 import sneps.network.Network;
 import sneps.network.paths.Path;
+import sneps.network.paths.BangPath;
+import sneps.network.paths.EmptyPath;
+import sneps.network.paths.BUnitPath;
+import sneps.network.paths.FUnitPath;
+import sneps.network.paths.CFResBUnitPath;
+import sneps.network.paths.CFResFUnitPath;
+import sneps.network.paths.AndPath;
+import sneps.network.paths.ComposePath;
+import sneps.network.paths.ConversePath;
+import sneps.network.paths.DomainRestrictPath;
+import sneps.network.paths.IrreflexiveRestrictPath;
+import sneps.network.paths.KPlusPath;
+import sneps.network.paths.KStarPath;
+import sneps.network.paths.OrPath;
+import sneps.network.paths.RangeRestrictPath;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1256,8 +1272,14 @@ class CUP$parser$actions {
           case 22: // snepslogCommand ::= DEFINE_PATH IDENTIFIER snepsPath optionalDot 
             {
               String RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int spleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int spright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Path sp = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					Network.definePath(Network.getRelation(id),sp);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2902,8 +2924,11 @@ class CUP$parser$actions {
           case 142: // path ::= snepsPath 
             {
               Path RESULT =null;
+		int spleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int spright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Path sp = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-     
+     	RESULT = sp;
      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("path",13, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2914,7 +2939,7 @@ class CUP$parser$actions {
             {
               Path RESULT =null;
 		
-     
+     	RESULT = new BangPath();
      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("path",13, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2925,7 +2950,7 @@ class CUP$parser$actions {
             {
               Path RESULT =null;
 		
-     
+     	RESULT = new EmptyPath();
      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("path",13, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2935,8 +2960,15 @@ class CUP$parser$actions {
           case 145: // snepsPath ::= IDENTIFIER 
             {
               Path RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-			
+				if(id.charAt(id.length()-1)=='-'){
+					RESULT = new BUnitPath(Network.getRelation(id));
+				}else{
+					RESULT = new FUnitPath(Network.getRelation(id));
+				}
           
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2946,8 +2978,18 @@ class CUP$parser$actions {
           case 146: // snepsPath ::= CFRES OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN 
             {
               Path RESULT =null;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				if(id1.charAt(id1.length()-1)=='-'){
+					RESULT = new CFResBUnitPath(Network.getRelation(id1), Network.getCaseFrame(id2));
+				}else{
+					RESULT = new CFResFUnitPath(Network.getRelation(id1), Network.getCaseFrame(id2));
+				}
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2957,8 +2999,11 @@ class CUP$parser$actions {
           case 147: // snepsPath ::= KPLUS OPEN_PARAN path CLOSE_PARAN 
             {
               Path RESULT =null;
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Path p = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new KPlusPath(p);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2968,8 +3013,11 @@ class CUP$parser$actions {
           case 148: // snepsPath ::= KSTAR OPEN_PARAN path CLOSE_PARAN 
             {
               Path RESULT =null;
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Path p = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new KStarPath(p);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2979,8 +3027,11 @@ class CUP$parser$actions {
           case 149: // snepsPath ::= AND OPEN_PARAN paths CLOSE_PARAN 
             {
               Path RESULT =null;
+		int psleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int psright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		LinkedList<Path> ps = (LinkedList<Path>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new AndPath(ps);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2991,7 +3042,7 @@ class CUP$parser$actions {
             {
               Path RESULT =null;
 		
-			
+				RESULT = new AndPath(new LinkedList<Path>());
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3001,8 +3052,11 @@ class CUP$parser$actions {
           case 151: // snepsPath ::= OR OPEN_PARAN paths CLOSE_PARAN 
             {
               Path RESULT =null;
+		int psleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int psright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		LinkedList<Path> ps = (LinkedList<Path>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new OrPath(ps);
      	 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3013,7 +3067,7 @@ class CUP$parser$actions {
             {
               Path RESULT =null;
 		
-			
+				RESULT = new OrPath(new LinkedList<Path>());
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3023,8 +3077,11 @@ class CUP$parser$actions {
           case 153: // snepsPath ::= COMPOSE OPEN_PARAN paths CLOSE_PARAN 
             {
               Path RESULT =null;
+		int psleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int psright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		LinkedList<Path> ps = (LinkedList<Path>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new ComposePath(ps);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3035,7 +3092,7 @@ class CUP$parser$actions {
             {
               Path RESULT =null;
 		
-			
+				RESULT = new ComposePath(new LinkedList<Path>());
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3045,8 +3102,11 @@ class CUP$parser$actions {
           case 155: // snepsPath ::= CONVERSE OPEN_PARAN path CLOSE_PARAN 
             {
               Path RESULT =null;
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Path p = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new ConversePath(p);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3056,8 +3116,11 @@ class CUP$parser$actions {
           case 156: // snepsPath ::= IRREFLEXIVE_RESTRICT OPEN_PARAN path CLOSE_PARAN 
             {
               Path RESULT =null;
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Path p = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new IrreflexiveRestrictPath(p);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3067,8 +3130,17 @@ class CUP$parser$actions {
           case 157: // snepsPath ::= DOMAIN_RESTRICT OPEN_PARAN path OPEN_PARAN wff CLOSE_PARAN COMMA path CLOSE_PARAN 
             {
               Path RESULT =null;
+		int p1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).left;
+		int p1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).right;
+		Path p1 = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int p2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int p2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Path p2 = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+				RESULT = new DomainRestrictPath(p1,w,p2);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-8)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3078,8 +3150,17 @@ class CUP$parser$actions {
           case 158: // snepsPath ::= RANGE_RESTRICT OPEN_PARAN path COMMA path OPEN_PARAN wff CLOSE_PARAN CLOSE_PARAN 
             {
               Path RESULT =null;
+		int p1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).left;
+		int p1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).right;
+		Path p1 = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value;
+		int p2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int p2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		Path p2 = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		
-			
+				RESULT = new RangeRestrictPath(p1,p2,w);
 	      
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepsPath",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-8)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3088,9 +3169,16 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 159: // paths ::= path COMMA paths 
             {
-              ArrayList<Path> RESULT =null;
+              LinkedList<Path> RESULT =null;
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Path p = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int psleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int psright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		LinkedList<Path> ps = (LinkedList<Path>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-      
+      		ps.add(p);
+      		RESULT = ps;
       
               CUP$parser$result = parser.getSymbolFactory().newSymbol("paths",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3099,9 +3187,14 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 160: // paths ::= path 
             {
-              ArrayList<Path> RESULT =null;
+              LinkedList<Path> RESULT =null;
+		int pleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int pright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Path p = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-      
+      		LinkedList<Path> out = new LinkedList<Path>();
+      		out.add(p);
+      		RESULT = out;
       
               CUP$parser$result = parser.getSymbolFactory().newSymbol("paths",15, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

@@ -4,10 +4,26 @@ import java.io.*;
 import java_cup.runtime.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import sneps.network.Node;
 import sneps.network.Network;
 import sneps.network.paths.Path;
+import sneps.network.paths.BangPath;
+import sneps.network.paths.EmptyPath;
+import sneps.network.paths.BUnitPath;
+import sneps.network.paths.FUnitPath;
+import sneps.network.paths.CFResBUnitPath;
+import sneps.network.paths.CFResFUnitPath;
+import sneps.network.paths.AndPath;
+import sneps.network.paths.ComposePath;
+import sneps.network.paths.ConversePath;
+import sneps.network.paths.DomainRestrictPath;
+import sneps.network.paths.IrreflexiveRestrictPath;
+import sneps.network.paths.KPlusPath;
+import sneps.network.paths.KStarPath;
+import sneps.network.paths.OrPath;
+import sneps.network.paths.RangeRestrictPath;
 
 
 parser code {:
@@ -128,7 +144,7 @@ nonterminal ArrayList<String>  identifiers,
                    
 nonterminal Path path,
                  snepsPath;
-nonterminal ArrayList<Path> paths;
+nonterminal LinkedList<Path> paths;
                                
 nonterminal Node wff,
                  infixedTerm,
@@ -257,9 +273,9 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DEFINE_PATH IDENTIFIER snepsPath optionalDot
+				| DEFINE_PATH IDENTIFIER:id snepsPath:sp optionalDot
 				{: 
-
+					Network.definePath(Network.getRelation(id),sp);
 				:}
 				| DEFINE_SEMANTIC IDENTIFIER
 				{: 
@@ -848,82 +864,93 @@ identifiers_list ::= OPEN_PARAN IDENTIFIER:id identifiers:ids CLOSE_PARAN
 					RESULT = out;
                  :};			          	
 
-path ::= snepsPath
+path ::= snepsPath:sp
      {:
-     
+     	RESULT = sp;
      :}
      | BANGPATH
      {:
-     
+     	RESULT = new BangPath();
      :}
      | EMPTYPATH
      {:
-     
+     	RESULT = new EmptyPath();
      :};
 						
-snepsPath ::= IDENTIFIER
+snepsPath ::= IDENTIFIER:id
 	      {:
-			
+				if(id.charAt(id.length()-1)=='-'){
+					RESULT = new BUnitPath(Network.getRelation(id));
+				}else{
+					RESULT = new FUnitPath(Network.getRelation(id));
+				}
           :}
-	      | CFRES OPEN_PARAN IDENTIFIER COMMA IDENTIFIER CLOSE_PARAN
+	      | CFRES OPEN_PARAN IDENTIFIER:id1 COMMA IDENTIFIER:id2 CLOSE_PARAN
         	  {:
-			
+				if(id1.charAt(id1.length()-1)=='-'){
+					RESULT = new CFResBUnitPath(Network.getRelation(id1), Network.getCaseFrame(id2));
+				}else{
+					RESULT = new CFResFUnitPath(Network.getRelation(id1), Network.getCaseFrame(id2));
+				}
 	      :}
-     	  | KPLUS OPEN_PARAN path CLOSE_PARAN
+     	  | KPLUS OPEN_PARAN path:p CLOSE_PARAN
 	      {:
-			
+				RESULT = new KPlusPath(p);
 	      :}
-	      | KSTAR OPEN_PARAN path CLOSE_PARAN
+	      | KSTAR OPEN_PARAN path:p CLOSE_PARAN
 	      {:
-			
+				RESULT = new KStarPath(p);
 	      :}
-	      | AND OPEN_PARAN paths CLOSE_PARAN
+	      | AND OPEN_PARAN paths:ps CLOSE_PARAN
 	      {:
-			
+				RESULT = new AndPath(ps);
 	      :}
 	      | AND OPEN_PARAN CLOSE_PARAN
 	      {:
-			
+				RESULT = new AndPath(new LinkedList<Path>());
 	      :}
-	      | OR OPEN_PARAN paths CLOSE_PARAN
+	      | OR OPEN_PARAN paths:ps CLOSE_PARAN
 	      {:
-			
+				RESULT = new OrPath(ps);
      	 :}
 	      | OR OPEN_PARAN CLOSE_PARAN
 	      {:
-			
+				RESULT = new OrPath(new LinkedList<Path>());
 	      :}
-	      | COMPOSE OPEN_PARAN paths CLOSE_PARAN
+	      | COMPOSE OPEN_PARAN paths:ps CLOSE_PARAN
 	      {:
-			
+				RESULT = new ComposePath(ps);
 	      :}
 	      | COMPOSE OPEN_PARAN CLOSE_PARAN
 	      {:
-			
+				RESULT = new ComposePath(new LinkedList<Path>());
 	      :}
-	      | CONVERSE OPEN_PARAN path CLOSE_PARAN
+	      | CONVERSE OPEN_PARAN path:p CLOSE_PARAN
 	      {:
-			
+				RESULT = new ConversePath(p);
 	      :}
-	      | IRREFLEXIVE_RESTRICT OPEN_PARAN path CLOSE_PARAN
+	      | IRREFLEXIVE_RESTRICT OPEN_PARAN path:p CLOSE_PARAN
 	      {:
-			
+				RESULT = new IrreflexiveRestrictPath(p);
 	      :}
-	      | DOMAIN_RESTRICT OPEN_PARAN path OPEN_PARAN wff CLOSE_PARAN COMMA path CLOSE_PARAN
+	      | DOMAIN_RESTRICT OPEN_PARAN path:p1 OPEN_PARAN wff:w CLOSE_PARAN COMMA path:p2 CLOSE_PARAN
 	      {:
-			
+				RESULT = new DomainRestrictPath(p1,w,p2);
 	      :}
-	      | RANGE_RESTRICT OPEN_PARAN path COMMA path OPEN_PARAN wff CLOSE_PARAN CLOSE_PARAN
+	      | RANGE_RESTRICT OPEN_PARAN path:p1 COMMA path:p2 OPEN_PARAN wff:w CLOSE_PARAN CLOSE_PARAN
 	      {:
-			
+				RESULT = new RangeRestrictPath(p1,p2,w);
 	      :};
 	 
-paths ::= path COMMA paths
+paths ::= path:p COMMA paths:ps
       {:
-      
+      		ps.add(p);
+      		RESULT = ps;
       :}
-      | path
+      | path:p
       {:
-      
+      		LinkedList<Path> out = new LinkedList<Path>();
+      		out.add(p);
+      		RESULT = out;
       :};
 				 																																																																																																																																																										
