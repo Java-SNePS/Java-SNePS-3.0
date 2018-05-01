@@ -147,7 +147,7 @@ public class SnepslogTest extends TestCase {
 		   }
     }
 	
-	@Test
+/*	@Test
     public void testDefinePath() {
 		try{
 		      AP.executeSnepslogCommand("define-path isa compose(member,class)");
@@ -155,7 +155,7 @@ public class SnepslogTest extends TestCase {
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
 		   }
-    }
+    }*/
 	
 	@Test
     public void testDefineSemantic() {
