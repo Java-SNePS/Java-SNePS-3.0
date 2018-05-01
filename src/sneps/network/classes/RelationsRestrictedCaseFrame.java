@@ -23,7 +23,7 @@ import sneps.network.Network;
 public class RelationsRestrictedCaseFrame extends CaseFrame {
 	public static CaseFrame andRule, orRule, andOrRule, threshRule, numericalRule, act, act1, act2, act3, act4, act5,
 			act6, act7, act8, act9, preconditionAct, whenDo, wheneverDo, doIf, actEffect, planAct, planGoal, withSome,
-			withAll;
+			withAll, withSomeNoElse, withAllNoElse;
 
 	// /**
 	// * The name of the semantic class that represents the default semantic type
@@ -359,6 +359,20 @@ public class RelationsRestrictedCaseFrame extends CaseFrame {
 		withall.add(RCFP.doo);
 		withall.add(RCFP.elsee);
 		withAll = Network.defineCaseFrameWithConstraints("ControlAction", withall);
+
+		LinkedList<RCFP> withsomenoelse = new LinkedList<RCFP>();
+		withsome.add(RCFP.withsome);
+		withsome.add(RCFP.vars);
+		withsome.add(RCFP.suchthat);
+		withsome.add(RCFP.doo);
+		withSomeNoElse = Network.defineCaseFrameWithConstraints("ControlAction", withsomenoelse);
+
+		LinkedList<RCFP> withallnoelse = new LinkedList<RCFP>();
+		withall.add(RCFP.withall);
+		withall.add(RCFP.vars);
+		withall.add(RCFP.suchthat);
+		withall.add(RCFP.doo);
+		withAllNoElse = Network.defineCaseFrameWithConstraints("ControlAction", withallnoelse);
 
 		LinkedList<RCFP> actCF1 = new LinkedList<RCFP>();
 		actCF1.add(RCFP.action);
