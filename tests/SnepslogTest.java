@@ -327,7 +327,7 @@ public class SnepslogTest extends TestCase {
 		   }
     }
 	
-	@Test
+/*	@Test
     public void testUndefinePath() {
 		try{
 		      AP.executeSnepslogCommand("undefine-path member");
@@ -335,7 +335,7 @@ public class SnepslogTest extends TestCase {
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
 		   }
-    }
+    }*/
 	
 	@Test
     public void testUnlabeled() {
