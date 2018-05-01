@@ -42,7 +42,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
-import sneps.exceptions.CaseFrameAlreadyExistException;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
@@ -481,15 +480,11 @@ public class FXController implements Initializable {
 			}
 		}
 		
-		try {
 			Network.defineCaseFrame(semanticType, caseFrameList);
 			updateCaseFramesList();
 			updateRelationSetList();
 			cfRS.getItems().clear();
-		} catch (CaseFrameAlreadyExistException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 	}
 

@@ -35,7 +35,6 @@ import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.exceptions.CannotBuildNodeException;
-import sneps.exceptions.CaseFrameAlreadyExistException;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameMissMatchException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
@@ -370,11 +369,10 @@ public class Network implements Serializable {
 		 * @throws CaseFrameAlreadyExistException 
 		 */
 		public static RelationsRestrictedCaseFrame defineCaseFrameWithConstraints(String semanticType,
-				LinkedList<RCFP> relationSet) throws CaseFrameAlreadyExistException {
+				LinkedList<RCFP> relationSet) {
 			RelationsRestrictedCaseFrame caseFrame = new RelationsRestrictedCaseFrame(semanticType, relationSet);
 			if (caseFrames.containsKey(caseFrame.getId())) {
-				throw new CaseFrameAlreadyExistException(
-						"This case frame already exists in the network");
+				return (RelationsRestrictedCaseFrame) caseFrames.get(caseFrame.getId());
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
 				// this to avoid non perfect hashing
@@ -385,11 +383,10 @@ public class Network implements Serializable {
 		} 
 		
 		public static CaseFrame defineCaseFrame(String semanticType,
-				LinkedList<Relation> relationSet) throws CaseFrameAlreadyExistException {
+				LinkedList<Relation> relationSet) {
 			CaseFrame caseFrame = new CaseFrame(semanticType, relationSet);
 			if (caseFrames.containsKey(caseFrame.getId())) {
-				throw new CaseFrameAlreadyExistException(
-						"This case frame already exists in the network");
+				return caseFrames.get(caseFrame.getId());
 
 			} else {
 				caseFrames.put(caseFrame.getId(), caseFrame);
