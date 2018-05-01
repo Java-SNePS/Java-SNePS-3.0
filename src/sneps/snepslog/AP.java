@@ -32,6 +32,16 @@ import sneps.network.classes.Wire;
 public class AP {
 
 	/**
+	 * This is a hashtable to store the wffs where the key is the assigned wffName.
+	 */
+	private static Hashtable<String, Node> wffs;
+
+	/**
+	 * This is a counter for the wffNames.
+	 */
+	private static int wffNameCounter = 0;
+
+	/**
 	 * This is a hashtable to store the case frames used in mode 3 where the key is
 	 * the name used in creating the case frame.
 	 */
@@ -193,6 +203,7 @@ public class AP {
 			break;
 		}
 		Node infixedTermNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(infixedTermNode);
 		return infixedTermNode;
 	}
 
@@ -259,6 +270,7 @@ public class AP {
 			break;
 		}
 		Node entailmentNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(entailmentNode);
 		return entailmentNode;
 	}
 
@@ -279,6 +291,7 @@ public class AP {
 		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 		Node negatedNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(negatedNode);
 		return negatedNode;
 	}
 
@@ -306,6 +319,7 @@ public class AP {
 		wires.add(new Wire(Relation.min, Network.buildBaseNode(i, new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(andorNode);
 		return andorNode;
 	}
 
@@ -363,6 +377,7 @@ public class AP {
 			break;
 		}
 		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(setTermNode);
 		return setTermNode;
 	}
 
@@ -390,6 +405,7 @@ public class AP {
 		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, new Semantic("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
 		Node threshNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(threshNode);
 		return threshNode;
 	}
 
@@ -449,8 +465,9 @@ public class AP {
 			wires.add(new Wire(Relation.precondition, arg2));
 			break;
 		}
-		Node snereTerm = Network.buildMolecularNode(wires, caseFrame);
-		return snereTerm;
+		Node snereNode = Network.buildMolecularNode(wires, caseFrame);
+		addWff(snereNode);
+		return snereNode;
 	}
 
 	/**
@@ -490,6 +507,25 @@ public class AP {
 		is.close();
 		dis.close();
 		return output;
+	}
+
+	/**
+	 * This method is used to retrieve a wff using its wffName.
+	 * 
+	 * @param wffName
+	 *            the wffName of the to be retrieved wff.
+	 */
+	protected static Node getWffByWffName(String wffName) {
+		return wffs.get(wffName);
+	}
+
+	/**
+	 * This method is used to add a wff in the Hashtable of wffs.
+	 * 
+	 */
+	protected static void addWff(Node wff) {
+		wffs.put("wff" + wffNameCounter, wff);
+		wffNameCounter++;
 	}
 
 }
