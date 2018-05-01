@@ -215,9 +215,7 @@ public class Network implements Serializable {
 	 *            the name of the relation that will be retrieved.
 	 *
 	 * @return the relation with the specified name if it exists.
-	 * @throws RelationDoesntExistException 
-	 *
-	 * @throws CustomException
+	 * @throws RelationDoesntExistException
 	 *             if the requested relation does not exist.
 	 */
 	public static Relation getRelation(String name) throws RelationDoesntExistException  {
@@ -236,9 +234,8 @@ public class Network implements Serializable {
 	 *
 	 * @return the case frame with the specified id if it exists.
 	 *
-	 * @throws CustomException
+	 * @throws CaseFrameWithSetOfRelationsNotFoundException
 	 *             if the requested frame does not exist.
-	 * @throws CaseFrameWithSetOfRelationsNotFoundException 
 	 */
 	public static CaseFrame getCaseFrame(String id) throws CaseFrameWithSetOfRelationsNotFoundException {
 		if (caseFrames.containsKey(id)) {
@@ -256,9 +253,8 @@ public class Network implements Serializable {
 	 *
 	 * @return the node with the specified name if it exists.
 	 *
-	 * @throws CustomException
+	 * @throws NodeNotFoundInNetworkException
 	 *             if the requested node does not exist.
-	 * @throws NodeNotFoundInNetworkException 
 	 */
 	public static Node getNode(String identifier) throws NodeNotFoundInNetworkException {
 		if (nodes.containsKey(identifier)) {
@@ -326,9 +322,7 @@ public class Network implements Serializable {
 	 *
 	 * @param name
 	 *            the name of the relation that will be deleted.
-	 * @throws CaseFrameCannotBeRemovedException 
-	 *
-	 * @throws CustomException
+	 * @throws CaseFrameCannotBeRemovedException
 	 *             if the relation cannot be removed because one of the case
 	 *             frames that contains it cannot be removed.
 	 */
@@ -363,10 +357,6 @@ public class Network implements Serializable {
 		 *
 		 * @return the newly created case frame.
 		 *
-		 * @throws CustomException
-		 *             if another case frame with the same given relations (same id)
-		 *             is already defined in the network.
-		 * @throws CaseFrameAlreadyExistException 
 		 */
 		public static RelationsRestrictedCaseFrame defineCaseFrameWithConstraints(String semanticType,
 				LinkedList<RCFP> relationSet) {
@@ -403,11 +393,10 @@ public class Network implements Serializable {
 	 * @param id
 	 *            the ID of the case frame that will be removed.
 	 *
-	 * @throws CustomException
+	 * @throws CaseFrameCannotBeRemovedException
 	 *             if the specified case frame cannot be removed because there
 	 *             are nodes implementing this case frame and they need to be
 	 *             removed first.
-	 * @throws CaseFrameCannotBeRemovedException 
 	 */
 	public static void undefineCaseFrame(String id) throws CaseFrameCannotBeRemovedException {
 		// first check if there are nodes implementing this case frame .. they
@@ -451,9 +440,8 @@ public class Network implements Serializable {
 	 * @param node
 	 *            the node that will be removed.
 	 *
-	 * @throws CustomException
+	 * @throws NodeCannotBeRemovedException
 	 *             if the node cannot be removed because it is not isolated.
-	 * @throws NodeCannotBeRemovedException 
 	 */
 	public static void removeNode(Node node) throws NodeCannotBeRemovedException {
 		// check if the node is not isolated
@@ -616,13 +604,12 @@ public class Network implements Serializable {
 	 *            node.
 	 *
 	 * @return the newly created molecular node.
+	 * @throws CannotBuildNodeException 
+	 * @throws DuplicateNodeException 
 	 *
-	 * @throws Exception
-	 *             if the invoked methods to create a pattern node or closed
-	 *             node throw an Exception.
 	 */
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
-			CaseFrame caseFrame) throws Exception {
+			CaseFrame caseFrame) throws CannotBuildNodeException, DuplicateNodeException {
 		Object[][] array = turnWiresIntoArray(wires);  
 	    Object[] result = downCableSetExists(array);
 		//System.out.println("Downcable set exists > "+ downCableSetExists(array)); 
@@ -678,7 +665,7 @@ public class Network implements Serializable {
 	} 
 	
 	public static Node buildMolecularNode(ArrayList<Wire> wires,
-			RelationsRestrictedCaseFrame caseFrame) throws Exception, CustomException {
+			RelationsRestrictedCaseFrame caseFrame) throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException {
 		Object[][] array = turnWiresIntoArray(wires);  
 		Object[] result = downCableSetExists(array);
 		//System.out.println("Downcable set exists > "+ downCableSetExists(array)); 
@@ -1072,7 +1059,7 @@ public class Network implements Serializable {
 	 */
 	@SuppressWarnings("rawtypes")
 	private static Node createPatNode(Object[][] relNodeSet,
-			CaseFrame caseFrame) throws Exception {
+			CaseFrame caseFrame) {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -1128,7 +1115,7 @@ public class Network implements Serializable {
 	}
 	
 	private static Node createPatNode(Object[][] relNodeSet,
-			RelationsRestrictedCaseFrame caseFrame) throws Exception {
+			RelationsRestrictedCaseFrame caseFrame) {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -1204,7 +1191,7 @@ public class Network implements Serializable {
 	 */
 	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet,
-			CaseFrame caseFrame) throws Exception {
+			CaseFrame caseFrame) {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -1257,7 +1244,7 @@ public class Network implements Serializable {
 	
 	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet,
-			RelationsRestrictedCaseFrame caseFrame) throws Exception {
+			RelationsRestrictedCaseFrame caseFrame) {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0],
@@ -2053,7 +2040,7 @@ public class Network implements Serializable {
 		return new NodeSet();
 	}
 	
-	public static void defineDefaults() throws CustomException {
+	public static void defineDefaults() {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
 		//CaseFrame.createDefaultCaseFrames();
