@@ -759,4 +759,19 @@ public class AP {
 		// TODO A wrapper for the method clearing the acg
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static String getBrMode() {
+		// TODO A wrapper for the method returning the current belief revision mode.
+		return "";
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static void setBrMode(String mode) {
+		// TODO A wrapper for the method setting the belief revision mode.
+	}
+
 }
