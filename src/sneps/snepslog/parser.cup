@@ -24,6 +24,7 @@ import sneps.network.paths.KPlusPath;
 import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
+import sneps.snebr.Controller;
 
 
 parser code {:
@@ -310,9 +311,13 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| DESCRIBE_CONTEXT optionalIdentifier optionalDot
+				| DESCRIBE_CONTEXT optionalIdentifier:oid optionalDot
 				{: 
-
+					if(oid!=null){
+						RESULT = Controller.getContextByName(oid).toString();
+					}else{
+						RESULT = Controller.getCurrentContext().toString();
+					}
 				:}
 				| DESCRIBE_TERMS optionalPTermSet optionalDot
 				{: 
@@ -364,9 +369,10 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| SET_DEFAULT_CONTEXT IDENTIFIER
+				| SET_DEFAULT_CONTEXT IDENTIFIER:id
 				{: 
-
+					Controller.setCurrentContext(id);
+					RESULT = "";
 				:}
 				| SET_MODE_1 optionalDot
 				{: 
