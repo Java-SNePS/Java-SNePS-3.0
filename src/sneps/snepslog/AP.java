@@ -722,4 +722,21 @@ public class AP {
 		return output;
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> forwardInference(Node node, String type) {
+		// TODO A wrapper for forward inference
+		ArrayList<Node> output = new ArrayList<Node>();
+		switch (type) {
+		case "activate":
+			break;
+		case "activate!":
+			break;
+		case "!":
+			break;
+		}
+		return output;
+	}
+	
 }
