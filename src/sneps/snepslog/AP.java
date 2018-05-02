@@ -677,4 +677,26 @@ public class AP {
 		}
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> deduce(Node node, String type, String i, String j) {
+		// TODO A wrapper for deduce
+		ArrayList<Node> output = new ArrayList<Node>();
+		switch (type) {
+		case "ask":
+			break;
+		case "askifnot":
+			break;
+		case "askwh":
+			break;
+		case "askwhnot":
+			break;
+		case "?":
+			// Handle the optional i and j parameters if there
+			break;
+		}
+		return output;
+	}
+
 }
