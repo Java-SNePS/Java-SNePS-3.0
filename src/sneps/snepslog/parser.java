@@ -1096,8 +1096,12 @@ class CUP$parser$actions {
           case 6: // snepslogCommand ::= ACTIVATE wff optionalDot 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					RESULT = "This functionality is still under development.";
+					ArrayList<Node> output = AP.forwardInference(w, "activate");
+					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1107,8 +1111,12 @@ class CUP$parser$actions {
           case 7: // snepslogCommand ::= ACTIVATE BANG wff optionalTerminalPunctuation 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-                		RESULT = "This functionality is still under development.";
+                		ArrayList<Node> output = AP.forwardInference(w, "activate!");
+					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

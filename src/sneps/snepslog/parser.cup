@@ -209,13 +209,15 @@ wffCommand ::= wff terminalPunctuation
 				
 		   :};	
 				
-snepslogCommand ::= ACTIVATE wff optionalDot
+snepslogCommand ::= ACTIVATE wff:w optionalDot
 				{: 
-					RESULT = "This functionality is still under development.";
+					ArrayList<Node> output = AP.forwardInference(w, "activate");
+					RESULT = AP.displayWffs(output);
 				:}
-				| ACTIVATE BANG wff optionalTerminalPunctuation
+				| ACTIVATE BANG wff:w optionalTerminalPunctuation
 				{: 
-                		RESULT = "This functionality is still under development.";
+                		ArrayList<Node> output = AP.forwardInference(w, "activate!");
+					RESULT = AP.displayWffs(output);
 				:}
 				| ADD_TO_CONTEXT IDENTIFIER termSet optionalDot
 				{: 
