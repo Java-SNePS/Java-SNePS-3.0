@@ -1221,7 +1221,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					RESULT = AP.getBrMode();
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1232,7 +1232,8 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					AP.setBrMode("auto");
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1243,7 +1244,8 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					AP.setBrMode("manual");
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

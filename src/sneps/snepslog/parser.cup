@@ -255,15 +255,17 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| BR_MODE optionalDot
 				{: 
-
+					RESULT = AP.getBrMode();
 				:}
 				| BR_MODE AUTO optionalDot
 				{: 
-
+					AP.setBrMode("auto");
+					RESULT = "";
 				:}
 				| BR_MODE MANUAL optionalDot
 				{: 
-
+					AP.setBrMode("manual");
+					RESULT = "";
 				:}
 				| CLEAR_INFER optionalDot
 				{: 
