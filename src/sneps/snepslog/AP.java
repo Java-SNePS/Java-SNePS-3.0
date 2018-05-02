@@ -752,4 +752,11 @@ public class AP {
 		return new PropositionSet(props);
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static void clearInfer() {
+		// TODO A wrapper for the method clearing the acg
+	}
+
 }
