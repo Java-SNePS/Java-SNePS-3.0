@@ -1516,8 +1516,12 @@ class CUP$parser$actions {
           case 38: // snepslogCommand ::= PERFORM atomicTerm optionalDot 
             {
               String RESULT =null;
+		int atleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int atright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node at = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					AP.perform(at);
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1527,8 +1531,15 @@ class CUP$parser$actions {
           case 39: // snepslogCommand ::= REMOVE_FROM_CONTEXT IDENTIFIER pTermSet 
             {
               String RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int ptsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int ptsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		ArrayList<Node> pts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+					AP.removeFromContext(id, AP.arrayListToPropositionSet(pts));
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

@@ -374,12 +374,13 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| PERFORM atomicTerm:at optionalDot
 				{: 
-					Ap.perform(at);
+					AP.perform(at);
 					RESULT = "";
 				:}
-				| REMOVE_FROM_CONTEXT IDENTIFIER pTermSet
+				| REMOVE_FROM_CONTEXT IDENTIFIER:id pTermSet:pts
 				{: 
-
+					AP.removeFromContext(id, AP.arrayListToPropositionSet(pts));
+					RESULT = "";
 				:}
 				| SET_CONTEXT IDENTIFIER:id optionalPTermSet:opts
 				{: 
