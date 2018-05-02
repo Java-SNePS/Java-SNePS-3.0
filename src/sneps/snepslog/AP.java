@@ -774,4 +774,11 @@ public class AP {
 		// TODO A wrapper for the method setting the belief revision mode.
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static void perform(Node node) {
+		// TODO A wrapper for perform.
+	}
+
 }
