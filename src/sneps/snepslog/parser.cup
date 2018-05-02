@@ -724,22 +724,22 @@ atomicTerm ::= wffName
            
            :};
 
-withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence COMMA termSet COMMA termSet COMMA termSet CLOSE_PARAN
+withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
-             
+             	RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
              :}
-             | WITHSOME OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CLOSE_PARAN
+             | WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
-             
+             	RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
              :};
              
-withallTerm ::= WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet COMMA termSet CLOSE_PARAN
+withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
-             
+             	RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
              :}
-             | WITHALL OPEN_PARAN symbolSequence COMMA termSet COMMA termSet CLOSE_PARAN
+             | WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
-             
+             	RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
              :};
 		         
 termSetSequence ::= termSet:ts termSets:tss
