@@ -27,11 +27,15 @@ public class NetworkTest {
 
     @Test
     public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        int sizeOfNodes = Network.getNodes().size();
+        int sizeOfProps = Network.getPropositionNodes().size();
         Network.buildBaseNode("n0", semantic);
         Node n0 =  Network.getNode("n0");
         assertTrue(Network.getNodeById(0) instanceof PropositionNode);
         assertEquals(n0, Network.getNodeById(0));
         assertTrue(n0.getTerm() instanceof Base);
+        assertEquals(Network.getNodes().size(), sizeOfNodes + 1);
+        assertEquals(Network.getPropositionNodes().size(), sizeOfProps + 1);
     }
 
     @After

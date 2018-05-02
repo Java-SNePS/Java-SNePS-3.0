@@ -1,6 +1,8 @@
 package tests;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,6 +14,7 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snebr.Support;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,7 +35,7 @@ public class ControllerTest {
 
     @After
     public void tearDown(){
-        Controller.removeContext(testContextName);
+        Controller.clearKB();
     }
 
     @Test
@@ -140,7 +143,33 @@ public class ControllerTest {
     }
 
     @Test
-    public void setCurrentContext() {
+    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        Controller.createContext("c6", new PropositionSet(new int [] {5,7}));
+        Controller.createContext("c5", new PropositionSet(new int [] {5,7}));
+
+        Controller.setCurrentContext("c5");
+        assertEquals(Controller.getCurrentContext(), Controller.getContextByName("c5"));
+
+    }
+
+    @Test
+    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException {
+        PropositionSet p = new PropositionSet(new int [] {12, 58});
+        Controller.addPropsToCurrentContext(p);
+        ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(p);
+        assertTrue(Controller.getCurrentContext().isAsserted((PropositionNode)Network.getNodeById(12)));
+        assertTrue(Controller.getCurrentContext().isAsserted((PropositionNode)Network.getNodeById(58)));
+
+    }
+
+    @Test
+    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException {
+        PropositionSet p = new PropositionSet(new int [] {12, 58, 10});
+        PropositionSet supp = new PropositionSet(new int [] {12,58});
+        PropositionSet p1 = new PropositionSet(new int [] {12, 58, 32});
+        Controller.addPropsToCurrentContext(p1);
+        ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(supp);
+        assertTrue(p.isSubSet(Controller.getCurrentContext().allAsserted()));
     }
 
     @Test
@@ -154,4 +183,14 @@ public class ControllerTest {
     @Test
     public void getContextByName() {
     }
+
+    @Test
+    public void getNames() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException {
+        PropositionSet set = new PropositionSet(new int[] {5,6,7,8});
+        for (int i = 1; i < 4; i++)
+            Controller.createContext("c"+i, set);
+        for (int i = 1; i < 4; i++)
+            assertTrue(Controller.getAllNamesOfContexts().contains("c" + i));
+    }
+
 }

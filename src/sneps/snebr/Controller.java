@@ -4,6 +4,7 @@ import sneps.exceptions.*;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Controller {
     private static String currContext = "default";
@@ -30,6 +31,16 @@ public class Controller {
      */
     public static Context createContext() {
         return new Context();
+    }
+
+
+    /**
+     * Clears the knowledge base
+     */
+    public static void clearKB() {
+        contextSet.clear();
+        currContext = "default";
+        contextSet.add(new Context(currContext));
     }
 
     /**
@@ -179,6 +190,10 @@ public class Controller {
 
     public static void checkForContradiction(Context c){
         // TODO: 13/03/18
+    }
+
+    public static Set<String> getAllNamesOfContexts() {
+        return contextSet.getNames();
     }
 
     /**
