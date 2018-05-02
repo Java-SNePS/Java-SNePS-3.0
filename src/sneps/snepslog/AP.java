@@ -618,7 +618,7 @@ public class AP {
 		addWff(node);
 		return node;
 	}
-
+	
 	/**
 	 * This method is used to retrieve a wff using its wffName.
 	 * 
@@ -694,6 +694,29 @@ public class AP {
 			break;
 		case "?":
 			// Handle the optional i and j parameters if there
+			break;
+		}
+		return output;
+	}
+
+	// TODO Finish this method
+	public static String displayWffs(ArrayList<Node> wffs) {
+		String output = "";
+		switch (AP.getPrintingMode()) {
+		case "normal":
+			for(int i=0;i<wffs.size();i++) {
+				output+=wffs.get(i).toString();
+			}
+			break;
+		case "expert":
+			for(int i=0;i<wffs.size();i++) {
+				output+=wffs.get(i).toString();
+			}
+			break;
+		case "unlabeled":
+			for(int i=0;i<wffs.size();i++) {
+				output+=wffs.get(i).toString();
+			}
 			break;
 		}
 		return output;
