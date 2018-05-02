@@ -25,6 +25,7 @@ import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
+import sneps.exceptions.ContextNameDoesntExistException;
 
 
 parser code {:
@@ -219,9 +220,14 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
                 		ArrayList<Node> output = AP.forwardInference(w, "activate!");
 					RESULT = AP.displayWffs(output);
 				:}
-				| ADD_TO_CONTEXT IDENTIFIER termSet optionalDot
+				| ADD_TO_CONTEXT IDENTIFIER:id termSet:ts optionalDot
 				{: 
-
+					try {
+						Controller.addPropsToContext(id, AP.arrayListToPropositionSet(ts));
+						RESULT = "";
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
 				:}
 				| ASK wff:w optionalTerminalPunctuation
 				{: 
@@ -261,7 +267,8 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| CLEAR_INFER optionalDot
 				{: 
-					RESULT = "This functionality is still under development.";
+					AP.clearInfer();
+					RESULT = "";
 				:}
 				| CLEARKB optionalDot
 				{: 
@@ -371,9 +378,14 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				{: 
 
 				:}
-				| SET_CONTEXT IDENTIFIER optionalPTermSet
+				| SET_CONTEXT IDENTIFIER:id optionalPTermSet:opts
 				{: 
-
+					if(opts!=null){
+						Controller.createContext(id, AP.arrayListToPropositionSet(opts));
+					}else{
+						Controller.createContext(id);
+					}
+					RESULT = "";
 				:}
 				| SET_DEFAULT_CONTEXT IDENTIFIER:id
 				{: 

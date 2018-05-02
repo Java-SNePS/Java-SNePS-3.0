@@ -28,6 +28,7 @@ import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
+import sneps.exceptions.ContextNameDoesntExistException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1126,8 +1127,19 @@ class CUP$parser$actions {
           case 8: // snepslogCommand ::= ADD_TO_CONTEXT IDENTIFIER termSet optionalDot 
             {
               String RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int tsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int tsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		ArrayList<Node> ts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					try {
+						Controller.addPropsToContext(id, AP.arrayListToPropositionSet(ts));
+						RESULT = "";
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1242,7 +1254,8 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-					RESULT = "This functionality is still under development.";
+					AP.clearInfer();
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1523,8 +1536,19 @@ class CUP$parser$actions {
           case 40: // snepslogCommand ::= SET_CONTEXT IDENTIFIER optionalPTermSet 
             {
               String RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int optsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int optsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		ArrayList<Node> opts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+					if(opts!=null){
+						Controller.createContext(id, AP.arrayListToPropositionSet(opts));
+					}else{
+						Controller.createContext(id);
+					}
+					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
