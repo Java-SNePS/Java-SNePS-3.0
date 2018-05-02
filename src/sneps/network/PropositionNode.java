@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import sneps.exceptions.CustomException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
@@ -217,6 +218,16 @@ public class PropositionNode extends Node {
 	}
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return basicSupport.getAssumptionBasedSupport();
+		
+	}
+	public Hashtable<String, PropositionSet> getJustificationSupport() {
+		return basicSupport.getJustificationSupport();
+	}
+	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
+		basicSupport.addJustificationBasedSupport(propSet);
+	}
+	public boolean removeNodeFromSupports(PropositionNode propNode) {
+		return basicSupport.removeNodeFromSupports(propNode);
 		
 	}
 

@@ -1,26 +1,14 @@
 package sneps.snebr;
 
-import java.util.Collection;
+
+
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
-import sneps.exceptions.CustomException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
-import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -99,6 +87,11 @@ public class Support {
 
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return assumptionBasedSupport;
+	}
+	
+	public boolean removeNodeFromSupports(PropositionNode propNode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	// toString for UI SNePSlog
@@ -204,18 +197,20 @@ public class Support {
 		PropositionSet s9 = new PropositionSet(kl);
 		PropositionSet s10 = new PropositionSet(ot);
 
-		n4.getBasicSupport().addJustificationBasedSupport(s7);
-		n4.getBasicSupport().addJustificationBasedSupport(s8);
-		n5.getBasicSupport().addJustificationBasedSupport(s9);
-		n1.getBasicSupport().addJustificationBasedSupport(s2);
-		n1.getBasicSupport().addJustificationBasedSupport(s3);
-		n2.getBasicSupport().addJustificationBasedSupport(s4);
-		n3.getBasicSupport().addJustificationBasedSupport(s5);
-		n3.getBasicSupport().addJustificationBasedSupport(s6);
-		n0.getBasicSupport().addJustificationBasedSupport(s1);
-		n0.getBasicSupport().addJustificationBasedSupport(s10);
+		n4.addJustificationBasedSupport(s7);
+		n4.addJustificationBasedSupport(s8);
+		n5.addJustificationBasedSupport(s9);
+		n1.addJustificationBasedSupport(s2);
+		n1.addJustificationBasedSupport(s3);
+		n2.addJustificationBasedSupport(s4);
+		n3.addJustificationBasedSupport(s5);
+		n3.addJustificationBasedSupport(s6);
+		n0.addJustificationBasedSupport(s1);
+		n0.addJustificationBasedSupport(s10);
 
 		System.out.println(n0.getBasicSupport().toString());
 
 	}
+
+	
 }
