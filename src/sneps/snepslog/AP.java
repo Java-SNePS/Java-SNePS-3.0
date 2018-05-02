@@ -151,7 +151,7 @@ public class AP {
 	 *             if a relation was not defined in the Network.
 	 */
 	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, String relations)
-			throws RelationDoesntExistException  {
+			throws RelationDoesntExistException {
 		// check if already exists
 		if (modeThreeCaseFrames.containsKey(name)) {
 			return modeThreeCaseFrames.get(name);
@@ -184,13 +184,15 @@ public class AP {
 	 * @param arg2
 	 *            the second argument node.
 	 * @return a molecular node representing the infixed term.
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
 	 */
-	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException  {
+	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
+			DuplicateNodeException, CaseFrameMissMatchException {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -232,14 +234,15 @@ public class AP {
 	 *            a String which contains the value of "i" in case of a numerical
 	 *            entailment.
 	 * @return a molecular node representing the entailment
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
-			ArrayList<Node> consequents, String optionalI) throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException  {
+			ArrayList<Node> consequents, String optionalI) throws CannotBuildNodeException, DuplicateNodeException,
+			CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -294,13 +297,15 @@ public class AP {
 	 * @param node
 	 *            a node to be negated.
 	 * @return a molecular node representing a negatedTerm.
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
 	 */
-	protected static Node buildNegatedTerm(Node node) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException   {
+	protected static Node buildNegatedTerm(Node node)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
+			DuplicateNodeException, CaseFrameMissMatchException {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, node));
@@ -323,13 +328,15 @@ public class AP {
 	 * @param arguments
 	 *            an ArrayList of the nodes representing the arguments.
 	 * @return a molecular node representing an andorTerm.
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
 	 */
-	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException   {
+	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
+			DuplicateNodeException, CaseFrameMissMatchException {
 		// TODO andor i j checks
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -354,13 +361,15 @@ public class AP {
 	 * @param arguments
 	 *            an ArrayList of the nodes representing the arguments.
 	 * @return a molecular node representing a setTerm
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
 	 */
-	protected static Node buildSetTerm(String type, ArrayList<Node> arguments) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException   {
+	protected static Node buildSetTerm(String type, ArrayList<Node> arguments)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
+			DuplicateNodeException, CaseFrameMissMatchException {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -417,13 +426,15 @@ public class AP {
 	 * @param arguments
 	 *            an ArrayList of the nodes representing the arguments.
 	 * @return a molecular node representing a threshTerm.
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
 	 */
-	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments) throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException   {
+	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments)
+			throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException,
+			NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		// TODO thresh i j checks
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -451,11 +462,12 @@ public class AP {
 	 * @param arg2
 	 *            the second argument node.
 	 * @return a molecular node representing the SNeRE term.
-	 * @throws CaseFrameMissMatchException 
-	 * @throws DuplicateNodeException 
-	 * @throws CannotBuildNodeException 
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
 	 */
-	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2) throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException   {
+	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2)
+			throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -532,6 +544,82 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to construct the nodes representing withsome and withall
+	 * terms in the network.
+	 * 
+	 * @param type
+	 *            a String specifying the type of the term. It should have one of
+	 *            the following values: withsome or withall.
+	 * @param vars
+	 *            an ArrayList of the nodes representing the vars.
+	 * @param suchthat
+	 *            an ArrayList of the nodes representing the suchthat.
+	 * @param doo
+	 *            an ArrayList of the nodes representing the doo.
+	 * @param elsee
+	 *            an ArrayList of the nodes representing the elsee.
+	 * @return a molecular node representing the entailment
+	 * @throws CaseFrameMissMatchException
+	 * @throws DuplicateNodeException
+	 * @throws CannotBuildNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 */
+	protected static Node buildWithsomeAllTerm(String type, ArrayList<Node> vars, ArrayList<Node> suchthat,
+			ArrayList<Node> doo, ArrayList<Node> elsee)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
+			DuplicateNodeException, CaseFrameMissMatchException {
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
+		RelationsRestrictedCaseFrame caseFrame = null;
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		switch (type) {
+		case "withsome":
+			wires.add(new Wire(Relation.withsome, Network.buildBaseNode("withsome", new Semantic("Action"))));
+			for (int i = 0; i < vars.size(); i++) {
+				wires.add(new Wire(Relation.vars, vars.get(i)));
+			}
+			for (int j = 0; j < suchthat.size(); j++) {
+				wires.add(new Wire(Relation.suchthat, suchthat.get(j)));
+			}
+			for (int k = 0; k < doo.size(); k++) {
+				wires.add(new Wire(Relation.doo, doo.get(k)));
+			}
+			if (elsee != null) {
+				for (int x = 0; x < elsee.size(); x++) {
+					wires.add(new Wire(Relation.elsee, elsee.get(x)));
+				}
+				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withSome;
+			} else {
+				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withSomeNoElse;
+			}
+			break;
+		case "withall":
+			wires.add(new Wire(Relation.withall, Network.buildBaseNode("withall", new Semantic("Action"))));
+			for (int i = 0; i < vars.size(); i++) {
+				wires.add(new Wire(Relation.vars, vars.get(i)));
+			}
+			for (int j = 0; j < suchthat.size(); j++) {
+				wires.add(new Wire(Relation.suchthat, suchthat.get(j)));
+			}
+			for (int k = 0; k < doo.size(); k++) {
+				wires.add(new Wire(Relation.doo, doo.get(k)));
+			}
+			if (elsee != null) {
+				for (int x = 0; x < elsee.size(); x++) {
+					wires.add(new Wire(Relation.elsee, elsee.get(x)));
+				}
+				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withAll;
+			} else {
+				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withAllNoElse;
+			}
+			break;
+		}
+		Node node = Network.buildMolecularNode(wires, caseFrame);
+		addWff(node);
+		return node;
+	}
+
+	/**
 	 * This method is used to retrieve a wff using its wffName.
 	 * 
 	 * @param wffName
@@ -558,35 +646,35 @@ public class AP {
 		ArrayList<Node> output = new ArrayList<Node>();
 		return output;
 	}
-	
+
 	/**
 	 * Docs goes here
 	 */
 	protected static void activateTracing(String type) {
 		// TODO A wrapper for setting tacing variables to true
-		switch(type) {
-		case"inference":
+		switch (type) {
+		case "inference":
 			break;
-		case"acting":
+		case "acting":
 			break;
-		case"parsing":
+		case "parsing":
 			break;
 		}
 	}
-	
+
 	/**
 	 * Docs goes here
 	 */
 	protected static void deactivateTracing(String type) {
 		// TODO A wrapper for setting tracing variables to false
-		switch(type) {
-		case"inference":
+		switch (type) {
+		case "inference":
 			break;
-		case"acting":
+		case "acting":
 			break;
-		case"parsing":
+		case "parsing":
 			break;
 		}
 	}
-	
+
 }
