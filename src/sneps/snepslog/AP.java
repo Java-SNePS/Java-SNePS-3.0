@@ -32,6 +32,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.setClasses.PropositionSet;
 
 @SuppressWarnings("deprecation")
 public class AP {
@@ -618,7 +619,7 @@ public class AP {
 		addWff(node);
 		return node;
 	}
-	
+
 	/**
 	 * This method is used to retrieve a wff using its wffName.
 	 * 
@@ -704,18 +705,18 @@ public class AP {
 		String output = "";
 		switch (AP.getPrintingMode()) {
 		case "normal":
-			for(int i=0;i<wffs.size();i++) {
-				output+=wffs.get(i).toString();
+			for (int i = 0; i < wffs.size(); i++) {
+				output += wffs.get(i).toString();
 			}
 			break;
 		case "expert":
-			for(int i=0;i<wffs.size();i++) {
-				output+=wffs.get(i).toString();
+			for (int i = 0; i < wffs.size(); i++) {
+				output += wffs.get(i).toString();
 			}
 			break;
 		case "unlabeled":
-			for(int i=0;i<wffs.size();i++) {
-				output+=wffs.get(i).toString();
+			for (int i = 0; i < wffs.size(); i++) {
+				output += wffs.get(i).toString();
 			}
 			break;
 		}
@@ -738,5 +739,17 @@ public class AP {
 		}
 		return output;
 	}
-	
+
+	/**
+	 * A method to convert an ArrayList of Nodes to a PropositionSet.
+	 */
+	protected static PropositionSet arrayListToPropositionSet(ArrayList<Node> nodes)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		int[] props = new int[nodes.size()];
+		for (int i = 0; i < nodes.size(); i++) {
+			props[i] = nodes.get(i).getId();
+		}
+		return new PropositionSet(props);
+	}
+
 }
