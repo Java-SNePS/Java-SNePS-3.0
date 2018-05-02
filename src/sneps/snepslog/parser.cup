@@ -372,9 +372,10 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "normal mode is already in use.";
 					}
 				:}
-				| PERFORM atomicTerm optionalDot
+				| PERFORM atomicTerm:at optionalDot
 				{: 
-
+					Ap.perform(at);
+					RESULT = "";
 				:}
 				| REMOVE_FROM_CONTEXT IDENTIFIER pTermSet
 				{: 
