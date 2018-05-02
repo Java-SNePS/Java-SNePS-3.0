@@ -781,4 +781,11 @@ public class AP {
 		// TODO A wrapper for perform.
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static void removeFromContext(String context, PropositionSet hyps) {
+		// TODO A wrapper for the method removing hyps from context.
+	}
+
 }
