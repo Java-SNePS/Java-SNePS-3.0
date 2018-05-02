@@ -1129,8 +1129,12 @@ class CUP$parser$actions {
           case 9: // snepslogCommand ::= ASK wff optionalTerminalPunctuation 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					ArrayList<Node> output = AP.deduce(w, "ask", null, null);
+					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1140,8 +1144,12 @@ class CUP$parser$actions {
           case 10: // snepslogCommand ::= ASKIFNOT wff optionalTerminalPunctuation 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					ArrayList<Node> output = AP.deduce(w, "askifnot", null, null);
+					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1151,8 +1159,12 @@ class CUP$parser$actions {
           case 11: // snepslogCommand ::= ASKWH wff optionalTerminalPunctuation 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					ArrayList<Node> output = AP.deduce(w, "askwh", null, null);
+					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1162,8 +1174,12 @@ class CUP$parser$actions {
           case 12: // snepslogCommand ::= ASKWHNOT wff optionalTerminalPunctuation 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					ArrayList<Node> output = AP.deduce(w, "askwhnot", null, null);
+					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

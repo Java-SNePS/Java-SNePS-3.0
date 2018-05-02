@@ -221,21 +221,25 @@ snepslogCommand ::= ACTIVATE wff optionalDot
 				{: 
 
 				:}
-				| ASK wff optionalTerminalPunctuation
+				| ASK wff:w optionalTerminalPunctuation
 				{: 
-
+					ArrayList<Node> output = AP.deduce(w, "ask", null, null);
+					RESULT = AP.displayWffs(output);
 				:}
-				| ASKIFNOT wff optionalTerminalPunctuation
+				| ASKIFNOT wff:w optionalTerminalPunctuation
 				{: 
-
+					ArrayList<Node> output = AP.deduce(w, "askifnot", null, null);
+					RESULT = AP.displayWffs(output);
 				:}
-				| ASKWH wff optionalTerminalPunctuation
+				| ASKWH wff:w optionalTerminalPunctuation
 				{: 
-
+					ArrayList<Node> output = AP.deduce(w, "askwh", null, null);
+					RESULT = AP.displayWffs(output);
 				:}
-				| ASKWHNOT wff optionalTerminalPunctuation
+				| ASKWHNOT wff:w optionalTerminalPunctuation
 				{: 
-
+					ArrayList<Node> output = AP.deduce(w, "askwhnot", null, null);
+					RESULT = AP.displayWffs(output);
 				:}
 				| BELIEFS_ABOUT pTermSet optionalDot
 				{: 
