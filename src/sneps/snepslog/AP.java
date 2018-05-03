@@ -681,7 +681,7 @@ public class AP {
 	/**
 	 * Docs goes here
 	 */
-	protected static ArrayList<Node> deduce(Node node, String type, String i, String j) {
+	protected static ArrayList<Node> deduce(Node node, String type, int i, int j) {
 		// TODO A wrapper for deduce
 		ArrayList<Node> output = new ArrayList<Node>();
 		switch (type) {
