@@ -755,7 +755,7 @@ public class AP {
 	/**
 	 * A method to convert a PropositionSet to an ArrayList of Nodes.
 	 */
-	protected static ArrayList<Node> arrayListToPropositionSet(PropositionSet set)
+	protected static ArrayList<Node> propositionSetToArrayList(PropositionSet set)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		ArrayList<Node> nodes = new ArrayList<Node>();
 		int[] props = PropositionSet.getPropsSafely(set);
