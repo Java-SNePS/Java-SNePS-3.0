@@ -1,8 +1,6 @@
 package tests;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import sneps.exceptions.CustomException;
 import sneps.exceptions.NodeCannotBeRemovedException;
@@ -13,16 +11,24 @@ import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Base;
+import sneps.snebr.Controller;
+
 import static org.junit.Assert.*;
 
 public class NetworkTest {
-     Semantic semantic;
+     static Semantic semantic;
     final static String semanticType = "PropositionNode";
     
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
     	semantic = new Semantic(semanticType);
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        Network.clearNetwork();
+        Controller.clearSNeBR();
     }
 
     @Test

@@ -37,7 +37,7 @@ public class Controller {
     /**
      * Clears the knowledge base
      */
-    public static void clearKB() {
+    public static void clearSNeBR() {
         contextSet.clear();
         currContext = "default";
         contextSet.add(new Context(currContext));
