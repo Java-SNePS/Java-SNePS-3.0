@@ -1091,6 +1091,7 @@ class CUP$parser$actions {
 		 
 				Node w = AP.getWffByWffName(wn);	   
 				ArrayList<Node> nodes = new ArrayList<>();
+				ArrayList<Node> matchingNodes = new ArrayList<>();
 				switch (tp) {
 				case ".":
 					try {
@@ -1106,27 +1107,49 @@ class CUP$parser$actions {
 					RESULT = AP.displayWffs(nodes);
 					break;
 				case "??":
-					boolean flag = Controller.getCurrentContext().isAsserted((PropositionNode) w);
-					if (flag) {
-						nodes.add(w);
+					matchingNodes = AP.match(w);
+					for(int i=0;i<matchingNodes.size();i++){
+						if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
+							nodes.add(matchingNodes.get(i));
+						}
+					}
+					if (!nodes.isEmpty()) {
 						RESULT = AP.displayWffs(nodes);
 					} else {
 						RESULT = "";
 					}
 					break;
 				case "?":
-					nodes = AP.deduce(w, "?", -1, -1);
+					matchingNodes = AP.match(w);
+					for(int i=0;i<matchingNodes.size();i++){
+						ArrayList<Node> temp = AP.deduce(matchingNodes.get(i), "?", -1, -1);
+						for(int j=0;j<temp.size();j++){
+							nodes.add(temp.get(j));
+						}
+					}
 					RESULT = AP.displayWffs(nodes);
 					break;
 				default:
 					if (tp.startsWith("ONE")) {
 						int i = Integer.parseInt(tp.substring(3));
-						nodes = AP.deduce(w, "?", i, -1);
+						matchingNodes = AP.match(w);
+					    for(int a=0;a<matchingNodes.size();a++){
+							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, -1);
+							for(int b=0;b<temp.size();b++){
+								nodes.add(temp.get(b));
+							}
+						}
 						RESULT = AP.displayWffs(nodes);
 					} else {
 						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
 						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
-						nodes = AP.deduce(w, "?", i, j);
+						matchingNodes = AP.match(w);
+						for(int a=0;a<matchingNodes.size();a++){
+							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, j);
+							for(int b=0;b<temp.size();b++){
+								nodes.add(temp.get(b));
+							}
+						}
 						RESULT = AP.displayWffs(nodes);
 					}
 					break;
@@ -1148,6 +1171,7 @@ class CUP$parser$actions {
 		String tp = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
 				ArrayList<Node> nodes = new ArrayList<>();
+				ArrayList<Node> matchingNodes = new ArrayList<>();
 				switch (tp) {
 				case ".":
 					try {
@@ -1163,27 +1187,49 @@ class CUP$parser$actions {
 					RESULT = AP.displayWffs(nodes);
 					break;
 				case "??":
-					boolean flag = Controller.getCurrentContext().isAsserted((PropositionNode) w);
-					if (flag) {
-						nodes.add(w);
+					matchingNodes = AP.match(w);
+					for(int i=0;i<matchingNodes.size();i++){
+						if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
+							nodes.add(matchingNodes.get(i));
+						}
+					}
+					if (!nodes.isEmpty()) {
 						RESULT = AP.displayWffs(nodes);
 					} else {
 						RESULT = "";
 					}
 					break;
 				case "?":
-					nodes = AP.deduce(w, "?", -1, -1);
+					matchingNodes = AP.match(w);
+					for(int i=0;i<matchingNodes.size();i++){
+						ArrayList<Node> temp = AP.deduce(matchingNodes.get(i), "?", -1, -1);
+						for(int j=0;j<temp.size();j++){
+							nodes.add(temp.get(j));
+						}
+					}
 					RESULT = AP.displayWffs(nodes);
 					break;
 				default:
 					if (tp.startsWith("ONE")) {
 						int i = Integer.parseInt(tp.substring(3));
-						nodes = AP.deduce(w, "?", i, -1);
+						matchingNodes = AP.match(w);
+					    for(int a=0;a<matchingNodes.size();a++){
+							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, -1);
+							for(int b=0;b<temp.size();b++){
+								nodes.add(temp.get(b));
+							}
+						}
 						RESULT = AP.displayWffs(nodes);
 					} else {
 						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
 						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
-						nodes = AP.deduce(w, "?", i, j);
+						matchingNodes = AP.match(w);
+						for(int a=0;a<matchingNodes.size();a++){
+							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, j);
+							for(int b=0;b<temp.size();b++){
+								nodes.add(temp.get(b));
+							}
+						}
 						RESULT = AP.displayWffs(nodes);
 					}
 					break;
