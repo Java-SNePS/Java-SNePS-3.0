@@ -1585,8 +1585,15 @@ class CUP$parser$actions {
           case 35: // snepslogCommand ::= LIST_TERMS optionalPTermSet optionalDot 
             {
               String RESULT =null;
+		int optsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int optsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		ArrayList<Node> opts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					if(opts!=null){
+						RESULT = AP.displayWffs(AP.getClosed(opts));
+					}else{
+						RESULT = AP.displayWffs(AP.getAllClosedNodesFromTheNetwork());
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

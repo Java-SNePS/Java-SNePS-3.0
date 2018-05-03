@@ -440,9 +440,13 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				{: 
 
 				:}
-				| LIST_TERMS optionalPTermSet optionalDot
+				| LIST_TERMS optionalPTermSet:opts optionalDot
 				{: 
-
+					if(opts!=null){
+						RESULT = AP.displayWffs(AP.getClosed(opts));
+					}else{
+						RESULT = AP.displayWffs(AP.getAllClosedNodesFromTheNetwork());
+					}
 				:}
 				| LOAD FILEPATH optionalDot
 				{: 
