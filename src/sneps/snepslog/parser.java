@@ -1026,8 +1026,11 @@ class CUP$parser$actions {
           case 0: // command ::= wffNameCommand 
             {
               String RESULT =null;
+		int wncleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int wncright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String wnc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+			RESULT = wnc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1065,8 +1068,11 @@ class CUP$parser$actions {
           case 3: // command ::= wffCommand 
             {
               String RESULT =null;
+		int wcleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int wcright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String wc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+			RESULT = wc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

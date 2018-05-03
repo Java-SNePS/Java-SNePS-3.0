@@ -187,17 +187,17 @@ nonterminal ArrayList<ArrayList<Node>> termSetSequence,
 
 /* The grammar */
 
-command ::= 	wffNameCommand
+command ::= 	wffNameCommand:wnc
 		{: 
-
+			RESULT = wnc;
 		:}
 		| snepslogCommand:sc
 		{: 
 			RESULT = sc;
 		:}
-		| wffCommand
+		| wffCommand:wc
 		{: 
-
+			RESULT = wc;
 		:};	
 
 wffNameCommand ::= wffName:wn terminalPunctuation:tp
