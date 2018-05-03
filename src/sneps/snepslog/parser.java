@@ -1556,8 +1556,15 @@ class CUP$parser$actions {
           case 33: // snepslogCommand ::= LIST_ASSERTED_WFFS optionalIdentifier optionalDot 
             {
               String RESULT =null;
+		int oidleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int oidright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String oid = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					if(oid!=null){
+						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.getContextByName(oid).allAsserted()));
+					}else{
+						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.getCurrentContext().allAsserted()));
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

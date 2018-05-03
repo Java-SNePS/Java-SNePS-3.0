@@ -428,9 +428,13 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "expert mode is already in use.";
 					}
 				:}
-				| LIST_ASSERTED_WFFS optionalIdentifier optionalDot
+				| LIST_ASSERTED_WFFS optionalIdentifier:oid optionalDot
 				{: 
-
+					if(oid!=null){
+						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.getContextByName(oid).allAsserted()));
+					}else{
+						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.getCurrentContext().allAsserted()));
+					}
 				:}
 				| LIST_CONTEXTS optionalDot
 				{: 
