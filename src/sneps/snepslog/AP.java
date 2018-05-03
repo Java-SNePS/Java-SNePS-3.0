@@ -753,6 +753,19 @@ public class AP {
 	}
 
 	/**
+	 * A method to convert a PropositionSet to an ArrayList of Nodes.
+	 */
+	protected static ArrayList<Node> arrayListToPropositionSet(PropositionSet set)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		int[] props = PropositionSet.getPropsSafely(set);
+		for (int i = 0; i < props.length; i++) {
+			nodes.add(Network.getNodeById(props[i]));
+		}
+		return nodes;
+	}
+	
+	/**
 	 * Docs goes here
 	 */
 	protected static void clearInfer() {
