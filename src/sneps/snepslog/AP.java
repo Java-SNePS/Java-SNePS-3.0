@@ -33,6 +33,7 @@ import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.network.classes.term.Closed;
 
 @SuppressWarnings("deprecation")
 public class AP {
@@ -801,4 +802,17 @@ public class AP {
 		// TODO A wrapper for the method removing hyps from context.
 	}
 
+	/**
+	 * A method returning the closed nodes from an ArrayList of Nodes.
+	 */
+	protected static ArrayList<Node> getClosed(ArrayList<Node> nodes) {
+		ArrayList<Node> closed = new ArrayList<>();
+		for(int i=0;i<nodes.size();i++) {
+			if(nodes.get(i).getTerm() instanceof Closed) {
+				closed.add(nodes.get(i));
+			}
+		}
+		return closed;
+	}
+	
 }
