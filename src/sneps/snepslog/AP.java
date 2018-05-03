@@ -28,13 +28,16 @@ import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.network.Network;
 import sneps.network.Node;
+import sneps.network.PropositionNode;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Closed;
+import sneps.snebr.Controller;
 
 @SuppressWarnings("deprecation")
 public class AP {
@@ -766,7 +769,7 @@ public class AP {
 		}
 		return nodes;
 	}
-	
+
 	/**
 	 * Docs goes here
 	 */
@@ -808,26 +811,51 @@ public class AP {
 	 */
 	protected static ArrayList<Node> getClosed(ArrayList<Node> nodes) {
 		ArrayList<Node> closed = new ArrayList<>();
-		for(int i=0;i<nodes.size();i++) {
-			if(nodes.get(i).getTerm() instanceof Closed) {
+		for (int i = 0; i < nodes.size(); i++) {
+			if (nodes.get(i).getTerm() instanceof Closed) {
 				closed.add(nodes.get(i));
 			}
 		}
 		return closed;
 	}
-	
+
 	/**
 	 * A method returning all the closed nodes from the Network.
 	 */
 	protected static ArrayList<Node> getAllClosedNodesFromTheNetwork() {
 		ArrayList<Node> closed = new ArrayList<>();
 		Set<String> keys = Network.getNodes().keySet();
-        for(String key: keys){
-        		if(Network.getNodes().get(key).getTerm() instanceof Closed) {
+		for (String key : keys) {
+			if (Network.getNodes().get(key).getTerm() instanceof Closed) {
 				closed.add(Network.getNodes().get(key));
 			}
-        }
+		}
 		return closed;
 	}
-	
+
+	/**
+	 * A method returning the asserted nodes dominating the nodes in the given
+	 * ArrayList.
+	 * 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 */
+	protected static ArrayList<Node> beliefsAbout(ArrayList<Node> nodes)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		ArrayList<Node> dominatingTerms = new ArrayList<>();
+		for (int i = 0; i < nodes.size(); i++) {
+			NodeSet parents = nodes.get(i).getParentNodes();
+			for (int j = 0; j < parents.size(); j++) {
+				dominatingTerms.add(parents.getNode(j));
+			}
+		}
+		ArrayList<Node> beliefs = new ArrayList<>();
+		for (int k = 0; k < dominatingTerms.size(); k++) {
+			if (Controller.getCurrentContext().isAsserted((PropositionNode) dominatingTerms.get(k))) {
+				beliefs.add(dominatingTerms.get(k));
+			}
+		}
+		return beliefs;
+	}
+
 }
