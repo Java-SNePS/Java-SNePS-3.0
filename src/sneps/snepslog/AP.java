@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Set;
 
 import java_cup.runtime.Symbol;
 import sneps.exceptions.CannotBuildNodeException;
@@ -812,6 +813,20 @@ public class AP {
 				closed.add(nodes.get(i));
 			}
 		}
+		return closed;
+	}
+	
+	/**
+	 * A method returning all the closed nodes from the Network.
+	 */
+	protected static ArrayList<Node> getAllClosedNodesFromTheNetwork() {
+		ArrayList<Node> closed = new ArrayList<>();
+		Set<String> keys = Network.getNodes().keySet();
+        for(String key: keys){
+        		if(Network.getNodes().get(key).getTerm() instanceof Closed) {
+				closed.add(Network.getNodes().get(key));
+			}
+        }
 		return closed;
 	}
 	
