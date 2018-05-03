@@ -183,7 +183,6 @@ nonterminal ArrayList<ArrayList<Node>> termSetSequence,
 
 /* Precedences */
 
-precedence left COMMA, BANG, DOT, QUESTION_MARK;
 
 /* The grammar */
 
