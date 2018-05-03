@@ -330,9 +330,9 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 					ArrayList<Node> output = AP.deduce(w, "askwhnot", -1, -1);
 					RESULT = AP.displayWffs(output);
 				:}
-				| BELIEFS_ABOUT pTermSet optionalDot
+				| BELIEFS_ABOUT pTermSet:pts optionalDot
 				{: 
-
+					RESULT = AP.displayWffs(AP.beliefsAbout(pts));
 				:}
 				| BR_MODE optionalDot
 				{: 
