@@ -10,6 +10,7 @@ import java_cup.runtime.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import sneps.network.Node;
+import sneps.network.PropositionNode;
 import sneps.network.Network;
 import sneps.network.paths.Path;
 import sneps.network.paths.BangPath;
@@ -1075,9 +1076,56 @@ class CUP$parser$actions {
           case 4: // wffNameCommand ::= wffName terminalPunctuation 
             {
               String RESULT =null;
+		int wnleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wnright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String wn = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int tpleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int tpright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String tp = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-				
-				
+				Node w = AP.getWffByWffName(wn);	   
+				ArrayList<Node> nodes = new ArrayList<>();
+				switch (tp) {
+				case ".":
+					try {
+						Controller.addPropToCurrentContext(w.getId());
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
+					break;
+				case "!":
+					nodes = AP.forwardInference(w, "!");
+					RESULT = AP.displayWffs(nodes);
+					break;
+				case "??":
+					boolean flag = Controller.getCurrentContext().isAsserted((PropositionNode) w);
+					if (flag) {
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						RESULT = "";
+					}
+					break;
+				case "?":
+					nodes = AP.deduce(w, "?", -1, -1);
+					RESULT = AP.displayWffs(nodes);
+					break;
+				default:
+					if (tp.startsWith("ONE")) {
+						int i = Integer.parseInt(tp.substring(3));
+						nodes = AP.deduce(w, "?", i, -1);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
+						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
+						nodes = AP.deduce(w, "?", i, j);
+						RESULT = AP.displayWffs(nodes);
+					}
+					break;
+				}
+		   
               CUP$parser$result = parser.getSymbolFactory().newSymbol("wffNameCommand",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1086,8 +1134,54 @@ class CUP$parser$actions {
           case 5: // wffCommand ::= wff terminalPunctuation 
             {
               String RESULT =null;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int tpleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int tpright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String tp = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-				
+				ArrayList<Node> nodes = new ArrayList<>();
+				switch (tp) {
+				case ".":
+					try {
+						Controller.addPropToCurrentContext(w.getId());
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
+					break;
+				case "!":
+					nodes = AP.forwardInference(w, "!");
+					RESULT = AP.displayWffs(nodes);
+					break;
+				case "??":
+					boolean flag = Controller.getCurrentContext().isAsserted((PropositionNode) w);
+					if (flag) {
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						RESULT = "";
+					}
+					break;
+				case "?":
+					nodes = AP.deduce(w, "?", -1, -1);
+					RESULT = AP.displayWffs(nodes);
+					break;
+				default:
+					if (tp.startsWith("ONE")) {
+						int i = Integer.parseInt(tp.substring(3));
+						nodes = AP.deduce(w, "?", i, -1);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
+						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
+						nodes = AP.deduce(w, "?", i, j);
+						RESULT = AP.displayWffs(nodes);
+					}
+					break;
+				}
 		   
               CUP$parser$result = parser.getSymbolFactory().newSymbol("wffCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1153,7 +1247,7 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "ask", null, null);
+					ArrayList<Node> output = AP.deduce(w, "ask", -1, -1);
 					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1168,7 +1262,7 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "askifnot", null, null);
+					ArrayList<Node> output = AP.deduce(w, "askifnot", -1, -1);
 					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1183,7 +1277,7 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "askwh", null, null);
+					ArrayList<Node> output = AP.deduce(w, "askwh", -1, -1);
 					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1198,7 +1292,7 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "askwhnot", null, null);
+					ArrayList<Node> output = AP.deduce(w, "askwhnot", -1, -1);
 					RESULT = AP.displayWffs(output);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

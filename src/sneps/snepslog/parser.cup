@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import sneps.network.Node;
+import sneps.network.PropositionNode;
 import sneps.network.Network;
 import sneps.network.paths.Path;
 import sneps.network.paths.BangPath;
@@ -199,14 +200,95 @@ command ::= 	wffNameCommand
 
 		:};	
 
-wffNameCommand ::= wffName terminalPunctuation
-				{: 
-				
-				:};
-				
-wffCommand ::= wff terminalPunctuation
+wffNameCommand ::= wffName:wn terminalPunctuation:tp
 		   {: 
+				Node w = AP.getWffByWffName(wn);	   
+				ArrayList<Node> nodes = new ArrayList<>();
+				switch (tp) {
+				case ".":
+					try {
+						Controller.addPropToCurrentContext(w.getId());
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
+					break;
+				case "!":
+					nodes = AP.forwardInference(w, "!");
+					RESULT = AP.displayWffs(nodes);
+					break;
+				case "??":
+					boolean flag = Controller.getCurrentContext().isAsserted((PropositionNode) w);
+					if (flag) {
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						RESULT = "";
+					}
+					break;
+				case "?":
+					nodes = AP.deduce(w, "?", -1, -1);
+					RESULT = AP.displayWffs(nodes);
+					break;
+				default:
+					if (tp.startsWith("ONE")) {
+						int i = Integer.parseInt(tp.substring(3));
+						nodes = AP.deduce(w, "?", i, -1);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
+						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
+						nodes = AP.deduce(w, "?", i, j);
+						RESULT = AP.displayWffs(nodes);
+					}
+					break;
+				}
+		   :};	
 				
+wffCommand ::= wff:w terminalPunctuation:tp
+		   {: 
+				ArrayList<Node> nodes = new ArrayList<>();
+				switch (tp) {
+				case ".":
+					try {
+						Controller.addPropToCurrentContext(w.getId());
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
+					break;
+				case "!":
+					nodes = AP.forwardInference(w, "!");
+					RESULT = AP.displayWffs(nodes);
+					break;
+				case "??":
+					boolean flag = Controller.getCurrentContext().isAsserted((PropositionNode) w);
+					if (flag) {
+						nodes.add(w);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						RESULT = "";
+					}
+					break;
+				case "?":
+					nodes = AP.deduce(w, "?", -1, -1);
+					RESULT = AP.displayWffs(nodes);
+					break;
+				default:
+					if (tp.startsWith("ONE")) {
+						int i = Integer.parseInt(tp.substring(3));
+						nodes = AP.deduce(w, "?", i, -1);
+						RESULT = AP.displayWffs(nodes);
+					} else {
+						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
+						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
+						nodes = AP.deduce(w, "?", i, j);
+						RESULT = AP.displayWffs(nodes);
+					}
+					break;
+				}
 		   :};	
 				
 snepslogCommand ::= ACTIVATE wff:w optionalDot
@@ -230,22 +312,22 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| ASK wff:w optionalTerminalPunctuation
 				{: 
-					ArrayList<Node> output = AP.deduce(w, "ask", null, null);
+					ArrayList<Node> output = AP.deduce(w, "ask", -1, -1);
 					RESULT = AP.displayWffs(output);
 				:}
 				| ASKIFNOT wff:w optionalTerminalPunctuation
 				{: 
-					ArrayList<Node> output = AP.deduce(w, "askifnot", null, null);
+					ArrayList<Node> output = AP.deduce(w, "askifnot", -1, -1);
 					RESULT = AP.displayWffs(output);
 				:}
 				| ASKWH wff:w optionalTerminalPunctuation
 				{: 
-					ArrayList<Node> output = AP.deduce(w, "askwh", null, null);
+					ArrayList<Node> output = AP.deduce(w, "askwh", -1, -1);
 					RESULT = AP.displayWffs(output);
 				:}
 				| ASKWHNOT wff:w optionalTerminalPunctuation
 				{: 
-					ArrayList<Node> output = AP.deduce(w, "askwhnot", null, null);
+					ArrayList<Node> output = AP.deduce(w, "askwhnot", -1, -1);
 					RESULT = AP.displayWffs(output);
 				:}
 				| BELIEFS_ABOUT pTermSet optionalDot
