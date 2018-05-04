@@ -166,22 +166,18 @@ public class AP {
 	 * @throws RelationDoesntExistException
 	 *             if a relation was not defined in the Network.
 	 */
-	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, String relations,
+	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, ArrayList<String> relations,
 			String description) throws RelationDoesntExistException {
 		// check if already exists
 		if (modeThreeCaseFrames.containsKey(name)) {
 			return modeThreeCaseFrames.get(name);
 		}
-		// remove the brackets
-		relations = relations.substring(1, relations.length());
-		// divide the relations
-		String[] rs = relations.split(" ");
 		LinkedList<Relation> rels = new LinkedList<Relation>();
-		if (!rs[0].equals("nil")) {
-			rels.add(Network.getRelation(rs[0]));
+		if (!relations.get(0).equals("nil")) {
+			rels.add(Network.getRelation(relations.get(0)));
 		}
-		for (int i = 1; i < rs.length; i++) {
-			rels.add(Network.getRelation(rs[i]));
+		for (int i = 1; i < relations.size(); i++) {
+			rels.add(Network.getRelation(relations.get(i)));
 		}
 		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
 		modeThreeCaseFrames.put(name, cf);
