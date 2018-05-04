@@ -10,8 +10,12 @@
  */
 package sneps.snepslog;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -881,6 +885,32 @@ public class AP {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * A method that loads some commands from a file and execute them.
+	 */
+	protected static String loadFile(String path) {
+		ArrayList<String> commands = new ArrayList<String>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				commands.add(line);
+			}
+			br.close();
+		} catch (IOException e) {
+			return "Error reading the file at: " + path;
+		}
+		String output = "";
+		for (int i = 0; i < commands.size(); i++) {
+			try {
+				output += executeSnepslogCommand(commands.get(i)) + '\n';
+			} catch (Exception e) {
+				return "Error executing the command: " + commands.get(i);
+			}
+		}
+		return output;
 	}
 
 }
