@@ -43,6 +43,16 @@ import sneps.snebr.Controller;
 public class AP {
 
 	/**
+	 * This is a hashtable to store the descriptions of cfs in mode 3.
+	 */
+	private static Hashtable<String, String> cfsDescriptions;
+
+	/**
+	 * This is a hashtable to store the descriptions of nodes in mode 3.
+	 */
+	private static Hashtable<Node, String> nodesDescriptions;
+
+	/**
 	 * This is a hashtable to store the wffs where the key is the assigned wffName.
 	 */
 	private static Hashtable<String, Node> wffs;
@@ -156,8 +166,8 @@ public class AP {
 	 * @throws RelationDoesntExistException
 	 *             if a relation was not defined in the Network.
 	 */
-	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, String relations)
-			throws RelationDoesntExistException {
+	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, String relations,
+			String description) throws RelationDoesntExistException {
 		// check if already exists
 		if (modeThreeCaseFrames.containsKey(name)) {
 			return modeThreeCaseFrames.get(name);
@@ -175,6 +185,9 @@ public class AP {
 		}
 		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
 		modeThreeCaseFrames.put(name, cf);
+		if (description != null) {
+			cfsDescriptions.put(name, description);
+		}
 		return cf;
 	}
 
@@ -856,6 +869,22 @@ public class AP {
 			}
 		}
 		return beliefs;
+	}
+
+	/**
+	 * A method returning the description of some given nodes.
+	 */
+	protected static String describeTerms(ArrayList<Node> nodes) {
+		String result = "";
+		if (AP.getSnepslogMode() != 3) {
+			return result;
+		}
+		for (int i = 0; i < nodes.size(); i++) {
+			if (nodesDescriptions.get(nodes.get(i)) != null) {
+				result += nodesDescriptions.get(nodes.get(i)) + '\n';
+			}
+		}
+		return result;
 	}
 
 }
