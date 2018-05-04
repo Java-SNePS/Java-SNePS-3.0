@@ -21,7 +21,6 @@ public class ThreshNode extends RuleNode {
 	boolean sign = false;
 	
 	private int min, max, args;
-	int positiveCount = 0;
 	
 	public int getThreshMin() {
 		return min;
@@ -35,109 +34,62 @@ public class ThreshNode extends RuleNode {
 		return args;
 	}
 
-	public ThreshNode() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public ThreshNode(Term syn) {
 		super(syn);
-		// TODO Auto-generated constructor stub
+		NodeSet minNode = this.getDownNodeSet("thresh");
+		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
+		NodeSet maxNode = this.getDownNodeSet("threshmax");
+		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
+		NodeSet antNodes = this.getDownNodeSet("arg");
+		args = antNodes.size();
+		this.processNodes(antNodes);
 	}
 
 	public ThreshNode(Semantic sym, Term syn) {
 		super(sym, syn);
-	}
-
-	public void applyRuleHandler(Report request, Node node) {
-		
-		if(request.isPositive()==true)
-			positiveCount++;
-		
-		for (Channel outChannel : outgoingChannels)
-			outChannel.addReport(request);
-		
+		NodeSet minNode = this.getDownNodeSet("thresh");
+		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
+		NodeSet maxNode = this.getDownNodeSet("threshmax");
+		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
+		NodeSet antNodes = this.getDownNodeSet("arg");
+		args = antNodes.size();
+		this.processNodes(antNodes);
 	}
 	
 	
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
-		if(min!=max) {
-			if(positiveCount<min || positiveCount>max)
-				sign=true;
-			else
-				sign=false;
-		} else {
-			if(positiveCount>0 && positiveCount!=min)
-				sign=true;
-			else
-				sign=false;
-		}
+		if (tRui.getPosCount() == min
+				&& tRui.getNegCount() == args - max - 1)
+			sign = true;
+		else if (tRui.getPosCount() != min - 1 || tRui.getNegCount() != args - max)
+			sign = false;
 		
 		
 		
-		Set<Integer> consequents = new HashSet<Integer>();
+		Set<Integer> nodesSentReports = new HashSet<Integer>();
 		for (FlagNode fn : tRui.getFlagNodeSet()) {
-			consequents.add(fn.getNode().getId());
+			nodesSentReports.add(fn.getNode().getId());
 		}
 		
-		Support originSupports = ((PropositionNode) this).getSemantic().getBasicSupport();
-		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
+		Support originSupports = this.getBasicSupport();
+		HashSet<Support> sup = new HashSet<Support>();
+		sup.add(originSupports);
+		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(sup), sign,contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
-			if(!consequents.contains(outChannel.getRequester().getId()))
+			if(!nodesSentReports.contains(outChannel.getRequester().getId()))
 			outChannel.addReport(forwardReport);
 		}
 		
 	}
 	
-	/*
-	public void applyRuleHandler(Report request, Node node) {
-		
-		if(request.isPositive()==true)
-			positiveCount++;
-		
-	}
 	
-	@Override
-	protected void sendRui(RuleUseInfo tRui, String contextID) {
-		if(min!=max) {
-			if(positiveCount<=min || positiveCount>=max)
-				sign=true;
-			else
-				sign=false;
-		} else {
-			if(positiveCount>0)
-				sign=true;
-			else
-				sign=false;
-		}
-		
-		
-		Set<Integer> consequents = new HashSet<Integer>();
-		for (FlagNode fn : tRui.getFlagNodeSet()) {
-			if (antNodesWithVarsIDs.contains(fn.getNode().getId()))
-				continue;
-			if (antNodesWithoutVarsIDs.contains(fn.getNode().getId()))
-				continue;
-			consequents.add(fn.getNode().getId());
-		}
-		Set<Support> originSupports = ((PropositionNode) this.getSemantic()).getOriginSupport();
-		Report report = new Report(tRui.getSub(), tRui.getSupport(originSupports), sign,contextID);
-		for (Channel outChannel : outgoingChannels) {
-			if (!consequents.contains(outChannel.getRequester().getId()))
-				continue;
-			outChannel.addReport(report);
-		
-
-		}
-	}
-	*/
-
 
 	@Override
 	public NodeSet getDownAntNodeSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDownNodeSet("Tant");
 	}
 
 }
