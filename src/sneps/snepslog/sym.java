@@ -8,99 +8,99 @@ package sneps.snepslog;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int WITHSOME = 68;
+  public static final int WITHSOME = 65;
   public static final int CLEAR_INFER = 14;
-  public static final int UNDEFINE_PATH = 42;
-  public static final int UNTRACE = 44;
-  public static final int IDENTIFIER = 91;
-  public static final int NORMAL = 32;
-  public static final int AND_ENTAILMENT = 51;
-  public static final int CLOSE_PARAN = 65;
+  public static final int UNDEFINE_PATH = 39;
+  public static final int UNTRACE = 41;
+  public static final int IDENTIFIER = 88;
+  public static final int NORMAL = 29;
+  public static final int AND_ENTAILMENT = 48;
+  public static final int CLOSE_PARAN = 62;
   public static final int DEFINE_RELATION = 20;
-  public static final int TRACE = 41;
-  public static final int BANGPATH = 86;
-  public static final int LIST_CONTEXTS = 29;
+  public static final int TRACE = 38;
+  public static final int BANGPATH = 83;
+  public static final int LIST_CONTEXTS = 26;
   public static final int ASKWH = 8;
   public static final int ASK = 6;
-  public static final int INT_LIT = 90;
-  public static final int STRING_LIT = 89;
-  public static final int NUMERICAL_ENTAILMENT = 92;
+  public static final int INT_LIT = 87;
+  public static final int STRING_LIT = 86;
+  public static final int NUMERICAL_ENTAILMENT = 89;
   public static final int MANUAL = 13;
-  public static final int CLOSE_CURLY = 67;
+  public static final int CLOSE_CURLY = 64;
   public static final int BELIEFS_ABOUT = 10;
   public static final int DEFINE_SEMANTIC = 19;
-  public static final int COMMA = 62;
+  public static final int COMMA = 59;
   public static final int ADD_TO_CONTEXT = 5;
   public static final int DEFINE_PATH = 18;
-  public static final int WITHALL = 69;
-  public static final int UNLABELED = 43;
-  public static final int DESCRIBE_TERMS = 26;
-  public static final int ALL = 61;
-  public static final int IRREFLEXIVE_RESTRICT = 82;
+  public static final int WITHALL = 66;
+  public static final int UNLABELED = 40;
+  public static final int DESCRIBE_TERMS = 23;
+  public static final int ALL = 58;
+  public static final int IRREFLEXIVE_RESTRICT = 79;
   public static final int BR_MODE = 11;
-  public static final int IFDO = 71;
-  public static final int EXPAND = 21;
-  public static final int NOT = 52;
-  public static final int NOR = 57;
-  public static final int OR_ENTAILMENT = 50;
-  public static final int PARSING = 47;
-  public static final int KPLUS = 78;
-  public static final int IMPLICATION = 49;
-  public static final int DOMAIN_RESTRICT = 83;
-  public static final int EQUALITY = 48;
-  public static final int EMPTYPATH = 87;
-  public static final int ANDOR = 53;
-  public static final int WHENEVERDO = 73;
-  public static final int KSTAR = 79;
-  public static final int EXPERT = 27;
-  public static final int REMOVE_FROM_CONTEXT = 34;
-  public static final int ACTING = 46;
-  public static final int FILEPATH = 88;
-  public static final int CONVERSE = 81;
-  public static final int LIST_TERMS = 30;
-  public static final int OPEN_PARAN = 64;
-  public static final int NONE = 23;
-  public static final int WFF = 70;
+  public static final int IFDO = 68;
+  public static final int EXPAND = 90;
+  public static final int NOT = 49;
+  public static final int NOR = 54;
+  public static final int OR_ENTAILMENT = 47;
+  public static final int PARSING = 44;
+  public static final int KPLUS = 75;
+  public static final int IMPLICATION = 46;
+  public static final int DOMAIN_RESTRICT = 80;
+  public static final int EQUALITY = 45;
+  public static final int EMPTYPATH = 84;
+  public static final int ANDOR = 50;
+  public static final int WHENEVERDO = 70;
+  public static final int KSTAR = 76;
+  public static final int EXPERT = 24;
+  public static final int REMOVE_FROM_CONTEXT = 31;
+  public static final int ACTING = 43;
+  public static final int FILEPATH = 85;
+  public static final int CONVERSE = 78;
+  public static final int LIST_TERMS = 27;
+  public static final int OPEN_PARAN = 61;
+  public static final int NONE = 92;
+  public static final int WFF = 67;
   public static final int CLEARKB = 15;
   public static final int ASKIFNOT = 7;
-  public static final int GOALPLAN = 76;
-  public static final int SET_MODE_3 = 39;
-  public static final int SET_MODE_2 = 38;
-  public static final int SET_MODE_1 = 37;
+  public static final int GOALPLAN = 73;
+  public static final int SET_MODE_3 = 36;
+  public static final int SET_MODE_2 = 35;
+  public static final int SET_MODE_1 = 34;
   public static final int DOT = 4;
-  public static final int INFERENCE = 45;
-  public static final int LOAD = 31;
-  public static final int REDUCE = 22;
-  public static final int PERFORM = 33;
-  public static final int SHOW = 40;
-  public static final int RANGE_RESTRICT = 84;
-  public static final int THRESH = 60;
+  public static final int INFERENCE = 42;
+  public static final int LOAD = 28;
+  public static final int REDUCE = 91;
+  public static final int PERFORM = 30;
+  public static final int SHOW = 37;
+  public static final int RANGE_RESTRICT = 81;
+  public static final int THRESH = 57;
   public static final int EOF = 0;
-  public static final int SET_DEFAULT_CONTEXT = 36;
+  public static final int SET_DEFAULT_CONTEXT = 33;
   public static final int BANG = 3;
-  public static final int OPEN_CURLY = 66;
-  public static final int COMPOSE = 80;
+  public static final int OPEN_CURLY = 63;
+  public static final int COMPOSE = 77;
   public static final int DEFINE_FRAME = 17;
-  public static final int OR = 55;
+  public static final int OR = 52;
   public static final int error = 1;
-  public static final int LIST_ASSERTED_WFFS = 28;
-  public static final int ACTPLAN = 74;
-  public static final int COLON = 63;
-  public static final int WHENDO = 72;
-  public static final int QUESTION_MARK = 24;
-  public static final int DESCRIBE_CONTEXT = 25;
-  public static final int PRECONDITION = 77;
+  public static final int LIST_ASSERTED_WFFS = 25;
+  public static final int ACTPLAN = 71;
+  public static final int COLON = 60;
+  public static final int WHENDO = 69;
+  public static final int QUESTION_MARK = 21;
+  public static final int DESCRIBE_CONTEXT = 22;
+  public static final int PRECONDITION = 74;
   public static final int COPYRIGHT = 16;
-  public static final int AND = 54;
-  public static final int SET_CONTEXT = 35;
+  public static final int AND = 51;
+  public static final int SET_CONTEXT = 32;
   public static final int ACTIVATE = 2;
   public static final int ASKWHNOT = 9;
-  public static final int IFF = 59;
+  public static final int IFF = 56;
   public static final int AUTO = 12;
-  public static final int NAND = 56;
-  public static final int XOR = 58;
-  public static final int CFRES = 85;
-  public static final int EFFECT = 75;
+  public static final int NAND = 53;
+  public static final int XOR = 55;
+  public static final int CFRES = 82;
+  public static final int EFFECT = 72;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -123,9 +123,6 @@ public class sym {
   "DEFINE_PATH",
   "DEFINE_SEMANTIC",
   "DEFINE_RELATION",
-  "EXPAND",
-  "REDUCE",
-  "NONE",
   "QUESTION_MARK",
   "DESCRIBE_CONTEXT",
   "DESCRIBE_TERMS",
@@ -194,7 +191,10 @@ public class sym {
   "STRING_LIT",
   "INT_LIT",
   "IDENTIFIER",
-  "NUMERICAL_ENTAILMENT"
+  "NUMERICAL_ENTAILMENT",
+  "EXPAND",
+  "REDUCE",
+  "NONE"
   };
 }
 

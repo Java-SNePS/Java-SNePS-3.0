@@ -54,9 +54,6 @@ terminal ACTIVATE,
          DEFINE_PATH,
          DEFINE_SEMANTIC,
          DEFINE_RELATION,
-         EXPAND,
-         REDUCE,
-         NONE,
          QUESTION_MARK,
          DESCRIBE_CONTEXT,
          DESCRIBE_TERMS,
@@ -126,7 +123,10 @@ terminal String FILEPATH,
                 STRING_LIT,
                 INT_LIT,
                 IDENTIFIER,
-                NUMERICAL_ENTAILMENT;
+                NUMERICAL_ENTAILMENT,
+                EXPAND,
+         	    REDUCE,
+         	    NONE;
 
 /* Non-terminals */
 
@@ -447,21 +447,41 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				{: 
 
 				:}
-				| DEFINE_RELATION IDENTIFIER IDENTIFIER
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						Network.defineRelation(id1, id2);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
-				| DEFINE_RELATION IDENTIFIER IDENTIFIER EXPAND INT_LIT
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 EXPAND:a INT_LIT:l
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
-				| DEFINE_RELATION IDENTIFIER IDENTIFIER REDUCE INT_LIT
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 REDUCE:a INT_LIT:l
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
-				| DEFINE_RELATION IDENTIFIER IDENTIFIER NONE INT_LIT
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 NONE:a INT_LIT:l
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
 				| DESCRIBE_CONTEXT optionalIdentifier:oid optionalDot
 				{: 
