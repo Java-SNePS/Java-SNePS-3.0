@@ -536,7 +536,13 @@ public class AP {
 	 * This method is used to clear the knowledge base entirely.
 	 */
 	protected static void clearKnowledgeBase() {
-		// TODO Finish building clearKnowledgeBase()
+		Controller.clearSNeBR();
+		Network.clearNetwork();
+		wffNameCounter = 0;
+		wffs.clear();
+		cfsDescriptions.clear();
+		nodesDescriptions.clear();
+		modeThreeCaseFrames.clear();
 	}
 
 	/**
