@@ -408,13 +408,23 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				{: 
 					RESULT = "copyright statement goes here.";
 				:}
-				| DEFINE_FRAME IDENTIFIER IDENTIFIER identifiers_list optionalDot
+				| DEFINE_FRAME IDENTIFIER:id1 IDENTIFIER:id2 identifiers_list:idl optionalDot
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						AP.createModeThreeCaseFrame(id1, id2, idl, null);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
-				| DEFINE_FRAME IDENTIFIER IDENTIFIER identifiers_list STRING_LIT optionalDot
+				| DEFINE_FRAME IDENTIFIER:id1 IDENTIFIER:id2 identifiers_list:idl STRING_LIT:sl optionalDot
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						AP.createModeThreeCaseFrame(id1, id2, idl, sl);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
 				| DEFINE_PATH IDENTIFIER:id snepsPath:sp optionalDot
 				{: 
@@ -461,9 +471,13 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = Controller.getCurrentContext().toString();
 					}
 				:}
-				| DESCRIBE_TERMS optionalPTermSet optionalDot
+				| DESCRIBE_TERMS optionalPTermSet:opts optionalDot
 				{: 
-
+					if(opts!=null){
+						RESULT = AP.describeTerms(opts);
+					}else{
+						RESULT = AP.describeTerms(AP.getAllClosedNodesFromTheNetwork());
+					}
 				:}
 				| EXPERT optionalDot
 				{: 
