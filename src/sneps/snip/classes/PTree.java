@@ -9,9 +9,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import sneps.network.Node;
-import sneps.network.cables.DownCable;
-import sneps.network.cables.DownCableSet;
-import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
@@ -222,7 +219,22 @@ public class PTree extends RuisHandler {
 		return union;
 	}
 
-	private class PSubTree {
+	public HashSet<PSubTree> getSubTrees() {
+		return subTrees;
+	}
+	public void setSubTrees(HashSet<PSubTree> subTrees) {
+		this.subTrees = subTrees;
+	}
+	public Hashtable<Integer, PSubTree> getSubTreesMap() {
+		return subTreesMap;
+	}
+
+	public void setSubTreesMap(Hashtable<Integer, PSubTree> subTreesMap) {
+		this.subTreesMap = subTreesMap;
+	}
+	
+	
+	public class PSubTree {
 		private PTreeNode root;
 
 		/*public PSubTree(){
@@ -258,7 +270,7 @@ public class PTree extends RuisHandler {
 
 	}
 
-	private class PTreeNode {
+	public class PTreeNode {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;
 		//private HashSet<RuleUseInfo> ruis;
@@ -367,4 +379,6 @@ public class PTree extends RuisHandler {
 		}
 
 	}
+
+	
 }
