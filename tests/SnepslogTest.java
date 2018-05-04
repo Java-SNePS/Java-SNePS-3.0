@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import sneps.snepslog.AP;
 
 public class SnepslogTest extends TestCase {
-
+/*
 	@Test
     public void testActivate() {
 		try{
@@ -147,7 +147,7 @@ public class SnepslogTest extends TestCase {
 		   }
     }
 	
-/*	@Test
+	@Test
     public void testDefinePath() {
 		try{
 		      AP.executeSnepslogCommand("define-path isa compose(member,class)");
@@ -155,7 +155,7 @@ public class SnepslogTest extends TestCase {
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
 		   }
-    }*/
+    }
 	
 	@Test
     public void testDefineSemantic() {
@@ -327,7 +327,7 @@ public class SnepslogTest extends TestCase {
 		   }
     }
 	
-/*	@Test
+	@Test
     public void testUndefinePath() {
 		try{
 		      AP.executeSnepslogCommand("undefine-path member");
@@ -335,7 +335,7 @@ public class SnepslogTest extends TestCase {
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
 		   }
-    }*/
+    }
 	
 	@Test
     public void testUnlabeled() {
@@ -356,5 +356,5 @@ public class SnepslogTest extends TestCase {
 		      fail("No exception is expected to be thrown");
 		   }
     }
-	
+*/	
 }
