@@ -528,9 +528,9 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = AP.displayWffs(AP.getAllClosedNodesFromTheNetwork());
 					}
 				:}
-				| LOAD FILEPATH optionalDot
+				| LOAD FILEPATH:fp optionalDot
 				{: 
-
+					RESULT = AP.loadFile(fp);
 				:}
 				| NORMAL optionalDot
 				{: 

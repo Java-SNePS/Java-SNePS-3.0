@@ -1752,8 +1752,11 @@ class CUP$parser$actions {
           case 36: // snepslogCommand ::= LOAD FILEPATH optionalDot 
             {
               String RESULT =null;
+		int fpleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int fpright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String fp = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					RESULT = AP.loadFile(fp);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
