@@ -9,6 +9,7 @@ import java.io.*;
 import java_cup.runtime.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.Network;
@@ -1724,7 +1725,12 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-
+					Set<String> contexts = Controller.getAllNamesOfContexts();
+					String output = "";
+					for (String context : contexts) {
+						output+=context+'\n';
+					}
+					RESULT = output;		
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

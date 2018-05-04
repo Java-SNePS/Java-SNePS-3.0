@@ -5,6 +5,7 @@ import java_cup.runtime.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
 
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -518,7 +519,12 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| LIST_CONTEXTS optionalDot
 				{: 
-
+					Set<String> contexts = Controller.getAllNamesOfContexts();
+					String output = "";
+					for (String context : contexts) {
+						output+=context+'\n';
+					}
+					RESULT = output;		
 				:}
 				| LIST_TERMS optionalPTermSet:opts optionalDot
 				{: 
