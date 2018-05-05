@@ -586,7 +586,7 @@ public class AP {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
 		case "withsome":
-			wires.add(new Wire(Relation.withsome, Network.buildBaseNode("withsome", new Semantic("Action"))));
+			wires.add(new Wire(Relation.action, Network.buildBaseNode("withsome", new Semantic("Action"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
@@ -606,7 +606,7 @@ public class AP {
 			}
 			break;
 		case "withall":
-			wires.add(new Wire(Relation.withall, Network.buildBaseNode("withall", new Semantic("Action"))));
+			wires.add(new Wire(Relation.action, Network.buildBaseNode("withall", new Semantic("Action"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
