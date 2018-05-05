@@ -13,7 +13,6 @@ package sneps.snepslog;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +35,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
-import sneps.network.classes.Semantic;
+import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -213,18 +212,18 @@ public class AP {
 		switch (type) {
 		case "and":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode("2", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("2", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("2", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("2", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "or":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode("2", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("2", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "equality":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
-			wires.add(new Wire(Relation.threshMax, Network.buildBaseNode("1", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.threshMax, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		}
 		Node infixedTermNode = Network.buildMolecularNode(wires, caseFrame);
@@ -286,7 +285,7 @@ public class AP {
 			for (int j = 0; j < consequents.size(); j++) {
 				wires.add(new Wire(Relation.cq, consequents.get(j)));
 			}
-			wires.add(new Wire(Relation.i, Network.buildBaseNode(optionalI, new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.i, Network.buildBaseNode(optionalI, SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "Implication":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.orRule;
@@ -321,8 +320,8 @@ public class AP {
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, node));
-		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Infimum"))));
-		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
+		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", SemanticHierarchy.createSemanticType("Infimum"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode("0", SemanticHierarchy.createSemanticType("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 		Node negatedNode = Network.buildMolecularNode(wires, caseFrame);
 		return negatedNode;
@@ -354,8 +353,8 @@ public class AP {
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
 		}
-		wires.add(new Wire(Relation.max, Network.buildBaseNode(j, new Semantic("Infimum"))));
-		wires.add(new Wire(Relation.min, Network.buildBaseNode(i, new Semantic("Infimum"))));
+		wires.add(new Wire(Relation.max, Network.buildBaseNode(j, SemanticHierarchy.createSemanticType("Infimum"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode(i, SemanticHierarchy.createSemanticType("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 		Node andorNode = Network.buildMolecularNode(wires, caseFrame);
 		return andorNode;
@@ -389,35 +388,35 @@ public class AP {
 		switch (type) {
 		case "and":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode(arguments.size() + "", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode(arguments.size() + "", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "or":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode(arguments.size() + "", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "nand":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
 			wires.add(
-					new Wire(Relation.max, Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
+					new Wire(Relation.max, Network.buildBaseNode(arguments.size() - 1 + "", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "nor":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode("0", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("0", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("0", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "xor":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
-			wires.add(new Wire(Relation.max, Network.buildBaseNode("1", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", new Semantic("Infimum"))));
+			wires.add(new Wire(Relation.max, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.min, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		case "iff":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
 			wires.add(new Wire(Relation.threshMax,
-					Network.buildBaseNode(arguments.size() - 1 + "", new Semantic("Infimum"))));
-			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", new Semantic("Infimum"))));
+					Network.buildBaseNode(arguments.size() - 1 + "", SemanticHierarchy.createSemanticType("Infimum"))));
+			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", SemanticHierarchy.createSemanticType("Infimum"))));
 			break;
 		}
 		Node setTermNode = Network.buildMolecularNode(wires, caseFrame);
@@ -450,8 +449,8 @@ public class AP {
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
 		}
-		wires.add(new Wire(Relation.max, Network.buildBaseNode(threshmax, new Semantic("Infimum"))));
-		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, new Semantic("Infimum"))));
+		wires.add(new Wire(Relation.max, Network.buildBaseNode(threshmax, SemanticHierarchy.createSemanticType("Infimum"))));
+		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, SemanticHierarchy.createSemanticType("Infimum"))));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
 		Node threshNode = Network.buildMolecularNode(wires, caseFrame);
 		return threshNode;
@@ -586,7 +585,7 @@ public class AP {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
 		case "withsome":
-			wires.add(new Wire(Relation.action, Network.buildBaseNode("withsome", new Semantic("Action"))));
+			wires.add(new Wire(Relation.action, Network.buildBaseNode("withsome", SemanticHierarchy.createSemanticType("Act"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
@@ -606,7 +605,7 @@ public class AP {
 			}
 			break;
 		case "withall":
-			wires.add(new Wire(Relation.action, Network.buildBaseNode("withall", new Semantic("Action"))));
+			wires.add(new Wire(Relation.action, Network.buildBaseNode("withall", SemanticHierarchy.createSemanticType("Act"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
