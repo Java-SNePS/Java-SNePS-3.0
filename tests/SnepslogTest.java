@@ -115,7 +115,7 @@ public class SnepslogTest extends TestCase {
 		   catch(Exception e){
 		      fail("No exception is expected to be thrown");
 		   }
-    }
+    }*/
 	
 	@Test
     public void testClearKB() {
@@ -136,7 +136,7 @@ public class SnepslogTest extends TestCase {
 		      fail("No exception is expected to be thrown");
 		   }
     }
-	
+	/*
 	@Test
     public void testDefineFrame() {
 		try{
