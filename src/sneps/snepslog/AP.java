@@ -25,7 +25,7 @@ import java.util.Set;
 import java_cup.runtime.Symbol;
 import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.CaseFrameMissMatchException;
-import sneps.exceptions.DuplicateNodeException;
+import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
@@ -201,12 +201,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 */
 	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			DuplicateNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -248,13 +248,13 @@ public class AP {
 	 *            entailment.
 	 * @return a molecular node representing the entailment
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
-			ArrayList<Node> consequents, String optionalI) throws CannotBuildNodeException, DuplicateNodeException,
+			ArrayList<Node> consequents, String optionalI) throws CannotBuildNodeException, EquivalentNodeException,
 			CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
@@ -312,12 +312,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 */
 	protected static Node buildNegatedTerm(Node node)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			DuplicateNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException {
 		Network.defineDefaults();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, node));
@@ -342,12 +342,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 */
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			DuplicateNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException {
 		// TODO andor i j checks
 		Network.defineDefaults();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -374,12 +374,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 */
 	protected static Node buildSetTerm(String type, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			DuplicateNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -434,13 +434,13 @@ public class AP {
 	 *            an ArrayList of the nodes representing the arguments.
 	 * @return a molecular node representing a threshTerm.
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 */
 	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments)
-			throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException,
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
 			NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		// TODO thresh i j checks
 		Network.defineDefaults();
@@ -469,11 +469,11 @@ public class AP {
 	 *            the second argument node.
 	 * @return a molecular node representing the SNeRE term.
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 */
 	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2)
-			throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException {
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -571,7 +571,7 @@ public class AP {
 	 *            an ArrayList of the nodes representing the elsee.
 	 * @return a molecular node representing the entailment
 	 * @throws CaseFrameMissMatchException
-	 * @throws DuplicateNodeException
+	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -579,7 +579,7 @@ public class AP {
 	protected static Node buildWithsomeAllTerm(String type, ArrayList<Node> vars, ArrayList<Node> suchthat,
 			ArrayList<Node> doo, ArrayList<Node> elsee)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			DuplicateNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
