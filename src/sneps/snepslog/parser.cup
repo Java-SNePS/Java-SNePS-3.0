@@ -989,9 +989,9 @@ qvar ::= QUESTION_MARK snepslogSymbol:ss
 		RESULT = ss;
 	 :};
 
-snepslogSymbol ::= IDENTIFIER
+snepslogSymbol ::= IDENTIFIER:id
                {:
-               		RESULT = Network.buildVariableNode();
+               		RESULT = Network.buildVariableNode(id);
                :};
 
 terminalPunctuation ::= DOT
