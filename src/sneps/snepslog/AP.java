@@ -49,12 +49,12 @@ public class AP {
 	/**
 	 * This is a hashtable to store the descriptions of cfs in mode 3.
 	 */
-	private static Hashtable<String, String> cfsDescriptions;
+	private static Hashtable<String, String> cfsDescriptions = new Hashtable<String, String>();
 
 	/**
 	 * This is a hashtable to store the descriptions of nodes in mode 3.
 	 */
-	private static Hashtable<Node, String> nodesDescriptions;
+	private static Hashtable<Node, String> nodesDescriptions = new Hashtable<Node, String>();
 
 	/**
 	 * This is a counter for the wffNames.
@@ -65,7 +65,7 @@ public class AP {
 	 * This is a hashtable to store the case frames used in mode 3 where the key is
 	 * the name used in creating the case frame.
 	 */
-	private static Hashtable<String, CaseFrame> modeThreeCaseFrames;
+	private static Hashtable<String, CaseFrame> modeThreeCaseFrames = new Hashtable<String, CaseFrame>();
 
 	/**
 	 * an integer which holds the number of the snepslog mode currently in use. It
@@ -886,4 +886,8 @@ public class AP {
 		return output;
 	}
 
+	public static void main(String[] args) throws Exception {
+		System.out.println(executeSnepslogCommand("clearkb"));
+	}
+	
 }
