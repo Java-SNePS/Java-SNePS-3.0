@@ -203,7 +203,7 @@ command ::= 	wffNameCommand:wnc
 
 wffNameCommand ::= wffName:wn terminalPunctuation:tp
 		   {: 
-				Node w = AP.getWffByWffName(wn);	   
+				Node w = Network.getNodes().get("M"+wn.substring(3));   
 				ArrayList<Node> nodes = new ArrayList<>();
 				ArrayList<Node> matchingNodes = new ArrayList<>();
 				switch (tp) {

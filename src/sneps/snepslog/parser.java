@@ -1090,7 +1090,7 @@ class CUP$parser$actions {
 		int tpright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String tp = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-				Node w = AP.getWffByWffName(wn);	   
+				Node w = Network.getNodes().get("M"+wn.substring(3));   
 				ArrayList<Node> nodes = new ArrayList<>();
 				ArrayList<Node> matchingNodes = new ArrayList<>();
 				switch (tp) {
