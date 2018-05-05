@@ -885,8 +885,4 @@ public class AP {
 		return output;
 	}
 
-	public static void main(String[] args) throws Exception {
-		System.out.println(executeSnepslogCommand("clearkb"));
-	}
-
 }
