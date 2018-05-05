@@ -1,44 +1,30 @@
 package sneps.setClasses;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Hashtable;
 
-import sneps.snip.classes.RuisHandler;
-
-public class ContextRuisSet implements Iterable<RuisHandler> {
-	private HashSet<RuisHandler> ruisHandlers;
+public class ContextRuisSet{
+	private Hashtable<String, RUIHandlerSet> ruisHandlers;
 
 	public ContextRuisSet() {
-		ruisHandlers = new HashSet<RuisHandler>();
+		ruisHandlers = new Hashtable<String, RUIHandlerSet>();
 	}
 
-	@Override
-	public Iterator<RuisHandler> iterator() {
-		return ruisHandlers.iterator();
+	public void addHandlerSet(String contextName, RUIHandlerSet handlerSet){
+		ruisHandlers.put(contextName, handlerSet);
 	}
-
-	public void addChannel(RuisHandler newChannel) {
-		ruisHandlers.add(newChannel);
-	}
-
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void putIn(RuisHandler cRuis) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	public boolean hasContext(String contextID) {
-		// TODO Auto-generated method stub
-		return false;
+		RUIHandlerSet set = ruisHandlers.get(contextID);
+		if(set == null || set.isEmpty())
+			return false;
+		return true;
 	}
 
-	public RuisHandler getContextRUIS(String contextID) {
-		// TODO Auto-generated method stub
-		return null;
+	public RUIHandlerSet getHandlerSet(String contextID) {
+		RUIHandlerSet set = ruisHandlers.get(contextID);
+		if(set == null || set.isEmpty())
+			set = new RUIHandlerSet();
+		return set;
 	}
 
 }
