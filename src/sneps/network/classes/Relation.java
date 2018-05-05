@@ -19,7 +19,7 @@ import sneps.network.paths.Path;
 public class Relation implements Serializable {
 
 	public static Relation andAnt, ant, cq, arg, min, max, i, threshMax, thresh, action, obj, precondition, act, when,
-			whenever, doo, iff, effect, plan, goal, vars, suchthat, elsee, withsome, withall, obj1, obj2, obj3, obj4,
+			whenever, doo, iff, effect, plan, goal, vars, suchthat, elsee, obj1, obj2, obj3, obj4,
 			obj5, obj6, obj7, obj8, obj9, obj10;
 
 	/**
@@ -228,8 +228,6 @@ public class Relation implements Serializable {
 		suchthat = Network.defineRelation("suchthat", "Proposition", "none", 1);
 		vars = Network.defineRelation("vars", "Infimum", "none", 1);
 		elsee = Network.defineRelation("else", "Act", "none", 1);
-		withsome = Network.defineRelation("withsome", "Action", "none", 1);
-		withall = Network.defineRelation("withall", "Action", "none", 1);
 	}
 
 }
