@@ -129,23 +129,27 @@ public abstract class RuleNode extends PropositionNode {
 
 	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {
 		VarNodeSet res = new VarNodeSet();
+		VarNodeSet temp = new VarNodeSet();
 		if (nodes.isEmpty())
 			return res;
 
-		for(Node currentNode : nodes){
-			if(currentNode instanceof VariableNode){
-				//&& res.contains((VariableNode)currentNode)){
-				//TODO Ask here later
-
+		for(Node curNode : nodes){
+			if(curNode instanceof VariableNode){
+				if(temp.contains((VariableNode)curNode))
+					res.addVarNode((VariableNode)curNode);
+				else
+					temp.addVarNode((VariableNode) curNode);
+			}
+			
+			if(curNode.getTerm() instanceof Open){
+				VarNodeSet free = ((Open)curNode.getTerm()).getFreeVariables();
+				for(VariableNode var : free)
+					if(temp.contains(var))
+						res.addVarNode(var);
+					else
+						temp.addVarNode(var);
 			}
 		}
-
-		/* = ImmutableSet.copyOf(n.getFreeVariables());
-		for (int i = 1; i < nodes.size(); i++) {
-			n = (VariableNode) nodes.getNode(i);
-			//Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
-			//res = Sets.intersection(res, temp);
-		}*/
 		return res;
 	}
 

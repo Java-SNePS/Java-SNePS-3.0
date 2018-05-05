@@ -17,7 +17,7 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
 
-public class PTree extends RuisHandler {//TODO Variable Nodes
+public class PTree extends RuisHandler {
 	private Hashtable<Integer, VarNodeSet> patternVariables;//PatId, Variables
 	private Hashtable<VariableNode, Set<Integer>> variablePatterns;//VarId, Patterns
 	/*private VariableSet vars;

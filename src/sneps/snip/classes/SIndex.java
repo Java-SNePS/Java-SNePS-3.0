@@ -26,9 +26,9 @@ public class SIndex extends RuisHandler {
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
 		int[] vars = new int[sharedVars.size()];
 		int index = 0;
-		for (VariableNode var : sharedVars) {
+		for (VariableNode var : sharedVars)
 			vars[index++] = rui.getSub().term(var).getId();
-		}
+		
 
 		RuisHandler trui= map.get(vars);
 		if (trui == null) {

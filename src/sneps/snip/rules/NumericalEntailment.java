@@ -45,7 +45,7 @@ public class NumericalEntailment extends RuleNode {
 		if (ruisNotSent.size() >= i)
 			sendSavedRUIs(report.getContextName());
 	}
-	//TODO n-i+1 n-1  ---> SIndex for i combinable
+	//TODO n-i+1 n-1  ---> SIndex for combinable i
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo rui, String contextID) {
 		if (rui.getPosCount() >= i){
