@@ -989,11 +989,7 @@ qvar ::= QUESTION_MARK snepslogSymbol:ss
 		RESULT = ss;
 	 :};
 
-snepslogSymbol ::= wffName:wn
-               {:
-               		RESULT = Network.buildVariableNode();
-               :}
-               | IDENTIFIER
+snepslogSymbol ::= IDENTIFIER
                {:
                		RESULT = Network.buildVariableNode();
                :};
