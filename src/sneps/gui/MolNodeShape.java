@@ -10,11 +10,10 @@ import sneps.network.classes.CaseFrame;
 public class MolNodeShape {
 
 	private double x,y;
-	//private String identifier;
+	private String identifier = null;
 	private CaseFrame cf;
 	
 	public MolNodeShape(double x, double y, CaseFrame cf) {
-		//this.identifier = identifier;
 		this.x = x;
 		this.y = y;
 		this.cf = cf;
@@ -34,6 +33,14 @@ public class MolNodeShape {
 		sp.getChildren().add(txt);
 		x.getChildren().add(sp);
 		return x;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public double getX() {

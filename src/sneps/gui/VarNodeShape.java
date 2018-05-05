@@ -34,14 +34,26 @@ public class VarNodeShape implements Serializable {
 		return x;
 	}
 	
-	public void setXY(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
 	public double xStart() {
 		return x-50;
 	}
 	
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
 	public double xEnd() {
 		return x+50;
 	}
