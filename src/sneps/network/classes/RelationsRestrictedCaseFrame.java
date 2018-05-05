@@ -350,7 +350,7 @@ public class RelationsRestrictedCaseFrame extends CaseFrame {
 		withsome.add(RCFP.suchthat);
 		withsome.add(RCFP.doo);
 		withsome.add(RCFP.elsee);
-		withSome = Network.defineCaseFrameWithConstraints("ControlAction", withsome);
+		withSome = Network.defineCaseFrameWithConstraints("Act", withsome);
 
 		LinkedList<RCFP> withall = new LinkedList<RCFP>();
 		withsome.add(RCFP.action);
@@ -358,21 +358,21 @@ public class RelationsRestrictedCaseFrame extends CaseFrame {
 		withall.add(RCFP.suchthat);
 		withall.add(RCFP.doo);
 		withall.add(RCFP.elsee);
-		withAll = Network.defineCaseFrameWithConstraints("ControlAction", withall);
+		withAll = Network.defineCaseFrameWithConstraints("Act", withall);
 
 		LinkedList<RCFP> withsomenoelse = new LinkedList<RCFP>();
 		withsome.add(RCFP.action);
 		withsome.add(RCFP.vars);
 		withsome.add(RCFP.suchthat);
 		withsome.add(RCFP.doo);
-		withSomeNoElse = Network.defineCaseFrameWithConstraints("ControlAction", withsomenoelse);
+		withSomeNoElse = Network.defineCaseFrameWithConstraints("Act", withsomenoelse);
 
 		LinkedList<RCFP> withallnoelse = new LinkedList<RCFP>();
 		withsome.add(RCFP.action);
 		withall.add(RCFP.vars);
 		withall.add(RCFP.suchthat);
 		withall.add(RCFP.doo);
-		withAllNoElse = Network.defineCaseFrameWithConstraints("ControlAction", withallnoelse);
+		withAllNoElse = Network.defineCaseFrameWithConstraints("Act", withallnoelse);
 
 		LinkedList<RCFP> actCF1 = new LinkedList<RCFP>();
 		actCF1.add(RCFP.action);
