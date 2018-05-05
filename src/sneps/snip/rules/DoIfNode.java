@@ -8,8 +8,7 @@ import sneps.snip.classes.RuleUseInfo;
 
 public class DoIfNode extends RuleNode {
 
-	public DoIfNode() {}
-	
+		
 	public DoIfNode(Term syn) {
 		super(syn);
 	}

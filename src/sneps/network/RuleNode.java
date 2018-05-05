@@ -15,7 +15,7 @@ import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.ReportSet;
 import sneps.setClasses.RuleUseInfoSet;
-import sneps.setClasses.VariableSet;
+import sneps.setClasses.VarNodeSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
@@ -34,11 +34,10 @@ public abstract class RuleNode extends PropositionNode {
 	protected Set<Integer> antNodesWithVarsIDs;
 	protected Set<Integer> antNodesWithoutVarsIDs;
 	protected boolean shareVars;
-	protected Set<Integer> sharedVars;
+	protected VarNodeSet sharedVars;
 	protected Hashtable<Context, ContextRuisSet> contextRuisSet;
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
-	
 	public RuleNode(Semantic sym){
 		super(sym);
 		antNodesWithoutVars = new NodeSet();
@@ -76,7 +75,7 @@ public abstract class RuleNode extends PropositionNode {
 			antNodesWithoutVarsIDs.add(n.getId());
 		}
 		this.shareVars = this.allShareVars(antNodesWithVars);
-		sharedVars = getSharedVarsInts(antNodesWithVars);
+		sharedVars = getSharedVarsNodes(antNodesWithVars);
 	}
 
 	public void applyRuleHandler(Report report, Node signature) {
@@ -108,7 +107,6 @@ public abstract class RuleNode extends PropositionNode {
 
 	abstract protected void applyRuleOnRui(RuleUseInfo tRui, String contextID);
 
-
 	public void clear() {
 		contextRuisSet.clear();
 		contextConstantRUI.clear();
@@ -129,41 +127,25 @@ public abstract class RuleNode extends PropositionNode {
 		return res;
 	}
 
-	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
-		Set<VariableNode> res = new HashSet<VariableNode>();
-		VariableSet vars = new VariableSet();
+	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {
+		VarNodeSet res = new VarNodeSet();
 		if (nodes.isEmpty())
 			return res;
-		/*
+
 		for(Node currentNode : nodes){
-			VariableNode n = (VariableNode) currentNode;
-			VariableSet currentVars = n.getFreeVariables();
-			if(!vars.isEmpty()){
-				for(Variable var: currentVars){
-					if(vars.contains(var))
-						res.add(n);
-					
-				}
-			}else{
-				vars.addAll(n.getFreeVariables());
+			if(currentNode instanceof VariableNode){
+				//&& res.contains((VariableNode)currentNode)){
+				//TODO Ask here later
+
 			}
-			
 		}
-		*/
+
 		/* = ImmutableSet.copyOf(n.getFreeVariables());
 		for (int i = 1; i < nodes.size(); i++) {
 			n = (VariableNode) nodes.getNode(i);
 			//Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
 			//res = Sets.intersection(res, temp);
 		}*/
-		return res;
-	}
-
-	public Set<Integer> getSharedVarsInts(NodeSet nodes) {
-		Set<VariableNode> vars = getSharedVarsNodes(nodes);
-		Set<Integer> res = new HashSet<Integer>();
-		for (VariableNode var : vars)
-			res.add(var.getId());
 		return res;
 	}
 
@@ -228,7 +210,6 @@ public abstract class RuleNode extends PropositionNode {
 		}
 	}
 
-	
 	public RuleUseInfo addConstantRuiToContext(String context, RuleUseInfo rui) {
 		Context contxt = (Context) Controller.getContextByName(context);
 		RuleUseInfo tRui = contextConstantRUI.get(contxt);
@@ -251,7 +232,7 @@ public abstract class RuleNode extends PropositionNode {
 	public RuleUseInfo getConstantRUI(String context) {
 		return contextConstantRUI.get(context);
 	}
-	
+
 	public static boolean isConstantNode(Node n) {
 		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);//TODO check
 	}
@@ -260,7 +241,7 @@ public abstract class RuleNode extends PropositionNode {
 	public void processRequests() {
 		for (Channel currentChannel : outgoingChannels) {
 			if (currentChannel instanceof RuleToConsequentChannel) {
-				VariableSet variablesList = ((Open)this.term).getFreeVariables();
+				VarNodeSet variablesList = ((Open)this.term).getFreeVariables();
 				if (variablesList.isEmpty()) {
 					//Proposition semanticType = (Proposition) this.getSemantic();//TODO change according to snebr
 					if (this.semanticType.isAsserted(Controller.getContextByName(currentChannel.getContextName()))) {

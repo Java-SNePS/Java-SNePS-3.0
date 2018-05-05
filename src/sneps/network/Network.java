@@ -31,6 +31,7 @@ import sneps.exceptions.CustomException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.VarNodeSet;
 import sneps.setClasses.VariableSet;
 import sneps.snebr.Context;
 import sneps.snip.rules.AndEntailment;
@@ -972,16 +973,16 @@ public class Network {
 			if (node.getTerm().getClass().getSimpleName()
 					.equals("Open")) {
 				Open open = (Open) node.getTerm();
-				VariableSet varNodes = open.getFreeVariables();
+				VarNodeSet varNodes = open.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
-					Variable v = varNodes.getVariable(j);
+					VariableNode v = varNodes.getVarNode(j);
 					boolean flag = false;
 					for (int k = 0; k < array.length; k++) {
 						if (array[k][1].getClass().getSimpleName()
 								.equals("NodeSet"))
 							continue;
 						Node n = (Node) array[k][1];
-						if (n.getTerm().equals(v))
+						if (n.equals(v))
 							flag = true;
 					}
 					if (!flag)
@@ -1011,7 +1012,6 @@ public class Network {
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
 	 */
-	@SuppressWarnings("rawtypes")
 	private static Node createPatNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
 		System.out.println("mtooo");
@@ -1117,7 +1117,6 @@ public class Network {
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
 	 */
-	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet,
 			CaseFrame caseFrame) throws Exception {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
@@ -1160,7 +1159,6 @@ public class Network {
 		}
 	} 
 
-	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet,
 			RelationsRestrictedCaseFrame caseFrame) throws Exception {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();

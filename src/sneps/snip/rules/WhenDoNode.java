@@ -8,8 +8,7 @@ import sneps.snip.classes.RuleUseInfo;
 
 public class WhenDoNode extends RuleNode {
 
-	public WhenDoNode() {}
-
+	
 	public WhenDoNode(Semantic sem, Term syn) {
 		super(sem, syn);
 	}

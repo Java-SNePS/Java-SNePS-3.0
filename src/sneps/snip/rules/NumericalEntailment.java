@@ -11,10 +11,14 @@ import sneps.network.classes.term.Term;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
+import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 
 public class NumericalEntailment extends RuleNode {
 	private Hashtable<String, RuleUseInfoSet> ruisNotSent;
@@ -41,7 +45,7 @@ public class NumericalEntailment extends RuleNode {
 		if (ruisNotSent.size() >= i)
 			sendSavedRUIs(report.getContextName());
 	}
-
+	//TODO n-i+1 n-1  ---> SIndex for i combinable
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo rui, String contextID) {
 		if (rui.getPosCount() >= i){
@@ -81,6 +85,13 @@ public class NumericalEntailment extends RuleNode {
 				applyRuleOnRui(combined, contextID);	
 			}
 		}
+	}
+
+	@Override
+	protected RuisHandler createRuisHandler(String contextName) {//TODO Check
+		Context contxt = (Context) Controller.getContextByName(contextName);
+		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0, getDominatingRules());
+		return this.addContextRUIS(contxt, index);
 	}
 
 	@Override

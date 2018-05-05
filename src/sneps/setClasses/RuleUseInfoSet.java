@@ -14,21 +14,28 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		ruis = new HashSet<RuleUseInfo>();
 	}
 
-	public RuleUseInfoSet() {}
+	public RuleUseInfoSet() {
+		ruis = new HashSet<RuleUseInfo>();
+	}
 
 	@Override
 	public Iterator<RuleUseInfo> iterator() {
 		return ruis.iterator();
 	}
 
-	
 	public void add(RuleUseInfo rui) {
 		ruis.add(rui);
 	}
 
 	public RuleUseInfoSet combine(RuleUseInfoSet second) {
-		// TODO Auto-generated method stub
-		return null;
+		RuleUseInfoSet res = new RuleUseInfoSet(this.context, false);
+		for(RuleUseInfo rui1 : this){
+			for(RuleUseInfo rui2: second){
+				if(rui1.isDisjoint(rui2))
+					res.add(rui1.combine(rui2));
+			}
+		}
+		return res;
 	}
 
 	@Override

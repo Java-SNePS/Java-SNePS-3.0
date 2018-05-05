@@ -19,7 +19,6 @@ import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
-//@SuppressWarnings("unused")
 public class AndEntailment extends RuleNode {
 	private Hashtable<String, RuleUseInfoSet> ruisNotSent;
 	private NodeSet consequents;
@@ -34,7 +33,6 @@ public class AndEntailment extends RuleNode {
 		ruisNotSent = new Hashtable<String, RuleUseInfoSet>();
 		setConsequents(new NodeSet());
 	}
-
 
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
@@ -58,6 +56,9 @@ public class AndEntailment extends RuleNode {
 		Support originSupports = this.getBasicSupport();
 		HashSet<Support> sup = new HashSet<Support>();
 		sup.add(originSupports);
+
+		contextRuisSet.get(Controller.getContextByName(contextID))
+		.getContextRUIS(contextID).insertRUI(Rui);
 
 		Report reply = new Report(Rui.getSub(), Rui.getSupport(sup), true, contextID);
 		broadcastReport(reply);

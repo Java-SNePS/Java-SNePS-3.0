@@ -9,28 +9,29 @@ import java.util.Set;
 import java.util.Stack;
 
 import sneps.network.Node;
+import sneps.network.VariableNode;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
-import sneps.setClasses.VariableSet;
+import sneps.setClasses.VarNodeSet;
 
-public class PTree extends RuisHandler {
-	private Hashtable<Integer, VariableSet> patternVariables;//PatId, Variables
-	private Hashtable<Variable, Set<Integer>> variablePatterns;//VarId, Patterns
+public class PTree extends RuisHandler {//TODO Variable Nodes
+	private Hashtable<Integer, VarNodeSet> patternVariables;//PatId, Variables
+	private Hashtable<VariableNode, Set<Integer>> variablePatterns;//VarId, Patterns
 	/*private VariableSet vars;
 	private NodeSet nodes;*/
-	private VariableSet notProccessed;
+	private VarNodeSet notProccessed;
 	private HashSet<PSubTree> subTrees;
 	private Hashtable<Integer, PSubTree> subTreesMap;
 
 	public PTree(String context) {
 		super(context);
-		patternVariables = new Hashtable<Integer, VariableSet>();
-		variablePatterns = new Hashtable<Variable, Set<Integer>>();
+		patternVariables = new Hashtable<Integer, VarNodeSet>();
+		variablePatterns = new Hashtable<VariableNode, Set<Integer>>();
 		//vars = new VariableSet();
-		notProccessed = new VariableSet();
+		notProccessed = new VarNodeSet();
 		subTrees = new HashSet<PSubTree>();
 	}
 
@@ -42,32 +43,32 @@ public class PTree extends RuisHandler {
 
 		constructBottomUp(patternSequence);
 
-		patternVariables = new Hashtable<Integer, VariableSet>();
-		variablePatterns = new Hashtable<Variable, Set<Integer>>();
+		patternVariables = new Hashtable<Integer, VarNodeSet>();
+		variablePatterns = new Hashtable<VariableNode, Set<Integer>>();
 		//vars = new VariableSet();
-		notProccessed = new VariableSet();
+		notProccessed = new VarNodeSet();
 	}
 
 	private void fillPVandVP(NodeSet ants) {
 		for(Node pattern : ants){
 			int id = pattern.getId();
 			Term term = pattern.getTerm();
-			VariableSet vars = patternVariables.get(id);
+			VarNodeSet vars = patternVariables.get(id);
 			if(vars == null || vars.isEmpty())
-				vars = new VariableSet();
-				//patternVariables.put(id, vars);
+				vars = new VarNodeSet();
+			//patternVariables.put(id, vars);
 			Set<Integer> pats = variablePatterns.get(id);
 			if(pats == null || pats.isEmpty() )
 				pats = new HashSet<Integer>();
-				//variablePatterns.put(, pats);
+			//variablePatterns.put(, pats);
 
 			if(term instanceof Variable){
-				vars.addVariable((Variable) term);
-				notProccessed.addVariable((Variable) term);
+				vars.addVarNode((VariableNode) pattern);
+				notProccessed.addVarNode((VariableNode) pattern);
 			}
 
 			if(term instanceof Open){
-				VariableSet freeVars = ((Open)term).getFreeVariables();
+				VarNodeSet freeVars = ((Open)term).getFreeVariables();
 				vars.addAll(freeVars);
 				notProccessed.addAll(freeVars);
 			}
@@ -76,9 +77,9 @@ public class PTree extends RuisHandler {
 
 		Set<Integer> pats = patternVariables.keySet();
 		for(int curPat : pats){
-			VariableSet vars = patternVariables.get(curPat);
+			VarNodeSet vars = patternVariables.get(curPat);
 			if(!(vars.isEmpty()) || !(vars == null)){
-				for(Variable curVar : vars){
+				for(VariableNode curVar : vars){
 					Set<Integer> pat = variablePatterns.get(curVar);
 					if(!pat.contains(curPat)){
 						pat.add(curPat);
@@ -92,15 +93,15 @@ public class PTree extends RuisHandler {
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
 		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
 
-		for(Variable currentVar : notProccessed){
+		for(VariableNode currentVar : notProccessed){
 			Set<Integer> vPatternsIds = variablePatterns.get(currentVar);
 
 			for(int currentPatId : vPatternsIds)
 				if(!res.contains(currentPatId)){
 					res.add(currentPatId);
 
-					VariableSet vs = new VariableSet();
-					vs.addVariable(currentVar);
+					VarNodeSet vs = new VarNodeSet();
+					vs.addVarNode(currentVar);
 					Set<Integer> pats = new HashSet<Integer>();
 					pats.add(currentPatId);
 
@@ -108,7 +109,7 @@ public class PTree extends RuisHandler {
 				}
 		}
 		return treeNodes;
-		
+
 	}
 	private void constructBottomUp(Queue<PTreeNode> treeNodes) {
 		PTreeNode head = treeNodes.poll();
@@ -123,9 +124,9 @@ public class PTree extends RuisHandler {
 			if (sharingVars(head, second)) {
 				sharing = true;
 				Set<Integer> pats = union(head.getPats(), second.getPats());
-				VariableSet vars = VariableSet.union(head.getVars(), second.getVars());
+				VarNodeSet vars = VarNodeSet.union(head.getVars(), second.getVars());
 				PTreeNode treeNode = new PTreeNode(pats, vars);
-				VariableSet intersection = getSharedVars(head, second);
+				VarNodeSet intersection = getSharedVars(head, second);
 				treeNode.insertLeftAndRight(head, second, intersection);
 				newTreeNodes.add(treeNode);
 				head = treeNodes.poll();
@@ -143,7 +144,6 @@ public class PTree extends RuisHandler {
 				processSubTree(subHead);
 		}
 	}
-
 
 	private void processSubTree(PTreeNode subHead) {
 		PSubTree subTree = new PSubTree(subHead);
@@ -183,7 +183,7 @@ public class PTree extends RuisHandler {
 		return set.iterator().next();
 	}*/
 	private boolean sharingVars(PTreeNode head, PTreeNode second) {
-		VariableSet smaller = null, bigger = null;
+		VarNodeSet smaller = null, bigger = null;
 		if (head.getVars().size() > second.getVars().size()) {
 			smaller = second.getVars();
 			bigger = head.getVars();
@@ -191,13 +191,13 @@ public class PTree extends RuisHandler {
 			bigger = second.getVars();
 			smaller = head.getVars();
 		}
-		for (Variable i : smaller)
+		for (VariableNode i : smaller)
 			if (bigger.contains(i))
 				return true;
 		return false;
 	}
-	private VariableSet getSharedVars(PTreeNode first, PTreeNode second) {
-		VariableSet smaller = null, bigger = null, intersection = new VariableSet();
+	private VarNodeSet getSharedVars(PTreeNode first, PTreeNode second) {
+		VarNodeSet smaller = null, bigger = null, intersection = new VarNodeSet();
 		if (first.getVars().size() > second.getVars().size()) {
 			smaller = second.getVars();
 			bigger = first.getVars();
@@ -205,9 +205,9 @@ public class PTree extends RuisHandler {
 			bigger = second.getVars();
 			smaller = first.getVars();
 		}
-		for (Variable i : smaller)
+		for (VariableNode i : smaller)
 			if (bigger.contains(i))
-				intersection.addVariable(i);
+				intersection.addVarNode(i);
 		return intersection;
 	}
 	private Set<Integer> union(Set<Integer> vars1, Set<Integer> vars2) {
@@ -232,8 +232,8 @@ public class PTree extends RuisHandler {
 	public void setSubTreesMap(Hashtable<Integer, PSubTree> subTreesMap) {
 		this.subTreesMap = subTreesMap;
 	}
-	
-	
+
+
 	public class PSubTree {
 		private PTreeNode root;
 
@@ -276,8 +276,8 @@ public class PTree extends RuisHandler {
 		//private HashSet<RuleUseInfo> ruis;
 		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
 		private Set<Integer> pats;
-		private VariableSet vars;
-		private VariableSet siblingIntersection;
+		private VarNodeSet vars;
+		private VarNodeSet siblingIntersection;
 
 		public PTreeNode(){
 			ruisMap = new Hashtable<Integer, RuleUseInfoSet>();
@@ -285,7 +285,7 @@ public class PTree extends RuisHandler {
 			leftChild = null;		rightChild = null;
 			pats = null;			vars = null;
 		}
-		public PTreeNode(Set<Integer> p, VariableSet v){
+		public PTreeNode(Set<Integer> p, VarNodeSet v){
 			this();
 			pats = p;				vars = v;
 		}
@@ -308,7 +308,7 @@ public class PTree extends RuisHandler {
 		}
 
 		public void insertLeftAndRight(PTreeNode leftNode, PTreeNode rightNode,
-				VariableSet intersection) {
+				VarNodeSet intersection) {
 			leftNode.parent = this;
 			rightNode.parent = this;
 			leftNode.sibling = rightNode;
@@ -332,7 +332,7 @@ public class PTree extends RuisHandler {
 
 			int[] vs = new int[siblingIntersection.size()];
 			int index = 0;
-			for (Variable var : siblingIntersection)
+			for (VariableNode var : siblingIntersection)
 				vs[index++] = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
 			int key = getKey(vs);
 			RuleUseInfoSet ruis = ruisMap.get(key);
@@ -357,7 +357,7 @@ public class PTree extends RuisHandler {
 		public Set<Integer> getPats() {
 			return pats;
 		}
-		public VariableSet getVars() {
+		public VarNodeSet getVars() {
 			return vars;
 		}
 		private int getKey(int[] x) {
@@ -380,5 +380,4 @@ public class PTree extends RuisHandler {
 
 	}
 
-	
 }

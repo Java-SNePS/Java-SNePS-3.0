@@ -1,7 +1,7 @@
 package sneps.snip.matching;
 
 import sneps.network.Node;
-import sneps.network.classes.term.Variable;
+import sneps.network.VariableNode;
 
 public interface Substitutions {
 	
@@ -9,22 +9,22 @@ public interface Substitutions {
 	public void putIn(Binding mb);
 	public boolean isCompatible(Binding mb);
 	public void update(Binding mb , Node mn);
-    public boolean isBound(Variable mv);
+    public boolean isBound(VariableNode mv);
     public boolean isValue(Node mn);
-    public Variable srcNode(Node mn);
-    public Binding getBindingByVariable(Variable mv);
+    public VariableNode srcNode(Node mn);
+    public Binding getBindingByVariable(VariableNode mv);
     public Binding getBindingByNode(Node mn);
     public boolean isMember(Binding mb);
     public boolean isSubSet(Substitutions s);
     public boolean isEqual(Substitutions s);
     public Substitutions union (Substitutions s);
     public void unionIn (Substitutions s);
-    public Substitutions restrict(Variable [] ns);
-    public Node term(Variable mv);
+    public Substitutions restrict(VariableNode [] ns);
+    public Node term(VariableNode mv);
     public int cardinality();
     public Binding choose();
     public Substitutions others();
-    public Node value(Variable n);
+    public Node value(VariableNode n);
     public Substitutions insert(Binding m);
     public boolean isCompatible(Substitutions s);
     public Binding getBinding(int x);

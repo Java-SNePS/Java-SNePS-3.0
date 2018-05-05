@@ -15,7 +15,7 @@ public class VariableSet implements Iterable<Variable> {
 	public Iterator<Variable> iterator() {
 		return variables.iterator();
 	}
-	
+
 	public Variable getVariable(int index){
 		return variables.get(index);
 	}

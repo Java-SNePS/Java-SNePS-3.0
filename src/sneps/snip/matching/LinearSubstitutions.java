@@ -68,7 +68,7 @@ public class LinearSubstitutions implements Substitutions {
 	 *@param mv the variable node
 	 *@return true if the mv is bound false otherwise
 	 */
-	public boolean isBound(Variable mv)
+	public boolean isBound(VariableNode mv)
 	{
 		for(int i=0;i<sub.size();i++)
 		{
@@ -103,7 +103,7 @@ public class LinearSubstitutions implements Substitutions {
 	 *@param mn is the node
 	 *@return VariableNode or null
 	 */
-	public Variable srcNode(Node mn)
+	public VariableNode srcNode(Node mn)
 	{
 		for(int i=0;i<sub.size();i++)
 		{
@@ -121,7 +121,7 @@ public class LinearSubstitutions implements Substitutions {
 	 *@param mv mvar
 	 *@return Binding or null
 	 */
-	public Binding getBindingByVariable(Variable mv)
+	public Binding getBindingByVariable(VariableNode mv)
 	{
 		for(int i=0;i<sub.size();i++)
 		{
@@ -264,7 +264,7 @@ public class LinearSubstitutions implements Substitutions {
 	 * @param ns array of variable node nodes
 	 * @return substitutions list
 	 */
-	public Substitutions restrict(Variable [] ns)
+	public Substitutions restrict(VariableNode [] ns)
 	{
 		LinearSubstitutions s=new LinearSubstitutions();
 		for(int i=0;i<ns.length;i++)
@@ -282,7 +282,7 @@ public class LinearSubstitutions implements Substitutions {
 	 * @param mv variable node
 	 * @return node or null
 	 */
-	public Node term(Variable mv)
+	public Node term(VariableNode mv)
 	{
 		for(int i=0;i<sub.size();i++)
 		{
@@ -333,7 +333,7 @@ public class LinearSubstitutions implements Substitutions {
 	 * @param n node
 	 * @return node
 	 */
-	public Node value(Variable n)
+	public Node value(VariableNode n)
 	{//TODO messing here
 		Binding b = getBindingByVariable(n);
 		if(b==null)
