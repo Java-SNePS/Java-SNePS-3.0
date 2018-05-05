@@ -57,11 +57,6 @@ public class AP {
 	private static Hashtable<Node, String> nodesDescriptions = new Hashtable<Node, String>();
 
 	/**
-	 * This is a counter for the wffNames.
-	 */
-	private static int wffNameCounter = 0;
-
-	/**
 	 * This is a hashtable to store the case frames used in mode 3 where the key is
 	 * the name used in creating the case frame.
 	 */
@@ -525,7 +520,6 @@ public class AP {
 		Controller.clearSNeBR();
 		Network.clearNetwork();
 		SemanticHierarchy.getSemantics().clear();
-		wffNameCounter = 0;
 		cfsDescriptions.clear();
 		nodesDescriptions.clear();
 		modeThreeCaseFrames.clear();
