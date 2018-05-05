@@ -2043,6 +2043,7 @@ public class Network implements Serializable {
 	public static void defineDefaults() {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
+		Semantic.createDefaultSemantics();
 		//CaseFrame.createDefaultCaseFrames();
 		//SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		//ControlActionNode.initControlActions();
