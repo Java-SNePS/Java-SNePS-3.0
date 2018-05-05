@@ -39,7 +39,7 @@ import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameMissMatchException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
-import sneps.exceptions.DuplicateNodeException;
+import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -616,16 +616,16 @@ public class Network implements Serializable {
 	 *
 	 */
 	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame)
-			throws CannotBuildNodeException, DuplicateNodeException {
+			throws CannotBuildNodeException, EquivalentNodeException {
 		Object[][] array = turnWiresIntoArray(wires);
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
 		if (((Boolean) result[0] == true) && (result[1] == null))
-			throw new CannotBuildNodeException("Cannot build the node .. down cable set already exists");
+			return (Node) find(array, Controller.getCurrentContext()).get(0)[0];
 
 		if (((Boolean) result[0] == true) && (result[1] != null)) {
-			throw new DuplicateNodeException("This node has an equivalent node in the Network : " + result[1]);
+			throw new EquivalentNodeException("The equivalent node '" + "' was used instead", (Node) result[1]);
 		}
 
 		// check the validity of the relation-node pairs
@@ -669,15 +669,16 @@ public class Network implements Serializable {
 	}
 
 	public static Node buildMolecularNode(ArrayList<Wire> wires, RelationsRestrictedCaseFrame caseFrame)
-			throws CannotBuildNodeException, DuplicateNodeException, CaseFrameMissMatchException {
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException {
 		Object[][] array = turnWiresIntoArray(wires);
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
 		if (((Boolean) result[0] == true) && (result[1] == null))
-			throw new CannotBuildNodeException("Cannot build the node .. down cable set already exists");
+			return (Node) find(array, Controller.getCurrentContext()).get(0)[0];
 		if (((Boolean) result[0] == true) && (result[1] != null)) {
-			throw new DuplicateNodeException("This node has an equivalent node in the Network : " + result[1]);
+			throw new EquivalentNodeException(
+					"The equivalent node '" + ((Node) result[1]).toString() + "' was used instead", (Node) result[1]);
 		}
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");

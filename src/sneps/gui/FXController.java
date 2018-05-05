@@ -46,7 +46,7 @@ import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
-import sneps.exceptions.DuplicateNodeException;
+import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
@@ -621,7 +621,7 @@ public class FXController implements Initializable {
 		} catch (CannotBuildNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (DuplicateNodeException e) {
+		} catch (EquivalentNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
