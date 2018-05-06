@@ -2765,8 +2765,14 @@ class CUP$parser$actions {
           case 100: // allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN 
             {
               Node RESULT =null;
+		int ssleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int ssright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		ArrayList<Node> ss = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int wleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-			
+			RESULT = AP.buildAllTerm(ss, w);
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("allTerm",24, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

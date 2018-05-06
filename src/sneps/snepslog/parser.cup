@@ -908,9 +908,9 @@ preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOS
         				}
 		         :};
 
-allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN
+allTerm ::= ALL OPEN_PARAN symbolSequence:ss CLOSE_PARAN OPEN_PARAN wff:w CLOSE_PARAN
 		{:
-			
+			RESULT = AP.buildAllTerm(ss, w);
 		:};
 
 atomicTerm ::= wffName:wn
