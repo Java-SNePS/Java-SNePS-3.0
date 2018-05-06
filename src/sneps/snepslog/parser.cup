@@ -441,17 +441,32 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_SEMANTIC IDENTIFIER
+				| DEFINE_SEMANTIC IDENTIFIER:id
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id,null,null);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
-				| DEFINE_SEMANTIC IDENTIFIER IDENTIFIER
+				| DEFINE_SEMANTIC IDENTIFIER:id1 IDENTIFIER:id2
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id1,id2,null);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
-				| DEFINE_SEMANTIC IDENTIFIER IDENTIFIER identifiers_list
+				| DEFINE_SEMANTIC IDENTIFIER:id1 IDENTIFIER:id2 identifiers_list:ids
 				{: 
-
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id1,id2,ids);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				:}
 				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2
 				{: 

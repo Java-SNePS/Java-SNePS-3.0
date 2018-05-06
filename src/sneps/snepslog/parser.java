@@ -1504,8 +1504,16 @@ class CUP$parser$actions {
           case 23: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER 
             {
               String RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id,null,null);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1515,8 +1523,19 @@ class CUP$parser$actions {
           case 24: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER IDENTIFIER 
             {
               String RESULT =null;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id1,id2,null);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1526,8 +1545,22 @@ class CUP$parser$actions {
           case 25: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER IDENTIFIER identifiers_list 
             {
               String RESULT =null;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int idsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int idsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		ArrayList<String> ids = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id1,id2,ids);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
