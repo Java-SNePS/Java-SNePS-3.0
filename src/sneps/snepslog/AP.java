@@ -548,6 +548,10 @@ public class AP {
 		return output;
 	}
 
+	public static Hashtable<String, CaseFrame> getModeThreeCaseFrames() {
+		return modeThreeCaseFrames;
+	}
+
 	/**
 	 * This method is used to construct the nodes representing withsome and withall
 	 * terms in the network.
