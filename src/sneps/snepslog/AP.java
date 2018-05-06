@@ -956,4 +956,12 @@ public class AP {
 		return output;
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static Semantic defineSemantic(String identifier, String parent, ArrayList<String> children) {
+		// TODO A wrapper for defineSemantic
+		return SemanticHierarchy.createSemanticType(identifier);
+	}
+	
 }
