@@ -26,12 +26,14 @@ import java_cup.runtime.Symbol;
 import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.CaseFrameMissMatchException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.cables.DownCableSet;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
@@ -41,6 +43,7 @@ import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Closed;
+import sneps.network.classes.term.Molecular;
 import sneps.snebr.Controller;
 
 @SuppressWarnings("deprecation")
@@ -176,8 +179,8 @@ public class AP {
 		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
 		if (!relations.get(0).equals("nil")) {
 			modeThreeCaseFrames.put(name, cf);
-		}else {
-			modeThreeCaseFrames.put(name+"$", cf);
+		} else {
+			modeThreeCaseFrames.put(name + "$", cf);
 		}
 		if (description != null) {
 			cfsDescriptions.put(name, description);
@@ -632,6 +635,72 @@ public class AP {
 	}
 
 	/**
+	 * This method is used to construct the nodes representing an allTerm in the
+	 * network.
+	 * 
+	 * @param vars
+	 *            an ArrayList of the nodes representing the vars.
+	 * @param wff
+	 *            a node representing the scope of the quantifier.
+	 * @return a molecular node representing the allTerm
+	 * @throws EquivalentNodeException
+	 * @throws CannotBuildNodeException
+	 * @throws NodeCannotBeRemovedException
+	 * @throws RelationDoesntExistException
+	 */
+	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
+			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException {
+		LinkedList<Relation> relations = new LinkedList<Relation>();
+		Relation forAll = Network.defineRelation("forall", "Infimum");
+		relations.add(forAll);
+		Molecular molecular = (Molecular) wff.getTerm();
+		for (int i = 0; i < molecular.getDownCableSet().getCaseFrame().getRelations().size(); i++) {
+			relations.add(molecular.getDownCableSet().getCaseFrame().getRelations().get(i));
+		}
+		CaseFrame caseFrame = Network.defineCaseFrame(molecular.getDownCableSet().getCaseFrame().getSemanticClass(),
+				relations);
+		ArrayList<Wire> wires = new ArrayList<Wire>();
+		for (int j = 0; j < vars.size(); j++) {
+			wires.add(new Wire(forAll, vars.get(j)));
+		}
+		DownCableSet downCableSet = molecular.getDownCableSet();
+		Set<String> keys = downCableSet.getDownCables().keySet();
+		for (String key : keys) {
+			NodeSet ns = downCableSet.getDownCables().get(key).getNodeSet();
+			for (int k = 0; k < ns.size(); k++) {
+				wires.add(new Wire(Network.getRelation(key), ns.getNode(k)));
+			}
+		}
+		Node node = Network.buildMolecularNode(wires, caseFrame);
+		Molecular m = (Molecular) node.getTerm();
+		ArrayList<String> varNames = new ArrayList<String>();
+		for (int i = 0; i < vars.size(); i++) {
+			varNames.add(vars.get(i).getIdentifier());
+		}
+		replaceWithVars(varNames, m.getDownCableSet());
+		Network.removeNode(wff);
+		return node;
+	}
+
+	private static void replaceWithVars(ArrayList<String> varNames, DownCableSet downCableSet) {
+		Set<String> keys = downCableSet.getDownCables().keySet();
+		for (String key : keys) {
+			NodeSet ns = downCableSet.getDownCables().get(key).getNodeSet();
+			for (int i = ns.size() - 1; i >= 0; i--) {
+				Node node = ns.getNode(i);
+				if (node.getTerm() instanceof Molecular) {
+					Molecular m = (Molecular) node.getTerm();
+					replaceWithVars(varNames, m.getDownCableSet());
+				} else {
+					String identifier = node.getIdentifier();
+					ns.removeNode(node);
+					ns.addNode(Network.buildVariableNode(identifier));
+				}
+			}
+		}
+	}
+
+	/**
 	 * Docs goes here
 	 */
 	protected static ArrayList<Node> match(Node node) {
@@ -885,6 +954,33 @@ public class AP {
 			}
 		}
 		return output;
+	}
+
+	public static void main(String[] args) throws Exception {
+		Relation member = new Relation("member", "Entity");
+		Relation cl = new Relation("class", "Entity");
+		LinkedList<Relation> rels = new LinkedList<Relation>();
+		rels.add(member);
+		rels.add(cl);
+		CaseFrame cf = Network.defineCaseFrame("Entity", rels);
+		Wire w1 = new Wire(member, "Mary", "Base", "Entity");
+		Wire w2 = new Wire(cl, "Young", "Base", "Entity");
+		Wire w5 = new Wire(cl, "Lady", "Base", "Entity");
+		ArrayList<Wire> m1Wires = new ArrayList<Wire>();
+		m1Wires.add(w1);
+		m1Wires.add(w2);
+		ArrayList<Wire> m2Wires = new ArrayList<Wire>();
+		m2Wires.add(w1);
+		m2Wires.add(w5);
+		Node m1 = Network.buildMolecularNode(m1Wires, cf);
+		Node m2 = Network.buildMolecularNode(m2Wires, cf);
+		Wire w3 = new Wire(member, m1);
+		Wire w4 = new Wire(cl, m2);
+		ArrayList<Wire> m3Wires = new ArrayList<Wire>();
+		m3Wires.add(w3);
+		m3Wires.add(w4);
+		Node m3 = Network.buildMolecularNode(m3Wires, cf);
+		Molecular m1m = (Molecular) m3.getTerm();
 	}
 
 }
