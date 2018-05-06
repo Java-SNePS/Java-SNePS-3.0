@@ -10,6 +10,11 @@ import java.util.Set;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.Network;
+import sneps.network.classes.CaseFrame;
+import sneps.network.classes.Relation;
+import sneps.network.classes.Semantic;
+import sneps.network.classes.SemanticHierarchy;
+import sneps.network.classes.Wire;
 import sneps.network.paths.Path;
 import sneps.network.paths.BangPath;
 import sneps.network.paths.EmptyPath;
@@ -842,37 +847,65 @@ threshTerm ::= THRESH OPEN_PARAN INT_LIT:thresh COMMA INT_LIT:threshmax CLOSE_PA
 
 ifdoTerm ::= IFDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
          {:
-				RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+         		if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+           		}else{
+           			RESULT = null;
+           		}
 		 :};
 		 
 whendoTerm ::= WHENDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
            {:
-				RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+           		if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+           		}else{
+           			RESULT = null;
+           		}
 		   :};
 		   
 wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
                {:
-					RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
+					if(AP.getSnepslogMode()==3){
+           				RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
+           			}else{
+           				RESULT = null;
+           			}
 		       :};
 		   
 actplanTerm ::= ACTPLAN OPEN_PARAN atomicTerm:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
             {:
-				RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+            		if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+           		}else{
+        				RESULT = null;
+        			}
 		    :};
 		       
 effectTerm ::= EFFECT OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
            {:
-				RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+           		if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+           		}else{
+        				RESULT = null;
+        			}
 	       :};
 		       
 goalplanTerm ::= GOALPLAN OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
              {:
-				RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+				if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+           		}else{
+        				RESULT = null;
+        			}
 		     :};		     
 
 preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
                  {:
-					RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
+					if(AP.getSnepslogMode()==3){
+           				RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
+           			}else{
+        					RESULT = null;
+        				}
 		         :};
 
 allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN
@@ -880,63 +913,139 @@ allTerm ::= ALL OPEN_PARAN symbolSequence CLOSE_PARAN OPEN_PARAN wff CLOSE_PARAN
 			
 		:};
 
-atomicTerm ::= wffName
+atomicTerm ::= wffName:wn
            {:
-           
+           		RESULT = Network.getNodes().get("M"+wn.substring(3));
            :}
-           | qvar
+           | qvar:q
            {:
-           
+           		RESULT = q;
            :}
-           | IDENTIFIER
+           | IDENTIFIER:id
            {:
-           
+           		RESULT = Network.buildBaseNode(id, Semantic.proposition);
            :}
-           | IDENTIFIER COLON IDENTIFIER
+           | IDENTIFIER:id1 COLON IDENTIFIER:id2
            {:
-           
+           		if(AP.getSnepslogMode()==3){
+           			if (Network.getNodes().containsKey(id1)) {
+           				RESULT = null;
+					}else{
+						RESULT = Network.buildBaseNode(id1, SemanticHierarchy.createSemanticType(id2));
+					}
+           		}else{
+           			RESULT = null;
+           		}
            :}
-           | withsomeTerm
+           | withsomeTerm:wst
            {:
-           
+           		RESULT = wst;
            :}
-           | withallTerm
+           | withallTerm:wat
            {:
-           
+           		RESULT = wat;
            :}
-           | qvar OPEN_PARAN termSetSequence CLOSE_PARAN
+           | qvar:q OPEN_PARAN termSetSequence:tss CLOSE_PARAN
            {:
-           
+           		if(AP.getSnepslogMode()==1){
+           			ArrayList<Wire> wires = new ArrayList<Wire>();
+					CaseFrame caseFrame = AP.createModeOneCaseFrame(tss.size());
+					LinkedList<Relation> relations = caseFrame.getRelations();
+					wires.add(new Wire(relations.get(0),q));
+					for(int i = 0;i<tss.size();i++){
+						for(int j=0;j<tss.get(i).size();j++){
+							wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
+						}
+					}
+					RESULT = Network.buildMolecularNode(wires, caseFrame);
+				}else{
+					RESULT = null;
+				}
            :}
-           | IDENTIFIER OPEN_PARAN termSetSequence CLOSE_PARAN
+           | IDENTIFIER:id OPEN_PARAN termSetSequence:tss CLOSE_PARAN
            {:
-           
+           		if(AP.getSnepslogMode()!=3){
+           			ArrayList<Wire> wires = new ArrayList<Wire>();
+					CaseFrame caseFrame = null;
+					if(AP.getSnepslogMode()==1){
+						caseFrame = AP.createModeOneCaseFrame(tss.size());
+					}else{
+						caseFrame = AP.createModeTwoCaseFrame(id, tss.size());					
+					}
+					LinkedList<Relation> relations = caseFrame.getRelations();
+					wires.add(new Wire(relations.get(0), Network.buildBaseNode(id, Semantic.proposition)));
+					for(int i = 0;i<tss.size();i++){
+						for(int j=0;j<tss.get(i).size();j++){
+							wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
+						}
+					}
+					RESULT = Network.buildMolecularNode(wires, caseFrame);
+				}else{
+					if(AP.getModeThreeCaseFrames().containsKey(id)){
+						ArrayList<Wire> wires = new ArrayList<Wire>();
+						CaseFrame caseFrame = AP.getModeThreeCaseFrames().get(id);
+						LinkedList<Relation> relations = caseFrame.getRelations();
+						wires.add(new Wire(relations.get(0), Network.buildBaseNode(id, SemanticHierarchy.createSemanticType(caseFrame.getRelations().get(0).getType()))));
+						for(int i = 0;i<tss.size();i++){
+							for(int j=0;j<tss.get(i).size();j++){
+								wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
+							}
+						}
+						RESULT = Network.buildMolecularNode(wires, caseFrame);
+					}else{
+						if(AP.getModeThreeCaseFrames().containsKey(id+"$")){
+							ArrayList<Wire> wires = new ArrayList<Wire>();
+							CaseFrame caseFrame = AP.getModeThreeCaseFrames().get(id+"$");
+							LinkedList<Relation> relations = caseFrame.getRelations();
+							for(int i = 0;i<tss.size();i++){
+								for(int j=0;j<tss.get(i).size();j++){
+									wires.add(new Wire(relations.get(i),tss.get(i).get(j)));
+								}
+							}
+							RESULT = Network.buildMolecularNode(wires, caseFrame);
+						}else{
+							RESULT = null;
+						}
+					}
+				}
            :}
-           | wffName OPEN_PARAN termSetSequence CLOSE_PARAN
+           | OPEN_PARAN wff:w CLOSE_PARAN
            {:
-           
-           :}
-           | OPEN_PARAN wff CLOSE_PARAN
-           {:
-           
+           		RESULT = w;
            :};
 
 withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
-             	RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
+             	if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
+           		}else{
+           			RESULT = null;
+           		}
              :}
              | WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
-             	RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
+             	if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
+           		}else{
+           			RESULT = null;
+           		}
              :};
              
 withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
-             	RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
+             	if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
+           		}else{
+           			RESULT = null;
+           		}
              :}
              | WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
-             	RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
+             	if(AP.getSnepslogMode()==3){
+           			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
+           		}else{
+           			RESULT = null;
+           		}
              :};
 		         
 termSetSequence ::= termSet:ts termSets:tss
@@ -981,7 +1090,11 @@ snepslogSymbols ::= COMMA snepslogSymbol:ss snepslogSymbols:sss
 
 wffName ::= WFF INT_LIT:il
 	    {:
-			RESULT = "wff"+il;
+	    		if (Network.getNodes().containsKey("M"+il)) {
+        			RESULT = "wff"+il;
+			}else{
+				RESULT = null;
+			}
 	    :};
 	    
 qvar ::= QUESTION_MARK snepslogSymbol:ss
