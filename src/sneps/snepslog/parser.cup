@@ -996,17 +996,33 @@ atomicTerm ::= wffName:wn
 					}
 					RESULT = Network.buildMolecularNode(wires, caseFrame);
 				}else{
+					String description = "";
+					boolean flag = false;
+					if(AP.getCfsDescriptions().containsKey(id)){
+						description = AP.getCfsDescriptions().get(id);
+						flag = true;
+					}
 					if(AP.getModeThreeCaseFrames().containsKey(id)){
 						ArrayList<Wire> wires = new ArrayList<Wire>();
 						CaseFrame caseFrame = AP.getModeThreeCaseFrames().get(id);
 						LinkedList<Relation> relations = caseFrame.getRelations();
 						wires.add(new Wire(relations.get(0), Network.buildBaseNode(id, SemanticHierarchy.createSemanticType(caseFrame.getRelations().get(0).getType()))));
+						if(flag){
+							description.replaceAll(relations.get(0).getName(), id);
+						}
 						for(int i = 0;i<tss.size();i++){
 							for(int j=0;j<tss.get(i).size();j++){
 								wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
+								if(flag){
+									description.replaceAll(relations.get(i+1).getName(), tss.get(i).get(j).getIdentifier());
+								}
 							}
 						}
-						RESULT = Network.buildMolecularNode(wires, caseFrame);
+						Node node = Network.buildMolecularNode(wires, caseFrame);
+						if(flag){
+							AP.getNodesDescriptions().put(node, description);
+						}
+						RESULT = node;
 					}else{
 						if(AP.getModeThreeCaseFrames().containsKey(id+"$")){
 							ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -1015,9 +1031,16 @@ atomicTerm ::= wffName:wn
 							for(int i = 0;i<tss.size();i++){
 								for(int j=0;j<tss.get(i).size();j++){
 									wires.add(new Wire(relations.get(i),tss.get(i).get(j)));
+									if(flag){
+										description.replaceAll(relations.get(i+1).getName(), tss.get(i).get(j).getIdentifier());
+									}
 								}
 							}
-							RESULT = Network.buildMolecularNode(wires, caseFrame);
+							Node node = Network.buildMolecularNode(wires, caseFrame);
+							if(flag){
+								AP.getNodesDescriptions().put(node, description);
+							}
+							RESULT = node;
 						}else{
 							RESULT = null;
 						}
