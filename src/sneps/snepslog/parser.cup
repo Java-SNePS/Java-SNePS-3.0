@@ -606,7 +606,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "Mode 3 is already in use.";
 					}
 				:}
-				| SHOW optionalPTermSet optionalDot
+				| SHOW pTermSet optionalDot
 				{: 
 
 				:}
