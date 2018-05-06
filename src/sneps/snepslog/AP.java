@@ -956,31 +956,4 @@ public class AP {
 		return output;
 	}
 
-	public static void main(String[] args) throws Exception {
-		Relation member = new Relation("member", "Entity");
-		Relation cl = new Relation("class", "Entity");
-		LinkedList<Relation> rels = new LinkedList<Relation>();
-		rels.add(member);
-		rels.add(cl);
-		CaseFrame cf = Network.defineCaseFrame("Entity", rels);
-		Wire w1 = new Wire(member, "Mary", "Base", "Entity");
-		Wire w2 = new Wire(cl, "Young", "Base", "Entity");
-		Wire w5 = new Wire(cl, "Lady", "Base", "Entity");
-		ArrayList<Wire> m1Wires = new ArrayList<Wire>();
-		m1Wires.add(w1);
-		m1Wires.add(w2);
-		ArrayList<Wire> m2Wires = new ArrayList<Wire>();
-		m2Wires.add(w1);
-		m2Wires.add(w5);
-		Node m1 = Network.buildMolecularNode(m1Wires, cf);
-		Node m2 = Network.buildMolecularNode(m2Wires, cf);
-		Wire w3 = new Wire(member, m1);
-		Wire w4 = new Wire(cl, m2);
-		ArrayList<Wire> m3Wires = new ArrayList<Wire>();
-		m3Wires.add(w3);
-		m3Wires.add(w4);
-		Node m3 = Network.buildMolecularNode(m3Wires, cf);
-		Molecular m1m = (Molecular) m3.getTerm();
-	}
-
 }
