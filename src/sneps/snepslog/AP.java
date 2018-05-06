@@ -76,6 +76,14 @@ public class AP {
 	 * initially set to normal.
 	 */
 	private static String printingMode = "normal";
+	
+	protected static Hashtable<String, String> getCfsDescriptions() {
+		return cfsDescriptions;
+	}
+
+	protected static Hashtable<Node, String> getNodesDescriptions() {
+		return nodesDescriptions;
+	}
 
 	/**
 	 * @return an int representing the number of the snepslog mode currently in use.
