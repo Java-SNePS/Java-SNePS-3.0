@@ -1,30 +1,52 @@
 package sneps.setClasses;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
+import sneps.snip.classes.RuisHandler;
+
 public class ContextRuisSet{
-	private Hashtable<String, RUIHandlerSet> ruisHandlers;
+	private Hashtable<String, RuisHandler> ruisHandlers;
 
 	public ContextRuisSet() {
-		ruisHandlers = new Hashtable<String, RUIHandlerSet>();
+		ruisHandlers = new Hashtable<String, RuisHandler>();
 	}
 
-	public void addHandlerSet(String contextName, RUIHandlerSet handlerSet){
-		ruisHandlers.put(contextName, handlerSet);
+	public RuisHandler addHandlerSet(String contextName, RuisHandler handler){
+		return ruisHandlers.put(contextName, handler);
 	}
 	
 	public boolean hasContext(String contextID) {
-		RUIHandlerSet set = ruisHandlers.get(contextID);
-		if(set == null || set.isEmpty())
+		RuisHandler set = ruisHandlers.get(contextID);
+		if(set == null)
 			return false;
 		return true;
 	}
 
-	public RUIHandlerSet getHandlerSet(String contextID) {
-		RUIHandlerSet set = ruisHandlers.get(contextID);
-		if(set == null || set.isEmpty())
-			set = new RUIHandlerSet();
-		return set;
+	public RuisHandler getByContext(String contextID) {
+		return ruisHandlers.get(contextID);
+	}
+	
+	public boolean contains(RuisHandler handler){
+		return ruisHandlers.contains(handler);
+	}
+	public boolean containsKey(String handlerKey){
+		return ruisHandlers.containsKey(handlerKey);
+	}
+	public RuisHandler getHandler(RuisHandler handler){
+		return ruisHandlers.get(handler);
+	}
+	public Enumeration<String> getKeys(){
+		return ruisHandlers.keys();
+	}
+	public int size(){
+		return ruisHandlers.size();
+	}
+	public void remove(String contextName, RuisHandler handler){
+		ruisHandlers.remove(handler, handler);
 	}
 
+	public void clear() {
+		ruisHandlers.clear();
+	}
 }

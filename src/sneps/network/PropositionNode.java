@@ -79,6 +79,7 @@ public class PropositionNode extends Node {
 	}
 
 	public void broadcastReport(Report report) {
+		newInstances.addReport(report);
 		for (Channel outChannel : outgoingChannels) {
 			outChannel.addReport(report);
 		}

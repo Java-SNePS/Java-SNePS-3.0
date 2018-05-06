@@ -35,7 +35,7 @@ public abstract class RuleNode extends PropositionNode {
 	protected Set<Integer> antNodesWithoutVarsIDs;
 	protected boolean shareVars;
 	protected VarNodeSet sharedVars;
-	protected Hashtable<Context, ContextRuisSet> contextRuisSet;
+	protected ContextRuisSet contextRuisSet;
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
 	public RuleNode(Semantic sym){
@@ -44,7 +44,7 @@ public abstract class RuleNode extends PropositionNode {
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
-		contextRuisSet = new Hashtable<Context, ContextRuisSet>();
+		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 	public RuleNode(Term trm){
@@ -53,7 +53,7 @@ public abstract class RuleNode extends PropositionNode {
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
-		contextRuisSet = new Hashtable<Context, ContextRuisSet>();
+		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 	public RuleNode(Semantic sym, Term syn) {
@@ -62,7 +62,7 @@ public abstract class RuleNode extends PropositionNode {
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
-		contextRuisSet = new Hashtable<Context, ContextRuisSet>();
+		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 
@@ -80,7 +80,6 @@ public abstract class RuleNode extends PropositionNode {
 
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
-		Context context = (Context) Controller.getContextByName(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
 			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
@@ -93,7 +92,7 @@ public abstract class RuleNode extends PropositionNode {
 			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
-		RuisHandler crtemp = this.getContextRUISSet(context).getContextRUIS(contextID);
+		RuisHandler crtemp = contextRuisSet.getByContext(contextID);
 		if(crtemp == null){
 			crtemp = addContextRUIS(contextID);
 		}
@@ -163,8 +162,8 @@ public abstract class RuleNode extends PropositionNode {
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
 
-	public ContextRuisSet getContextRUISSet(Context cntxt) {
-		return contextRuisSet.get(cntxt);
+	public RuisHandler getContextRuiHandler(Context cntxt) {
+		return contextRuisSet.getByContext((String) cntxt.getName());
 	}
 
 	public RuisHandler addContextRUIS(String contextName) {
@@ -187,9 +186,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public RuisHandler addContextRUIS(Context cntxt, RuisHandler cRuis) {
-		// ChannelsSet ctemp = consequentChannel.getConChannelsSet(c);
-		contextRuisSet.get(cntxt).putIn(cRuis);
-		return cRuis;
+		return contextRuisSet.addHandlerSet((String) cntxt.getName(), cRuis);
 	}
 
 	protected RuisHandler createRuisHandler(String contextName) {

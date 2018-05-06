@@ -1,7 +1,6 @@
 package sneps.snip.rules;
 
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Set;
 
 import sneps.network.Node;
@@ -16,12 +15,12 @@ import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
+import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
 public class NumericalEntailment extends RuleNode {
-	private Hashtable<String, RuleUseInfoSet> ruisNotSent;
 	private NodeSet consequents;
 	private int i;
 
@@ -34,18 +33,19 @@ public class NumericalEntailment extends RuleNode {
 
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
+		String contxt = report.getContextName();
 		if (report.isPositive()) {
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(new FlagNode(signature, report.getSupports(), 1));
 			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
-			String contxt = report.getContextName();
-			addNotSentRui(rui, contxt);
+			addNotSentRui(rui, contxt, signature);
 		}
-		if (ruisNotSent.size() >= i)
+		int curPos = contextRuisSet.getByContext(contxt).getPositiveNodes().size();
+		int n = antNodesWithoutVars.size()+antNodesWithVars.size();
+		if ((curPos >= i) && ((curPos < n-i+1) || (curPos < n-1) ) )
 			sendSavedRUIs(report.getContextName());
 	}
-	//TODO n-i+1 n-1  ---> SIndex for combinable i
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo rui, String contextID) {
 		if (rui.getPosCount() >= i){
@@ -56,13 +56,13 @@ public class NumericalEntailment extends RuleNode {
 		}
 	}
 
-	public void addNotSentRui(RuleUseInfo rui, String contxt){
-		RuleUseInfoSet set = ruisNotSent.get(contxt);
-		if (set == null) {
-			set = new RuleUseInfoSet();
-			ruisNotSent.put(contxt, set);
-		}
-		set.add(rui);
+	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
+		SIndex set = (SIndex) contextRuisSet.getByContext(contxt);
+		//if (set == null) 
+		//set = new SIndex(contxt, sharedVars, 0, consequents);
+		set.insertRUI(rui);
+		set.getPositiveNodes().addNode(signature);
+		contextRuisSet.addHandlerSet(contxt, set);
 	}
 	private void sendSavedRUIs(String contextID) {
 		RuleUseInfo addedConstant = getConstantRUI(contextID);
@@ -72,7 +72,7 @@ public class NumericalEntailment extends RuleNode {
 		if (antNodesWithoutVars.size() != addedConstant.getPosCount())
 			return;
 
-		RuleUseInfoSet ruis = ruisNotSent.get(contextID);
+		RuleUseInfoSet ruis = ((PTree)contextRuisSet.getByContext(contextID)).getAllRootRuis();
 		if (ruis == null) {
 			applyRuleOnRui(addedConstant, contextID);
 			return;
@@ -81,9 +81,8 @@ public class NumericalEntailment extends RuleNode {
 		RuleUseInfo combined;
 		for (RuleUseInfo info : ruis) {
 			combined = info.combine(addedConstant);
-			if (combined != null){
-				applyRuleOnRui(combined, contextID);	
-			}
+			if (combined != null)
+				applyRuleOnRui(combined, contextID);
 		}
 	}
 

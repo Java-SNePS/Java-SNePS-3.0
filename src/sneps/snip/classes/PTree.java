@@ -232,7 +232,12 @@ public class PTree extends RuisHandler {
 	public void setSubTreesMap(Hashtable<Integer, PSubTree> subTreesMap) {
 		this.subTreesMap = subTreesMap;
 	}
-
+	public RuleUseInfoSet getAllRootRuis(){
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		for(PSubTree subtree : subTrees)
+			res.addAll(subtree.getRootRUIS());
+		return res;
+	}
 
 	public class PSubTree {
 		private PTreeNode root;
@@ -379,5 +384,5 @@ public class PTree extends RuisHandler {
 		}
 
 	}
-
+//TODO key
 }
