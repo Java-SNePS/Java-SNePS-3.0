@@ -174,7 +174,11 @@ public class AP {
 			rels.add(Network.getRelation(relations.get(i)));
 		}
 		CaseFrame cf = Network.defineCaseFrame(semanticType, rels);
-		modeThreeCaseFrames.put(name, cf);
+		if (!relations.get(0).equals("nil")) {
+			modeThreeCaseFrames.put(name, cf);
+		}else {
+			modeThreeCaseFrames.put(name+"$", cf);
+		}
 		if (description != null) {
 			cfsDescriptions.put(name, description);
 		}
