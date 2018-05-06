@@ -761,23 +761,57 @@ public class AP {
 		return output;
 	}
 
-	// TODO Finish this method
-	public static String displayWffs(ArrayList<Node> wffs) {
+	/**
+	 * This method converts a group of Nodes into a String representation according
+	 * to the printing mode in use.
+	 * 
+	 * @param wffs
+	 *            an ArrayList of some nodes.
+	 * @return a String holding the representation.
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 */
+	public static String displayWffs(ArrayList<Node> wffs)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		String output = "";
 		switch (AP.getPrintingMode()) {
 		case "normal":
 			for (int i = 0; i < wffs.size(); i++) {
-				output += wffs.get(i).toString();
+				if (wffs.get(i) instanceof PropositionNode && wffs.get(i).getTerm() instanceof Closed) {
+					PropositionNode pNode = (PropositionNode) wffs.get(i);
+					String temp = "";
+					if (Controller.getCurrentContext().isAsserted(pNode)) {
+						temp += "!";
+					}
+					output += "WFF" + wffs.get(i).getIdentifier().substring(1) + temp + ": " + wffs.get(i).toString()
+							+ '\n';
+				}
 			}
 			break;
 		case "expert":
 			for (int i = 0; i < wffs.size(); i++) {
-				output += wffs.get(i).toString();
+				if (wffs.get(i) instanceof PropositionNode && wffs.get(i).getTerm() instanceof Closed) {
+					PropositionNode pNode = (PropositionNode) wffs.get(i);
+					String temp = "";
+					if (Controller.getCurrentContext().isAsserted(pNode)) {
+						temp += "!";
+					}
+					output += "WFF" + wffs.get(i).getIdentifier().substring(1) + temp + ": " + wffs.get(i).toString()
+							+ '\n';
+					output += pNode.getBasicSupport().toString() + '\n';
+				}
 			}
 			break;
 		case "unlabeled":
 			for (int i = 0; i < wffs.size(); i++) {
-				output += wffs.get(i).toString();
+				if (wffs.get(i) instanceof PropositionNode && wffs.get(i).getTerm() instanceof Closed) {
+					PropositionNode pNode = (PropositionNode) wffs.get(i);
+					String temp = "";
+					if (Controller.getCurrentContext().isAsserted(pNode)) {
+						temp += "!";
+					}
+					output += wffs.get(i).toString() + '\n';
+				}
 			}
 			break;
 		}
@@ -963,5 +997,5 @@ public class AP {
 		// TODO A wrapper for defineSemantic
 		return SemanticHierarchy.createSemanticType(identifier);
 	}
-	
+
 }
