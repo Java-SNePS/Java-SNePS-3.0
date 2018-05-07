@@ -36,9 +36,11 @@ import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
 import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.RelationDoesntExistException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1099,6 +1101,8 @@ class CUP$parser$actions {
 						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 					break;
 				case "!":
@@ -1109,11 +1113,13 @@ class CUP$parser$actions {
 						RESULT = e.getMessage();
 					} catch (NodeNotFoundInNetworkException e) {
 						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 					break;
 				case "??":
 					try{
-					matchingNodes = AP.match(w);
+						matchingNodes = AP.match(w);
 						for(int i=0;i<matchingNodes.size();i++){
 							if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
 								nodes.add(matchingNodes.get(i));
@@ -1124,9 +1130,11 @@ class CUP$parser$actions {
 						} else {
 							RESULT = "";
 						}
-						}catch (NotAPropositionNodeException e) {
+						} catch (NotAPropositionNodeException e) {
 							RESULT = e.getMessage();
 						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						} catch (Exception e) {
 							RESULT = e.getMessage();
 						}
 					break;
@@ -1143,6 +1151,8 @@ class CUP$parser$actions {
 						} catch (NotAPropositionNodeException e) {
 							RESULT = e.getMessage();
 						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						} catch (Exception e) {
 							RESULT = e.getMessage();
 						}
 						break;
@@ -1173,6 +1183,8 @@ class CUP$parser$actions {
 						} catch (NotAPropositionNodeException e) {
 							RESULT = e.getMessage();
 						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						} catch (Exception e) {
 							RESULT = e.getMessage();
 						}
 					break;
@@ -1209,6 +1221,8 @@ class CUP$parser$actions {
 						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 					break;
 				case "!":
@@ -1218,6 +1232,8 @@ class CUP$parser$actions {
 					} catch (NotAPropositionNodeException e) {
 						RESULT = e.getMessage();
 					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
 						RESULT = e.getMessage();
 					}
 					break;
@@ -1238,6 +1254,8 @@ class CUP$parser$actions {
 							RESULT = e.getMessage();
 						} catch (NodeNotFoundInNetworkException e) {
 							RESULT = e.getMessage();
+						} catch (Exception e) {
+							RESULT = e.getMessage();
 						}
 					break;
 				case "?":
@@ -1253,6 +1271,8 @@ class CUP$parser$actions {
 						} catch (NotAPropositionNodeException e) {
 							RESULT = e.getMessage();
 						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						} catch (Exception e) {
 							RESULT = e.getMessage();
 						}
 						break;
@@ -1284,6 +1304,8 @@ class CUP$parser$actions {
 							RESULT = e.getMessage();
 						} catch (NodeNotFoundInNetworkException e) {
 							RESULT = e.getMessage();
+						} catch (Exception e) {
+							RESULT = e.getMessage();
 						}
 					break;
 				}
@@ -1300,8 +1322,16 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.forwardInference(w, "activate");
-					RESULT = AP.displayWffs(output);
+					try {
+						ArrayList<Node> output = AP.forwardInference(w, "activate");
+						RESULT = AP.displayWffs(output);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}				
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1315,8 +1345,16 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-                		ArrayList<Node> output = AP.forwardInference(w, "activate!");
-					RESULT = AP.displayWffs(output);
+                		try {
+						ArrayList<Node> output = AP.forwardInference(w, "activate!");
+						RESULT = AP.displayWffs(output);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}		
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1336,7 +1374,13 @@ class CUP$parser$actions {
 					try {
 						Controller.addPropsToContext(id, AP.arrayListToPropositionSet(ts));
 						RESULT = "";
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
 						RESULT = e.getMessage();
 					}
 				
@@ -1352,8 +1396,16 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "ask", -1, -1);
-					RESULT = AP.displayWffs(output);
+					try {
+						ArrayList<Node> output = AP.deduce(w, "ask", -1, -1);
+						RESULT = AP.displayWffs(output);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1367,8 +1419,16 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "askifnot", -1, -1);
-					RESULT = AP.displayWffs(output);
+					try {
+						ArrayList<Node> output = AP.deduce(w, "askifnot", -1, -1);
+						RESULT = AP.displayWffs(output);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1382,8 +1442,16 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "askwh", -1, -1);
-					RESULT = AP.displayWffs(output);
+					try {
+						ArrayList<Node> output = AP.deduce(w, "askwh", -1, -1);
+						RESULT = AP.displayWffs(output);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1397,8 +1465,16 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					ArrayList<Node> output = AP.deduce(w, "askwhnot", -1, -1);
-					RESULT = AP.displayWffs(output);
+					try {
+						ArrayList<Node> output = AP.deduce(w, "askwhnot", -1, -1);
+						RESULT = AP.displayWffs(output);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1412,7 +1488,15 @@ class CUP$parser$actions {
 		int ptsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<Node> pts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					RESULT = AP.displayWffs(AP.beliefsAbout(pts));
+					try {
+						RESULT = AP.displayWffs(AP.beliefsAbout(pts));
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1502,11 +1586,17 @@ class CUP$parser$actions {
 		int idlright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<String> idl = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					if(AP.getSnepslogMode()==3){
-						AP.createModeThreeCaseFrame(id1, id2, idl, null);
-						RESULT = "";
-					}else{
-						RESULT = "You can only use this command in Mode 3.";
+					try{
+						if(AP.getSnepslogMode()==3){
+							AP.createModeThreeCaseFrame(id1, id2, idl, null);
+							RESULT = "";
+						}else{
+							RESULT = "You can only use this command in Mode 3.";
+						}
+					} catch(RelationDoesntExistException e){
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1530,11 +1620,17 @@ class CUP$parser$actions {
 		int slright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		String sl = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					if(AP.getSnepslogMode()==3){
-						AP.createModeThreeCaseFrame(id1, id2, idl, sl);
-						RESULT = "";
-					}else{
-						RESULT = "You can only use this command in Mode 3.";
+					try{
+						if(AP.getSnepslogMode()==3){
+							AP.createModeThreeCaseFrame(id1, id2, idl, sl);
+							RESULT = "";
+						}else{
+							RESULT = "You can only use this command in Mode 3.";
+						}
+					} catch(RelationDoesntExistException e){
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1552,11 +1648,17 @@ class CUP$parser$actions {
 		int spright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Path sp = (Path)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					if(AP.getSnepslogMode()==3){
-						Network.definePath(Network.getRelation(id),sp);
-						RESULT = "";
-					}else{
-						RESULT = "You can only use this command in Mode 3.";
+					try{
+						if(AP.getSnepslogMode()==3){
+							Network.definePath(Network.getRelation(id),sp);
+							RESULT = "";
+						}else{
+							RESULT = "You can only use this command in Mode 3.";
+						}
+					} catch(RelationDoesntExistException e){
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1795,11 +1897,19 @@ class CUP$parser$actions {
 		int oidright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		String oid = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
+				try{
 					if(oid!=null){
 						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.getContextByName(oid).allAsserted()));
 					}else{
 						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.getCurrentContext().allAsserted()));
 					}
+				}  catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+				} catch (NodeNotFoundInNetworkException e) {
+					RESULT = e.getMessage();
+				} catch (Exception e) {
+					RESULT = e.getMessage();
+				}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1829,11 +1939,19 @@ class CUP$parser$actions {
 		int optsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ArrayList<Node> opts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					if(opts!=null){
-						RESULT = AP.displayWffs(AP.getClosed(opts));
-					}else{
-						RESULT = AP.displayWffs(AP.getAllClosedNodesFromTheNetwork());
-					}
+					try{
+						if(opts!=null){
+							RESULT = AP.displayWffs(AP.getClosed(opts));
+						}else{
+							RESULT = AP.displayWffs(AP.getAllClosedNodesFromTheNetwork());
+						}
+					}  catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1913,12 +2031,18 @@ class CUP$parser$actions {
 		int optsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> opts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-					if(opts!=null){
-						Controller.createContext(id, AP.arrayListToPropositionSet(opts));
-					}else{
-						Controller.createContext(id);
+					try{
+						if(opts!=null){
+							Controller.createContext(id, AP.arrayListToPropositionSet(opts));
+						}else{
+							Controller.createContext(id);
+						}
+						RESULT = "";
+					} catch (DuplicateContextNameException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
-					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1932,8 +2056,14 @@ class CUP$parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-					Controller.setCurrentContext(id);
-					RESULT = "";
+					try{
+						Controller.setCurrentContext(id);
+						RESULT = "";
+					} catch (DuplicateContextNameException e) {
+						RESULT = e.getMessage();
+					}catch (Exception e) {
+						RESULT = e.getMessage();
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2024,11 +2154,17 @@ class CUP$parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-					if(AP.getSnepslogMode()==3){
-						Network.undefinePath(Network.getRelation(id));
-						RESULT = "";
-					}else{
-						RESULT = "You can only use this command in Mode 3.";
+					try{
+						if(AP.getSnepslogMode()==3){
+							Network.undefinePath(Network.getRelation(id));
+							RESULT = "";
+						}else{
+							RESULT = "You can only use this command in Mode 3.";
+						}
+					} catch(RelationDoesntExistException e){
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
 					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
