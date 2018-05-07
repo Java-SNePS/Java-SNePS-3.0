@@ -192,11 +192,6 @@ public abstract class RuleNode extends PropositionNode {
 
 	protected abstract RuisHandler createRuisHandler(String contextName);
 
-	public RuleUseInfoSet addContextRUIS(RuleUseInfoSet cRuis) {
-		contextRuisSet.putIn(cRuis);
-		return cRuis;
-	}
-
 	protected RuleUseInfoSet createContextRUISNonShared(String contextName) {
 		return new RuleUseInfoSet(contextName, false);
 	}
