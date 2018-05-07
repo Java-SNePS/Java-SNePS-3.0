@@ -958,6 +958,7 @@ public class AP {
 	protected static ArrayList<Node> match(Node node) {
 		// TODO A wrapper for match
 		ArrayList<Node> output = new ArrayList<Node>();
+		output.add(node);
 		return output;
 	}
 
