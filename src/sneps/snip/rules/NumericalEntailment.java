@@ -21,6 +21,7 @@ import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
 public class NumericalEntailment extends RuleNode {
+	private static final long serialVersionUID = 3546852401118194013L;
 	private NodeSet consequents;
 	private int i;
 

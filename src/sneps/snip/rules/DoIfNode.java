@@ -4,11 +4,12 @@ import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Term;
 import sneps.setClasses.NodeSet;
+import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
 public class DoIfNode extends RuleNode {
+	private static final long serialVersionUID = -262476672166406490L;
 
-		
 	public DoIfNode(Term syn) {
 		super(syn);
 	}
@@ -26,6 +27,12 @@ public class DoIfNode extends RuleNode {
 
 	@Override
 	public NodeSet getDownAntNodeSet() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected RuisHandler createRuisHandler(String contextName) {
 		// TODO Auto-generated method stub
 		return null;
 	}

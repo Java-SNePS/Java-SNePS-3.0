@@ -18,6 +18,7 @@ import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
 public class AndEntailment extends RuleNode {
+	private static final long serialVersionUID = -8545987005610860977L;
 	private NodeSet consequents;//TODO Proposition Nodes get
 
 	public AndEntailment(Term syn) {
