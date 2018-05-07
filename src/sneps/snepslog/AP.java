@@ -492,9 +492,11 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
+	 * @throws NodeNotFoundInNetworkException 
+	 * @throws NotAPropositionNodeException 
 	 */
 	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2)
-			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException {
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -711,9 +713,11 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeCannotBeRemovedException
 	 * @throws RelationDoesntExistException
+	 * @throws NodeNotFoundInNetworkException 
+	 * @throws NotAPropositionNodeException 
 	 */
 	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
-			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException {
+			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);
