@@ -35,12 +35,18 @@ import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
+import sneps.exceptions.CannotFindCaseFrameException;
 import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.InvalidArgumentsException;
+import sneps.exceptions.InvalidWffNameException;
+import sneps.exceptions.ModeOneOnlyException;
+import sneps.exceptions.ModeThreeOnlyException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
+import sneps.exceptions.SemanticAlreadySetException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -2718,7 +2724,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-				RESULT = AP.buildAndorTerm(i, j, arguments);
+		  		if(Integer.valueOf(i)>=0&&Integer.valueOf(i)<=Integer.valueOf(j)){
+					RESULT = AP.buildAndorTerm(i, j, arguments);
+				}
+				else{
+					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
+				}
 		  
               CUP$parser$result = parser.getSymbolFactory().newSymbol("andorTerm",21, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2822,7 +2833,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             	RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+           		if(Integer.valueOf(thresh)>=0&&Integer.valueOf(thresh)<=Integer.valueOf(threshmax)){
+					RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+				}
+				else{
+					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
+				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("threshTerm",23, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2839,7 +2855,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             	RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+           		if(Integer.valueOf(thresh)>=0){
+					RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+				}
+				else{
+					throw new InvalidArgumentsException("The arguments should be something like: 0<=i");
+				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("threshTerm",23, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2859,7 +2880,7 @@ class CUP$parser$actions {
          		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
 		 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ifdoTerm",28, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2880,7 +2901,7 @@ class CUP$parser$actions {
            		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
 		   
               CUP$parser$result = parser.getSymbolFactory().newSymbol("whendoTerm",29, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2901,7 +2922,7 @@ class CUP$parser$actions {
 					if(AP.getSnepslogMode()==3){
            				RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
            			}else{
-           				RESULT = null;
+           				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            			}
 		       
               CUP$parser$result = parser.getSymbolFactory().newSymbol("wheneverdoTerm",30, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2922,7 +2943,7 @@ class CUP$parser$actions {
             		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
            		}else{
-        				RESULT = null;
+        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         			}
 		    
               CUP$parser$result = parser.getSymbolFactory().newSymbol("actplanTerm",31, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2943,7 +2964,7 @@ class CUP$parser$actions {
            		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
            		}else{
-        				RESULT = null;
+        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         			}
 	       
               CUP$parser$result = parser.getSymbolFactory().newSymbol("effectTerm",32, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2964,7 +2985,7 @@ class CUP$parser$actions {
 				if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
            		}else{
-        				RESULT = null;
+        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         			}
 		     
               CUP$parser$result = parser.getSymbolFactory().newSymbol("goalplanTerm",33, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2985,7 +3006,7 @@ class CUP$parser$actions {
 					if(AP.getSnepslogMode()==3){
            				RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
            			}else{
-        					RESULT = null;
+        					throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         				}
 		         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("preconditionTerm",34, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3064,12 +3085,12 @@ class CUP$parser$actions {
 		
            		if(AP.getSnepslogMode()==3){
            			if (Network.getNodes().containsKey(id1)) {
-           				RESULT = null;
+           				throw new SemanticAlreadySetException("A semantic type was already set for this node");
 					}else{
-						RESULT = Network.buildBaseNode(id1, SemanticHierarchy.createSemanticType(id2));
+						RESULT = Network.buildBaseNode(id1, SemanticHierarchy.getSemantic(id2));
 					}
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("atomicTerm",25, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3127,7 +3148,7 @@ class CUP$parser$actions {
 					}
 					RESULT = Network.buildMolecularNode(wires, caseFrame);
 				}else{
-					RESULT = null;
+					throw new ModeOneOnlyException("A predicate can start with a variable only in Mode 1");
 				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("atomicTerm",25, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3208,7 +3229,7 @@ class CUP$parser$actions {
 							}
 							RESULT = node;
 						}else{
-							RESULT = null;
+							throw new CannotFindCaseFrameException("Unable to find a matching CaseFrame.");
 						}
 					}
 				}
@@ -3251,7 +3272,7 @@ class CUP$parser$actions {
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              
               CUP$parser$result = parser.getSymbolFactory().newSymbol("withsomeTerm",26, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3275,7 +3296,7 @@ class CUP$parser$actions {
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              
               CUP$parser$result = parser.getSymbolFactory().newSymbol("withsomeTerm",26, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-7)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3302,7 +3323,7 @@ class CUP$parser$actions {
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              
               CUP$parser$result = parser.getSymbolFactory().newSymbol("withallTerm",27, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3326,7 +3347,7 @@ class CUP$parser$actions {
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              
               CUP$parser$result = parser.getSymbolFactory().newSymbol("withallTerm",27, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-7)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3446,7 +3467,7 @@ class CUP$parser$actions {
 	    		if (Network.getNodes().containsKey("M"+il)) {
         			RESULT = "wff"+il;
 			}else{
-				RESULT = null;
+				throw new InvalidWffNameException("This wffName does not correspond to any wff in the Network");
 			}
 	    
               CUP$parser$result = parser.getSymbolFactory().newSymbol("wffName",9, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

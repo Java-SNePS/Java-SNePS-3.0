@@ -32,12 +32,18 @@ import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
+import sneps.exceptions.CannotFindCaseFrameException;
 import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.InvalidArgumentsException;
+import sneps.exceptions.InvalidWffNameException;
+import sneps.exceptions.ModeOneOnlyException;
+import sneps.exceptions.ModeThreeOnlyException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
+import sneps.exceptions.SemanticAlreadySetException;
 
 
 parser code {:
@@ -1022,7 +1028,12 @@ negatedTerm ::= NOT atomicTerm:node
 			
 andorTerm ::= ANDOR OPEN_PARAN INT_LIT:i COMMA INT_LIT:j CLOSE_PARAN termSet:arguments
 		  {:
-				RESULT = AP.buildAndorTerm(i, j, arguments);
+		  		if(Integer.valueOf(i)>=0&&Integer.valueOf(i)<=Integer.valueOf(j)){
+					RESULT = AP.buildAndorTerm(i, j, arguments);
+				}
+				else{
+					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
+				}
 		  :};
 	
 setTerm ::= AND termSet:arguments
@@ -1052,11 +1063,21 @@ setTerm ::= AND termSet:arguments
 
 threshTerm ::= THRESH OPEN_PARAN INT_LIT:thresh COMMA INT_LIT:threshmax CLOSE_PARAN termSet:arguments
            {:
-             	RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+           		if(Integer.valueOf(thresh)>=0&&Integer.valueOf(thresh)<=Integer.valueOf(threshmax)){
+					RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+				}
+				else{
+					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
+				}
            :}
            | THRESH OPEN_PARAN INT_LIT:thresh CLOSE_PARAN termSet:arguments
            {:
-             	RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+           		if(Integer.valueOf(thresh)>=0){
+					RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+				}
+				else{
+					throw new InvalidArgumentsException("The arguments should be something like: 0<=i");
+				}
            :};
 
 ifdoTerm ::= IFDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
@@ -1064,7 +1085,7 @@ ifdoTerm ::= IFDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
          		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
 		 :};
 		 
@@ -1073,7 +1094,7 @@ whendoTerm ::= WHENDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
            		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
 		   :};
 		   
@@ -1082,7 +1103,7 @@ wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PA
 					if(AP.getSnepslogMode()==3){
            				RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
            			}else{
-           				RESULT = null;
+           				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            			}
 		       :};
 		   
@@ -1091,7 +1112,7 @@ actplanTerm ::= ACTPLAN OPEN_PARAN atomicTerm:arg1 COMMA atomicTerm:arg2 CLOSE_P
             		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
            		}else{
-        				RESULT = null;
+        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         			}
 		    :};
 		       
@@ -1100,7 +1121,7 @@ effectTerm ::= EFFECT OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
            		if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
            		}else{
-        				RESULT = null;
+        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         			}
 	       :};
 		       
@@ -1109,7 +1130,7 @@ goalplanTerm ::= GOALPLAN OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
 				if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
            		}else{
-        				RESULT = null;
+        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         			}
 		     :};		     
 
@@ -1118,7 +1139,7 @@ preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOS
 					if(AP.getSnepslogMode()==3){
            				RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
            			}else{
-        					RESULT = null;
+        					throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
         				}
 		         :};
 
@@ -1143,12 +1164,12 @@ atomicTerm ::= wffName:wn
            {:
            		if(AP.getSnepslogMode()==3){
            			if (Network.getNodes().containsKey(id1)) {
-           				RESULT = null;
+           				throw new SemanticAlreadySetException("A semantic type was already set for this node");
 					}else{
-						RESULT = Network.buildBaseNode(id1, SemanticHierarchy.createSemanticType(id2));
+						RESULT = Network.buildBaseNode(id1, SemanticHierarchy.getSemantic(id2));
 					}
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
            :}
            | withsomeTerm:wst
@@ -1173,7 +1194,7 @@ atomicTerm ::= wffName:wn
 					}
 					RESULT = Network.buildMolecularNode(wires, caseFrame);
 				}else{
-					RESULT = null;
+					throw new ModeOneOnlyException("A predicate can start with a variable only in Mode 1");
 				}
            :}
            | IDENTIFIER:id OPEN_PARAN termSetSequence:tss CLOSE_PARAN
@@ -1241,7 +1262,7 @@ atomicTerm ::= wffName:wn
 							}
 							RESULT = node;
 						}else{
-							RESULT = null;
+							throw new CannotFindCaseFrameException("Unable to find a matching CaseFrame.");
 						}
 					}
 				}
@@ -1256,7 +1277,7 @@ withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat 
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              :}
              | WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
@@ -1264,7 +1285,7 @@ withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat 
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              :};
              
@@ -1273,7 +1294,7 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat CO
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              :}
              | WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
@@ -1281,7 +1302,7 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat CO
              	if(AP.getSnepslogMode()==3){
            			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
            		}else{
-           			RESULT = null;
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              :};
 		         
@@ -1330,7 +1351,7 @@ wffName ::= WFF INT_LIT:il
 	    		if (Network.getNodes().containsKey("M"+il)) {
         			RESULT = "wff"+il;
 			}else{
-				RESULT = null;
+				throw new InvalidWffNameException("This wffName does not correspond to any wff in the Network");
 			}
 	    :};
 	    
