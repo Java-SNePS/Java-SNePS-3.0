@@ -18,6 +18,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.Wire;
+import sneps.network.classes.term.Base;
 import sneps.network.paths.Path;
 import sneps.network.paths.BangPath;
 import sneps.network.paths.EmptyPath;
@@ -47,6 +48,7 @@ import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
+import sneps.exceptions.IllegalAtomicSymbolException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1211,6 +1213,9 @@ class CUP$parser$actions {
 		int tpright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String tp = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
+		   		if(w.getTerm() instanceof Base){
+		   			throw new IllegalAtomicSymbolException("wff must not be an atomic symbol");
+		   		}
 				ArrayList<Node> nodes = new ArrayList<>();
 				ArrayList<Node> matchingNodes = new ArrayList<>();
 				switch (tp) {
@@ -3024,6 +3029,9 @@ class CUP$parser$actions {
 		int wright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node w = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
+			if(w.getTerm() instanceof Base){
+		   		throw new IllegalAtomicSymbolException("wff must not be an atomic symbol");
+		   	}
 			RESULT = AP.buildAllTerm(ss, w);
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("allTerm",24, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

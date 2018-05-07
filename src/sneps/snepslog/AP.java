@@ -24,12 +24,25 @@ import java.util.Set;
 
 import java_cup.runtime.Symbol;
 import sneps.exceptions.CannotBuildNodeException;
+import sneps.exceptions.CannotFindCaseFrameException;
+import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameMissMatchException;
+import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
+import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.exceptions.IllegalAtomicSymbolException;
+import sneps.exceptions.InvalidArgumentsException;
+import sneps.exceptions.InvalidWffNameException;
+import sneps.exceptions.ModeOneOnlyException;
+import sneps.exceptions.ModeThreeOnlyException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
+import sneps.exceptions.SemanticAlreadySetException;
+import sneps.exceptions.SemanticNotFoundInNetworkException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -76,7 +89,7 @@ public class AP {
 	 * initially set to normal.
 	 */
 	private static String printingMode = "normal";
-	
+
 	protected static Hashtable<String, String> getCfsDescriptions() {
 		return cfsDescriptions;
 	}
@@ -551,16 +564,61 @@ public class AP {
 	 * @throws Exception
 	 *             if the command is syntactically incorrect.
 	 */
-	public static String executeSnepslogCommand(String command) throws Exception {
-		InputStream is = new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8));
-		DataInputStream dis = new DataInputStream(is);
-		parser parser = new parser(new Lexer(dis));
-		parser.command = command;
-		Symbol res = parser.parse();
-		String output = (String) res.value;
-		is.close();
-		dis.close();
-		return output;
+	public static String executeSnepslogCommand(String command) {
+		try {
+			InputStream is = new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8));
+			DataInputStream dis = new DataInputStream(is);
+			parser parser = new parser(new Lexer(dis));
+			parser.command = command;
+			Symbol res;
+			res = parser.parse();
+			String output = (String) res.value;
+			is.close();
+			dis.close();
+			return output;
+		} catch (CannotBuildNodeException e) {
+			return e.getMessage();
+		} catch (CannotFindCaseFrameException e) {
+			return e.getMessage();
+		} catch (CaseFrameCannotBeRemovedException e) {
+			return e.getMessage();
+		} catch (CaseFrameMissMatchException e) {
+			return e.getMessage();
+		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
+			return e.getMessage();
+		} catch (DuplicateContextNameException e) {
+			return e.getMessage();
+		} catch (DuplicatePropositionException e) {
+			return e.getMessage();
+		} catch (EquivalentNodeException e) {
+			return e.getMessage();
+		} catch (IllegalAtomicSymbolException e) {
+			return e.getMessage();
+		} catch (InvalidArgumentsException e) {
+			return e.getMessage();
+		} catch (InvalidWffNameException e) {
+			return e.getMessage();
+		} catch (ModeOneOnlyException e) {
+			return e.getMessage();
+		} catch (ModeThreeOnlyException e) {
+			return e.getMessage();
+		} catch (NodeCannotBeRemovedException e) {
+			return e.getMessage();
+		} catch (NodeNotFoundInNetworkException e) {
+			return e.getMessage();
+		} catch (NodeNotFoundInPropSetException e) {
+			return e.getMessage();
+		} catch (NotAPropositionNodeException e) {
+			return e.getMessage();
+		} catch (RelationDoesntExistException e) {
+			return e.getMessage();
+		} catch (SemanticAlreadySetException e) {
+			return e.getMessage();
+		} catch (SemanticNotFoundInNetworkException e) {
+			return e.getMessage();
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 
 	public static Hashtable<String, CaseFrame> getModeThreeCaseFrames() {

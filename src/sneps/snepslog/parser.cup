@@ -15,6 +15,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.Wire;
+import sneps.network.classes.term.Base;
 import sneps.network.paths.Path;
 import sneps.network.paths.BangPath;
 import sneps.network.paths.EmptyPath;
@@ -44,6 +45,7 @@ import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
+import sneps.exceptions.IllegalAtomicSymbolException;
 
 
 parser code {:
@@ -328,6 +330,9 @@ wffNameCommand ::= wffName:wn terminalPunctuation:tp
 				
 wffCommand ::= wff:w terminalPunctuation:tp
 		   {: 
+		   		if(w.getTerm() instanceof Base){
+		   			throw new IllegalAtomicSymbolException("wff must not be an atomic symbol");
+		   		}
 				ArrayList<Node> nodes = new ArrayList<>();
 				ArrayList<Node> matchingNodes = new ArrayList<>();
 				switch (tp) {
@@ -1145,6 +1150,9 @@ preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOS
 
 allTerm ::= ALL OPEN_PARAN symbolSequence:ss CLOSE_PARAN OPEN_PARAN wff:w CLOSE_PARAN
 		{:
+			if(w.getTerm() instanceof Base){
+		   		throw new IllegalAtomicSymbolException("wff must not be an atomic symbol");
+		   	}
 			RESULT = AP.buildAllTerm(ss, w);
 		:};
 
