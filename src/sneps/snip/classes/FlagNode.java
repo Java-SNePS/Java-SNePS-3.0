@@ -26,23 +26,44 @@ public class FlagNode {
 		flag = f;
 	}
 
+	/**
+	 * Return the node of the flag node
+	 * 
+	 * @return Node
+	 */
+	public Node getNode() {
+		return node;
+	}
+
+	/**
+	 * Return the support of the flag node
+	 * 
+	 * @return support
+	 */
+	public Set<Support> getSupports() {
+		return supports;
+	}
+
+	/**
+	 * Return the flag of the flag node (1 is true, 2 is false, 3 is unknown and
+	 * 4 is requested)
+	 * 
+	 * @return Node
+	 */
+	public int getFlag() {
+		return flag;
+	}
+
+	/**
+	 * Check if this and fn are equal
+	 * 
+	 * @param fn
+	 *            flag node
+	 * @return true or false
+	 */
 
 	public boolean isEqual(FlagNode fn) {
 		return fn.node == node && fn.supports == supports && fn.flag == flag;
 	}
-
-
-	public int getFlag() {
-		return flag;
-	}
-	public void setFlag(int flag) {
-		this.flag = flag;
-	}
-	public Node getNode() {
-		return node;
-	}
-	public Set<Support> getSupports() {
-		return supports;
-	}	
 
 }

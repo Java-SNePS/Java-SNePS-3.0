@@ -1,12 +1,13 @@
 package sneps.network.classes.term;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.setClasses.NodeSet;
 
-public abstract class Term {
+public abstract class Term implements Serializable {
 	/**
 	 * the label or the name of the node.
 	 */

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-import sneps.network.Node;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
@@ -96,6 +95,7 @@ public abstract class RuleNode extends PropositionNode {
 		if(crtemp == null){
 			crtemp = addContextRUIS(contextID);
 		}
+
 		RuleUseInfoSet res = crtemp.insertRUI(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
@@ -180,16 +180,24 @@ public abstract class RuleNode extends PropositionNode {
 		}
 	}
 
-	private RuisHandler addContextRUIS(SIndex si) {
+	private RuleUseInfoSet addContextRUIS(SIndex si) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	public RuisHandler addContextRUIS(Context cntxt, RuisHandler cRuis) {
 		return contextRuisSet.addHandlerSet((String) cntxt.getName(), cRuis);
 	}
 
-	protected RuisHandler createRuisHandler(String contextName) {
+	protected abstract RuisHandler createRuisHandler(String contextName);
+
+	public RuleUseInfoSet addContextRUIS(RuleUseInfoSet cRuis) {
+		contextRuisSet.putIn(cRuis);
+		return cRuis;
+	}
+
+	protected RuleUseInfoSet createContextRUISNonShared(String contextName) {
 		return new RuleUseInfoSet(contextName, false);
 	}
 

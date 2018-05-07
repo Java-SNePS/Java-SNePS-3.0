@@ -1,8 +1,10 @@
 package sneps.network.classes.term;
 
+import java.io.Serializable;
+
 import sneps.network.cables.DownCableSet;
 
-public class Molecular extends Term {
+public class Molecular extends Term implements Serializable{
 	protected DownCableSet downCableSet;
 
 	/**
@@ -20,6 +22,6 @@ public class Molecular extends Term {
 	}
 
 	public DownCableSet getDownCableSet() {
-		return this.getDownCableSet();
+		return this.downCableSet;
 	}
 }

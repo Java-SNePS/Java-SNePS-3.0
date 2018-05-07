@@ -1,9 +1,10 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class CaseFrame { 
+public class CaseFrame implements Serializable { 
 	
 	
 	private Semantic semanticClass; 

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
@@ -14,6 +15,11 @@ import sneps.setClasses.PropositionSet;
 import sneps.setClasses.ReportSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.exceptions.CustomException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
+import java.util.Hashtable;
+
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;
@@ -39,8 +45,12 @@ public class PropositionNode extends Node {
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
 	}
+
 	public PropositionNode(Term trm) {
-		this();
+		super(trm);
+		outgoingChannels = new ChannelSet();
+		incomingChannels = new ChannelSet();
+		knownInstances = new ReportSet();
 		setTerm(trm);
 	}
 	public PropositionNode(Term trm, Semantic sem) {
@@ -206,8 +216,8 @@ public class PropositionNode extends Node {
 	public Support getBasicSupport() {
 		return basicSupport;
 	}
-	public void setBasicSupport(Support basicSupport) {
-		this.basicSupport = basicSupport;
+	public void setBasicSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		this.basicSupport = new Support(this.getId());
 	}
 	public ChannelSet getOutgoingChannels() {
 		return outgoingChannels;
@@ -227,6 +237,8 @@ public class PropositionNode extends Node {
 	public void setKnownInstances(ReportSet knownInstances) {
 		this.knownInstances = knownInstances;
 	}
-
+	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
+		return basicSupport.getAssumptionBasedSupport();
+	}
 
 }

@@ -7,7 +7,6 @@ import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
-import sneps.network.PropositionNode;
 import sneps.setClasses.NodeSet;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Support;
