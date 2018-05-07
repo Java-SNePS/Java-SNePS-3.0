@@ -624,6 +624,12 @@ public class FXController implements Initializable {
 		} catch (EquivalentNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
