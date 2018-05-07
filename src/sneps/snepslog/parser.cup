@@ -119,7 +119,6 @@ terminal ACTIVATE,
          CLOSE_CURLY,
          WITHSOME,
          WITHALL,
-         WFF,
          IFDO,
          WHENDO,
          WHENEVERDO,
@@ -145,7 +144,8 @@ terminal String FILEPATH,
                 NUMERICAL_ENTAILMENT,
                 EXPAND,
          	    REDUCE,
-         	    NONE;
+         	    NONE,
+         	    WFF;
 
 /* Non-terminals */
 
@@ -1354,10 +1354,10 @@ snepslogSymbols ::= COMMA snepslogSymbol:ss snepslogSymbols:sss
 					RESULT = new ArrayList<Node>();
 		        :};
 
-wffName ::= WFF INT_LIT:il
+wffName ::= WFF:w
 	    {:
-	    		if (Network.getNodes().containsKey("M"+il)) {
-        			RESULT = "wff"+il;
+	    		if (Network.getNodes().containsKey("M"+w.substring(3))) {
+        			RESULT = w;
 			}else{
 				throw new InvalidWffNameException("This wffName does not correspond to any wff in the Network");
 			}
