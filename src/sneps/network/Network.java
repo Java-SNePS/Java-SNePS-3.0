@@ -575,6 +575,7 @@ public class Network implements Serializable {
 			if(semantic.getSemanticType().equals("PropositionNode")){
 				PropositionNode propNode =  new PropositionNode(b);
 				nodes.put(identifier, propNode);
+				propositionNodes.put(identifier, propNode);
 				try {
 					nodesIndex.add(propNode.getId(), propNode);
 					propNode.setBasicSupport();
@@ -2117,6 +2118,7 @@ public class Network implements Serializable {
 		molCounter = 0;
 		patternCounter = 0;
 		varCounter = 0;
+		Node.setCount(0);
 		userDefinedMolSuffix.clear();
 		userDefinedPatSuffix.clear();
 		userDefinedVarSuffix.clear();

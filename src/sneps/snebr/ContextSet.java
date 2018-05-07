@@ -1,7 +1,9 @@
 package sneps.snebr;
 
 
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 
 public class ContextSet {
 
@@ -22,6 +24,14 @@ public class ContextSet {
     public ContextSet(String name) {
         this();
         this.contexts.put(name, new Context(name));
+    }
+
+    public void clear() {
+        contexts.clear();
+    }
+
+    public Set<String> getNames() {
+        return contexts.keySet();
     }
 
     /**
