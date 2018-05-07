@@ -36,6 +36,9 @@ import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
 import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1088,60 +1091,90 @@ class CUP$parser$actions {
 						Controller.addPropToCurrentContext(w.getId());
 						nodes.add(w);
 						RESULT = AP.displayWffs(nodes);
+					} catch (DuplicatePropositionException e) {
+						RESULT = e.getMessage();
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
 					}
 					break;
 				case "!":
-					nodes = AP.forwardInference(w, "!");
-					RESULT = AP.displayWffs(nodes);
+					try {
+						nodes = AP.forwardInference(w, "!");
+						RESULT = AP.displayWffs(nodes);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					}
 					break;
 				case "??":
+					try{
 					matchingNodes = AP.match(w);
-					for(int i=0;i<matchingNodes.size();i++){
-						if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
-							nodes.add(matchingNodes.get(i));
+						for(int i=0;i<matchingNodes.size();i++){
+							if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
+								nodes.add(matchingNodes.get(i));
+							}
 						}
-					}
-					if (!nodes.isEmpty()) {
-						RESULT = AP.displayWffs(nodes);
-					} else {
-						RESULT = "";
-					}
+						if (!nodes.isEmpty()) {
+							RESULT = AP.displayWffs(nodes);
+						} else {
+							RESULT = "";
+						}
+						}catch (NotAPropositionNodeException e) {
+							RESULT = e.getMessage();
+						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						}
 					break;
 				case "?":
-					matchingNodes = AP.match(w);
-					for(int i=0;i<matchingNodes.size();i++){
-						ArrayList<Node> temp = AP.deduce(matchingNodes.get(i), "?", -1, -1);
-						for(int j=0;j<temp.size();j++){
-							nodes.add(temp.get(j));
+						try {
+							matchingNodes = AP.match(w);
+							for(int i=0;i<matchingNodes.size();i++){
+								ArrayList<Node> temp = AP.deduce(matchingNodes.get(i), "?", -1, -1);
+								for(int j=0;j<temp.size();j++){
+									nodes.add(temp.get(j));
+								}
+							}
+							RESULT = AP.displayWffs(nodes);
+						} catch (NotAPropositionNodeException e) {
+							RESULT = e.getMessage();
+						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
 						}
-					}
-					RESULT = AP.displayWffs(nodes);
-					break;
+						break;
 				default:
-					if (tp.startsWith("ONE")) {
-						int i = Integer.parseInt(tp.substring(3));
-						matchingNodes = AP.match(w);
-					    for(int a=0;a<matchingNodes.size();a++){
-							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, -1);
-							for(int b=0;b<temp.size();b++){
-								nodes.add(temp.get(b));
+					try{
+						if (tp.startsWith("ONE")) {
+							int i = Integer.parseInt(tp.substring(3));
+							matchingNodes = AP.match(w);
+					    		for(int a=0;a<matchingNodes.size();a++){
+								ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, -1);
+								for(int b=0;b<temp.size();b++){
+									nodes.add(temp.get(b));
+								}
 							}
-						}
-						RESULT = AP.displayWffs(nodes);
-					} else {
-						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
-						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
-						matchingNodes = AP.match(w);
-						for(int a=0;a<matchingNodes.size();a++){
-							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, j);
-							for(int b=0;b<temp.size();b++){
-								nodes.add(temp.get(b));
+							RESULT = AP.displayWffs(nodes);
+						} else {
+							int i = Integer.parseInt(tp.substring(3).split(",")[0]);
+							int j = Integer.parseInt(tp.substring(3).split(",")[1]);
+							matchingNodes = AP.match(w);
+							for(int a=0;a<matchingNodes.size();a++){
+								ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, j);
+								for(int b=0;b<temp.size();b++){
+									nodes.add(temp.get(b));
+								}
 							}
+							RESULT = AP.displayWffs(nodes);
 						}
-						RESULT = AP.displayWffs(nodes);
-					}
+						} catch (NotAPropositionNodeException e) {
+							RESULT = e.getMessage();
+						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						}
 					break;
 				}
 		   
@@ -1168,60 +1201,90 @@ class CUP$parser$actions {
 						Controller.addPropToCurrentContext(w.getId());
 						nodes.add(w);
 						RESULT = AP.displayWffs(nodes);
+					} catch (DuplicatePropositionException e) {
+						RESULT = e.getMessage();
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
 					}
 					break;
 				case "!":
-					nodes = AP.forwardInference(w, "!");
-					RESULT = AP.displayWffs(nodes);
+					try {
+						nodes = AP.forwardInference(w, "!");
+						RESULT = AP.displayWffs(nodes);
+					} catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					}
 					break;
 				case "??":
+					try{
 					matchingNodes = AP.match(w);
-					for(int i=0;i<matchingNodes.size();i++){
-						if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
-							nodes.add(matchingNodes.get(i));
+						for(int i=0;i<matchingNodes.size();i++){
+							if(Controller.getCurrentContext().isAsserted((PropositionNode) matchingNodes.get(i))){
+								nodes.add(matchingNodes.get(i));
+							}
 						}
-					}
-					if (!nodes.isEmpty()) {
-						RESULT = AP.displayWffs(nodes);
-					} else {
-						RESULT = "";
-					}
+						if (!nodes.isEmpty()) {
+							RESULT = AP.displayWffs(nodes);
+						} else {
+							RESULT = "";
+						}
+						}catch (NotAPropositionNodeException e) {
+							RESULT = e.getMessage();
+						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						}
 					break;
 				case "?":
-					matchingNodes = AP.match(w);
-					for(int i=0;i<matchingNodes.size();i++){
-						ArrayList<Node> temp = AP.deduce(matchingNodes.get(i), "?", -1, -1);
-						for(int j=0;j<temp.size();j++){
-							nodes.add(temp.get(j));
+						try {
+							matchingNodes = AP.match(w);
+							for(int i=0;i<matchingNodes.size();i++){
+								ArrayList<Node> temp = AP.deduce(matchingNodes.get(i), "?", -1, -1);
+								for(int j=0;j<temp.size();j++){
+									nodes.add(temp.get(j));
+								}
+							}
+							RESULT = AP.displayWffs(nodes);
+						} catch (NotAPropositionNodeException e) {
+							RESULT = e.getMessage();
+						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
 						}
-					}
-					RESULT = AP.displayWffs(nodes);
-					break;
+						break;
 				default:
-					if (tp.startsWith("ONE")) {
-						int i = Integer.parseInt(tp.substring(3));
-						matchingNodes = AP.match(w);
-					    for(int a=0;a<matchingNodes.size();a++){
-							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, -1);
-							for(int b=0;b<temp.size();b++){
-								nodes.add(temp.get(b));
+					try{
+						if (tp.startsWith("ONE")) {
+							int i = Integer.parseInt(tp.substring(3));
+							matchingNodes = AP.match(w);
+					    		for(int a=0;a<matchingNodes.size();a++){
+								ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, -1);
+								for(int b=0;b<temp.size();b++){
+									nodes.add(temp.get(b));
+								}
 							}
-						}
-						RESULT = AP.displayWffs(nodes);
-					} else {
-						int i = Integer.parseInt(tp.substring(3).split(",")[0]);
-						int j = Integer.parseInt(tp.substring(3).split(",")[1]);
-						matchingNodes = AP.match(w);
-						for(int a=0;a<matchingNodes.size();a++){
-							ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, j);
-							for(int b=0;b<temp.size();b++){
-								nodes.add(temp.get(b));
+							RESULT = AP.displayWffs(nodes);
+						} else {
+							int i = Integer.parseInt(tp.substring(3).split(",")[0]);
+							int j = Integer.parseInt(tp.substring(3).split(",")[1]);
+							matchingNodes = AP.match(w);
+							for(int a=0;a<matchingNodes.size();a++){
+								ArrayList<Node> temp = AP.deduce(matchingNodes.get(a), "?", i, j);
+								for(int b=0;b<temp.size();b++){
+									nodes.add(temp.get(b));
+								}
 							}
+							RESULT = AP.displayWffs(nodes);
 						}
-						RESULT = AP.displayWffs(nodes);
-					}
+						} catch (NotAPropositionNodeException e) {
+							RESULT = e.getMessage();
+						} catch (NodeNotFoundInNetworkException e) {
+							RESULT = e.getMessage();
+						}
 					break;
 				}
 		   
