@@ -371,7 +371,6 @@ public class AP {
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
 			EquivalentNodeException, CaseFrameMissMatchException {
-		// TODO andor i j checks
 		Network.defineDefaults();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
@@ -465,7 +464,6 @@ public class AP {
 	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
 			NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		// TODO thresh i j checks
 		Network.defineDefaults();
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
@@ -767,67 +765,6 @@ public class AP {
 	}
 
 	/**
-	 * Docs goes here
-	 */
-	protected static ArrayList<Node> match(Node node) {
-		// TODO A wrapper for match
-		ArrayList<Node> output = new ArrayList<Node>();
-		return output;
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void activateTracing(String type) {
-		// TODO A wrapper for setting tacing variables to true
-		switch (type) {
-		case "inference":
-			break;
-		case "acting":
-			break;
-		case "parsing":
-			break;
-		}
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void deactivateTracing(String type) {
-		// TODO A wrapper for setting tracing variables to false
-		switch (type) {
-		case "inference":
-			break;
-		case "acting":
-			break;
-		case "parsing":
-			break;
-		}
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static ArrayList<Node> deduce(Node node, String type, int i, int j) {
-		// TODO A wrapper for deduce
-		ArrayList<Node> output = new ArrayList<Node>();
-		switch (type) {
-		case "ask":
-			break;
-		case "askifnot":
-			break;
-		case "askwh":
-			break;
-		case "askwhnot":
-			break;
-		case "?":
-			// Handle the optional i and j parameters if there
-			break;
-		}
-		return output;
-	}
-
-	/**
 	 * This method converts a group of Nodes into a String representation according
 	 * to the printing mode in use.
 	 * 
@@ -885,23 +822,6 @@ public class AP {
 	}
 
 	/**
-	 * Docs goes here
-	 */
-	protected static ArrayList<Node> forwardInference(Node node, String type) {
-		// TODO A wrapper for forward inference
-		ArrayList<Node> output = new ArrayList<Node>();
-		switch (type) {
-		case "activate":
-			break;
-		case "activate!":
-			break;
-		case "!":
-			break;
-		}
-		return output;
-	}
-
-	/**
 	 * A method to convert an ArrayList of Nodes to a PropositionSet.
 	 */
 	protected static PropositionSet arrayListToPropositionSet(ArrayList<Node> nodes)
@@ -924,42 +844,6 @@ public class AP {
 			nodes.add(Network.getNodeById(props[i]));
 		}
 		return nodes;
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void clearInfer() {
-		// TODO A wrapper for the method clearing the acg
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static String getBrMode() {
-		// TODO A wrapper for the method returning the current belief revision mode.
-		return "";
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void setBrMode(String mode) {
-		// TODO A wrapper for the method setting the belief revision mode.
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void perform(Node node) {
-		// TODO A wrapper for perform.
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void removeFromContext(String context, PropositionSet hyps) {
-		// TODO A wrapper for the method removing hyps from context.
 	}
 
 	/**
@@ -1064,4 +948,118 @@ public class AP {
 		return SemanticHierarchy.createSemanticType(identifier);
 	}
 
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> match(Node node) {
+		// TODO A wrapper for match
+		ArrayList<Node> output = new ArrayList<Node>();
+		return output;
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static void activateTracing(String type) {
+		// TODO A wrapper for setting tacing variables to true
+		switch (type) {
+		case "inference":
+			break;
+		case "acting":
+			break;
+		case "parsing":
+			break;
+		}
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static void deactivateTracing(String type) {
+		// TODO A wrapper for setting tracing variables to false
+		switch (type) {
+		case "inference":
+			break;
+		case "acting":
+			break;
+		case "parsing":
+			break;
+		}
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> deduce(Node node, String type, int i, int j) {
+		// TODO A wrapper for deduce
+		ArrayList<Node> output = new ArrayList<Node>();
+		switch (type) {
+		case "ask":
+			break;
+		case "askifnot":
+			break;
+		case "askwh":
+			break;
+		case "askwhnot":
+			break;
+		case "?":
+			// Handle the optional i and j parameters if there
+			break;
+		}
+		return output;
+	}
+	
+	/**
+	 * Docs goes here
+	 */
+	protected static void clearInfer() {
+		// TODO A wrapper for the method clearing the acg
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static String getBrMode() {
+		// TODO A wrapper for the method returning the current belief revision mode.
+		return "";
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static void setBrMode(String mode) {
+		// TODO A wrapper for the method setting the belief revision mode.
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static void perform(Node node) {
+		// TODO A wrapper for perform.
+	}
+
+	/**
+	 * Docs goes here
+	 */
+	protected static void removeFromContext(String context, PropositionSet hyps) {
+		// TODO A wrapper for the method removing hyps from context.
+	}
+	
+	/**
+	 * Docs goes here
+	 */
+	protected static ArrayList<Node> forwardInference(Node node, String type) {
+		// TODO A wrapper for forward inference
+		ArrayList<Node> output = new ArrayList<Node>();
+		switch (type) {
+		case "activate":
+			break;
+		case "activate!":
+			break;
+		case "!":
+			break;
+		}
+		return output;
+	}
+	
 }
