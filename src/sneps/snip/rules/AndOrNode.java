@@ -9,11 +9,15 @@ import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.setClasses.NodeSet;
 import sneps.network.classes.term.Term;
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
 import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 import sneps.snip.classes.FlagNode;
+import sneps.snip.classes.RuisHandler;
 
 public class AndOrNode extends RuleNode {
 
@@ -87,6 +91,13 @@ public class AndOrNode extends RuleNode {
 	
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("Xant");
+	}
+
+	
+	protected RuisHandler createRuisHandler(String contextName) {
+		Context contxt = (Context) Controller.getContextByName(contextName);
+		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0, getDominatingRules());
+		return this.addContextRUIS(contxt, index);
 	}
 	
 }

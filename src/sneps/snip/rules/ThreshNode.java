@@ -10,11 +10,15 @@ import sneps.network.classes.Semantic;
 import sneps.network.PropositionNode;
 import sneps.network.classes.term.Term;
 import sneps.setClasses.NodeSet;
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
 import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 import sneps.snip.classes.FlagNode;
+import sneps.snip.classes.RuisHandler;
 
 public class ThreshNode extends RuleNode {
 
@@ -86,6 +90,11 @@ public class ThreshNode extends RuleNode {
 	}
 	
 	
+	protected RuisHandler createRuisHandler(String contextName) {
+		Context contxt = (Context) Controller.getContextByName(contextName);
+		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0, getDominatingRules());
+		return this.addContextRUIS(contxt, index);
+	}
 
 	@Override
 	public NodeSet getDownAntNodeSet() {

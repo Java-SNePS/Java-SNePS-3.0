@@ -12,6 +12,7 @@ import sneps.setClasses.NodeSet;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
+import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
 public class OrNode extends RuleNode {
@@ -57,6 +58,12 @@ public class OrNode extends RuleNode {
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
+	}
+
+	@Override
+	protected RuisHandler createRuisHandler(String contextName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
