@@ -46,7 +46,7 @@ public class ThreshNode extends RuleNode {
 		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
 		NodeSet antNodes = this.getDownNodeSet("arg");
 		args = antNodes.size();
-		this.processNodes(antNodes);
+//		this.processNodes(antNodes);
 	}
 	
 //	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
