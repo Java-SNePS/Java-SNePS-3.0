@@ -49,6 +49,7 @@ import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
 import sneps.exceptions.IllegalAtomicSymbolException;
+import sneps.exceptions.EquivalentNodeException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -999,6 +1000,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 String command;
+String warning = "";
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
@@ -1033,7 +1035,7 @@ class CUP$parser$actions {
 		int wncright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String wnc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-			RESULT = wnc;
+			RESULT = warning + '\n'+ wnc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1061,7 +1063,7 @@ class CUP$parser$actions {
 		int scright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String sc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-			RESULT = sc;
+			RESULT = warning + '\n' + sc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1075,7 +1077,7 @@ class CUP$parser$actions {
 		int wcright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String wc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-			RESULT = wc;
+			RESULT = warning + '\n' + wc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2288,7 +2290,12 @@ class CUP$parser$actions {
 		int arg2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    				RESULT = AP.buildInfixedTerm(type, arg1, arg2);
+            		try{
+    					RESULT = AP.buildInfixedTerm(type, arg1, arg2);
+    				} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("infixedTerm",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2352,7 +2359,12 @@ class CUP$parser$actions {
 		int consequentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> consequents = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    				RESULT = AP.buildEntailment("Implication", antecedents, consequents, null);
+    				try{
+    					RESULT = AP.buildEntailment("Implication", antecedents, consequents, null);
+           		} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("entailment",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2369,7 +2381,12 @@ class CUP$parser$actions {
 		int consequentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> consequents = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-           		RESULT = AP.buildEntailment("OrEntailment", antecedents, consequents, null);
+           		try{
+           			RESULT = AP.buildEntailment("OrEntailment", antecedents, consequents, null);
+				} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("entailment",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2386,7 +2403,12 @@ class CUP$parser$actions {
 		int consequentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> consequents = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-           		RESULT = AP.buildEntailment("AndEntailment", antecedents, consequents, null);
+           		try{
+           			RESULT = AP.buildEntailment("AndEntailment", antecedents, consequents, null);
+           		} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("entailment",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2406,7 +2428,12 @@ class CUP$parser$actions {
 		int consequentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> consequents = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-           		RESULT = AP.buildEntailment("NumericalEntailment", antecedents, consequents, ne.substring(0,ne.length()-2));
+           		try{
+           			RESULT = AP.buildEntailment("NumericalEntailment", antecedents, consequents, ne.substring(0,ne.length()-2));
+           		} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("entailment",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2709,7 +2736,12 @@ class CUP$parser$actions {
 		int noderight = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Node node = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-				RESULT = AP.buildNegatedTerm(node);
+		    		try{
+					RESULT = AP.buildNegatedTerm(node);
+				} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
 			
               CUP$parser$result = parser.getSymbolFactory().newSymbol("negatedTerm",20, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2730,7 +2762,12 @@ class CUP$parser$actions {
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
 		  		if(Integer.valueOf(i)>=0&&Integer.valueOf(i)<=Integer.valueOf(j)){
-					RESULT = AP.buildAndorTerm(i, j, arguments);
+		  			try{
+						RESULT = AP.buildAndorTerm(i, j, arguments);
+					} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}
 				else{
 					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
@@ -2748,7 +2785,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             RESULT = AP.buildSetTerm("and", arguments);
+        		try{
+             	RESULT = AP.buildSetTerm("and", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("setTerm",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2762,7 +2804,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             RESULT = AP.buildSetTerm("or", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("or", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("setTerm",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2776,7 +2823,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             RESULT = AP.buildSetTerm("nand", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("nand", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("setTerm",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2790,7 +2842,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             RESULT = AP.buildSetTerm("nor", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("nor", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("setTerm",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2804,7 +2861,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             RESULT = AP.buildSetTerm("xor", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("xor", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("setTerm",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2818,7 +2880,12 @@ class CUP$parser$actions {
 		int argumentsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-             RESULT = AP.buildSetTerm("iff", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("iff", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("setTerm",22, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2839,7 +2906,12 @@ class CUP$parser$actions {
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
            		if(Integer.valueOf(thresh)>=0&&Integer.valueOf(thresh)<=Integer.valueOf(threshmax)){
-					RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+           			try{
+						RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+					} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}
 				else{
 					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
@@ -2861,7 +2933,12 @@ class CUP$parser$actions {
 		ArrayList<Node> arguments = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
            		if(Integer.valueOf(thresh)>=0){
-					RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+           			try{
+						RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+					} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}
 				else{
 					throw new InvalidArgumentsException("The arguments should be something like: 0<=i");
@@ -2883,7 +2960,12 @@ class CUP$parser$actions {
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
          		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -2904,7 +2986,12 @@ class CUP$parser$actions {
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
            		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -2924,11 +3011,16 @@ class CUP$parser$actions {
 		int arg2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-					if(AP.getSnepslogMode()==3){
+				if(AP.getSnepslogMode()==3){
+         			try{
            				RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
-           			}else{
-           				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-           			}
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
+           		}else{
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		       
               CUP$parser$result = parser.getSymbolFactory().newSymbol("wheneverdoTerm",30, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2946,10 +3038,15 @@ class CUP$parser$actions {
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
             		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
-        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        			}
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		    
               CUP$parser$result = parser.getSymbolFactory().newSymbol("actplanTerm",31, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2967,10 +3064,15 @@ class CUP$parser$actions {
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
            		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
-        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        			}
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 	       
               CUP$parser$result = parser.getSymbolFactory().newSymbol("effectTerm",32, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2988,10 +3090,15 @@ class CUP$parser$actions {
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
 				if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
-        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        			}
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		     
               CUP$parser$result = parser.getSymbolFactory().newSymbol("goalplanTerm",33, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3008,11 +3115,16 @@ class CUP$parser$actions {
 		int arg2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Node arg2 = (Node)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-					if(AP.getSnepslogMode()==3){
+				if(AP.getSnepslogMode()==3){
+         			try{
            				RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
-           			}else{
-        					throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        				}
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
+           		}else{
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("preconditionTerm",34, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3032,7 +3144,12 @@ class CUP$parser$actions {
 			if(w.getTerm() instanceof Base){
 		   		throw new IllegalAtomicSymbolException("wff must not be an atomic symbol");
 		   	}
-			RESULT = AP.buildAllTerm(ss, w);
+		   	try{
+				RESULT = AP.buildAllTerm(ss, w);
+			} catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("allTerm",24, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3154,7 +3271,12 @@ class CUP$parser$actions {
 							wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
 						}
 					}
-					RESULT = Network.buildMolecularNode(wires, caseFrame);
+					try{
+						RESULT = Network.buildMolecularNode(wires, caseFrame);
+					} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}else{
 					throw new ModeOneOnlyException("A predicate can start with a variable only in Mode 1");
 				}
@@ -3189,7 +3311,12 @@ class CUP$parser$actions {
 							wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
 						}
 					}
-					RESULT = Network.buildMolecularNode(wires, caseFrame);
+					try{
+						RESULT = Network.buildMolecularNode(wires, caseFrame);
+					} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}else{
 					String description = "";
 					boolean flag = false;
@@ -3213,11 +3340,16 @@ class CUP$parser$actions {
 								}
 							}
 						}
-						Node node = Network.buildMolecularNode(wires, caseFrame);
-						if(flag){
-							AP.getNodesDescriptions().put(node, description);
+						try{
+							Node node = Network.buildMolecularNode(wires, caseFrame);
+							if(flag){
+								AP.getNodesDescriptions().put(node, description);
+							}
+							RESULT = node;
+						} catch(EquivalentNodeException e){
+							warning = e.getMessage();
+							RESULT = e.getEquivalentNode();
 						}
-						RESULT = node;
 					}else{
 						if(AP.getModeThreeCaseFrames().containsKey(id+"$")){
 							ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -3231,11 +3363,16 @@ class CUP$parser$actions {
 									}
 								}
 							}
-							Node node = Network.buildMolecularNode(wires, caseFrame);
-							if(flag){
-								AP.getNodesDescriptions().put(node, description);
+							try{
+								Node node = Network.buildMolecularNode(wires, caseFrame);
+								if(flag){
+									AP.getNodesDescriptions().put(node, description);
+								}
+								RESULT = node;
+							} catch(EquivalentNodeException e){
+								warning = e.getMessage();
+								RESULT = e.getEquivalentNode();
 							}
-							RESULT = node;
 						}else{
 							throw new CannotFindCaseFrameException("Unable to find a matching CaseFrame.");
 						}
@@ -3278,7 +3415,12 @@ class CUP$parser$actions {
 		ArrayList<Node> elsee = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -3302,7 +3444,12 @@ class CUP$parser$actions {
 		ArrayList<Node> doo = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -3329,7 +3476,12 @@ class CUP$parser$actions {
 		ArrayList<Node> elsee = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -3353,7 +3505,12 @@ class CUP$parser$actions {
 		ArrayList<Node> doo = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}

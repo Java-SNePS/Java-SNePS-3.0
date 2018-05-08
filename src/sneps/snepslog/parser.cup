@@ -46,10 +46,11 @@ import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
 import sneps.exceptions.IllegalAtomicSymbolException;
-
+import sneps.exceptions.EquivalentNodeException;
 
 parser code {:
 String command;
+String warning = "";
 :};
 	
 /* Terminals (tokens returned by the scanner). */
@@ -208,15 +209,15 @@ nonterminal ArrayList<ArrayList<Node>> termSetSequence,
 
 command ::= 	wffNameCommand:wnc
 		{: 
-			RESULT = wnc;
+			RESULT = warning + '\n'+ wnc;
 		:}
 		| snepslogCommand:sc
 		{: 
-			RESULT = sc;
+			RESULT = warning + '\n' + sc;
 		:}
 		| wffCommand:wc
 		{: 
-			RESULT = wc;
+			RESULT = warning + '\n' + wc;
 		:};	
 
 wffNameCommand ::= wffName:wn terminalPunctuation:tp
@@ -888,7 +889,12 @@ wff ::= infixedTerm:it
 
 infixedTerm ::= prefixedTerm:arg1 andOrEquality:type infixedTerm:arg2
             {:
-    				RESULT = AP.buildInfixedTerm(type, arg1, arg2);
+            		try{
+    					RESULT = AP.buildInfixedTerm(type, arg1, arg2);
+    				} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
             :}
             | prefixedTerm:pt
             {:
@@ -910,19 +916,39 @@ andOrEquality ::= AND
 
 entailment ::= termSet:antecedents IMPLICATION termSet:consequents
            {:
-    				RESULT = AP.buildEntailment("Implication", antecedents, consequents, null);
+    				try{
+    					RESULT = AP.buildEntailment("Implication", antecedents, consequents, null);
+           		} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            :}
            | termSet:antecedents OR_ENTAILMENT termSet:consequents
            {:
-           		RESULT = AP.buildEntailment("OrEntailment", antecedents, consequents, null);
+           		try{
+           			RESULT = AP.buildEntailment("OrEntailment", antecedents, consequents, null);
+				} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            :}
            | termSet:antecedents AND_ENTAILMENT termSet:consequents
            {:
-           		RESULT = AP.buildEntailment("AndEntailment", antecedents, consequents, null);
+           		try{
+           			RESULT = AP.buildEntailment("AndEntailment", antecedents, consequents, null);
+           		} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            :}
            | termSet:antecedents NUMERICAL_ENTAILMENT:ne termSet:consequents
            {:
-           		RESULT = AP.buildEntailment("NumericalEntailment", antecedents, consequents, ne.substring(0,ne.length()-2));
+           		try{
+           			RESULT = AP.buildEntailment("NumericalEntailment", antecedents, consequents, ne.substring(0,ne.length()-2));
+           		} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
            :};
 		
 pTermSet ::= termSet:ts
@@ -1028,13 +1054,23 @@ prefixedTerm ::= negatedTerm:t
 		     
 negatedTerm ::= NOT atomicTerm:node
 		    {:
-				RESULT = AP.buildNegatedTerm(node);
+		    		try{
+					RESULT = AP.buildNegatedTerm(node);
+				} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+				}
 			:};
 			
 andorTerm ::= ANDOR OPEN_PARAN INT_LIT:i COMMA INT_LIT:j CLOSE_PARAN termSet:arguments
 		  {:
 		  		if(Integer.valueOf(i)>=0&&Integer.valueOf(i)<=Integer.valueOf(j)){
-					RESULT = AP.buildAndorTerm(i, j, arguments);
+		  			try{
+						RESULT = AP.buildAndorTerm(i, j, arguments);
+					} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}
 				else{
 					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
@@ -1043,33 +1079,68 @@ andorTerm ::= ANDOR OPEN_PARAN INT_LIT:i COMMA INT_LIT:j CLOSE_PARAN termSet:arg
 	
 setTerm ::= AND termSet:arguments
         {:
-             RESULT = AP.buildSetTerm("and", arguments);
+        		try{
+             	RESULT = AP.buildSetTerm("and", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         :}
         | OR termSet:arguments
         {:
-             RESULT = AP.buildSetTerm("or", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("or", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         :}
         | NAND termSet:arguments
         {:
-             RESULT = AP.buildSetTerm("nand", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("nand", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         :}
         | NOR termSet:arguments
         {:
-             RESULT = AP.buildSetTerm("nor", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("nor", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         :}
         | XOR termSet:arguments
         {:
-             RESULT = AP.buildSetTerm("xor", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("xor", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         :}
         | IFF termSet:arguments
         {:
-             RESULT = AP.buildSetTerm("iff", arguments);
+             try{
+             	RESULT = AP.buildSetTerm("iff", arguments);
+             } catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
         :};
 
 threshTerm ::= THRESH OPEN_PARAN INT_LIT:thresh COMMA INT_LIT:threshmax CLOSE_PARAN termSet:arguments
            {:
            		if(Integer.valueOf(thresh)>=0&&Integer.valueOf(thresh)<=Integer.valueOf(threshmax)){
-					RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+           			try{
+						RESULT = AP.buildThreshTerm(thresh, threshmax, arguments);
+					} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}
 				else{
 					throw new InvalidArgumentsException("The arguments should be something like: 0<=i<=j");
@@ -1078,7 +1149,12 @@ threshTerm ::= THRESH OPEN_PARAN INT_LIT:thresh COMMA INT_LIT:threshmax CLOSE_PA
            | THRESH OPEN_PARAN INT_LIT:thresh CLOSE_PARAN termSet:arguments
            {:
            		if(Integer.valueOf(thresh)>=0){
-					RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+           			try{
+						RESULT = AP.buildThreshTerm(thresh, arguments.size()-1+"", arguments);
+					} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}
 				else{
 					throw new InvalidArgumentsException("The arguments should be something like: 0<=i");
@@ -1088,7 +1164,12 @@ threshTerm ::= THRESH OPEN_PARAN INT_LIT:thresh COMMA INT_LIT:threshmax CLOSE_PA
 ifdoTerm ::= IFDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
          {:
          		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("ifdo", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -1097,7 +1178,12 @@ ifdoTerm ::= IFDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
 whendoTerm ::= WHENDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
            {:
            		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("whendo", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -1105,47 +1191,72 @@ whendoTerm ::= WHENDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
 		   
 wheneverdoTerm ::= WHENEVERDO OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
                {:
-					if(AP.getSnepslogMode()==3){
+				if(AP.getSnepslogMode()==3){
+         			try{
            				RESULT = AP.buildSNeRETerm("wheneverdo", arg1, arg2);
-           			}else{
-           				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-           			}
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
+           		}else{
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		       :};
 		   
 actplanTerm ::= ACTPLAN OPEN_PARAN atomicTerm:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
             {:
             		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("ActPlan", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
-        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        			}
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		    :};
 		       
 effectTerm ::= EFFECT OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
            {:
            		if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("Effect", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
-        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        			}
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 	       :};
 		       
 goalplanTerm ::= GOALPLAN OPEN_PARAN wff:arg1 COMMA atomicTerm:arg2 CLOSE_PARAN
              {:
 				if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+         			try{
+           				RESULT = AP.buildSNeRETerm("GoalPlan", arg1, arg2);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
-        				throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        			}
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		     :};		     
 
 preconditionTerm ::= PRECONDITION OPEN_PARAN atomicTerm:arg1 COMMA wff:arg2 CLOSE_PARAN
                  {:
-					if(AP.getSnepslogMode()==3){
+				if(AP.getSnepslogMode()==3){
+         			try{
            				RESULT = AP.buildSNeRETerm("Precondition", arg1, arg2);
-           			}else{
-        					throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
-        				}
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
+           		}else{
+           			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
+           		}
 		         :};
 
 allTerm ::= ALL OPEN_PARAN symbolSequence:ss CLOSE_PARAN OPEN_PARAN wff:w CLOSE_PARAN
@@ -1153,7 +1264,12 @@ allTerm ::= ALL OPEN_PARAN symbolSequence:ss CLOSE_PARAN OPEN_PARAN wff:w CLOSE_
 			if(w.getTerm() instanceof Base){
 		   		throw new IllegalAtomicSymbolException("wff must not be an atomic symbol");
 		   	}
-			RESULT = AP.buildAllTerm(ss, w);
+		   	try{
+				RESULT = AP.buildAllTerm(ss, w);
+			} catch(EquivalentNodeException e){
+             	warning = e.getMessage();
+				RESULT = e.getEquivalentNode();
+			}
 		:};
 
 atomicTerm ::= wffName:wn
@@ -1200,7 +1316,12 @@ atomicTerm ::= wffName:wn
 							wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
 						}
 					}
-					RESULT = Network.buildMolecularNode(wires, caseFrame);
+					try{
+						RESULT = Network.buildMolecularNode(wires, caseFrame);
+					} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}else{
 					throw new ModeOneOnlyException("A predicate can start with a variable only in Mode 1");
 				}
@@ -1222,7 +1343,12 @@ atomicTerm ::= wffName:wn
 							wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
 						}
 					}
-					RESULT = Network.buildMolecularNode(wires, caseFrame);
+					try{
+						RESULT = Network.buildMolecularNode(wires, caseFrame);
+					} catch(EquivalentNodeException e){
+						warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
 				}else{
 					String description = "";
 					boolean flag = false;
@@ -1246,11 +1372,16 @@ atomicTerm ::= wffName:wn
 								}
 							}
 						}
-						Node node = Network.buildMolecularNode(wires, caseFrame);
-						if(flag){
-							AP.getNodesDescriptions().put(node, description);
+						try{
+							Node node = Network.buildMolecularNode(wires, caseFrame);
+							if(flag){
+								AP.getNodesDescriptions().put(node, description);
+							}
+							RESULT = node;
+						} catch(EquivalentNodeException e){
+							warning = e.getMessage();
+							RESULT = e.getEquivalentNode();
 						}
-						RESULT = node;
 					}else{
 						if(AP.getModeThreeCaseFrames().containsKey(id+"$")){
 							ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -1264,11 +1395,16 @@ atomicTerm ::= wffName:wn
 									}
 								}
 							}
-							Node node = Network.buildMolecularNode(wires, caseFrame);
-							if(flag){
-								AP.getNodesDescriptions().put(node, description);
+							try{
+								Node node = Network.buildMolecularNode(wires, caseFrame);
+								if(flag){
+									AP.getNodesDescriptions().put(node, description);
+								}
+								RESULT = node;
+							} catch(EquivalentNodeException e){
+								warning = e.getMessage();
+								RESULT = e.getEquivalentNode();
 							}
-							RESULT = node;
 						}else{
 							throw new CannotFindCaseFrameException("Unable to find a matching CaseFrame.");
 						}
@@ -1283,7 +1419,12 @@ atomicTerm ::= wffName:wn
 withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, elsee);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -1291,7 +1432,12 @@ withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat 
              | WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withsome", vars, suchthat, doo, null);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -1300,7 +1446,12 @@ withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat 
 withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, elsee);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
@@ -1308,7 +1459,12 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat CO
              | WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
-           			RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
+             		try{
+           				RESULT = AP.buildWithsomeAllTerm("withall", vars, suchthat, doo, null);
+           			} catch(EquivalentNodeException e){
+             			warning = e.getMessage();
+						RESULT = e.getEquivalentNode();
+					}
            		}else{
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
