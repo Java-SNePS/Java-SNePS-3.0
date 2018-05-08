@@ -1,5 +1,6 @@
 package tests;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 
@@ -74,12 +75,12 @@ public class SnepslogTest extends TestCase {
 		}
 	}
 
-	public void testSetModeOne() throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException{
+	public void testSetModeOne() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		Network.defineDefaults();
 		AP.executeSnepslogCommand("set-mode-1");
 		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
 		snepslogModeGetter.setAccessible(true);
-		int mode = (int) snepslogModeGetter.invoke(null, null);
+		int mode = (int) snepslogModeGetter.invoke(null);
 		assertEquals(mode ,1);
 	}
 
