@@ -16,16 +16,20 @@ import sneps.network.classes.term.Variable;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
-
+/**
+ * @author Amgad Ashraf
+ */
 public class PTree extends RuisHandler {
-	private Hashtable<Integer, VarNodeSet> patternVariables;//PatId, Variables
-	private Hashtable<VariableNode, Set<Integer>> variablePatterns;//VarId, Patterns
-	/*private VariableSet vars;
-	private NodeSet nodes;*/
+	private Hashtable<Integer, VarNodeSet> patternVariables;//PatternId, VariableNodes
+	private Hashtable<VariableNode, Set<Integer>> variablePatterns;//VariableNode, PatternIds
 	private VarNodeSet notProccessed;
 	private HashSet<PSubTree> subTrees;
 	private Hashtable<Integer, PSubTree> subTreesMap;
 
+	/**
+	 * Constructor for the PTree
+	 * @param context
+	 */
 	public PTree(String context) {
 		super(context);
 		patternVariables = new Hashtable<Integer, VarNodeSet>();
@@ -35,8 +39,11 @@ public class PTree extends RuisHandler {
 		subTrees = new HashSet<PSubTree>();
 	}
 
+	/**
+	 * Builds the PTree by preparing pattern variables set, variable patterns set, pattern sequence and finally constructing the tree bottom up 
+	 * @param ants
+	 */
 	public void buildTree(NodeSet ants){
-		//nodes = ants;
 		fillPVandVP(ants);
 
 		Queue<PTreeNode> patternSequence = getPatternSequence();		
@@ -45,10 +52,13 @@ public class PTree extends RuisHandler {
 
 		patternVariables = new Hashtable<Integer, VarNodeSet>();
 		variablePatterns = new Hashtable<VariableNode, Set<Integer>>();
-		//vars = new VariableSet();
 		notProccessed = new VarNodeSet();
 	}
 
+	/**
+	 * Prepares both pattern variables set and variable patterns set
+	 * @param ants
+	 */
 	private void fillPVandVP(NodeSet ants) {
 		for(Node pattern : ants){
 			int id = pattern.getId();
@@ -56,11 +66,9 @@ public class PTree extends RuisHandler {
 			VarNodeSet vars = patternVariables.get(id);
 			if(vars == null || vars.isEmpty())
 				vars = new VarNodeSet();
-			//patternVariables.put(id, vars);
 			Set<Integer> pats = variablePatterns.get(id);
-			if(pats == null || pats.isEmpty() )
+			if(pats == null || pats.isEmpty())
 				pats = new HashSet<Integer>();
-			//variablePatterns.put(, pats);
 
 			if(term instanceof Variable){
 				vars.addVarNode((VariableNode) pattern);
@@ -89,6 +97,10 @@ public class PTree extends RuisHandler {
 			}
 		}
 	}
+	/**
+	 * Prepares pattern sequence into a sequence of PTreeNodes ready for construction
+	 * @return
+	 */
 	private Queue<PTreeNode> getPatternSequence() {
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
 		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
@@ -111,6 +123,11 @@ public class PTree extends RuisHandler {
 		return treeNodes;
 
 	}
+	/**
+	 * Uses given ordered PTreeNodes to construct the PTree
+	 * If no two adjacent nodes in the sequence share variables, a PSubTree is handled 
+	 * @param treeNodes
+	 */
 	private void constructBottomUp(Queue<PTreeNode> treeNodes) {
 		PTreeNode head = treeNodes.poll();
 		if (treeNodes.isEmpty()) {
@@ -139,12 +156,14 @@ public class PTree extends RuisHandler {
 			newTreeNodes.add(head);
 		if (sharing)
 			constructBottomUp(newTreeNodes);
-		else{
+		else
 			for(PTreeNode subHead : newTreeNodes)
 				processSubTree(subHead);
-		}
 	}
-
+	/**
+	 * Creates a PSubTree
+	 * @param subHead
+	 */
 	private void processSubTree(PTreeNode subHead) {
 		PSubTree subTree = new PSubTree(subHead);
 		subTrees.add(subTree);
@@ -179,9 +198,6 @@ public class PTree extends RuisHandler {
 		return first;
 	}
 
-	/*private String peek(Set<String> set) {
-		return set.iterator().next();
-	}*/
 	private boolean sharingVars(PTreeNode head, PTreeNode second) {
 		VarNodeSet smaller = null, bigger = null;
 		if (head.getVars().size() > second.getVars().size()) {
@@ -278,7 +294,6 @@ public class PTree extends RuisHandler {
 	public class PTreeNode {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;
-		//private HashSet<RuleUseInfo> ruis;
 		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
 		private Set<Integer> pats;
 		private VarNodeSet vars;
@@ -384,5 +399,5 @@ public class PTree extends RuisHandler {
 		}
 
 	}
-//TODO key
+	//TODO key
 }

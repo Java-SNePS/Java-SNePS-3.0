@@ -3,7 +3,6 @@ package sneps.snip.classes;
 import java.util.Hashtable;
 
 public class ContextRuisSet {
-
 	Hashtable<String, RuleUseInfoSet> crs;
 
 	/**
@@ -33,13 +32,11 @@ public class ContextRuisSet {
 		return crs.size();
 	}
 
-
 	/**
 	 * Clears the ContextRUISet
 	 */
 	public void clear() {
 		crs.clear();
 	}
-	
-	
+
 }

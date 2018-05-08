@@ -1,5 +1,6 @@
 package sneps.network;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -51,16 +52,10 @@ import sneps.snip.rules.OrNode;
 import sneps.snip.rules.ThreshNode;
 import sneps.snip.rules.WhenDoNode;
 
-public class Network {
+public class Network implements Serializable {
+	private static final long serialVersionUID = 6986057986870352526L;
 
 	/* A hash table that stores all the nodes defined(available) in the network.
-=======
-import sneps.snebr.Controller;
-
-public class Network implements Serializable {
-
-	 /* A hash table that stores all the nodes defined(available) in the network.
->>>>>>> master
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding node object as the value.
 	 */

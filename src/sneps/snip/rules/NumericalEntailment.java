@@ -19,7 +19,9 @@ import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
-
+/**
+ * @author Amgad Ashraf
+ */
 public class NumericalEntailment extends RuleNode {
 	private static final long serialVersionUID = 3546852401118194013L;
 	private NodeSet consequents;
@@ -32,6 +34,12 @@ public class NumericalEntailment extends RuleNode {
 		super(sym, syn);
 	}
 
+	/**
+	 * Creates the first RuleUseInfo from a given Report and stores it(if positive)
+	 * Also checks if current number of positive Reports satisfy rule
+	 * @param report
+	 * @param signature
+	 */
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
 		String contxt = report.getContextName();
@@ -47,6 +55,11 @@ public class NumericalEntailment extends RuleNode {
 		if ((curPos >= i) && ((curPos < n-i+1) || (curPos < n-1) ) )
 			sendSavedRUIs(report.getContextName());
 	}
+	/**
+	 * Creates a Report from a given RuleUseInfo to be broadcasted to outgoing channels
+	 * @param rui
+	 * @param contextID 
+	 */
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo rui, String contextID) {
 		if (rui.getPosCount() >= i){
@@ -57,6 +70,12 @@ public class NumericalEntailment extends RuleNode {
 		}
 	}
 
+	/**
+	 * Inserts given RuleUseInfo into the appropriate SIndex and updates the corresponding SIndex
+	 * @param rui
+	 * @param contxt
+	 * @param signature
+	 */
 	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
 		SIndex set = (SIndex) contextRuisSet.getByContext(contxt);
 		//if (set == null) 
@@ -65,6 +84,10 @@ public class NumericalEntailment extends RuleNode {
 		set.getPositiveNodes().addNode(signature);
 		contextRuisSet.addHandlerSet(contxt, set);
 	}
+	/**
+	 * Prepares the appropriate SIndex and all its root RuleUseInfo for broadcasting  
+	 * @param contextID
+	 */
 	private void sendSavedRUIs(String contextID) {
 		RuleUseInfo addedConstant = getConstantRUI(contextID);
 		if (addedConstant == null && antNodesWithoutVars.size() != 0)

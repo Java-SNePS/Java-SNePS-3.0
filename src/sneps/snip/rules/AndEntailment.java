@@ -16,20 +16,37 @@ import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
-
+/**
+ * @author Amgad Ashraf
+ */
 public class AndEntailment extends RuleNode {
 	private static final long serialVersionUID = -8545987005610860977L;
 	private NodeSet consequents;//TODO Proposition Nodes get
 
+	/**
+	 * Constructor for the AndEntailment rule node
+	 * @param syn
+	 */
 	public AndEntailment(Term syn) {
 		super(syn);
 		setConsequents(new NodeSet());
 	}
+	/**
+	 * Constructor for the AndEntailment rule node
+	 * @param sym
+	 * @param syn
+	 */
 	public AndEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 		setConsequents(new NodeSet());
 	}
 
+	/**
+	 * Creates the first RuleUseInfo from a given Report and stores it(if positive)
+	 * Also checks if current number of positive Reports satisfy rule
+	 * @param report
+	 * @param signature
+	 */
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
 		String contxt = report.getContextName();
@@ -44,9 +61,13 @@ public class AndEntailment extends RuleNode {
 			sendSavedRUIs(report.getContextName());
 	}
 
+	/**
+	 * Creates a Report from a given RuleUseInfo to be broadcasted to outgoing channels
+	 * @param Rui
+	 * @param contextID 
+	 */
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
-		//addNotSentRui(Rui, contextID);
 		if (Rui.getPosCount() != antNodesWithVars.size() + antNodesWithoutVars.size())
 			return;
 		Support originSupports = this.getBasicSupport();
@@ -54,14 +75,19 @@ public class AndEntailment extends RuleNode {
 		sup.add(originSupports);
 		
 		//Send this V
-		contextRuisSet.getByContext(contextID).getPositiveNodes().addNode(this);
-
-		//contextRuisSet.getByContext((String) Controller.getContextByName(contextID)).insertRUI(Rui);
+		NodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
+		justification.addNode(this);
 
 		Report reply = new Report(Rui.getSub(), Rui.getSupport(sup), true, contextID);
 		broadcastReport(reply);
 	}
 
+	/**
+	 * Inserts given RuleUseInfo into the appropriate PTree and updates the corresponding PTree
+	 * @param rui
+	 * @param contxt
+	 * @param signature
+	 */
 	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
 		PTree tree = (PTree) contextRuisSet.getByContext(contxt);
 		if (tree == null)
@@ -70,6 +96,10 @@ public class AndEntailment extends RuleNode {
 		tree.getPositiveNodes().addNode(signature);
 		contextRuisSet.addHandlerSet(contxt, tree);
 	}
+	/**
+	 * Prepares the appropriate PTree and all its root RuleUseInfo for broadcasting  
+	 * @param contextID
+	 */
 	private void sendSavedRUIs(String contextID) {
 		RuleUseInfo addedConstant = getConstantRUI(contextID);
 		if (addedConstant == null && antNodesWithoutVars.size() != 0)
