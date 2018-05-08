@@ -25,19 +25,51 @@ public class SnepslogTest extends TestCase {
 		for (int i = 0; i < PropositionSet.getPropsSafely(ps).length; i++) {
 			Node n = Network.getNodeById(PropositionSet.getPropsSafely(ps)[i]);
 			if (n.getTerm() instanceof Molecular) {
-				Molecular m = (Molecular)n.getTerm();
+				Molecular m = (Molecular) n.getTerm();
 				LinkedList<Relation> rels = m.getDownCableSet().getCaseFrame().getRelations();
-				if(rels.size()==2&&rels.get(0).getName().equals("r")&&rels.get(1).getName().equals("a1")) {
+				if (rels.size() == 2 && rels.get(0).getName().equals("r") && rels.get(1).getName().equals("a1")) {
 					Node dog = Network.getNode("dog");
 					Node Fido = Network.getNode("Fido");
-					if(m.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)&&m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)){
+					if (m.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)
+							&& m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
 						success = true;
 					}
 				}
 			}
 		}
-		if(!success) {
+		if (!success) {
 			fail("dog(Fido) assertion failed!");
+		}
+	}
+
+	public void testAddToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		Network.defineDefaults();
+		AP.executeSnepslogCommand("add-to-context {dog(Fido), animal(Fido)}");
+		PropositionSet ps = Controller.getCurrentContext().allAsserted();
+		boolean success1 = false;
+		boolean success2 = false;
+		for (int i = 0; i < PropositionSet.getPropsSafely(ps).length; i++) {
+			Node n = Network.getNodeById(PropositionSet.getPropsSafely(ps)[i]);
+			if (n.getTerm() instanceof Molecular) {
+				Molecular m = (Molecular) n.getTerm();
+				LinkedList<Relation> rels = m.getDownCableSet().getCaseFrame().getRelations();
+				if (rels.size() == 2 && rels.get(0).getName().equals("r") && rels.get(1).getName().equals("a1")) {
+					Node dog = Network.getNode("dog");
+					Node animal = Network.getNode("animal");
+					Node Fido = Network.getNode("Fido");
+					if (m.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)
+							&& m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+						success1 = true;
+					}
+					if (m.getDownCableSet().getDownCable("r").getNodeSet().contains(animal)
+							&& m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+						success2 = true;
+					}
+				}
+			}
+		}
+		if (!(success1 && success2)) {
+			fail("failure while adding dog(Fido) and animal(Fido) to the current context!}");
 		}
 	}
 
