@@ -3203,13 +3203,13 @@ class CUP$parser$actions {
 						LinkedList<Relation> relations = caseFrame.getRelations();
 						wires.add(new Wire(relations.get(0), Network.buildBaseNode(id, SemanticHierarchy.createSemanticType(caseFrame.getRelations().get(0).getType()))));
 						if(flag){
-							description.replaceAll(relations.get(0).getName(), id);
+							description = description.replaceAll(relations.get(0).getName(), id);
 						}
 						for(int i = 0;i<tss.size();i++){
 							for(int j=0;j<tss.get(i).size();j++){
 								wires.add(new Wire(relations.get(i+1),tss.get(i).get(j)));
 								if(flag){
-									description.replaceAll(relations.get(i+1).getName(), tss.get(i).get(j).getIdentifier());
+									description = description.replaceAll(relations.get(i+1).getName(), tss.get(i).get(j).getIdentifier());
 								}
 							}
 						}
@@ -3227,7 +3227,7 @@ class CUP$parser$actions {
 								for(int j=0;j<tss.get(i).size();j++){
 									wires.add(new Wire(relations.get(i),tss.get(i).get(j)));
 									if(flag){
-										description.replaceAll(relations.get(i+1).getName(), tss.get(i).get(j).getIdentifier());
+										description = description.replaceAll(relations.get(i).getName(), tss.get(i).get(j).getIdentifier());
 									}
 								}
 							}
