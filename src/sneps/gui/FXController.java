@@ -56,8 +56,14 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
+import sneps.exceptions.CaseFrameCannotBeRemovedException;
+import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.NodeCannotBeRemovedException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.RelationDoesntExistException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.VariableNode;
@@ -451,7 +457,8 @@ public class FXController implements Initializable {
 		CaseFrame cf = null;
 		try {
 			cf = Network.getCaseFrame(cfname);
-		} catch (CustomException e) {
+		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		MolNodeShape mns = new MolNodeShape(curX, curY, cf);
@@ -745,7 +752,8 @@ public class FXController implements Initializable {
 		Node n = null;
 		try {
 			n = Network.getNode(identifier);
-		} catch (CustomException e) {
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Semantic s = n.getSemanticType();
@@ -1182,7 +1190,8 @@ public class FXController implements Initializable {
 			Node n = null;
 			try {
 				n = Network.getNode(varNode);
-			} catch (CustomException e) {
+			} catch (NodeNotFoundInNetworkException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			String identifier = n.getIdentifier();
@@ -1661,7 +1670,15 @@ public class FXController implements Initializable {
 				String semantic = temp.semtantic;
 				Semantic semType = new Semantic(semantic);
 				String identifier = temp.identifier;
-				Network.buildBaseNode(identifier, semType);
+				try {
+					Network.buildBaseNode(identifier, semType);
+				} catch (NotAPropositionNodeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		updateNodesList();
@@ -1703,14 +1720,14 @@ public class FXController implements Initializable {
 											Relation r = null;
 											try {
 												r = Network.getRelation(rname);
-											} catch (CustomException e) {
+											} catch (RelationDoesntExistException e1) {
 												// TODO Auto-generated catch block
-												e.printStackTrace();
+												e1.printStackTrace();
 											}
 											Node n = null;
 											try {
 												n = Network.getNode(identifier);
-											} catch (CustomException e) {
+											} catch (NodeNotFoundInNetworkException e) {
 												// TODO Auto-generated catch block
 												e.printStackTrace();
 											}
@@ -1736,14 +1753,14 @@ public class FXController implements Initializable {
 											Relation r = null;
 											try {
 												r = Network.getRelation(rname);
-											} catch (CustomException e) {
+											} catch (RelationDoesntExistException e1) {
 												// TODO Auto-generated catch block
-												e.printStackTrace();
+												e1.printStackTrace();
 											}
 											Node n = null;
 											try {
 												n = Network.getNode(identifier);
-											} catch (CustomException e) {
+											} catch (NodeNotFoundInNetworkException e) {
 												// TODO Auto-generated catch block
 												e.printStackTrace();
 											}
@@ -1768,17 +1785,12 @@ public class FXController implements Initializable {
 											String rname = lbl.getText();
 											System.out.println(rname);
 											Node n = null;
-											try {
-												n = submitDrawnMolHelper(molTemp);
-											} catch (CustomException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
+											n = submitDrawnMolHelper(molTemp);
 
 											Relation r = null;
 											try {
 												r = Network.getRelation(rname);
-											} catch (CustomException e) {
+											} catch (RelationDoesntExistException e) {
 												// TODO Auto-generated catch block
 												e.printStackTrace();
 											}
@@ -1797,9 +1809,6 @@ public class FXController implements Initializable {
 						Node newMol = Network.buildMolecularNode(wires, cf);
 						listOfMolNodesDrawn.get(i).setIdentifier(newMol.getIdentifier());
 						popUpNotification("Build Nodes", "Build Nodes Successful", "Build Node Successful", 2);
-					} catch (CustomException e) {
-						popUpNotification("Build Nodes", "Build Nodes NOT Successful", "Build Nodes NOT Successful!!", 2);
-						e.printStackTrace();
 					} catch (Exception e) {
 						popUpNotification("Build Nodes", "Build Nodes NOT Successful", "Build Nodes NOT Successful!!", 2);
 						e.printStackTrace();
@@ -1809,10 +1818,15 @@ public class FXController implements Initializable {
 		}
 	}
 	
-	public Node submitDrawnMolHelper(MolNodeShape mns) throws CustomException {
+	public Node submitDrawnMolHelper(MolNodeShape mns) {
 		Node newMol = null;
 		if(mns.getIdentifier() != null) {
-			newMol = Network.getNode(mns.getIdentifier());
+			try {
+				newMol = Network.getNode(mns.getIdentifier());
+			} catch (NodeNotFoundInNetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else {
 			ArrayList<Wire> wires = new ArrayList<Wire>();
 			RelationsRestrictedCaseFrame cf = (RelationsRestrictedCaseFrame) mns.getCf();
@@ -1843,14 +1857,14 @@ public class FXController implements Initializable {
 									Relation r = null;
 									try {
 										r = Network.getRelation(rname);
-									} catch (CustomException e) {
+									} catch (RelationDoesntExistException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
 									Node n = null;
 									try {
 										n = Network.getNode(identifier);
-									} catch (CustomException e) {
+									} catch (NodeNotFoundInNetworkException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
@@ -1876,14 +1890,14 @@ public class FXController implements Initializable {
 									Relation r = null;
 									try {
 										r = Network.getRelation(rname);
-									} catch (CustomException e) {
+									} catch (RelationDoesntExistException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
 									Node n = null;
 									try {
 										n = Network.getNode(identifier);
-									} catch (CustomException e) {
+									} catch (NodeNotFoundInNetworkException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
@@ -1908,17 +1922,12 @@ public class FXController implements Initializable {
 									String rname = lbl.getText();
 									System.out.println(rname);
 									Node n = null;
-									try {
-										n = submitDrawnMolHelper(molTemp);
-									} catch (CustomException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
+									n = submitDrawnMolHelper(molTemp);
 
 									Relation r = null;
 									try {
 										r = Network.getRelation(rname);
-									} catch (CustomException e) {
+									} catch (RelationDoesntExistException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
@@ -1941,9 +1950,6 @@ public class FXController implements Initializable {
 						listOfMolNodesDrawn.get(g).setIdentifier(newMol.getIdentifier());
 					}
 				}
-			} catch (CustomException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2004,7 +2010,8 @@ public class FXController implements Initializable {
 		CaseFrame cf = null;
 		try {
 			cf = Network.getCaseFrame(caseFrame);
-		} catch (CustomException e) {
+		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return cf.getRelations();
@@ -2159,21 +2166,12 @@ public class FXController implements Initializable {
 		String adjust = newRA.getText();
 		int limit = Integer.parseInt(newRL.getText());
 		if(limit > 0) {
-			try {
-				Network.defineRelation(name, type, adjust, limit);
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Relation created");
-				alert.setHeaderText("Relation is created successfully");
-				alert.setContentText("The relation " + name + " is created successfully!");
-				alert.showAndWait();
-			} catch (CustomException e) {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Relation NOT created");
-				alert.setHeaderText("Relation is NOT created successfully");
-				alert.setContentText("The relation " + name + " is NOT created successfully!");
-				alert.showAndWait();
-				e.printStackTrace();
-			}
+			Network.defineRelation(name, type, adjust, limit);
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Relation created");
+			alert.setHeaderText("Relation is created successfully");
+			alert.setContentText("The relation " + name + " is created successfully!");
+			alert.showAndWait();
 		}else {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Relation NOT created");
@@ -2204,12 +2202,8 @@ public class FXController implements Initializable {
 			updateRelationSetList();
 			updateNodesList();
 			updateCaseFramesList();
-		} catch (CustomException e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("ERROR");
-			alert.setHeaderText("Relation is NOT Deleted Successfully");
-			alert.setContentText("The relation " + selectedRelation + " is NOT deleted successfully!");
-			alert.showAndWait();
+		} catch (CaseFrameCannotBeRemovedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -2272,32 +2266,22 @@ public class FXController implements Initializable {
 			try {
 				Relation r = Network.getRelation(rName);
 				caseFrameList.add(r);
-			} catch (CustomException e) {
+			} catch (RelationDoesntExistException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		try {
-			CaseFrame cf = Network.defineCaseFrame(semanticType, caseFrameList);
-			String name = cf.getId();
-			Alert a = new Alert(AlertType.INFORMATION);
-			a.setTitle("Case Frame");
-			a.setHeaderText("Case frame has been created successfully");
-			a.setResizable(false);
-			a.setContentText("Case frame: " + name + " has been created successfully.");
-			a.showAndWait();
-			updateCaseFramesList();
-			updateRelationSetList();
-			cfRS.getItems().clear();
-		} catch (CustomException e) {
-			Alert a = new Alert(AlertType.ERROR);
-			a.setTitle("Case Frame");
-			a.setHeaderText("Case frame already exists");
-			a.setResizable(false);
-			a.setContentText("This case frame already exists in the network.");
-			a.showAndWait();
-			e.printStackTrace();
-		}
+		CaseFrame cf = Network.defineCaseFrame(semanticType, caseFrameList);
+		String name = cf.getId();
+		Alert a = new Alert(AlertType.INFORMATION);
+		a.setTitle("Case Frame");
+		a.setHeaderText("Case frame has been created successfully");
+		a.setResizable(false);
+		a.setContentText("Case frame: " + name + " has been created successfully.");
+		a.showAndWait();
+		updateCaseFramesList();
+		updateRelationSetList();
+		cfRS.getItems().clear();
 	}
 
 	//Update all list of case frames
@@ -2339,7 +2323,7 @@ public class FXController implements Initializable {
 							caseFrameRelationList.getItems().add(r.getName());
 						}
 						
-					} catch (CustomException e) {
+					} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
 						e.printStackTrace();
 					}
 				}
@@ -2362,7 +2346,7 @@ public class FXController implements Initializable {
 							pathRelations.getItems().add(r.getName());
 						}
 						
-					} catch (CustomException e) {
+					} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
 						e.printStackTrace();
 					}
 					pathRelations.setDisable(false);
@@ -2383,7 +2367,7 @@ public class FXController implements Initializable {
 				CaseFrame cf = null;
 				try {
 					cf = Network.getCaseFrame(cfName);
-				} catch (CustomException e) {
+				} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -2416,7 +2400,7 @@ public class FXController implements Initializable {
 		    if (response == yes) {
 	    		try {
 					Network.undefineCaseFrame(cf.getId());
-				} catch (CustomException e) {
+				} catch (CaseFrameCannotBeRemovedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -2433,7 +2417,13 @@ public class FXController implements Initializable {
 		String nodeName = baseNodeID.getText();
 		String semType = baseNodeSemType.getText();
 		Semantic semantic = new Semantic(semType);
-		Node node = Network.buildBaseNode(nodeName, semantic);
+		Node node = null;
+		try {
+			node = Network.buildBaseNode(nodeName, semantic);
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(node == null) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("ERROR");
@@ -2520,7 +2510,7 @@ public class FXController implements Initializable {
 		Relation r = null;
 		try {
 			r = Network.getRelation(rName);
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			e.printStackTrace();
 		}
 		
@@ -2528,7 +2518,7 @@ public class FXController implements Initializable {
 		Node node = null;
 		try {
 			node = Network.getNode(nodeName);
-		} catch (CustomException e1) {
+		} catch (NodeNotFoundInNetworkException e1) {
 			e1.printStackTrace();
 		}
 		
@@ -2573,8 +2563,6 @@ public class FXController implements Initializable {
 			a.setResizable(false);
 			a.setContentText("Node name is: " + name);
 			a.showAndWait();
-		} catch (CustomException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2585,7 +2573,7 @@ public class FXController implements Initializable {
 		Node n = null;
 		try {
 			n = Network.getNode(identifier);
-		} catch (CustomException e) {
+		} catch (NodeNotFoundInNetworkException e) {
 			e.printStackTrace();
 		}
 		if(n.getTerm() instanceof Variable) {
@@ -2606,7 +2594,7 @@ public class FXController implements Initializable {
 		Relation r = null;
 		try {
 			r = Network.getRelation(rname);
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			e.printStackTrace();
 		}
 		String type = r.getType();
@@ -2630,7 +2618,7 @@ public class FXController implements Initializable {
 				try {
 					r = Network.getRelation(selectedRelation);
 					
-				} catch (CustomException e) {
+				} catch (RelationDoesntExistException e) {
 					e.printStackTrace();
 				}
 				
@@ -2648,7 +2636,7 @@ public class FXController implements Initializable {
 				Relation r = null;
 				try {
 					r = Network.getRelation(selectedRelation);
-				} catch (CustomException e) {
+				} catch (RelationDoesntExistException e) {
 					e.printStackTrace();
 				}
 				RCFP rcfp = new RCFP(r,adjust,limit);
@@ -2680,24 +2668,14 @@ public class FXController implements Initializable {
 	//Creates rrcf
 	public void submitRRCF() {
 		String semType = rrcfSem.getText();
-		try {
-			CaseFrame cf = Network.defineCaseFrameWithConstraints(semType, rrcflist);
-			String name = cf.getId();
-			Alert a = new Alert(AlertType.INFORMATION);
-			a.setTitle("Case Frame");
-			a.setHeaderText("Case frame has been created successfully");
-			a.setResizable(false);
-			a.setContentText("Case frame: " + name + " has been created successfully.");
-			a.showAndWait();
-		} catch (CustomException e) {
-			e.printStackTrace();
-			Alert a = new Alert(AlertType.ERROR);
-			a.setTitle("Case Frame");
-			a.setHeaderText("Case frame already exists");
-			a.setResizable(false);
-			a.setContentText("This case frame already exists in the network.");
-			a.showAndWait();
-		}
+		CaseFrame cf = Network.defineCaseFrameWithConstraints(semType, rrcflist);
+		String name = cf.getId();
+		Alert a = new Alert(AlertType.INFORMATION);
+		a.setTitle("Case Frame");
+		a.setHeaderText("Case frame has been created successfully");
+		a.setResizable(false);
+		a.setContentText("Case frame: " + name + " has been created successfully.");
+		a.showAndWait();
 		updateCaseFramesList();
 		updateRelationSetList();
 		rrcflist.clear();
@@ -2719,7 +2697,7 @@ public class FXController implements Initializable {
 		    	Node n = null;
 		    	try {
 					n = Network.getNode(identifier);
-				} catch (CustomException e) {
+				} catch (NodeNotFoundInNetworkException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -2727,7 +2705,7 @@ public class FXController implements Initializable {
 		    	try {
 					Network.removeNode(n);
 					updateNodesList();
-				} catch (CustomException e) {
+				} catch (NodeCannotBeRemovedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -2829,7 +2807,7 @@ public class FXController implements Initializable {
 		RelationsRestrictedCaseFrame cf = null;
 		try {
 			cf = (RelationsRestrictedCaseFrame) Network.getCaseFrame(cfID);
-		} catch (CustomException e) {
+		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -2864,13 +2842,19 @@ public class FXController implements Initializable {
 			Node n = null;
 			try {
 				n = Network.getNode(identifier);
-			} catch (CustomException e) {
+			} catch (NodeNotFoundInNetworkException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			prop[i] = n.getId();
 		}
-		PropositionSet hyps = new PropositionSet(prop);
+		PropositionSet hyps = null;
+		try {
+			hyps = new PropositionSet(prop);
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			Controller.createContext(name, hyps);
 		} catch (DuplicateContextNameException e) {
@@ -2884,7 +2868,7 @@ public class FXController implements Initializable {
 		Relation r = null;
 		try {
 			r = Network.getRelation(rname);
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			e.printStackTrace();
 		}
 		
@@ -2900,7 +2884,7 @@ public class FXController implements Initializable {
 		Relation r = null;
 		try {
 			r = Network.getRelation(rname);
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -2919,7 +2903,7 @@ public class FXController implements Initializable {
 		String cfName = pathCF.getText();
 		try {
 			r = Network.getRelation(rname);
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -2927,7 +2911,7 @@ public class FXController implements Initializable {
 		RelationsRestrictedCaseFrame cf = null;
 		try {
 			cf = (RelationsRestrictedCaseFrame) Network.getCaseFrame(cfName);
-		} catch (CustomException e) {
+		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -2947,7 +2931,7 @@ public class FXController implements Initializable {
 		String cfName = pathCF.getText();
 		try {
 			r = Network.getRelation(rname);
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -2955,7 +2939,7 @@ public class FXController implements Initializable {
 		RelationsRestrictedCaseFrame cf = null;
 		try {
 			cf = (RelationsRestrictedCaseFrame) Network.getCaseFrame(cfName);
-		} catch (CustomException e) {
+		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3126,7 +3110,7 @@ public class FXController implements Initializable {
 		Node n = null;
 		try {
 			n = Network.getNode(identifier);
-		} catch (CustomException e) {
+		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3151,7 +3135,7 @@ public class FXController implements Initializable {
 		Node n = null;
 		try {
 			n = Network.getNode(identifier);
-		} catch (CustomException e) {
+		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3183,7 +3167,7 @@ public class FXController implements Initializable {
 		Relation r = null;
 		try {
 			r = Network.getRelation(definePathRelations.getText());
-		} catch (CustomException e) {
+		} catch (RelationDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

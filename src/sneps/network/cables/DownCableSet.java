@@ -9,14 +9,13 @@
  */
 package sneps.network.cables;
 
-import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
 import sneps.network.classes.CaseFrame;
 
-public class DownCableSet implements Serializable {
+public class DownCableSet {
 	
 	/**
 	 * A hash table of the down cables that this down cable set includes. Each
