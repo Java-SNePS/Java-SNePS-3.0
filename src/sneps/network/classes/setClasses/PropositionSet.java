@@ -154,7 +154,7 @@ public class PropositionSet {
 
 		while (i < props.length || j < props1.length) {
 
-			if (i >= props.length) {
+			if (i >= props.length) {  // length of arg passed
 				props2[k++] = props1[j++];
 				continue;
 			} else if (j >= props1.length) {
@@ -165,7 +165,7 @@ public class PropositionSet {
 			if(props[i] == props1[j]) {
 				props2[k] = props[i];
 				i++;j++;
-			} else if (props[i] < props1[i]) {
+			} else if (props[i] < props1[j]) {
 				props2[k] = props[i];
 				i++;
 			} else {

@@ -2,22 +2,32 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.snebr.Controller;
 
 
 public class PropositionSetTest {
 
-    private final Semantic semantic = new Semantic("Proposition");
+ private static final Semantic semantic = new Semantic("PropositionNode");
 
-    @Before
-    public void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+
+    @BeforeClass
+    public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n"+i, semantic);
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        Network.clearNetwork();
+        Controller.clearSNeBR();
     }
 
     @Test
@@ -68,6 +78,7 @@ public class PropositionSetTest {
         PropositionSet superSet = new PropositionSet(props1);
         PropositionSet subSet = new PropositionSet(props2);
         assertTrue(subSet.isSubSet(superSet));
+        assertFalse(superSet.isSubSet(subSet));
 
     }
 
