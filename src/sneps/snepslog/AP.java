@@ -250,6 +250,8 @@ public class AP {
 			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", Semantic.infimum)));
 			break;
 		}
+		wires.add(new Wire(Relation.arg, arg1));
+		wires.add(new Wire(Relation.arg, arg2));
 		Node infixedTermNode = Network.buildMolecularNode(wires, caseFrame);
 		return infixedTermNode;
 	}
@@ -492,11 +494,12 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
 	 */
 	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2)
-			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
+			NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -713,11 +716,12 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeCannotBeRemovedException
 	 * @throws RelationDoesntExistException
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
 	 */
-	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
-			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff)
+			throws CannotBuildNodeException, EquivalentNodeException, NodeCannotBeRemovedException,
+			RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);
@@ -1013,7 +1017,7 @@ public class AP {
 		}
 		return output;
 	}
-	
+
 	/**
 	 * Docs goes here
 	 */
@@ -1049,7 +1053,7 @@ public class AP {
 	protected static void removeFromContext(String context, PropositionSet hyps) {
 		// TODO A wrapper for the method removing hyps from context.
 	}
-	
+
 	/**
 	 * Docs goes here
 	 */
@@ -1066,5 +1070,5 @@ public class AP {
 		}
 		return output;
 	}
-	
+
 }
