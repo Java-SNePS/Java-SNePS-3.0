@@ -2,7 +2,6 @@ package sneps.gui;
 import javafx.fxml.FXMLLoader;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import sneps.network.Network;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
@@ -17,8 +16,6 @@ public class Main extends Application {
 		    primaryStage.setTitle("Java SNePS 3.0");
 		    primaryStage.setScene(new Scene(root));   
 		    primaryStage.show();
-		    
-		    
 		    
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Ellipse?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sneps.gui.FXController">
    <children>
+   
       <TabPane layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab text="Home">
@@ -49,8 +56,8 @@
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <TextField fx:id="baseNodeSemType" layoutY="111.19999694824219" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                                 <Button layoutX="10.0" layoutY="147.0" mnemonicParsing="false" onAction="#buildBaseNode" prefHeight="26.0" prefWidth="254.0" styleClass="tab" text="Submit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                <SplitMenuButton fx:id="baseNodeSemType" layoutX="10.0" layoutY="111.0" mnemonicParsing="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane layoutX="683.0" layoutY="14.0" minWidth="660.0" AnchorPane.rightAnchor="20.0">
@@ -126,6 +133,7 @@
                                                       <Font size="20.0" />
                                                    </font>
                                                 </Label>
+                                                <Button layoutX="14.0" layoutY="91.0" mnemonicParsing="false" onAction="#deleteNode" styleClass="tab" text="Delete Node" />
                                              </children>
                                           </AnchorPane>
                                        </children>
@@ -153,13 +161,13 @@
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <TextField fx:id="newRT" layoutY="111.19999694824219" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                <SplitMenuButton fx:id="newRT" mnemonicParsing="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0" />
                                                 <Label layoutY="136.8000030517578" text="Adjust:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <TextField fx:id="newRA" layoutY="162.39999389648438" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                <SplitMenuButton fx:id="newRA" layoutX="10.0" layoutY="162.0" mnemonicParsing="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                                 <Label layoutY="188.0" text="Limit:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
@@ -201,62 +209,543 @@
                                  <content>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                        <children>
-                                          <AnchorPane layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                          <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <tabs>
+                                              <Tab text="Create Case Frames">
+                                                <content>
+                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Define a new Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label layoutX="10.0" layoutY="45.0" text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="50.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <SplitMenuButton fx:id="rrcfSem" mnemonicParsing="false" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                                                  <AnchorPane layoutY="77.0" AnchorPane.leftAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="relationSetList1" layoutX="30.0" layoutY="39.0" prefHeight="241.0" prefWidth="260.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="327.0" styleClass="title" text="List of all relations in the nework">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <AnchorPane layoutX="406.0" layoutY="77.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="cfRS" layoutY="39.0" prefHeight="212.0" prefWidth="260.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Label layoutX="4.0" prefHeight="34.0" prefWidth="253.0" styleClass="title" text="Case Frame Relation Set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="127.0" layoutY="254.0" mnemonicParsing="false" onAction="#removeCFRS" styleClass="tab" text="Remove from case frame relation set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <AnchorPane layoutX="499.0" layoutY="77.0" AnchorPane.leftAnchor="500.0" AnchorPane.rightAnchor="500.0">
+                                                                     <children>
+                                                                        <Label prefHeight="34.0" prefWidth="327.0" styleClass="title" text="Override Relation?" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="127.0" layoutY="254.0" mnemonicParsing="false" onAction="#addOverriddenRelationToCaseFrame" styleClass="tab" text="Add to case frame relation set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                                        <TextField fx:id="overrideAdjust" layoutX="72.0" layoutY="54.0" promptText="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
+                                                                        <TextField fx:id="overrideLimit" layoutX="72.0" layoutY="212.0" promptText="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
+                                                                        <Label layoutX="14.0" layoutY="54.0" text="Adjust:" AnchorPane.leftAnchor="10.0">
+                                                                           <font>
+                                                                              <Font size="16.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Label layoutX="18.0" layoutY="212.0" text="Limit:" AnchorPane.leftAnchor="10.0">
+                                                                           <font>
+                                                                              <Font size="16.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <Button layoutX="913.0" layoutY="370.0" mnemonicParsing="false" onAction="#submitRRCF" styleClass="tab" text="Submit Case Frame" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="14.0" layoutY="390.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="26.0">
+                                                               <children>
+                                                                  <Label layoutX="10.0" layoutY="12.0" prefHeight="34.0" prefWidth="219.0" styleClass="title" text="Undefine Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <AnchorPane layoutX="10.0" layoutY="53.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="caseFramesList" prefHeight="190.0" prefWidth="260.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Button layoutX="98.0" layoutY="192.0" mnemonicParsing="false" onAction="#undefineCaseFrame" styleClass="tab" text="Undefine" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                </content>
+                                              </Tab>
+                                                <Tab text="Create Case Frames Signatures">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="370.0" AnchorPane.leftAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="219.0" styleClass="title" text="1- Select Case Frame" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView fx:id="selectCFForSign" layoutY="42.0" prefHeight="230.0" prefWidth="217.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="10.0" layoutY="283.0" prefWidth="370.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="219.0" styleClass="title" text="4- Select Relation" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView fx:id="selectCFRelForSign" layoutY="42.0" prefHeight="230.0" prefWidth="217.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="239.0" layoutY="10.0" AnchorPane.leftAnchor="390.0" AnchorPane.rightAnchor="390.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="219.0" styleClass="title" text="2- Resulting Semantic Type" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <SplitMenuButton fx:id="resultSemType" mnemonicParsing="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="300.0" layoutY="97.0" AnchorPane.leftAnchor="390.0" AnchorPane.rightAnchor="390.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="219.0" styleClass="title" text="3- Cable Type Constraints" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label text="Semantic type: " AnchorPane.topAnchor="40.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <SplitMenuButton fx:id="cableSem" mnemonicParsing="false" prefHeight="26.0" prefWidth="292.0" AnchorPane.leftAnchor="108.0" AnchorPane.topAnchor="40.0" />
+                                                                  <Label layoutY="53.0" text="Minimum number of nodes:" AnchorPane.topAnchor="80.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <TextField fx:id="cableMinNodes" layoutX="201.0" layoutY="79.0" prefHeight="26.0" prefWidth="200.0" AnchorPane.topAnchor="80.0" />
+                                                                  <Label layoutX="1.0" layoutY="89.0" text="Maximum number of nodes:" AnchorPane.topAnchor="120.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <TextField fx:id="cableMaxNodes" layoutX="202.0" layoutY="89.0" prefHeight="26.0" prefWidth="200.0" AnchorPane.topAnchor="120.0" />
+                                                                  <Button layoutX="1.0" layoutY="146.0" mnemonicParsing="false" onAction="#createCableTypeConst" prefHeight="26.0" prefWidth="400.0" styleClass="tab" text="Create Cable Type Constraint" AnchorPane.topAnchor="155.0" />
+                                                                  <AnchorPane layoutX="410.0" layoutY="40.0" AnchorPane.leftAnchor="410.0" AnchorPane.rightAnchor="0.0">
+                                                                     <children>
+                                                                        <ListView fx:id="cablesList" layoutY="40.0" prefHeight="70.0" prefWidth="179.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="219.0" styleClass="title" text="List of cables" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="15.0" layoutY="115.0" mnemonicParsing="false" onAction="#deleteCTC" styleClass="tab" text="Delete cable constraint" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <Button mnemonicParsing="false" onAction="#createSubDomConst" styleClass="tab" text="Create SubDomain Constraint" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="290.0" />
+                                                            <AnchorPane layoutX="10.0" layoutY="322.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="366.0" styleClass="title" text="List of SubDomain Constraints" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView fx:id="sdcsList" layoutY="40.0" prefHeight="150.0" prefWidth="217.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                  <Button layoutY="195.0" mnemonicParsing="false" onAction="#deleteSubDomConst" styleClass="tab" text="Delete SubDomain Constraint" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <Button layoutX="571.0" layoutY="549.0" mnemonicParsing="false" onAction="#createCFSign" prefHeight="106.0" prefWidth="223.0" styleClass="tab" text="Create CF Signature" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="571.0" AnchorPane.rightAnchor="571.0" AnchorPane.topAnchor="561.2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="20.0" />
+                                                               </font>
+                                                            </Button>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </Tab>
+                                                <Tab text="Add Signature To Case Frame">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane prefHeight="276.0" prefWidth="433.0" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="366.0" styleClass="title" text="Add Signature To The Selected Case Frame" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView fx:id="listOfSigns" layoutY="37.0" prefHeight="180.0" prefWidth="1346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="37.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="-63.0" layoutY="5.0" prefHeight="276.0" prefWidth="433.0" AnchorPane.leftAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="366.0" styleClass="title" text="Select Case Frame" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView fx:id="cfListForSign" layoutY="37.0" prefHeight="180.0" prefWidth="1346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="37.0" />
+                                                                  <TextField fx:id="signPriority" layoutX="68.0" layoutY="224.0" />
+                                                                  <Label layoutY="224.0" text="Priority:" AnchorPane.leftAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <Button layoutX="10.0" layoutY="268.0" mnemonicParsing="false" onAction="#addSignToCF" styleClass="tab" text="Add Signature To Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="260.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </Tab>
+                                            </tabs>
+                                          </TabPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </content></Tab>
+                              <Tab text="Semantic">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Create a new semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                             <font>
+                                                <Font size="22.15" />
+                                             </font>
+                                          </Label>
+                                          <Label text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="55.0">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="semanticName" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="55.0" />
+                                          <Button layoutX="14.0" layoutY="94.0" mnemonicParsing="false" onAction="#createSemanticType" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab text="Paths">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <AnchorPane layoutY="5.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
                                              <children>
-                                                <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Define a new Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Forward / Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="10.0" layoutY="45.0" text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="50.0">
+                                                <SplitMenuButton fx:id="selectedPath" alignment="CENTER" mnemonicParsing="false" text="Please Select a path to create" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+                                                  <items>
+                                                    <MenuItem mnemonicParsing="false" onAction="#setFUP" text="Forward Unit Path" />
+                                                    <MenuItem mnemonicParsing="false" onAction="#setBUP" text="Backward Unit Path" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#setCFRFUP" text="Case Frame Restricted Forward Unit Path" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#setCFRBUP" text="Case Frame Restricted Backward Unit Path" />
+                                                  </items>
+                                                </SplitMenuButton>
+                                                <SplitMenuButton fx:id="pathCF" alignment="CENTER" disable="true" layoutX="106.0" layoutY="331.0" mnemonicParsing="false" text="Choose a case frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0" />
+                                                <ListView fx:id="pathRelations" disable="true" layoutX="14.0" layoutY="97.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
+                                                <Button fx:id="createPathBTN" disable="true" layoutX="10.0" layoutY="297.0" mnemonicParsing="false" onAction="#createPath" styleClass="tab" text="Create Path" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="340.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane layoutY="380.0" prefWidth="400.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="And Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <TextField fx:id="caseFrameSTN" layoutX="134.0" layoutY="45.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="10.0" />
-                                                <AnchorPane layoutY="77.0" AnchorPane.leftAnchor="10.0">
-                                                   <children>
-                                                      <ListView fx:id="relationSetList1" layoutX="30.0" layoutY="39.0" prefHeight="212.0" prefWidth="260.0" />
-                                                      <Label prefHeight="34.0" prefWidth="327.0" styleClass="title" text="List of all relations in the nework">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="127.0" layoutY="254.0" mnemonicParsing="false" onAction="#addToCFRS" styleClass="tab" text="Add to case frame relation set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="406.0" layoutY="77.0" AnchorPane.rightAnchor="10.0">
-                                                   <children>
-                                                      <ListView fx:id="cfRS" layoutY="39.0" prefHeight="212.0" prefWidth="260.0" AnchorPane.rightAnchor="0.0" />
-                                                      <Label layoutX="4.0" prefHeight="34.0" prefWidth="253.0" styleClass="title" text="Case Frame Relation Set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="127.0" layoutY="254.0" mnemonicParsing="false" onAction="#removeCFRS" styleClass="tab" text="Remove from case frame relation set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <Button layoutX="913.0" layoutY="370.0" mnemonicParsing="false" onAction="#submitCaseFrame" styleClass="tab" text="Submit Case Frame" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                                <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createAndPath" styleClass="tab" text="Create And Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane layoutX="20.0" layoutY="415.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                                          <AnchorPane layoutX="350.0" prefWidth="666.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <Label layoutX="10.0" layoutY="12.0" prefHeight="34.0" prefWidth="219.0" styleClass="title" text="Undefine Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <ListView fx:id="pathsList" layoutX="72.0" prefHeight="200.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                                                <Label layoutX="-14.0" layoutY="7.0" prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="List Of Created Paths" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <AnchorPane layoutX="10.0" layoutY="53.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <AnchorPane layoutX="10.0" layoutY="602.0" AnchorPane.bottomAnchor="50.00000000000002" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <children>
-                                                      <ListView fx:id="caseFramesList" prefHeight="190.0" prefWidth="260.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                      <Button layoutX="98.0" layoutY="192.0" mnemonicParsing="false" onAction="#undefineCaseFrame" styleClass="tab" text="Undefine" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                      <Button mnemonicParsing="false" onAction="#deletePath" prefWidth="250.0" styleClass="tab" text="Delete Path" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="20.0" layoutY="612.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                   <children>
+                                                      <HBox alignment="CENTER" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                         <children>
+                                                            <Button minWidth="130.0" mnemonicParsing="false" onAction="#createConversePath" styleClass="tab" text="Create Converse Path" />
+                                                            <Button minWidth="130.0" mnemonicParsing="false" onAction="#createIrreflexiveRestrictPath" styleClass="tab" text="Create Irreflexive Restrict Path" />
+                                                            <Button minWidth="130.0" mnemonicParsing="false" onAction="#createKPlusPath" styleClass="tab" text="Create K-Plus Path" />
+                                                            <Button minWidth="130.0" mnemonicParsing="false" onAction="#createKStarPath" styleClass="tab" text="Create K-Star Path" />
+                                                         </children>
+                                                      </HBox>
                                                    </children>
                                                 </AnchorPane>
                                              </children>
                                           </AnchorPane>
+                                          <AnchorPane layoutY="480.0" prefWidth="400.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Compose Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createComposePath" styleClass="tab" text="Create Compose Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane layoutY="580.0" prefWidth="400.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Or Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createOrPath" styleClass="tab" text="Create Or Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <VBox layoutX="10.0" layoutY="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="400.0">
+                                                   <children>
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Domain Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="22.15" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="23.0" layoutY="35.0" text="Please select two paths from the temporary list, &amp; a node">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <SplitMenuButton fx:id="pathNodes1" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
+                                                      <Button mnemonicParsing="false" onAction="#createDomainRestrictPath" styleClass="tab" text="Create Domain Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="5.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="10.0" layoutY="281.0" prefWidth="400.0">
+                                                   <children>
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Range Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="22.15" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="23.0" layoutY="35.0" text="Please select two paths from the temporary list, &amp; a node">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <SplitMenuButton fx:id="pathNodes2" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
+                                                      <Button mnemonicParsing="false" onAction="#createRangeRestrictPath" styleClass="tab" text="Create Range Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="5.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="10.0" layoutY="145.0" prefWidth="400.0">
+                                                   <children>
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Bang Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="22.15" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button mnemonicParsing="false" onAction="#createBangPath" styleClass="tab" text="Create Bang Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="40.0" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="5.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="10.0" layoutY="276.0" prefWidth="400.0">
+                                                   <children>
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Define Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="22.15" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button mnemonicParsing="false" onAction="#definePath" styleClass="tab" text="Define Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                      <SplitMenuButton fx:id="definePathRelations" alignment="CENTER" layoutX="128.0" layoutY="45.0" mnemonicParsing="false" text="Select a relation" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
+                                                      <Label layoutX="92.0" layoutY="35.0" text="Please select one path from the list">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="5.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </AnchorPane>
-                                 </content></Tab>
+                                 </content>
+                              </Tab>
+                              <Tab text="Context">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <tabs>
+                                              <Tab text="Create / Delete Context">
+                                                   <content>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <AnchorPane layoutX="10.0" layoutY="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Create context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label layoutY="40.0" text="Context Name:" AnchorPane.leftAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <TextField fx:id="contextName" layoutX="120.0" layoutY="40.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
+                                                                  <AnchorPane layoutY="91.0" AnchorPane.leftAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propoNodesList" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propSet" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Create Context" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="14.0" layoutY="404.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="404.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Delete Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                                                  <Button mnemonicParsing="false" styleClass="tab" text="Delete Context" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                              </Tab>
+                                                <Tab text="Edit Context">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Add Propositions To Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label layoutY="40.0" text="Context Name:" AnchorPane.leftAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <AnchorPane layoutY="91.0" AnchorPane.leftAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propoNodesList1" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propSet1" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Submit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                                  <SplitMenuButton alignment="CENTER" layoutX="107.0" layoutY="40.0" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="10.0" layoutY="402.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Set Current Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <SplitMenuButton alignment="CENTER" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </Tab>
+                                            </tabs>
+                                          </TabPane>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                               <Tab text="Draw Network">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -264,7 +753,7 @@
                                           <Group fx:id="dragBaseNode" layoutX="64.0" layoutY="54.0" scaleX="0.5" scaleY="0.5" AnchorPane.bottomAnchor="505.20000000000005" AnchorPane.leftAnchor="-36.0" AnchorPane.rightAnchor="756.0" AnchorPane.topAnchor="-26.0">
                                              <children>
                                                 <Ellipse fill="#fbff21" radiusX="100.0" radiusY="80.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Label layoutX="-40.0" layoutY="-27.0" text="Base" textFill="WHITE">
+                                                <Label layoutX="-40.0" layoutY="-27.0" style="-fx-text-fill: black;" text="Base" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="40.0" />
                                                    </font>
@@ -274,25 +763,26 @@
                                           <Group fx:id="dragVarNode" layoutX="64.0" layoutY="150.0" scaleX="0.5" scaleY="0.5">
                                              <children>
                                                 <Ellipse fill="#00ff22" radiusX="100.0" radiusY="80.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Label layoutX="-77.0" layoutY="-27.0" text="Variable" textFill="WHITE">
+                                                <Label layoutX="-77.0" layoutY="-27.0" style="-fx-text-fill: black;" text="Variable" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="40.0" />
                                                    </font>
                                                 </Label>
                                              </children>
                                           </Group>
-                                          <Group fx:id="dragNode11" layoutX="64.0" layoutY="248.0" scaleX="0.5" scaleY="0.5">
+                                          <Group fx:id="dragMolNode" layoutX="64.0" layoutY="248.0" scaleX="0.5" scaleY="0.5">
                                              <children>
                                                 <Ellipse fill="#00a1ff" radiusX="100.0" radiusY="80.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Label layoutX="-93.0" layoutY="-27.0" text="Molecular" textFill="WHITE">
+                                                <Label layoutX="-93.0" layoutY="-27.0" style="-fx-text-fill: black;" text="Molecular" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="40.0" />
                                                    </font>
                                                 </Label>
                                              </children>
                                           </Group>
-                                          <Group layoutX="26.0" layoutY="329.0">
+                                          <Group fx:id="wireModeBtn" layoutX="26.0" layoutY="329.0">
                                              <children>
+                                                <Rectangle fx:id="wireBtnRect" arcHeight="5.0" arcWidth="5.0" fill="#ff000080" height="200.0" layoutX="-62.0" layoutY="-83.0" scaleX="0.4" scaleY="0.4" stroke="BLACK" strokeType="INSIDE" visible="false" width="200.0" />
                                                 <Line endX="100.0" layoutX="-12.0" layoutY="17.0" rotate="45.0" stroke="RED" strokeWidth="4.0" />
                                                 <Text fill="WHITE" layoutX="15.683765411376953" layoutY="25.101730346679688" strokeType="OUTSIDE" strokeWidth="0.0" text="Wire">
                                                    <font>
@@ -306,7 +796,26 @@
                                                 <AnchorPane fx:id="drawArea" style="-fx-background-color: gray;" />
                                              </content>
                                           </ScrollPane>
-                                          <Button layoutX="25.0" layoutY="598.0" mnemonicParsing="false" onAction="#eraseDrewNetwork" prefHeight="26.0" prefWidth="78.0" text="Erase All" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="25.0" />
+                                          <Button fx:id="deleteModeBtn" layoutX="14.0" layoutY="544.0" mnemonicParsing="false" onAction="#deleteMode" prefHeight="26.0" prefWidth="100.0" styleClass="customBtn" text="Delete Node" />
+                                          <Button fx:id="moveModeBtn" layoutX="14.0" layoutY="509.0" mnemonicParsing="false" onAction="#moveMode" prefHeight="26.0" prefWidth="100.0" styleClass="customBtn" text="Move Node" />
+                                          <Button fx:id="drawModeBtn" layoutX="14.0" layoutY="474.0" mnemonicParsing="false" onAction="#normalMode" prefHeight="26.0" prefWidth="100.0" styleClass="customBtn" text="Draw" />
+                                          <Label layoutX="8.0" layoutY="419.0" styleClass="title" text="Select Mode">
+                                             <font>
+                                                <Font size="20.0" />
+                                             </font>
+                                          </Label>
+                                          <Button layoutX="5.0" layoutY="630.0" mnemonicParsing="false" onAction="#submitDrawnNodes" prefHeight="26.0" prefWidth="118.0" styleClass="tab" text="Submit Nodes" AnchorPane.bottomAnchor="50.80000000000005" />
+                                          <Button layoutX="25.0" layoutY="598.0" mnemonicParsing="false" onAction="#eraseDrawnNetwork" prefHeight="26.0" prefWidth="78.0" styleClass="tab" text="Erase All" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="25.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab fx:id="displayNetTab" text="Display Network">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Button layoutX="657.0" layoutY="680.0" mnemonicParsing="false" onAction="#displayNetwork" styleClass="tab" text="Generate Network" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -319,41 +828,66 @@
           </Tab>
           <Tab text="SNePS Log">
                <content>
-                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <ScrollPane fx:id="logScroll" style="-fx-background: #333333;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <content>
-                                    <Label fx:id="conOutput" styleClass="conOutput" stylesheets="@application.css">
-                                       <font>
-                                          <Font name="Consolas" size="20.0" />
-                                       </font>
-                                    </Label>
-                                 </content>
-                              </ScrollPane>
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextArea fx:id="console" layoutX="97.0" layoutY="-11.0" prefHeight="200.0" prefWidth="200.0" promptText="Console" styleClass="consoleInput" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="Consolas" size="20.0" />
-                                 </font></TextArea>
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
+                  <ScrollPane fx:id="consoleScroll">
+                     <content>
+                        <TextArea fx:id="console" prefHeight="200.0" prefWidth="200.0" promptText="Console.." styleClass="console" />
+                     </content>
+                  </ScrollPane>
                </content>
           </Tab>
             <Tab text="Options">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#save" styleClass="tab" text="Save" />
-                        <Button layoutX="271.0" layoutY="13.0" mnemonicParsing="false" onAction="#load" styleClass="tab" text="Load" />
-                        <Button layoutX="113.0" layoutY="13.0" mnemonicParsing="false" onAction="#createDefaults" styleClass="tab" text="Create Defaults" />
-                        <Button layoutX="113.0" layoutY="56.0" mnemonicParsing="false" onAction="#resetNetwork" styleClass="tab" text="Reset Network" />
+                        <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Label prefHeight="34.0" prefWidth="250.0" styleClass="title" text="Create New Network Save File" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <font>
+                                    <Font size="22.15" />
+                                 </font>
+                              </Label>
+                              <Label text="New Save File: " AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="newNetName" layoutX="122.0" layoutY="50.0" promptText="Network Name.." AnchorPane.leftAnchor="122.0" AnchorPane.topAnchor="50.0" />
+                              <Button layoutX="279.0" layoutY="50.0" mnemonicParsing="false" onAction="#submitNewNet" styleClass="tab" text="Submit New Network" AnchorPane.leftAnchor="320.0" AnchorPane.topAnchor="50.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutY="76.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Label prefHeight="34.0" prefWidth="250.0" styleClass="title" text="Save To An Existing Network" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <font>
+                                    <Font size="22.15" />
+                                 </font>
+                              </Label>
+                              <SplitMenuButton fx:id="netChoice1" mnemonicParsing="false" text="Choose A Network" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                              <Button mnemonicParsing="false" onAction="#save" styleClass="tab" text="Save" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="50.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutY="152.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Label prefHeight="34.0" prefWidth="250.0" styleClass="title" text="Load Network" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <font>
+                                    <Font size="22.15" />
+                                 </font>
+                              </Label>
+                              <SplitMenuButton fx:id="netChoice2" mnemonicParsing="false" text="Choose A Network" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                              <Button mnemonicParsing="false" onAction="#load" styleClass="tab" text="Load" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="50.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutY="228.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Label prefHeight="34.0" prefWidth="250.0" styleClass="title" text="Delete Network" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <font>
+                                    <Font size="22.15" />
+                                 </font>
+                              </Label>
+                              <SplitMenuButton fx:id="netChoice3" layoutY="18.0" mnemonicParsing="false" text="Choose A Network" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                              <Button layoutY="18.0" mnemonicParsing="false" onAction="#deleteNetwork" styleClass="tab" text="Delete" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="50.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </content>
@@ -385,7 +919,7 @@
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="baseNodeSemTyPop" layoutX="175.0" layoutY="42.0" AnchorPane.bottomAnchor="0.0" />
+                  <SplitMenuButton fx:id="baseNodeSemTyPop" layoutX="175.0" layoutY="90.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="149.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.4" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
             <Button layoutX="258.0" layoutY="340.0" mnemonicParsing="false" onAction="#submitNewBaseNode" styleClass="tab" text="Submit" AnchorPane.bottomAnchor="31.399999999999977" AnchorPane.leftAnchor="174.4" />
@@ -421,6 +955,38 @@
             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="110.0" layoutY="24.0" text="Or" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="100.0">
                <font>
                   <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="drawMolCF" layoutX="210.0" layoutY="210.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #00a1ff;" visible="false" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="200.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="191.0" layoutY="14.0" text="Molecular Node" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Button layoutX="738.0" layoutY="311.0" mnemonicParsing="false" onAction="#submitMolNode" styleClass="tab" text="Submit" AnchorPane.bottomAnchor="31.399999999999977" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" />
+            <ListView fx:id="caseFramesDrawList" layoutX="666.0" layoutY="103.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="103.0" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="610.0" layoutY="59.0" text="Choose a case frame" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="59.0">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="relationCFDrawSelect" layoutX="210.0" layoutY="210.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #00a1ff;" visible="false" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="200.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="191.0" layoutY="14.0" text="Molecular Node" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Button layoutX="738.0" layoutY="311.0" mnemonicParsing="false" onAction="#drawRelation" styleClass="tab" text="Submit" AnchorPane.bottomAnchor="31.399999999999977" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" />
+            <ListView fx:id="relationOfDrawnCF" layoutX="666.0" layoutY="103.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="103.0" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="610.0" layoutY="59.0" text="Choose a relation, then drag it to the node you want to connect to" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="59.0">
+               <font>
+                  <Font name="System Bold" size="20.0" />
                </font>
             </Label>
          </children>

@@ -3,9 +3,6 @@ package sneps.network.classes;
 import java.io.Serializable;
 
 import sneps.exceptions.CustomException;
-import sneps.exceptions.DuplicateNodeException;
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 
@@ -24,18 +21,15 @@ public class Wire implements Serializable{
 	 * @param semanticType
 	 * 
 	 * @throws CustomException
-	 * @throws NotAPropositionNodeException 
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws DuplicateNodeException 
 	 */
 
 	public Wire(Relation wireRelation, String nodeId, String syntacticType, String semanticType)
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateNodeException {
+			throws CustomException {
 
 		this.wireRelation = wireRelation;
 
 		if (Network.getNodes().containsKey(nodeId))
-			throw new DuplicateNodeException("This node's identifier already exists");
+			throw new CustomException("This node's identifier already exists");
 
 		else {
 

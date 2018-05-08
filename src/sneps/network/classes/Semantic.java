@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 public class Semantic implements Serializable {
-	protected String semanticType; 
+	protected String semanticType;
+	public static Semantic act, proposition, infimum, individual;
 
-	public Semantic() {	}
-	
-	public Semantic(String sem){
+	public Semantic() {
+	}
+
+	public Semantic(String sem) {
 		semanticType = sem;
 	}
 
@@ -26,6 +28,11 @@ public class Semantic implements Serializable {
 		return false;
 	}
 
-	
-	
+	public static void createDefaultSemantics() {
+		act = SemanticHierarchy.createSemanticType("Act");
+		proposition = SemanticHierarchy.createSemanticType("Proposition");
+		infimum = SemanticHierarchy.createSemanticType("Infimum");
+		individual = SemanticHierarchy.createSemanticType("Individual");
+	}
+
 }
