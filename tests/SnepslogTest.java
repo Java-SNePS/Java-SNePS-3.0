@@ -23,12 +23,12 @@ public class SnepslogTest extends TestCase {
 		for (int i = 0; i < PropositionSet.getPropsSafely(ps).length; i++) {
 			Node n = Network.getNodeById(PropositionSet.getPropsSafely(ps)[i]);
 			if (n.getTerm() instanceof Molecular) {
-				Molecular m = (MolecularRelationerm();
+				Molecular m = (Molecular)n.getTerm();
 				LinkedList<Relation> rels = m.getDownCableSet().getCaseFrame().getRelations();
 				if(rels.size()==2&&rels.get(0).getName().equals("r")&&rels.get(1).getName().equals("a1")) {
 					Node dog = Network.getNode("dog");
 					Node Fido = Network.getNode("Fido");
-					if(m.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)&&(m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)){
+					if(m.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)&&m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)){
 						success = true;
 					}
 				}
