@@ -8,9 +8,11 @@ import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
+import sneps.snip.matching.Substitutions;
 
 public class SIndex extends RuisHandler {
-	private Hashtable<int [], RuisHandler> map;
+	
+	private Hashtable<Substitutions, RuisHandler> map;
 	private byte ruiType;
 	public static final byte RUIS = 0, SINGLETONRUIS = 1, PTREE = 2;
 	private VarNodeSet sharedVars;
@@ -20,20 +22,15 @@ public class SIndex extends RuisHandler {
 		super(context);
 		this.sharedVars=SharedVars;
 		this.ruiType=ruisType;
-		map = new Hashtable<int[], RuisHandler>();
+		map = new Hashtable<Substitutions, RuisHandler>();
 	}
 
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		int[] vars = new int[sharedVars.size()];
-		int index = 0;
-		for (VariableNode var : sharedVars)
-			vars[index++] = rui.getSub().term(var).getId();
 		
-
-		RuisHandler trui= map.get(vars);
+		RuisHandler trui= map.get(rui.getSub());
 		if (trui == null) {
 			trui = getNewRUIS();
-			map.put(vars, trui);
+			map.put(rui.getSub(), trui);
 		}
 
 		RuleUseInfoSet res = trui.insertRUI(rui);
@@ -56,10 +53,12 @@ public class SIndex extends RuisHandler {
 			break;
 		}
 		return tempRui;
-	}	
+	}
 
+	
 	public int getSize() {
 		return map.size();
 	}
+
 
 }

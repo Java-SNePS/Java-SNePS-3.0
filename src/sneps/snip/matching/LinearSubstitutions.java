@@ -484,5 +484,5 @@ public class LinearSubstitutions implements Substitutions {
 		else putIn(mb);
 
 	}
-
+	
 }
