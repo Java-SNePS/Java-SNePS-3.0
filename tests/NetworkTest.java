@@ -16,7 +16,11 @@ import sneps.snebr.Controller;
 import static org.junit.Assert.*;
 
 public class NetworkTest {
+<<<<<<< HEAD
      static Semantic semantic;
+=======
+     Semantic semantic;
+>>>>>>> refs/remotes/origin/mostafaNetwork
     final static String semanticType = "Proposition";
     
 

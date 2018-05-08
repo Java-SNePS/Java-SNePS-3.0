@@ -69,8 +69,8 @@ public abstract class RuleNode extends PropositionNode {
 	
 	public RuleNode(){}
 	
-	public RuleNode(Term syn, Semantic sym) {
-		//super(syn, sym);
+	public RuleNode(Term syn) {
+		super(syn);
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();

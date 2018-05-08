@@ -15,7 +15,11 @@ import sneps.snebr.Controller;
 
 public class PropositionSetTest {
 
+<<<<<<< HEAD
     private static final Semantic semantic = new Semantic("Proposition");
+=======
+    private final Semantic semantic = new Semantic("Proposition");
+>>>>>>> refs/remotes/origin/mostafaNetwork
 
     @BeforeClass
     public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {

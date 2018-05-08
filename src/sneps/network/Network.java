@@ -48,6 +48,13 @@ import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snip.rules.AndEntailment;
+import sneps.snip.rules.AndOrNode;
+import sneps.snip.rules.DoIfNode;
+import sneps.snip.rules.NumericalEntailment;
+import sneps.snip.rules.OrNode;
+import sneps.snip.rules.ThreshNode;
+import sneps.snip.rules.WhenDoNode;
 
 public class Network implements Serializable {
 
@@ -1054,33 +1061,19 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndNode(open);
+			 propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = null;
-			// TODO
-			// propNode = new OrNode(open);
+			 propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndOrNode(open);
+			 propNode = new AndOrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = null;
-			// TODO
-			// propNode = new ThreshNode(open);
+			 propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = null;
-			// TODO
-			// propNode = new NumericalNode(open);
+			 propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
-				propNode = null;
-			// TODO
-			// propNode = new DoIfNode(open);
+			 propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
-				propNode = null;
-			// TODO
-			// propNode = new WhenDoNode(open);
+			 propNode = new WhenDoNode(open);
 			else
 				propNode = new PropositionNode(open);
 			return propNode;
@@ -1108,33 +1101,19 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndNode(open);
+			 propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = null;
-			// TODO
-			// propNode = new OrNode(open);
+			 propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndOrNode(open);
+			 propNode = new AndOrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = null;
-			// TODO
-			// propNode = new ThreshNode(open);
+			 propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = null;
-			// TODO
-			// propNode = new NumericalNode(open);
+			 propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
-				propNode = null;
-			// TODO
-			// propNode = new DoIfNode(open);
+			 propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
-				propNode = null;
-			// TODO
-			// propNode = new WhenDoNode(open);
+			 propNode = new WhenDoNode(open);
 			else
 				propNode = new PropositionNode(open);
 			return propNode;
@@ -1180,25 +1159,15 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndNode(c);
+				 propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = null;
-				// TODO
-				// propNode = new OrNode(c);
+				 propNode = new OrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndOrNode(c);
+				 propNode = new AndOrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = null;
-				// TODO
-				// propNode = new ThreshNode(c);
+				 propNode = new ThreshNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
-				propNode = null;
-				// TODO
-				// propNode = new NumericalNode(c);
+				 propNode = new NumericalEntailment(c);
 			} else
 				propNode = new PropositionNode(c);
 			return propNode;
@@ -1226,25 +1195,15 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndNode(c);
+				 propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = null;
-				// TODO
-				// propNode = new OrNode(c);
+				 propNode = new OrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndOrNode(c);
+				 propNode = new AndOrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = null;
-				// TODO
-				// propNode = new ThreshNode(c);
+				 propNode = new ThreshNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
-				propNode = null;
-				// TODO
-				// propNode = new NumericalNode(c);
+				 propNode = new NumericalEntailment(c);
 			} else
 				propNode = new PropositionNode(c);
 			return propNode;
