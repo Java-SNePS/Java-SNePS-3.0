@@ -471,8 +471,8 @@ public class AP {
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
 		}
-		wires.add(new Wire(Relation.max, Network.buildBaseNode(threshmax, Semantic.infimum)));
-		wires.add(new Wire(Relation.min, Network.buildBaseNode(thresh, Semantic.infimum)));
+		wires.add(new Wire(Relation.threshMax, Network.buildBaseNode(threshmax, Semantic.infimum)));
+		wires.add(new Wire(Relation.thresh, Network.buildBaseNode(thresh, Semantic.infimum)));
 		RelationsRestrictedCaseFrame caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.threshRule;
 		Node threshNode = Network.buildMolecularNode(wires, caseFrame);
 		return threshNode;
@@ -1070,5 +1070,5 @@ public class AP {
 		}
 		return output;
 	}
-
+	
 }
