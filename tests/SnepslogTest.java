@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.junit.Test;
 
 import junit.framework.TestCase;
+import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.classes.Relation;
@@ -15,7 +16,7 @@ import sneps.snepslog.AP;
 
 public class SnepslogTest extends TestCase {
 
-	public void testWffDot() {
+	public void testWffDot() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Network.defineDefaults();
 		AP.executeSnepslogCommand("dog(Fido).");
 		PropositionSet ps = Controller.getCurrentContext().allAsserted();
