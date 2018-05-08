@@ -20,7 +20,7 @@ public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
-    private static final Semantic semantic = new Semantic("PropositionNode");
+    private static final Semantic semantic = new Semantic("Proposition");
 
     @Before
     public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
