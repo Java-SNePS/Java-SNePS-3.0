@@ -42,10 +42,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
-import sneps.exceptions.CaseFrameAlreadyExistException;
+import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
+import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
@@ -481,15 +482,11 @@ public class FXController implements Initializable {
 			}
 		}
 		
-		try {
 			Network.defineCaseFrame(semanticType, caseFrameList);
 			updateCaseFramesList();
 			updateRelationSetList();
 			cfRS.getItems().clear();
-		} catch (CaseFrameAlreadyExistException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 	}
 
@@ -621,10 +618,16 @@ public class FXController implements Initializable {
 			updateNodesList();
 			wiresList.getItems().clear();
 			wires.clear();
-		} catch (CustomException e) {
+		} catch (CannotBuildNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (EquivalentNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -658,13 +661,8 @@ public class FXController implements Initializable {
 	}
 	
 	public void createDefaults() {
-		try {
 			Network.defineDefaults();
 			updateRelationSetList();
-		} catch (CustomException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	public void nodeDetails(String identifier) {

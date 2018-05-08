@@ -15,7 +15,8 @@ import sneps.snebr.Controller;
 
 public class PropositionSetTest {
 
-    private static final Semantic semantic = new Semantic("PropositionNode");
+ private static final Semantic semantic = new Semantic("PropositionNode");
+
 
     @BeforeClass
     public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {

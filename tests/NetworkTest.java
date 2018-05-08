@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
 public class NetworkTest {
      static Semantic semantic;
     final static String semanticType = "PropositionNode";
+
     
 
     @BeforeClass

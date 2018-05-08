@@ -20,6 +20,7 @@ public class ContextSetTest {
     final static String contextName = "test context";
     private static final Semantic semantic = new Semantic("PropositionNode");
 
+
     @BeforeClass
     public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         for (int i = 0; i < 8889; i++)
