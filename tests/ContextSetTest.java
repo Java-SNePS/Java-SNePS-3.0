@@ -18,7 +18,7 @@ public class ContextSetTest {
     private Context context;
     private ContextSet contextSet;
     final static String contextName = "test context";
-    private static final Semantic semantic = new Semantic("PropositionNode");
+    private static final Semantic semantic = new Semantic("Proposition");
 
     @BeforeClass
     public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
