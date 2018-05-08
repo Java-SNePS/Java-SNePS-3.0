@@ -12,7 +12,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 
 public class PropositionSetTest {
 
-    private final Semantic semantic = new Semantic("PropositionNode");
+    private final Semantic semantic = new Semantic("Proposition");
 
     @Before
     public void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {

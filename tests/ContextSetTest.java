@@ -20,7 +20,7 @@ public class ContextSetTest {
     private Context context;
     private ContextSet contextSet;
     final static String contextName = "test context";
-    private final Semantic semantic = new Semantic("PropositionNode");
+    private final Semantic semantic = new Semantic("Proposition");
 
     @Before
     public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
