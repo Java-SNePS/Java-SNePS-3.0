@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
@@ -70,7 +69,6 @@ import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.SemanticList;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
@@ -80,6 +78,7 @@ import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
 import sneps.network.paths.AndPath;
 import sneps.network.paths.BUnitPath;
+import sneps.network.paths.BangPath;
 import sneps.network.paths.CFResBUnitPath;
 import sneps.network.paths.CFResFUnitPath;
 import sneps.network.paths.ComposePath;
@@ -121,6 +120,7 @@ public class FXController implements Initializable {
 	private LinkedList<RCFP> rrcflist = new LinkedList<RCFP>();
 	private int ocp;
 	private int ncp;
+	private int bpcounter = 0;
 	
 	@FXML
 	private TextArea console;
@@ -136,7 +136,7 @@ public class FXController implements Initializable {
 	caseFrameRelationList, nodesList, wiresList, variableNodesList, baseNodesList, caseFramesDrawList,
 	relationOfDrawnCF, rrcfrslist, selectCFForSign, selectCFRelForSign,
 	cablesList, sdcsList, listOfSigns, cfListForSign,
-	cfSignsList, propoNodesList, propSet, bUnitRels, fUnitRels, pathsList;
+	cfSignsList, propoNodesList, propSet, pathsList, pathRelations;
 	@FXML
 	private Group dragBaseNode, dragVarNode, wireModeBtn, dragMolNode;
 	@FXML
@@ -147,9 +147,9 @@ public class FXController implements Initializable {
 	@FXML
 	private MenuButton caseFrameChoice, netChoice1, netChoice2, netChoice3,
 	baseNodeSemType, newRT, rrcfSem, resultSemType, cableSem, baseNodeSemTyPop,
-	newRA, bUnitCF, fUnitCF, pathNodes1, pathNodes2;
+	newRA, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations;
 	@FXML
-	private Button drawModeBtn, deleteModeBtn, moveModeBtn;
+	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN;
 	@FXML
 	private Rectangle wireBtnRect;
 	@FXML
@@ -2024,6 +2024,7 @@ public class FXController implements Initializable {
 	
 //..........Traditional Menu Methods...................................
 	//Update Semantic Type Lists
+	/*
 	public void updateSemanticLists() {
 		ArrayList<Semantic> sems = SemanticList.getSemanticList();
 		baseNodeSemType.getItems().clear();
@@ -2104,7 +2105,8 @@ public class FXController implements Initializable {
 			baseNodeSemTyPop.getItems().add(mi6);
 		}
 	}
-
+	*/
+	/*
 	//Create new semantic type
 	public void createSemanticType() {
 		String semName = semanticName.getText();
@@ -2137,7 +2139,8 @@ public class FXController implements Initializable {
 			updateSemanticLists();
 		}
 	}
-	
+	*/
+	/*
 	//Create default semantic types
 	public void createDefaultSemantic() {
 		Semantic sem1 = new Semantic("Individual");
@@ -2147,7 +2150,7 @@ public class FXController implements Initializable {
 		SemanticList.addToSemanticList(sem2);
 		SemanticList.addToSemanticList(sem3);
 	}
-	
+	*/
 	//Adjusts
 	public void createAdjusts() {
 		MenuItem none = new MenuItem("None");
@@ -2257,8 +2260,8 @@ public class FXController implements Initializable {
 		ArrayList<String> sortedRelations = new ArrayList<String>();
 		relationSetList.getItems().clear();
 		relationSetList1.getItems().clear();
-		bUnitRels.getItems().clear();
-		fUnitRels.getItems().clear();
+		pathRelations.getItems().clear();
+		definePathRelations.getItems().clear();
 		for (Entry<String, Relation> entry : relations.entrySet()) {
 		    String key = entry.getKey();
 		    sortedRelations.add(key);
@@ -2267,9 +2270,18 @@ public class FXController implements Initializable {
 		for(int i = 0; i<sortedRelations.size(); i++) {
 			relationSetList.getItems().add(sortedRelations.get(i));
 			relationSetList1.getItems().add(sortedRelations.get(i));
-			bUnitRels.getItems().add(sortedRelations.get(i));
-			fUnitRels.getItems().add(sortedRelations.get(i));
-		}
+			pathRelations.getItems().add(sortedRelations.get(i));
+			MenuItem mi = new MenuItem(sortedRelations.get(i));
+			mi.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent arg0) {
+					definePathRelations.setText(mi.getText());
+				}
+				
+			});
+			definePathRelations.getItems().add(mi);
+			}
 	}
 	
 
@@ -2335,8 +2347,7 @@ public class FXController implements Initializable {
 		caseFramesDrawList.getItems().clear();
 		selectCFForSign.getItems().clear();
 		cfListForSign.getItems().clear();
-		bUnitCF.getItems().clear();
-		fUnitCF.getItems().clear();
+		pathCF.getItems().clear();
 		Hashtable<String, CaseFrame> caseFrames = Network.getCaseFrames();
 		ArrayList<String> sortedCFs = new ArrayList<String>();
 		for (Entry<String, CaseFrame> entry : caseFrames.entrySet()) {
@@ -2378,21 +2389,28 @@ public class FXController implements Initializable {
 		    item2.setOnAction(new EventHandler<ActionEvent>() {
 
 				@Override
-				public void handle(ActionEvent event) {
-					bUnitCF.setText(item2.getText());
+				public void handle(ActionEvent arg0) {
+					pathCF.setText(key);
+					pathRelations.getItems().clear();
+					try {
+						CaseFrame cf = Network.getCaseFrame(item2.getText());
+						curCF = cf;
+						curRRCF = (RelationsRestrictedCaseFrame) cf;
+						LinkedList<Relation> relations = cf.getRelations();
+						caseFrameRelationList.getItems().clear();
+						for(Relation r : relations) {
+							pathRelations.getItems().add(r.getName());
+						}
+						
+					} catch (CustomException e) {
+						e.printStackTrace();
+					}
+					pathRelations.setDisable(false);
+					createPathBTN.setDisable(false);
 				}
 		    	
 		    });
-		    item3.setOnAction(new EventHandler<ActionEvent>() {
-
-				@Override
-				public void handle(ActionEvent event) {
-					fUnitCF.setText(item2.getText());
-				}
-		    	
-		    });
-		    bUnitCF.getItems().add(item2);
-		    fUnitCF.getItems().add(item3);
+		    pathCF.getItems().add(item2);
 		}
 	}
 	
@@ -2902,12 +2920,11 @@ public class FXController implements Initializable {
 	}
 	
 	public void createBUnitPath() {
-		String rname = bUnitRels.getSelectionModel().getSelectedItem();
+		String rname = pathRelations.getSelectionModel().getSelectedItem();
 		Relation r = null;
 		try {
 			r = Network.getRelation(rname);
 		} catch (CustomException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -2919,7 +2936,7 @@ public class FXController implements Initializable {
 	}
 	
 	public void createFUnitPath() {
-		String rname = fUnitRels.getSelectionModel().getSelectedItem();
+		String rname = pathRelations.getSelectionModel().getSelectedItem();
 		Relation r = null;
 		try {
 			r = Network.getRelation(rname);
@@ -2935,10 +2952,11 @@ public class FXController implements Initializable {
 		popUpNotification("Forward Unit Path", "Forward Unit Path has been created successfully", pathName, 1);
 	}
 	
+	
 	public void createCFRBUP() {
-		String rname = bUnitRels.getSelectionModel().getSelectedItem();
+		String rname = pathRelations.getSelectionModel().getSelectedItem();
 		Relation r = null;
-		String cfName = bUnitCF.getText();
+		String cfName = pathCF.getText();
 		try {
 			r = Network.getRelation(rname);
 		} catch (CustomException e) {
@@ -2964,9 +2982,9 @@ public class FXController implements Initializable {
 	}
 	
 	public void createCFRFUP() {
-		String rname = fUnitRels.getSelectionModel().getSelectedItem();
+		String rname = pathRelations.getSelectionModel().getSelectedItem();
 		Relation r = null;
-		String cfName = fUnitCF.getText();
+		String cfName = pathCF.getText();
 		try {
 			r = Network.getRelation(rname);
 		} catch (CustomException e) {
@@ -2990,6 +3008,53 @@ public class FXController implements Initializable {
 		popUpNotification("Case Frame Restricted Forward Unit Path", "Case Frame Restricted Forward Unit Path has been created successfully", cfRFUPName, 1);
 	}
 	
+	public void createPath() {
+		String x = selectedPath.getText();
+		if(x == "Backward Unit Path") {
+			createBUnitPath();
+		}else if(x == "Forward Unit Path") {
+			createFUnitPath();
+		}else if(x == "Case Frame Restricted Backward Unit Path") {
+			createCFRBUP();
+		}else if(x == "Case Frame Restricted Forward Unit Path") {
+			createCFRFUP();
+		}
+	}
+	
+	public void setBUP() {
+		selectedPath.setText("Backward Unit Path");
+		pathCF.setDisable(true);
+		createPathBTN.setText("Create Backward Unit Path");
+		createPathBTN.setDisable(false);
+		pathRelations.setDisable(false);
+		updateRelationSetList();
+	}
+	
+	public void setFUP() {
+		selectedPath.setText("Forward Unit Path");
+		pathCF.setDisable(true);
+		createPathBTN.setText("Create Forward Unit Path");
+		createPathBTN.setDisable(false);
+		pathRelations.setDisable(false);
+		updateRelationSetList();
+	}
+	
+	public void setCFRBUP() {
+		selectedPath.setText("Case Frame Restricted Backward Unit Path");
+		pathCF.setDisable(false);
+		createPathBTN.setText("Create Case Frame Restricted Backward Unit Path");
+		createPathBTN.setDisable(true);
+		pathRelations.setDisable(true);
+	}
+	
+	public void setCFRFUP() {
+		selectedPath.setText("Case Frame Restricted Forward Unit Path");
+		pathCF.setDisable(false);
+		createPathBTN.setText("Create Case Frame Restricted Forward Unit Path");
+		createPathBTN.setDisable(true);
+		pathRelations.setDisable(true);
+	}
+	
 	public void updatePathsList() {
 		ArrayList<String> sortedPaths = new ArrayList<String>();
 		for (Entry<String, sneps.network.paths.Path> entry : paths.entrySet()) {
@@ -3008,6 +3073,7 @@ public class FXController implements Initializable {
 		String pname = pathsList.getSelectionModel().getSelectedItem();
 		paths.remove(pname);
 		updatePathsList();
+		popUpNotification("Delete Path", "Path Deleted Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createConversePath() {
@@ -3017,6 +3083,7 @@ public class FXController implements Initializable {
 		String cpname = "Converse Path " + pname;
 		paths.put(cpname, cp);
 		updatePathsList();
+		popUpNotification("Converse Path", "Converse Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createIrreflexiveRestrictPath() {
@@ -3026,6 +3093,7 @@ public class FXController implements Initializable {
 		String cpname = "Irreflexive Restrict Path " + pname;
 		paths.put(cpname, irp);
 		updatePathsList();
+		popUpNotification("Irreflexive Restrict Path", "Irreflexive Restrict Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createKPlusPath() {
@@ -3035,6 +3103,7 @@ public class FXController implements Initializable {
 		String cpname = "K-Plus Path " + pname;
 		paths.put(cpname, kpp);
 		updatePathsList();
+		popUpNotification("K-Plus Path", "K-Plus Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createKStarPath() {
@@ -3044,6 +3113,7 @@ public class FXController implements Initializable {
 		String cpname = "K-Star Path " + pname;
 		paths.put(cpname, ksp);
 		updatePathsList();
+		popUpNotification("K-Star Path", "K-Star Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createAndPath() {
@@ -3058,6 +3128,7 @@ public class FXController implements Initializable {
 		String pname = "And Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
+		popUpNotification("And Path", "And Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createOrPath() {
@@ -3072,6 +3143,7 @@ public class FXController implements Initializable {
 		String pname = "Or Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
+		popUpNotification("Or Path", "Or Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createComposePath() {
@@ -3086,6 +3158,7 @@ public class FXController implements Initializable {
 		String pname = "Compose Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
+		popUpNotification("Compose Path", "Compose Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createDomainRestrictPath() {
@@ -3110,6 +3183,7 @@ public class FXController implements Initializable {
 		String pname = "Domain Restrict Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
+		popUpNotification("Domain Restrict Path", "Domain Restrict Path Created Successfully", "Path: " + pname, 1);
 	}
 	
 	public void createRangeRestrictPath() {
@@ -3134,7 +3208,31 @@ public class FXController implements Initializable {
 		String pname = "Range Restrict Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
+		popUpNotification("Range Restrict Path", "Range Restrict Path Created Successfully", "Path: " + pname, 1);
 	}
+	
+	public void createBangPath() {
+		BangPath bp = new BangPath();
+		String pname = "Bang Path " + bpcounter++;
+		paths.put(pname, bp);
+		updatePathsList();
+		popUpNotification("Bang Path", "Bang Path Created Successfully", "Path: " + pname, 1);
+	}
+	
+	public void definePath() {
+		Relation r = null;
+		try {
+			r = Network.getRelation(definePathRelations.getText());
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String pname = pathsList.getSelectionModel().getSelectedItem();
+		sneps.network.paths.Path p = (sneps.network.paths.Path) paths.get(pname);
+		Network.definePath(r, p);
+		popUpNotification("Define Path", "Path Defined Successfully", "Path: " + pname + " Relation: " + r.getName(), 1);
+	}
+	
 	
 	
 //..........END Of Menu Methods........................................	
@@ -3179,7 +3277,7 @@ public class FXController implements Initializable {
 		    if (response == yes) {
 		    	try {
 					Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
-					SemanticList.save(semList);
+				//	SemanticList.save(semList);
 					System.out.println("saved");
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -3207,7 +3305,7 @@ public class FXController implements Initializable {
 		
     	try {
 			Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
-			SemanticList.save(semList);
+		//	SemanticList.save(semList);
 			System.out.println("saved");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -3230,11 +3328,11 @@ public class FXController implements Initializable {
 		String semList = name + "semList";
 		try {
 			Network.load(relations , caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
-			SemanticList.load(semList);
+		//	SemanticList.load(semList);
 			updateNodesList();
 			updateCaseFramesList();
 			updateRelationSetList();
-			updateSemanticLists();
+		//	updateSemanticLists();
 			Alert a = new Alert(AlertType.INFORMATION);
 			a.setTitle("Load Network");
 			a.setHeaderText("Network loaded successfully");
@@ -3254,7 +3352,7 @@ public class FXController implements Initializable {
 			System.out.println("Network Created Successfully!");
 			Network.saveNetworks();
 			createDefaults();
-			createDefaultSemantic();
+		//	createDefaultSemantic();
 			save(name);
 			Network.getCaseFrames().clear();
 			Network.getRelations().clear();

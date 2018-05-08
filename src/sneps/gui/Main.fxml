@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.Tab?>
@@ -441,7 +442,7 @@
                                              </font>
                                           </Label>
                                           <TextField fx:id="semanticName" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="55.0" />
-                                          <Button layoutX="14.0" layoutY="94.0" mnemonicParsing="false" onAction="#createSemanticType" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                          <Button layoutX="14.0" layoutY="94.0" mnemonicParsing="false" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -450,52 +451,41 @@
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <VBox layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
+                                          <AnchorPane layoutY="5.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
                                              <children>
-                                                <AnchorPane prefHeight="394.0" prefWidth="400.0">
-                                                   <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <ListView fx:id="bUnitRels" layoutX="10.0" layoutY="64.0" prefHeight="230.0" prefWidth="322.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                      <Button layoutX="10.0" layoutY="297.0" mnemonicParsing="false" onAction="#createBUnitPath" styleClass="tab" text="Create Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                      <Label layoutX="116.0" layoutY="34.0" text="Please select a relation..">
-                                                         <font>
-                                                            <Font size="16.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <SplitMenuButton fx:id="bUnitCF" layoutX="106.0" layoutY="331.0" mnemonicParsing="false" text="Choose a case frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                      <Button layoutX="92.0" layoutY="364.0" mnemonicParsing="false" onAction="#createCFRBUP" styleClass="tab" text="Create Case Frame Restricted Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                </AnchorPane>
-                                                <AnchorPane>
-                                                   <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Forward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <ListView fx:id="fUnitRels" layoutX="10.0" layoutY="64.0" prefHeight="230.0" prefWidth="322.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0" />
-                                                      <SplitMenuButton fx:id="fUnitCF" layoutX="10.0" layoutY="331.0" mnemonicParsing="false" text="Choose a case frame" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                      <Button layoutX="10.0" layoutY="364.0" mnemonicParsing="false" onAction="#createCFRFUP" styleClass="tab" text="Create Case Frame Restricted Forward Unit Path" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                      <Button layoutX="9.0" layoutY="297.0" mnemonicParsing="false" onAction="#createFUnitPath" styleClass="tab" text="Create Forward Unit Path" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                      <Label layoutX="116.0" layoutY="34.0" text="Please select a relation..">
-                                                         <font>
-                                                            <Font size="16.0" />
-                                                         </font>
-                                                      </Label>
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets top="5.0" />
-                                                   </VBox.margin>
-                                                </AnchorPane>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Forward / Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <SplitMenuButton fx:id="selectedPath" alignment="CENTER" mnemonicParsing="false" text="Please Select a path to create" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+                                                  <items>
+                                                    <MenuItem mnemonicParsing="false" onAction="#setFUP" text="Forward Unit Path" />
+                                                    <MenuItem mnemonicParsing="false" onAction="#setBUP" text="Backward Unit Path" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#setCFRFUP" text="Case Frame Restricted Forward Unit Path" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#setCFRBUP" text="Case Frame Restricted Backward Unit Path" />
+                                                  </items>
+                                                </SplitMenuButton>
+                                                <SplitMenuButton fx:id="pathCF" alignment="CENTER" disable="true" layoutX="106.0" layoutY="331.0" mnemonicParsing="false" text="Choose a case frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0" />
+                                                <ListView fx:id="pathRelations" disable="true" layoutX="14.0" layoutY="97.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
+                                                <Button fx:id="createPathBTN" disable="true" layoutX="10.0" layoutY="297.0" mnemonicParsing="false" onAction="#createPath" styleClass="tab" text="Create Path" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="340.0" />
                                              </children>
-                                          </VBox>
+                                          </AnchorPane>
+                                          <AnchorPane layoutY="380.0" prefWidth="400.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="And Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createAndPath" styleClass="tab" text="Create And Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                                             </children>
+                                          </AnchorPane>
                                           <AnchorPane layoutX="350.0" prefWidth="666.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <ListView fx:id="pathsList" layoutX="72.0" prefHeight="200.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
@@ -523,62 +513,38 @@
                                                 </AnchorPane>
                                              </children>
                                           </AnchorPane>
-                                          <VBox layoutX="10.0" layoutY="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                                          <AnchorPane layoutY="480.0" prefWidth="400.0">
                                              <children>
-                                                <AnchorPane prefWidth="400.0">
-                                                   <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="And Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
-                                                         <font>
-                                                            <Font size="16.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createAndPath" styleClass="tab" text="Create And Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="400.0">
-                                                   <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Compose Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
-                                                         <font>
-                                                            <Font size="16.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createComposePath" styleClass="tab" text="Create Compose Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets top="5.0" />
-                                                   </VBox.margin>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="10.0" layoutY="266.0" prefWidth="400.0">
-                                                   <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Or Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
-                                                         <font>
-                                                            <Font size="16.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createOrPath" styleClass="tab" text="Create Or Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets top="5.0" />
-                                                   </VBox.margin>
-                                                </AnchorPane>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Compose Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createComposePath" styleClass="tab" text="Create Compose Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane layoutY="580.0" prefWidth="400.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Or Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button layoutX="92.0" layoutY="60.0" mnemonicParsing="false" onAction="#createOrPath" styleClass="tab" text="Create Or Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <VBox layoutX="10.0" layoutY="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
                                                 <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="400.0">
                                                    <children>
                                                       <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Domain Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
@@ -612,6 +578,38 @@
                                                       </Label>
                                                       <SplitMenuButton fx:id="pathNodes2" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
                                                       <Button mnemonicParsing="false" onAction="#createRangeRestrictPath" styleClass="tab" text="Create Range Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="5.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="10.0" layoutY="145.0" prefWidth="400.0">
+                                                   <children>
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Bang Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="22.15" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button mnemonicParsing="false" onAction="#createBangPath" styleClass="tab" text="Create Bang Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="40.0" />
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="5.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="10.0" layoutY="276.0" prefWidth="400.0">
+                                                   <children>
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Define Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                         <font>
+                                                            <Font size="22.15" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button mnemonicParsing="false" onAction="#definePath" styleClass="tab" text="Define Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                      <SplitMenuButton fx:id="definePathRelations" alignment="CENTER" layoutX="128.0" layoutY="45.0" mnemonicParsing="false" text="Select a relation" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
+                                                      <Label layoutX="92.0" layoutY="35.0" text="Please select one path from the list">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets top="5.0" />

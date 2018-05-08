@@ -11,6 +11,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -18,7 +19,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.Node;
 
-public class ConversePath extends Path{
+public class ConversePath extends Path implements Serializable{
 	
 	/**
 	 * A path that its converse is to be followed. 
