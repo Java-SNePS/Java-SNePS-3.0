@@ -1,9 +1,14 @@
 package sneps.gui;
 import javafx.fxml.FXMLLoader;
+
+
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
+import javafx.scene.web.WebView;
 
 
 public class Main extends Application {
@@ -24,5 +29,16 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+	
+	public static void visualizeNodes() {
+		Stage stage = new Stage();
+		WebView wv = new WebView();
+		wv.getEngine().load("http://google.com");
+	    Group root = new Group(wv);
+	    Scene scene = new Scene(root, 600, 300);  
+	    stage.setTitle("Node Set"); 
+	    stage.setScene(scene); 
+	    stage.show(); 
 	}
 }

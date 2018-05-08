@@ -38,6 +38,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -158,7 +159,6 @@ public class FXController implements Initializable {
 	@FXML
 	private Tab displayNetTab;
 	
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
@@ -226,7 +226,6 @@ public class FXController implements Initializable {
 			
 		});
 		pathsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		
 	}
 
 	
@@ -3529,8 +3528,7 @@ public class FXController implements Initializable {
 		bw.close();
 		//System.out.println("Generating Network..");
 	}
-	
-	
+
 	
 	public void displayNetwork() {
 		String url = this.getClass().getResource("displayData.html").toExternalForm();
