@@ -1,5 +1,6 @@
 package tests;
 
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 
 import org.junit.Test;
@@ -73,4 +74,14 @@ public class SnepslogTest extends TestCase {
 		}
 	}
 
+	public void testSetModeOne(){
+		Network.defineDefaults();
+		AP.executeSnepslogCommand("set-mode-1");
+		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
+		snepslogModeGetter.setAccessible(true);
+		int mode = (int) snepslogModeGetter.invoke(null, null);
+		assertEquals(mode ,"1");
+	}
+
+	
 }
