@@ -11,4 +11,8 @@ public class EquivalentNodeException extends Exception {
 		this.equivalentNode = equivalentNode;
 	}
 
+	public Node getEquivalentNode() {
+		return equivalentNode;
+	}
+
 }
