@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.TestCase;
@@ -19,9 +20,21 @@ import sneps.snepslog.AP;
 
 public class SnepslogTest extends TestCase {
 
+	@Before
+	public void before() {
+		Network.defineDefaults();
+		AP.executeSnepslogCommand("set-mode-1");
+		AP.executeSnepslogCommand("normal");
+	}
+	
+	@After
+	public void after() {
+		AP.executeSnepslogCommand("set-mode-1");
+		AP.executeSnepslogCommand("normal");
+	}
+
 	@Test
 	public void testWffDot() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("dog(Fido).");
 		PropositionSet ps = Controller.getCurrentContext().allAsserted();
 		boolean success = false;
@@ -47,7 +60,6 @@ public class SnepslogTest extends TestCase {
 
 	@Test
 	public void testAddToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("add-to-context default {dog(Fido), animal(Fido)}");
 		PropositionSet ps = Controller.getCurrentContext().allAsserted();
 		boolean success1 = false;
@@ -80,67 +92,61 @@ public class SnepslogTest extends TestCase {
 	@Test
 	public void testSetModeOne() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("set-mode-1");
 		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
 		snepslogModeGetter.setAccessible(true);
 		int mode = (int) snepslogModeGetter.invoke(null);
-		assertEquals(mode, 1);
+		assertEquals(1, mode);
 	}
 
 	@Test
 	public void testSetModeTwo() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("set-mode-2");
 		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
 		snepslogModeGetter.setAccessible(true);
 		int mode = (int) snepslogModeGetter.invoke(null);
-		assertEquals(mode, 2);
+		assertEquals(2, mode);
 	}
 
 	@Test
 	public void testSetModeThree() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("set-mode-3");
 		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
 		snepslogModeGetter.setAccessible(true);
 		int mode = (int) snepslogModeGetter.invoke(null);
-		assertEquals(mode, 3);
+		assertEquals(3, mode);
 	}
 
 	@Test
 	public void testExpert() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("expert");
-		Method snepslogModeGetter = AP.class.getDeclaredMethod("getPrintingMode");
-		snepslogModeGetter.setAccessible(true);
-		String mode = (String) snepslogModeGetter.invoke(null);
-		assertEquals(mode, "expert");
+		Method printingModeGetter = AP.class.getDeclaredMethod("getPrintingMode");
+		printingModeGetter.setAccessible(true);
+		String mode = (String) printingModeGetter.invoke(null);
+		assertEquals("expert", mode);
 	}
-	
+
 	@Test
 	public void testNormal() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("normal");
-		Method snepslogModeGetter = AP.class.getDeclaredMethod("getPrintingMode");
-		snepslogModeGetter.setAccessible(true);
-		String mode = (String) snepslogModeGetter.invoke(null);
-		assertEquals(mode, "normal");
+		Method printingModeGetter = AP.class.getDeclaredMethod("getPrintingMode");
+		printingModeGetter.setAccessible(true);
+		String mode = (String) printingModeGetter.invoke(null);
+		assertEquals("normal", mode);
 	}
-	
+
 	@Test
 	public void testUnlabeled() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		Network.defineDefaults();
 		AP.executeSnepslogCommand("unlabeled");
-		Method snepslogModeGetter = AP.class.getDeclaredMethod("getPrintingMode");
-		snepslogModeGetter.setAccessible(true);
-		String mode = (String) snepslogModeGetter.invoke(null);
-		assertEquals(mode, "unlabeled");
+		Method printingModeGetter = AP.class.getDeclaredMethod("getPrintingMode");
+		printingModeGetter.setAccessible(true);
+		String mode = (String) printingModeGetter.invoke(null);
+		assertEquals("unlabeled", mode);
 	}
-	
+
 }
