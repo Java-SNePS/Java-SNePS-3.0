@@ -1,5 +1,8 @@
 package tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
@@ -8,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.TestCase;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
@@ -19,7 +21,7 @@ import sneps.network.classes.term.Molecular;
 import sneps.snebr.Controller;
 import sneps.snepslog.AP;
 
-public class SnepslogTest extends TestCase {
+public class SnepslogTest {
 
 	@Before
 	public void before() {
