@@ -69,6 +69,7 @@ import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
@@ -2024,18 +2025,17 @@ public class FXController implements Initializable {
 	
 //..........Traditional Menu Methods...................................
 	//Update Semantic Type Lists
-	/*
+	
 	public void updateSemanticLists() {
-		ArrayList<Semantic> sems = SemanticList.getSemanticList();
+		Hashtable<String, Semantic> sems = SemanticHierarchy.getSemantics();
 		baseNodeSemType.getItems().clear();
 		newRT.getItems().clear();
 		rrcfSem.getItems().clear();
 		resultSemType.getItems().clear();
 		cableSem.getItems().clear();
 		baseNodeSemTyPop.getItems().clear();
-		
-		for(int i = 0; i<sems.size(); i++) {
-			String semantic = sems.get(i).getSemanticType();
+		for(Entry<String, Semantic> entry : sems.entrySet()) {
+			String semantic = entry.getKey();
 			MenuItem mi1 = new MenuItem(semantic);
 			mi1.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -2105,52 +2105,14 @@ public class FXController implements Initializable {
 			baseNodeSemTyPop.getItems().add(mi6);
 		}
 	}
-	*/
-	/*
+	
 	//Create new semantic type
 	public void createSemanticType() {
 		String semName = semanticName.getText();
-		Boolean found = false;
-		for(int i = 0; i<SemanticList.getSemanticList().size(); i++) {
-			Semantic temp = SemanticList.getSemanticList().get(i);
-			String tempName = temp.getSemanticType();
-			if(tempName.equalsIgnoreCase(semName)) {
-				found = true;
-			}
-			else {
-				found = false;
-			}
-		}
-		
-		if(found == true) {
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Semantic Type");
-			alert.setHeaderText("Semantic type already exists");
-			alert.setContentText("The semantic type " + semName + " already exists");
-			alert.showAndWait();
-		}else {
-			Semantic sem = new Semantic(semName);
-			SemanticList.addToSemanticList(sem);
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Semantic Type");
-			alert.setHeaderText("Semantic type is created successfully");
-			alert.setContentText("The semantic type " + semName + " is created successfully!");
-			alert.showAndWait();
-			updateSemanticLists();
-		}
+		SemanticHierarchy.createSemanticType(semName);
+		updateSemanticLists();
 	}
-	*/
-	/*
-	//Create default semantic types
-	public void createDefaultSemantic() {
-		Semantic sem1 = new Semantic("Individual");
-		Semantic sem2 = new Semantic("Proposition");
-		Semantic sem3 = new Semantic("Act");
-		SemanticList.addToSemanticList(sem1);
-		SemanticList.addToSemanticList(sem2);
-		SemanticList.addToSemanticList(sem3);
-	}
-	*/
+	
 	//Adjusts
 	public void createAdjusts() {
 		MenuItem none = new MenuItem("None");
@@ -2190,7 +2152,6 @@ public class FXController implements Initializable {
 		newRA.getItems().add(expand);
 		newRA.getItems().add(reduce);
 	}
-	
 	
 	//Define relation menu-based
 	public void defineRelation() {
@@ -3277,7 +3238,7 @@ public class FXController implements Initializable {
 		    if (response == yes) {
 		    	try {
 					Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
-				//	SemanticList.save(semList);
+					SemanticHierarchy.save(semList);
 					System.out.println("saved");
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -3305,7 +3266,7 @@ public class FXController implements Initializable {
 		
     	try {
 			Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
-		//	SemanticList.save(semList);
+			SemanticHierarchy.save(semList);
 			System.out.println("saved");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -3328,11 +3289,11 @@ public class FXController implements Initializable {
 		String semList = name + "semList";
 		try {
 			Network.load(relations , caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
-		//	SemanticList.load(semList);
+			SemanticHierarchy.load(semList);
 			updateNodesList();
 			updateCaseFramesList();
 			updateRelationSetList();
-		//	updateSemanticLists();
+			updateSemanticLists();
 			Alert a = new Alert(AlertType.INFORMATION);
 			a.setTitle("Load Network");
 			a.setHeaderText("Network loaded successfully");
@@ -3352,12 +3313,14 @@ public class FXController implements Initializable {
 			System.out.println("Network Created Successfully!");
 			Network.saveNetworks();
 			createDefaults();
-		//	createDefaultSemantic();
+			Semantic.createDefaultSemantics();
 			save(name);
 			Network.getCaseFrames().clear();
 			Network.getRelations().clear();
+			SemanticHierarchy.getSemantics().clear();
 			updateRelationSetList();
 			updateCaseFramesList();
+			updateSemanticLists();
 			Alert a = new Alert(AlertType.INFORMATION);
 			a.setTitle("New Network");
 			a.setHeaderText("Network Created Successfully!");

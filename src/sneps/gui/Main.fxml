@@ -442,7 +442,7 @@
                                              </font>
                                           </Label>
                                           <TextField fx:id="semanticName" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="55.0" />
-                                          <Button layoutX="14.0" layoutY="94.0" mnemonicParsing="false" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                          <Button layoutX="14.0" layoutY="94.0" mnemonicParsing="false" onAction="#createSemanticType" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -625,44 +625,123 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <AnchorPane AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                                             <children>
-                                                <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Create context" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-                                                   <font>
-                                                      <Font size="22.15" />
-                                                   </font>
-                                                </Label>
-                                                <Label layoutX="10.0" layoutY="45.0" text="Context Name:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="50.0">
-                                                   <font>
-                                                      <Font size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <TextField fx:id="contextName" layoutX="134.0" layoutY="45.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="10.0" />
-                                                <AnchorPane layoutX="10.0" layoutY="96.0">
-                                                   <children>
-                                                      <ListView fx:id="propoNodesList" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="1012.4000244140625" layoutY="96.0" AnchorPane.rightAnchor="10.0">
-                                                   <children>
-                                                      <ListView fx:id="propSet" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
-                                                         <font>
-                                                            <Font size="22.15" />
-                                                         </font>
-                                                      </Label>
-                                                      <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <Button layoutX="913.0" layoutY="370.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Create Context" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                                             </children>
-                                          </AnchorPane>
+                                          <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <tabs>
+                                              <Tab text="Create / Delete Context">
+                                                   <content>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <AnchorPane layoutX="10.0" layoutY="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Create context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label layoutY="40.0" text="Context Name:" AnchorPane.leftAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <TextField fx:id="contextName" layoutX="120.0" layoutY="40.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
+                                                                  <AnchorPane layoutY="91.0" AnchorPane.leftAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propoNodesList" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propSet" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Create Context" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="14.0" layoutY="404.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="404.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Delete Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <ListView prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                                                  <Button mnemonicParsing="false" styleClass="tab" text="Delete Context" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                              </Tab>
+                                                <Tab text="Edit Context">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Add Propositions To Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label layoutY="40.0" text="Context Name:" AnchorPane.leftAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="16.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <AnchorPane layoutY="91.0" AnchorPane.leftAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propoNodesList1" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <ListView fx:id="propSet1" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
+                                                                           <font>
+                                                                              <Font size="22.15" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                                  <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Submit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                                  <SplitMenuButton alignment="CENTER" layoutX="107.0" layoutY="40.0" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane layoutX="10.0" layoutY="402.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                               <children>
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Set Current Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <font>
+                                                                        <Font size="22.15" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <SplitMenuButton alignment="CENTER" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </Tab>
+                                            </tabs>
+                                          </TabPane>
                                        </children>
                                     </AnchorPane>
                                 </content>
