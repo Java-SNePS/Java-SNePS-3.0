@@ -74,7 +74,7 @@ public class SnepslogTest extends TestCase {
 		}
 	}
 
-	public void testSetModeOne() throws NoSuchMethodException, SecurityException, IllegalAccessException{
+	public void testSetModeOne() throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException{
 		Network.defineDefaults();
 		AP.executeSnepslogCommand("set-mode-1");
 		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
