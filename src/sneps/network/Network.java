@@ -649,6 +649,7 @@ public class Network implements Serializable {
 				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
+			propositionNodes.put(propNode.getIdentifier(), propNode);
 			nodesIndex.add(propNode.getId(), propNode);
 			Molecular molecular = (Molecular) propNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
@@ -705,6 +706,7 @@ public class Network implements Serializable {
 				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
+			propositionNodes.put(propNode.getIdentifier(), propNode);
 			nodesIndex.add(propNode.getId(), propNode);
 			Molecular molecular = (Molecular) propNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
