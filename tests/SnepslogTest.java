@@ -80,7 +80,7 @@ public class SnepslogTest extends TestCase {
 		Method snepslogModeGetter = AP.class.getDeclaredMethod("getSnepslogMode");
 		snepslogModeGetter.setAccessible(true);
 		int mode = (int) snepslogModeGetter.invoke(null, null);
-		assertEquals(mode ,"1");
+		assertEquals(mode ,1);
 	}
 
 	
