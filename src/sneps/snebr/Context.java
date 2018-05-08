@@ -164,6 +164,23 @@ public class Context {
 
         return asserted;
     }
+    
+    /**
+     * When Removing a node from context, Therefore we must remove it from this Context's nodes Supports also
+     * @param PropositionNode, The node to be removed from all Context's Supports
+     * @throws NodeNotFoundInNetworkException 
+     * @throws NotAPropositionNodeException 
+     */
+    public void removeNodeFromContext(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	
+    	//Remove this node from Context!! Omar Part
+    	//.........................................
+    	
+    	//Remove this node from All Context's nodes Supports!! Amr Part
+    	int[] contextSet = PropositionSet.getPropsSafely(hyps /*TODO change hyps to be the new set without the propNode*/); //The set of hyps after Omar removes from it the propNode!!
+    	for(int i = 0; i< contextSet.length; i++)
+    		((PropositionNode)Network.getNodeById(contextSet[i])).removeNodeFromSupports(propNode);
+    }
 
     /**
      * Adds a name to the set of names of the context if not a duplicate.

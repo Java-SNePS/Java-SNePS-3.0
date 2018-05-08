@@ -1,6 +1,7 @@
 package sneps.snebr;
 
 import sneps.exceptions.*;
+import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
