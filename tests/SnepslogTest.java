@@ -44,7 +44,7 @@ public class SnepslogTest extends TestCase {
 
 	public void testAddToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Network.defineDefaults();
-		AP.executeSnepslogCommand("add-to-context {dog(Fido), animal(Fido)}");
+		AP.executeSnepslogCommand("add-to-context default {dog(Fido), animal(Fido)}");
 		PropositionSet ps = Controller.getCurrentContext().allAsserted();
 		boolean success1 = false;
 		boolean success2 = false;
@@ -69,7 +69,7 @@ public class SnepslogTest extends TestCase {
 			}
 		}
 		if (!(success1 && success2)) {
-			fail("failure while adding dog(Fido) and animal(Fido) to the current context!}");
+			fail("failure while adding dog(Fido) and animal(Fido) to the context named \"default\"!}");
 		}
 	}
 
