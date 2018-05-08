@@ -1928,6 +1928,7 @@ public class Network implements Serializable {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
 		Semantic.createDefaultSemantics();
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		// CaseFrame.createDefaultCaseFrames();
 		// SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		// ControlActionNode.initControlActions();
