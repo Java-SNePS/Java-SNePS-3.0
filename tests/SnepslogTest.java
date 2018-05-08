@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import junit.framework.TestCase;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.classes.Relation;
