@@ -45,7 +45,7 @@ public class AndOrNode extends RuleNode {
 		NodeSet antNodes = this.getDownNodeSet("arg");
 		args = antNodes.size();
 
-		this.processNodes(antNodes);
+//		this.processNodes(antNodes);
 	}
 	
 //	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
