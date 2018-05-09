@@ -1,11 +1,12 @@
 package sneps.network.classes.setClasses;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Vector;
 
 import sneps.network.Node;
 
-public class NodeSet implements Iterable<Node> {
+public class NodeSet implements Iterable<Node>, Serializable {
 	private Vector<Node> nodes;
 
 	public NodeSet() {

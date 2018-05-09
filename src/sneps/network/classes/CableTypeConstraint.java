@@ -1,6 +1,8 @@
 package sneps.network.classes;
 
-public class CableTypeConstraint {
+import java.io.Serializable;
+
+public class CableTypeConstraint implements Serializable{
 
 	/**
 	 * The name of the semantic class representing the semantic type 

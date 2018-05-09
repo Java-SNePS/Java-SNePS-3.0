@@ -11,6 +11,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.network.classes.PathTrace;
@@ -18,7 +19,7 @@ import sneps.network.classes.Relation;
 import sneps.network.Node;
 import sneps.snebr.Context;
 
-public class BangPath extends Path{
+public class BangPath extends Path implements Serializable{
 
 	/** (non-Javadoc)
      * @see sneps.Paths.Path#follow(sneps.Nodes.Node, sneps.network.PathTrace, SNeBR.Context)

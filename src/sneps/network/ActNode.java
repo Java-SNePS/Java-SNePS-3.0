@@ -1,6 +1,8 @@
 package sneps.network;
 
-public class ActNode extends Node {
+import java.io.Serializable;
+
+public class ActNode extends Node implements Serializable{
 
 	public ActNode() {
 	}
