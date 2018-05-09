@@ -586,8 +586,6 @@ public class AP {
 			return e.getMessage();
 		} catch (DuplicatePropositionException e) {
 			return e.getMessage();
-		} catch (EquivalentNodeException e) {
-			return e.getMessage();
 		} catch (IllegalAtomicSymbolException e) {
 			return e.getMessage();
 		} catch (InvalidArgumentsException e) {
@@ -1068,9 +1066,9 @@ public class AP {
 	
 	public static void main(String[] args) {
 		Network.defineDefaults();
-		System.out.println(AP.executeSnepslogCommand("dog(Fido)=>animal(Fido)."));
-		System.out.println(AP.executeSnepslogCommand("list-contexts."));
+		System.out.println(AP.executeSnepslogCommand("dog(Fido) => animal(Fido)."));
 		System.out.println(AP.executeSnepslogCommand("list-asserted-wffs."));
+		System.out.println(AP.executeSnepslogCommand("list-contexts."));
 		System.out.println(AP.executeSnepslogCommand("list-terms."));
 	}
 	
