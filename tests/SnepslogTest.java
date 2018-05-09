@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -182,12 +183,18 @@ public class SnepslogTest {
 	}
 
 	@Test
-	public void testDefineFrame() throws RelationDoesntExistException, CaseFrameWithSetOfRelationsNotFoundException {
+	public void testDefineFrame()
+			throws RelationDoesntExistException, CaseFrameWithSetOfRelationsNotFoundException, NoSuchMethodException,
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		AP.executeSnepslogCommand("set-mode-3.");
 		AP.executeSnepslogCommand("define-relation motherof Proposition.");
 		AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof).");
-		assertTrue(AP.getModeThreeCaseFrames().containsKey("mother$"));
-		CaseFrame caseFrame = AP.getModeThreeCaseFrames().get("mother$");
+		Method modeThreeCaseFramesGetter = AP.class.getDeclaredMethod("getModeThreeCaseFrames");
+		modeThreeCaseFramesGetter.setAccessible(true);
+		Hashtable<String, CaseFrame> modeThreeCaseFrames = (Hashtable<String, CaseFrame>) snepslogModeGetter
+				.invoke(null);
+		assertTrue(modeThreeCaseFrames.containsKey("mother$"));
+		CaseFrame caseFrame = modeThreeCaseFrames.get("mother$");
 		assertTrue(caseFrame.getSemanticClass().equals("Proposition"));
 		LinkedList<Relation> relations = caseFrame.getRelations();
 		assertTrue(relations.size() == 1);
@@ -235,14 +242,14 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("undefine-path rel.");
 		assertNull(Network.getRelation("rel").getPath());
 	}
-	
+
 	@Test
 	public void testSetContext() {
 		assertTrue(!Controller.getAllNamesOfContexts().contains("mythology"));
 		AP.executeSnepslogCommand("set-context mythology");
 		assertTrue(Controller.getAllNamesOfContexts().contains("mythology"));
 	}
-	
+
 	@Test
 	public void testSetDefaultContext() {
 		AP.executeSnepslogCommand("set-context mythology");
@@ -250,5 +257,25 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("set-default-context mythology");
 		assertTrue(Controller.getContextByName("mythology").equals(Controller.getCurrentContext()));
 	}
-	
+
+	@Test
+	public void testClearKB() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		AP.executeSnepslogCommand("clearkb.");
+		Method modeThreeCaseFramesGetter = AP.class.getDeclaredMethod("getModeThreeCaseFrames");
+		modeThreeCaseFramesGetter.setAccessible(true);
+		Hashtable<String, CaseFrame> modeThreeCaseFrames = (Hashtable<String, CaseFrame>) snepslogModeGetter
+				.invoke(null);
+		assertTrue(modeThreeCaseFrames.size() == 0);
+		Method cfsDescriptionsGetter = AP.class.getDeclaredMethod("getCfsDescriptions");
+		cfsDescriptionsGetter.setAccessible(true);
+		Hashtable<CaseFrame, String> cfsDescriptions = (Hashtable<CaseFrame, String>) cfsDescriptionsGetter
+				.invoke(null);
+		assertTrue(cfsDescriptions.size() == 0);
+		Method nodesDescriptionsGetter = AP.class.getDeclaredMethod("getNodesDescriptions");
+		nodesDescriptionsGetter.setAccessible(true);
+		Hashtable<Node, String> nodesDescriptions = (Hashtable<Node, String>) snepslogModeGetter.invoke(null);
+		assertTrue(nodesDescriptions.size() == 0);
+	}
+
 }

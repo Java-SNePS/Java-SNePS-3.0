@@ -616,7 +616,7 @@ public class AP {
 		}
 	}
 
-	public static Hashtable<String, CaseFrame> getModeThreeCaseFrames() {
+	protected static Hashtable<String, CaseFrame> getModeThreeCaseFrames() {
 		return modeThreeCaseFrames;
 	}
 
@@ -773,7 +773,7 @@ public class AP {
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 */
-	public static String displayWffs(ArrayList<Node> wffs)
+	protected static String displayWffs(ArrayList<Node> wffs)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		String output = "";
 		switch (AP.getPrintingMode()) {
@@ -1073,10 +1073,28 @@ public class AP {
 	
 	public static void main(String[] args) {
 		Network.defineDefaults();
-		System.out.println(AP.executeSnepslogCommand("dog(Fido) => animal(Fido)."));
+		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
+		System.out.println(AP.executeSnepslogCommand("define-relation rel Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-relation class Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-relation member Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-path rel compose(class, member)."));
+		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
+		System.out.println(AP.executeSnepslogCommand("define-relation class Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-relation mem1 Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-relation mem2 Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-relation mem3 Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-frame dog Proposition (class mem1 mem2 mem3)."));
+		System.out.println(AP.executeSnepslogCommand("dog(Fido, Brian, Abdo)."));
+		System.out.println(AP.executeSnepslogCommand("dog(x1, Brian, Abdo)."));
+		System.out.println(AP.executeSnepslogCommand("dog(cv, Brian, Abdo)."));
 		System.out.println(AP.executeSnepslogCommand("list-asserted-wffs."));
 		System.out.println(AP.executeSnepslogCommand("list-contexts."));
 		System.out.println(AP.executeSnepslogCommand("list-terms."));
+		System.out.println(AP.executeSnepslogCommand("set-mode-1."));
+		System.out.println(AP.executeSnepslogCommand("dog(BadAss)."));
+		System.out.println(AP.executeSnepslogCommand("dog(Fido)."));
+		System.out.println(AP.executeSnepslogCommand("animal(wff1,wff2)."));
+		System.out.println(AP.executeSnepslogCommand("beliefs-about wff3"));
 	}
 	
 }
