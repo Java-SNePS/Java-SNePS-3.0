@@ -463,10 +463,10 @@ public class SnepslogTest {
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
 		assertTrue(m.getDownCableSet().size()==3);
-		assertTrue(m.getDownCableSet().getDownCable("threshMax").getNodeSet().size()==1);
+		assertTrue(m.getDownCableSet().getDownCable("threshmax").getNodeSet().size()==1);
 		assertTrue(m.getDownCableSet().getDownCable("thresh").getNodeSet().size()==1);
 		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size()==2);
-		Node max = m.getDownCableSet().getDownCable("threshMax").getNodeSet().getNode(0);
+		Node max = m.getDownCableSet().getDownCable("threshmax").getNodeSet().getNode(0);
 		assertTrue(max.getTerm() instanceof Base);
 		assertTrue(max.getIdentifier().equals("2"));
 		assertTrue(max.getSemantic().getSemanticType().equals("Infimum"));
