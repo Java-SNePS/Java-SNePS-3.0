@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -233,6 +234,21 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("define-path rel compose(class, member).");
 		AP.executeSnepslogCommand("undefine-path rel.");
 		assertNull(Network.getRelation("rel").getPath());
+	}
+	
+	@Test
+	public void testSetContext() {
+		assertTrue(!Controller.getAllNamesOfContexts().contains("mythology"));
+		AP.executeSnepslogCommand("set-context mythology");
+		assertTrue(Controller.getAllNamesOfContexts().contains("mythology"));
+	}
+	
+	@Test
+	public void testSetDefaultContext() {
+		AP.executeSnepslogCommand("set-context mythology");
+		assertTrue(Controller.getCurrentContext().getName().equals("default"));
+		AP.executeSnepslogCommand("set-default-context mythology");
+		assertTrue(Controller.getCurrentContext().getName().equals("mythology"));
 	}
 	
 }
