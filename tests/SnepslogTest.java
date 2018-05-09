@@ -543,4 +543,53 @@ public class SnepslogTest {
 		}
 	}
 
+	@Test
+	public void testSNeRETerm() throws NodeNotFoundInNetworkException {
+		AP.executeSnepslogCommand("set-mode-3.");
+		AP.executeSnepslogCommand("define-semantic Entity.");
+		AP.executeSnepslogCommand("define-semantic Action.");
+		AP.executeSnepslogCommand("define-relation state Proposition.");
+		AP.executeSnepslogCommand("define-relation agent Proposition.");
+		AP.executeSnepslogCommand("define-frame here Proposition (state agent).");
+		AP.executeSnepslogCommand("define-frame say Act (action obj).");
+		AP.executeSnepslogCommand("whendo(here(John), say(Hi:Entity)).");
+		Node n = Network.getNode("M3");
+		Molecular m = (Molecular) n.getTerm();
+		assertTrue(m.getDownCableSet().size() == 2);
+		assertTrue(m.getDownCableSet().getDownCable("when").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("do").getNodeSet().size() == 1);
+		Node when = m.getDownCableSet().getDownCable("when").getNodeSet().getNode(0);
+		Node doo = m.getDownCableSet().getDownCable("do").getNodeSet().getNode(0);
+		boolean success1 = false;
+		boolean success2 = false;
+		if (when.getTerm() instanceof Molecular) {
+			Molecular mwhen = (Molecular) when.getTerm();
+			LinkedList<Relation> relswhen = mwhen.getDownCableSet().getCaseFrame().getRelations();
+			if (relswhen.size() == 2 && relswhen.get(0).getName().equals("state") && relswhen.get(1).getName().equals("agent")) {
+				Node here = Network.getNode("here");
+				Node John = Network.getNode("John");
+				if (mwhen.getDownCableSet().getDownCable("state").getNodeSet().contains(here)
+						&& mwhen.getDownCableSet().getDownCable("agent").getNodeSet().contains(John)) {
+					success1 = true;
+				}
+			}
+		}
+		if (doo.getTerm() instanceof Molecular) {
+			Molecular mdo = (Molecular) doo.getTerm();
+			LinkedList<Relation> relsdo = mdo.getDownCableSet().getCaseFrame().getRelations();
+			if (relsdo.size() == 2 && relsdo.get(0).getName().equals("action") && relsdo.get(1).getName().equals("obj")) {
+				Node say = Network.getNode("say");
+				Node Hi = Network.getNode("Hi");
+				if (mdo.getDownCableSet().getDownCable("action").getNodeSet().contains(say)
+						&& mdo.getDownCableSet().getDownCable("obj").getNodeSet().contains(Hi)) {
+					success2 = true;
+				}
+			}
+		}
+
+		if (!(success1 && success2)) {
+			fail("failure to build this SNeRETerm!}");
+		}
+	}
+	
 }
