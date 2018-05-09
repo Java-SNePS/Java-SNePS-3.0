@@ -818,6 +818,7 @@ public class AP {
 			}
 			break;
 		}
+		output=output.substring(0, output.length()-1);
 		return output;
 	}
 
@@ -911,6 +912,7 @@ public class AP {
 				result += nodesDescriptions.get(nodes.get(i)) + '\n';
 			}
 		}
+		result=result.substring(0, result.length()-1);
 		return result;
 	}
 
@@ -937,6 +939,7 @@ public class AP {
 				return "Error executing the command: " + commands.get(i);
 			}
 		}
+		output=output.substring(0, output.length()-1);
 		return output;
 	}
 
@@ -1061,6 +1064,14 @@ public class AP {
 			break;
 		}
 		return output;
+	}
+	
+	public static void main(String[] args) {
+		Network.defineDefaults();
+		System.out.println(AP.executeSnepslogCommand("dog(Fido)=>animal(Fido)."));
+		System.out.println(AP.executeSnepslogCommand("list-contexts."));
+		System.out.println(AP.executeSnepslogCommand("list-asserted-wffs."));
+		System.out.println(AP.executeSnepslogCommand("list-terms."));
 	}
 	
 }

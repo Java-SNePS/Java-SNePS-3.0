@@ -1035,7 +1035,10 @@ class CUP$parser$actions {
 		int wncright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String wnc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-			RESULT = warning + '\n'+ wnc;
+			if(warning.length()!=0){
+				warning+="\n";
+			}
+			RESULT = warning + wnc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1063,7 +1066,10 @@ class CUP$parser$actions {
 		int scright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String sc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-			RESULT = warning + '\n' + sc;
+			if(warning.length()!=0){
+				warning+="\n";
+			}
+			RESULT = warning + sc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1077,7 +1083,10 @@ class CUP$parser$actions {
 		int wcright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String wc = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-			RESULT = warning + '\n' + wc;
+			if(warning.length()!=0){
+				warning+="\n";
+			}
+			RESULT = warning + wc;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("command",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1938,6 +1947,7 @@ class CUP$parser$actions {
 					for (String context : contexts) {
 						output+=context+'\n';
 					}
+					output=output.substring(0, output.length()-1);
 					RESULT = output;		
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

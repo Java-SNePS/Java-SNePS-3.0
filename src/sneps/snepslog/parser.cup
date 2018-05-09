@@ -209,15 +209,24 @@ nonterminal ArrayList<ArrayList<Node>> termSetSequence,
 
 command ::= 	wffNameCommand:wnc
 		{: 
-			RESULT = warning + '\n'+ wnc;
+			if(warning.length()!=0){
+				warning+="\n";
+			}
+			RESULT = warning + wnc;
 		:}
 		| snepslogCommand:sc
 		{: 
-			RESULT = warning + '\n' + sc;
+			if(warning.length()!=0){
+				warning+="\n";
+			}
+			RESULT = warning + sc;
 		:}
 		| wffCommand:wc
 		{: 
-			RESULT = warning + '\n' + wc;
+			if(warning.length()!=0){
+				warning+="\n";
+			}
+			RESULT = warning + wc;
 		:};	
 
 wffNameCommand ::= wffName:wn terminalPunctuation:tp
@@ -729,6 +738,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 					for (String context : contexts) {
 						output+=context+'\n';
 					}
+					output=output.substring(0, output.length()-1);
 					RESULT = output;		
 				:}
 				| LIST_TERMS optionalPTermSet:opts optionalDot
