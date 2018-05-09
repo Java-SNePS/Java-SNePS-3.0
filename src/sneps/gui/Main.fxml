@@ -727,7 +727,7 @@
                                                                         <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet1" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
                                                                      </children>
                                                                   </AnchorPane>
-                                                                  <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Submit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                                  <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#addPropsToContext" styleClass="tab" text="Submit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                                                   <SplitMenuButton fx:id="chooseContext" alignment="CENTER" layoutX="107.0" layoutY="40.0" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
