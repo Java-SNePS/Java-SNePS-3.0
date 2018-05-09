@@ -201,7 +201,7 @@ public class Relation implements Serializable {
 		thresh = Network.defineRelation("thresh", "Infimum", "none", 1);
 		threshMax = Network.defineRelation("threshmax", "Infimum", "none", 1);
 
-		action = Network.defineRelation("action", "Act", "none", 1);
+		action = Network.defineRelation("action", "Action", "none", 1);
 
 		obj = Network.defineRelation("obj", "Entity", "none", 1);
 
