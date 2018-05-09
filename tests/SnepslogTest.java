@@ -24,6 +24,9 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
+import sneps.network.paths.ComposePath;
+import sneps.network.paths.FUnitPath;
+import sneps.network.paths.Path;
 import sneps.snebr.Controller;
 import sneps.snepslog.AP;
 
@@ -185,6 +188,35 @@ public class SnepslogTest {
 		assertTrue(relations.size() == 1);
 		assertTrue(relations.contains(Network.getRelation("motherof")));
 		assertTrue(relations.contains(Network.getCaseFrame(caseFrame.getId())));
+	}
+
+	public void testDefinePath() throws RelationDoesntExistException {
+		AP.executeSnepslogCommand("set-mode-3.");
+		AP.executeSnepslogCommand("define-relation rel Proposition.");
+		AP.executeSnepslogCommand("define-relation class Proposition.");
+		AP.executeSnepslogCommand("define-relation member Proposition.");
+		AP.executeSnepslogCommand("define-path rel compose(class, member).");
+		Path path = Network.getRelation("rel").getPath();
+		assertTrue(path instanceof ComposePath);
+		ComposePath cpath = (ComposePath) path;
+		LinkedList<Path> paths = cpath.getPaths();
+		assertTrue(paths.size() == 2);
+		boolean c1 = false;
+		boolean c2 = false;
+		for (int i = 0; i < paths.size(); i++) {
+			if (paths.get(i) instanceof FUnitPath) {
+				FUnitPath fupath = (FUnitPath) paths.get(i);
+				if (fupath.getRelation().equals(Network.getRelation("class"))) {
+					c1 = true;
+				}
+				if (fupath.getRelation().equals(Network.getRelation("member"))) {
+					c2 = true;
+				}
+			}
+		}
+		if (!(c1 && c2)) {
+			fail("The proces of defining this path failed.");
+		}
 	}
 
 }
