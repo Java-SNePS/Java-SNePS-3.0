@@ -1,10 +1,20 @@
 package sneps.network.classes;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.LinkedList;
 
 import sneps.exceptions.SemanticNotFoundInNetworkException;
+import sneps.network.Network;
 
-public class SemanticHierarchy {
+public class SemanticHierarchy implements Serializable{
 
 	private static Hashtable<String, Semantic> semantics = new Hashtable<String, Semantic>();
 
@@ -29,6 +39,29 @@ public class SemanticHierarchy {
 
 	public static Hashtable<String, Semantic> getSemantics() {
 		return semantics;
+	}
+	
+	public static void save(String f) throws FileNotFoundException, IOException {
+		ObjectOutputStream fos = new ObjectOutputStream(new FileOutputStream(new File(f)));
+		fos.writeObject(semantics);
+		fos.close();
+	}
+	
+	public static void load(String f) throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInputStream sems= new ObjectInputStream(new FileInputStream(new File(f)));
+		Hashtable<String, Semantic> tempSems = (Hashtable<String, Semantic>) sems.readObject();
+		SemanticHierarchy.semantics = tempSems;
+		sems.close();
+		
+		try {
+			Semantic.proposition = getSemantic("Proposition");
+			Semantic.act =  getSemantic("Act");
+			Semantic.individual = getSemantic("Individual");
+			Semantic.infimum = getSemantic("Infimum");
+		} catch (SemanticNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

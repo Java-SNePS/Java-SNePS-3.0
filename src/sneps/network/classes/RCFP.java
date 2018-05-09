@@ -1,9 +1,11 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
+
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 
-public class RCFP {
+public class RCFP implements Serializable{
 	public static RCFP andAnt, ant, cq, arg, min, max, i, threshMax, thresh, action, obj, precondition, act, doo, iff,
 			when, whenever, plan, goal, effect, vars, suchthat, elsee, obj1, obj2, obj3, obj4, obj5,
 			obj6, obj7, obj8, obj9, obj10;
