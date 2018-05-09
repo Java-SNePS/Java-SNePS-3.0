@@ -246,9 +246,9 @@ public class SnepslogTest {
 	@Test
 	public void testSetDefaultContext() {
 		AP.executeSnepslogCommand("set-context mythology");
-		assertTrue(Controller.getCurrentContext().getName().equals("default"));
+		assertTrue(Controller.getContextByName("default").equals(Controller.getCurrentContext()));
 		AP.executeSnepslogCommand("set-default-context mythology");
-		assertTrue(Controller.getCurrentContext().getName().equals("mythology"));
+		assertTrue(Controller.getContextByName("mythology").equals(Controller.getCurrentContext()));
 	}
 	
 }
