@@ -161,6 +161,7 @@ public class SnepslogTest {
 		assertEquals("unlabeled", mode);
 	}
 
+	@Test
 	public void testDefineSemantic() throws SemanticNotFoundInNetworkException {
 		AP.executeSnepslogCommand("set-mode-3.");
 		AP.executeSnepslogCommand("define-semantic Action.");
@@ -168,6 +169,7 @@ public class SnepslogTest {
 		assertTrue(SemanticHierarchy.getSemantic("Action").getSemanticType().equals("Action"));
 	}
 
+	@Test
 	public void testDefineRelation() throws RelationDoesntExistException {
 		AP.executeSnepslogCommand("set-mode-3.");
 		AP.executeSnepslogCommand("define-relation motherof Proposition.");
@@ -177,19 +179,21 @@ public class SnepslogTest {
 		assertTrue(relation.getType().equals("Proposition"));
 	}
 
+	@Test
 	public void testDefineFrame() throws RelationDoesntExistException, CaseFrameWithSetOfRelationsNotFoundException {
 		AP.executeSnepslogCommand("set-mode-3.");
 		AP.executeSnepslogCommand("define-relation motherof Proposition.");
 		AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof).");
-		assertTrue(AP.getModeThreeCaseFrames().containsKey("mother"));
-		CaseFrame caseFrame = AP.getModeThreeCaseFrames().get("mother");
+		assertTrue(AP.getModeThreeCaseFrames().containsKey("mother$"));
+		CaseFrame caseFrame = AP.getModeThreeCaseFrames().get("mother$");
 		assertTrue(caseFrame.getSemanticClass().equals("Proposition"));
 		LinkedList<Relation> relations = caseFrame.getRelations();
 		assertTrue(relations.size() == 1);
 		assertTrue(relations.contains(Network.getRelation("motherof")));
-		assertTrue(relations.contains(Network.getCaseFrame(caseFrame.getId())));
+		assertTrue(Network.getCaseFrames().containsKey(caseFrame.getId()));
 	}
 
+	@Test
 	public void testDefinePath() throws RelationDoesntExistException {
 		AP.executeSnepslogCommand("set-mode-3.");
 		AP.executeSnepslogCommand("define-relation rel Proposition.");
