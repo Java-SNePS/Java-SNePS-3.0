@@ -1073,7 +1073,6 @@ public class AP {
 	
 	public static void main(String[] args) {
 		Network.defineDefaults();
-		Network.defineDefaults();
 		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
 		System.out.println(AP.executeSnepslogCommand("define-semantic Entity."));
 		System.out.println(AP.executeSnepslogCommand("define-semantic Action."));
