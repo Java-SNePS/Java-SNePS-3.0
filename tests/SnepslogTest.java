@@ -1,6 +1,7 @@
 package tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,9 +14,13 @@ import org.junit.Test;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.RelationDoesntExistException;
+import sneps.exceptions.SemanticNotFoundInNetworkException;
 import sneps.network.Network;
 import sneps.network.Node;
+import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
+import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 import sneps.snebr.Controller;
@@ -29,7 +34,7 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("set-mode-1");
 		AP.executeSnepslogCommand("normal");
 	}
-	
+
 	@After
 	public void after() {
 		AP.executeSnepslogCommand("set-mode-1");
@@ -150,6 +155,34 @@ public class SnepslogTest {
 		printingModeGetter.setAccessible(true);
 		String mode = (String) printingModeGetter.invoke(null);
 		assertEquals("unlabeled", mode);
+	}
+
+	public void testDefineSemantic() throws SemanticNotFoundInNetworkException {
+		AP.executeSnepslogCommand("set-mode-3.");
+		AP.executeSnepslogCommand("define-semantic Action.");
+		assertTrue(SemanticHierarchy.getSemantics().containsKey("Action"));
+		assertTrue(SemanticHierarchy.getSemantic("Action").getSemanticType().equals("Action"));
+	}
+
+	public void testDefineRelation() throws RelationDoesntExistException {
+		AP.executeSnepslogCommand("set-mode-3.");
+		AP.executeSnepslogCommand("define-relation motherof Proposition.");
+		assertTrue(Network.getRelations().containsKey("motherof"));
+		Relation relation = Network.getRelation("motherof");
+		assertTrue(relation.getName().equals("motherof"));
+		assertTrue(relation.getType().equals("Proposition"));
+	}
+
+	public void testDefineFrame() throws RelationDoesntExistException {
+		AP.executeSnepslogCommand("set-mode-3.");
+		AP.executeSnepslogCommand("define-relation motherof Proposition.");
+		AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof).");
+		assertTrue(AP.getModeThreeCaseFrames().containsKey("mother"));
+		CaseFrame caseFrame = AP.getModeThreeCaseFrames().get("mother");
+		assertTrue(caseFrame.getSemanticClass().equals("Proposition"));
+		LinkedList<Relation> relations = new LinkedList<String>();
+		assertTrue(relations.size() == 1);
+		assertTrue(relations.contains(Network.getRelation("motherof")));
 	}
 
 }
