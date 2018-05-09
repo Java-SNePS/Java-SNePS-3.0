@@ -278,4 +278,44 @@ public class SnepslogTest {
 		assertTrue(nodesDescriptions.size() == 0);
 	}
 
+	@Test
+	public void testEntailment() throws NodeNotFoundInNetworkException {
+		AP.executeSnepslogCommand("dog(Fido)=>animal(Fido).");
+		Node n = Network.getNode("M3");
+		Molecular m = (Molecular) n.getTerm();
+		assertTrue(m.getDownCableSet().size()==2);
+		Node ant = m.getDownCableSet().getDownCable("ant").getNodeSet().getNode(0);
+		Node cq = m.getDownCableSet().getDownCable("cq").getNodeSet().getNode(0);
+		boolean success1 = false;
+		boolean success2 = false;
+		if (ant.getTerm() instanceof Molecular) {
+			Molecular mant = (Molecular) ant.getTerm();
+			LinkedList<Relation> relsant = mant.getDownCableSet().getCaseFrame().getRelations();
+			if (relsant.size() == 2 && relsant.get(0).getName().equals("r") && relsant.get(1).getName().equals("a1")) {
+				Node dog = Network.getNode("dog");
+				Node Fido = Network.getNode("Fido");
+				if (mant.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)
+						&& mant.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+					success1 = true;
+				}
+			}
+		}
+		if (cq.getTerm() instanceof Molecular) {
+			Molecular mcq = (Molecular) cq.getTerm();
+			LinkedList<Relation> relcq = mcq.getDownCableSet().getCaseFrame().getRelations();
+			if (relcq.size() == 2 && relcq.get(0).getName().equals("r") && relcq.get(1).getName().equals("a1")) {
+				Node animal = Network.getNode("animal");
+				Node Fido = Network.getNode("Fido");
+				if (mcq.getDownCableSet().getDownCable("r").getNodeSet().contains(animal)
+						&& mcq.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+					success2 = true;
+				}
+			}
+		}
+		
+		if (!(success1 && success2)) {
+			fail("failure to build this entailment!}");
+		}
+	}
+
 }
