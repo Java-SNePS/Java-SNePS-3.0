@@ -547,6 +547,7 @@ public class AP {
 		cfsDescriptions.clear();
 		nodesDescriptions.clear();
 		modeThreeCaseFrames.clear();
+		Network.defineDefaults();
 	}
 
 	/**
