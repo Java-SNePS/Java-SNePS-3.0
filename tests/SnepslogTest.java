@@ -1,6 +1,7 @@
 package tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -223,4 +224,15 @@ public class SnepslogTest {
 		}
 	}
 
+	@Test
+	public void testUndefinePath() throws RelationDoesntExistException {
+		AP.executeSnepslogCommand("set-mode-3.");
+		AP.executeSnepslogCommand("define-relation rel Proposition.");
+		AP.executeSnepslogCommand("define-relation class Proposition.");
+		AP.executeSnepslogCommand("define-relation member Proposition.");
+		AP.executeSnepslogCommand("define-path rel compose(class, member).");
+		AP.executeSnepslogCommand("undefine-path rel.");
+		assertNull(Network.getRelation("rel").getPath());
+	}
+	
 }
