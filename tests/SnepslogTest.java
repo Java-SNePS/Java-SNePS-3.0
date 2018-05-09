@@ -191,7 +191,7 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof).");
 		Method modeThreeCaseFramesGetter = AP.class.getDeclaredMethod("getModeThreeCaseFrames");
 		modeThreeCaseFramesGetter.setAccessible(true);
-		Hashtable<String, CaseFrame> modeThreeCaseFrames = (Hashtable<String, CaseFrame>) snepslogModeGetter
+		Hashtable<String, CaseFrame> modeThreeCaseFrames = (Hashtable<String, CaseFrame>) modeThreeCaseFramesGetter
 				.invoke(null);
 		assertTrue(modeThreeCaseFrames.containsKey("mother$"));
 		CaseFrame caseFrame = modeThreeCaseFrames.get("mother$");
@@ -264,7 +264,7 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("clearkb.");
 		Method modeThreeCaseFramesGetter = AP.class.getDeclaredMethod("getModeThreeCaseFrames");
 		modeThreeCaseFramesGetter.setAccessible(true);
-		Hashtable<String, CaseFrame> modeThreeCaseFrames = (Hashtable<String, CaseFrame>) snepslogModeGetter
+		Hashtable<String, CaseFrame> modeThreeCaseFrames = (Hashtable<String, CaseFrame>) modeThreeCaseFramesGetter
 				.invoke(null);
 		assertTrue(modeThreeCaseFrames.size() == 0);
 		Method cfsDescriptionsGetter = AP.class.getDeclaredMethod("getCfsDescriptions");
@@ -274,7 +274,7 @@ public class SnepslogTest {
 		assertTrue(cfsDescriptions.size() == 0);
 		Method nodesDescriptionsGetter = AP.class.getDeclaredMethod("getNodesDescriptions");
 		nodesDescriptionsGetter.setAccessible(true);
-		Hashtable<Node, String> nodesDescriptions = (Hashtable<Node, String>) snepslogModeGetter.invoke(null);
+		Hashtable<Node, String> nodesDescriptions = (Hashtable<Node, String>) nodesDescriptionsGetter.invoke(null);
 		assertTrue(nodesDescriptions.size() == 0);
 	}
 
