@@ -233,6 +233,8 @@ public class AP {
 		Network.defineDefaults();
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
+		wires.add(new Wire(Relation.arg, arg1));
+		wires.add(new Wire(Relation.arg, arg2));
 		switch (type) {
 		case "and":
 			caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.andOrRule;
@@ -250,8 +252,6 @@ public class AP {
 			wires.add(new Wire(Relation.thresh, Network.buildBaseNode("1", Semantic.infimum)));
 			break;
 		}
-		wires.add(new Wire(Relation.arg, arg1));
-		wires.add(new Wire(Relation.arg, arg2));
 		Node infixedTermNode = Network.buildMolecularNode(wires, caseFrame);
 		return infixedTermNode;
 	}
