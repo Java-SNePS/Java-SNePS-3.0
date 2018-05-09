@@ -564,7 +564,7 @@ public class Network implements Serializable {
 	public static Node buildBaseNode(String identifier, Semantic semantic)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		if (semantic.getSemanticType().equals("Act")) {
-			System.out.print("ERROR: Acts cannot be base nodes!!!");
+//			System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
 		}
 		if (nodes.containsKey(identifier)) {
@@ -583,7 +583,7 @@ public class Network implements Serializable {
 					nodesIndex.add(propNode.getId(), propNode);
 					propNode.setBasicSupport();
 				} catch (IndexOutOfBoundsException e) {
-					System.out.println("wohoo");
+//					System.out.println("wohoo");
 				}
 			} else {
 				Node node;
@@ -706,10 +706,10 @@ public class Network implements Serializable {
 		if (caseFrame.getSemanticClass().equals("Proposition")) {
 			PropositionNode propNode;
 			if (isToBePattern(array)) {
-				System.out.println("building patt");
+//				System.out.println("building patt");
 				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
 			} else {
-				System.out.println("building closed");
+//				System.out.println("building closed");
 				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
@@ -722,10 +722,10 @@ public class Network implements Serializable {
 		} else {
 			Node mNode;
 			if (isToBePattern(array)) {
-				System.out.println("building patt");
+//				System.out.println("building patt");
 				mNode = createPatNode(relNodeSet, caseFrame);
 			} else {
-				System.out.println("building closed");
+//				System.out.println("building closed");
 				mNode = createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(mNode.getIdentifier(), mNode);
@@ -861,10 +861,12 @@ public class Network implements Serializable {
 			result[1] = null;
 		}
 
-		if ((ns.size() == 1) && ((Boolean) result[0] == false))
-			System.out.println("Downcable set already exist");
-		if (!(ns.size() == 1))
-			System.out.println("Molecular Node built successfully");
+		if ((ns.size() == 1) && ((Boolean) result[0] == false)) {
+//			System.out.println("Downcable set already exist");
+		}
+		if (!(ns.size() == 1)) {
+//			System.out.println("Molecular Node built successfully");
+		}
 
 		return result;
 
@@ -1293,7 +1295,7 @@ public class Network implements Serializable {
 						}
 					}
 					if (checks.isEmpty()) {
-						System.out.println("empty checks");
+//						System.out.println("empty checks");
 						rules.remove(j);
 						j--;
 					} else {
@@ -1301,12 +1303,12 @@ public class Network implements Serializable {
 					}
 				}
 				if (rules.isEmpty()) {
-					System.out.println("Satisfied");
+//					System.out.println("Satisfied");
 					return signatures.get(currentId).getResultingType();
 				}
 			}
 		}
-		System.out.println("Not Satisfied");
+//		System.out.println("Not Satisfied");
 		return caseframe.getSemanticClass();
 	}
 
@@ -1807,7 +1809,7 @@ public class Network implements Serializable {
 					n.setId(oldID - empty);
 					nodesIndex.set(n.getId(), n);
 					nodesIndex.set(oldID, null);
-					System.out.println("old id: " + oldID + " new id: " + (oldID - empty) + " empty: " + empty);
+//					System.out.println("old id: " + oldID + " new id: " + (oldID - empty) + " empty: " + empty);
 				}
 				nodes++;
 			}
@@ -1816,10 +1818,10 @@ public class Network implements Serializable {
 			nodesIndex.remove(i);
 			i--;
 		}
-		System.out.println("");
-		System.out.println("previous count of nodes before deletion: " + Node.getCount());
+//		System.out.println("");
+//		System.out.println("previous count of nodes before deletion: " + Node.getCount());
 		Node.setCount(nodes);
-		System.out.println("current count of nodes before deletion: " + Node.getCount());
+//		System.out.println("current count of nodes before deletion: " + Node.getCount());
 	}
 
 	// Other Methods
