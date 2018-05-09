@@ -301,20 +301,20 @@ public class SnepslogTest {
 		boolean success1 = false;
 		boolean success2 = false;
 		for (int i = 0; i < args.size(); i++) {
-			Node n = args.getNode(i);
-			if (n.getTerm() instanceof Molecular) {
-				Molecular m = (Molecular) n.getTerm();
-				LinkedList<Relation> rels = m.getDownCableSet().getCaseFrame().getRelations();
+			Node node = args.getNode(i);
+			if (node.getTerm() instanceof Molecular) {
+				Molecular molecular = (Molecular) node.getTerm();
+				LinkedList<Relation> rels = molecular.getDownCableSet().getCaseFrame().getRelations();
 				if (rels.size() == 2 && rels.get(0).getName().equals("r") && rels.get(1).getName().equals("a1")) {
 					Node dog = Network.getNode("dog");
 					Node animal = Network.getNode("animal");
 					Node Fido = Network.getNode("Fido");
-					if (m.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)
-							&& m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+					if (molecular.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)
+							&& molecular.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
 						success1 = true;
 					}
-					if (m.getDownCableSet().getDownCable("r").getNodeSet().contains(animal)
-							&& m.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+					if (molecular.getDownCableSet().getDownCable("r").getNodeSet().contains(animal)
+							&& molecular.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
 						success2 = true;
 					}
 				}
