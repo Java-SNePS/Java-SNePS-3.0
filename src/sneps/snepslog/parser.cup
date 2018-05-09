@@ -1492,7 +1492,7 @@ termSetSequence ::= termSet:ts termSets:tss
 
 termSets ::= COMMA termSet:ts termSets:tss
 	     {:
-			tss.add(ts);
+			tss.add(0, ts);
 			RESULT = tss;
 	     :}
 	     | 
@@ -1602,7 +1602,7 @@ optionalPTermSet ::=	 pTermSet:pts
 
 identifiers ::= IDENTIFIER:id identifiers:ids
             {:
-            		ids.add(id);
+            		ids.add(0, id);
             		RESULT = ids;
             :}
             |

@@ -3569,7 +3569,7 @@ class CUP$parser$actions {
 		int tssright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<ArrayList<Node>> tss = (ArrayList<ArrayList<Node>>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-			tss.add(ts);
+			tss.add(0, ts);
 			RESULT = tss;
 	     
               CUP$parser$result = parser.getSymbolFactory().newSymbol("termSets",45, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -3867,7 +3867,7 @@ class CUP$parser$actions {
 		int idsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<String> ids = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-            		ids.add(id);
+            		ids.add(0, id);
             		RESULT = ids;
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("identifiers",11, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
