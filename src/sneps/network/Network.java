@@ -571,7 +571,7 @@ public class Network implements Serializable {
 
 		} else {
 			Base b = new Base(identifier);
-			if (semantic.getSemanticType().equals("Proposition")) {
+			if (semantic.getSemanticType().equalsIgnoreCase("proposition")) {
 				PropositionNode propNode = new PropositionNode(b);
 				nodes.put(identifier, propNode);
 				propositionNodes.put(identifier, propNode);
@@ -2131,7 +2131,8 @@ public class Network implements Serializable {
 		LinkedList<Integer> tempudvs = (LinkedList<Integer>) udvsis.readObject();
 		Network.userDefinedVarSuffix = tempudvs;
 		udvsis.close();
-				
+		
+		Node.setCount(nodes.size());
 	}
 
 	/**

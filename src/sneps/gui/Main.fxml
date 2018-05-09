@@ -671,13 +671,18 @@
                                                             </AnchorPane>
                                                             <AnchorPane layoutX="14.0" layoutY="404.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="404.0">
                                                                <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Delete Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Context Options" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                      <font>
                                                                         <Font size="22.15" />
                                                                      </font>
                                                                   </Label>
-                                                                  <ListView prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0" />
-                                                                  <Button mnemonicParsing="false" styleClass="tab" text="Delete Context" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                                                  <ListView fx:id="contextList" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                                                  <HBox alignment="CENTER" layoutX="10.0" layoutY="248.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                                     <children>
+                                                                        <Button maxWidth="1.7976931348623157E308" minWidth="200.0" mnemonicParsing="false" onAction="#deleteContext" styleClass="tab" text="Delete Context" />
+                                                                        <Button maxWidth="1.7976931348623157E308" minWidth="200.0" mnemonicParsing="false" onAction="#setCurrentContext" styleClass="tab" text="Set Current Context" />
+                                                                     </children>
+                                                                  </HBox>
                                                                </children>
                                                             </AnchorPane>
                                                          </children>
@@ -708,7 +713,7 @@
                                                                               <Font size="22.15" />
                                                                            </font>
                                                                         </Label>
-                                                                        <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                        <Button layoutX="10.0" layoutY="235.0" mnemonicParsing="false" onAction="#addNodeToPropSet1" styleClass="tab" text="Add to Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                   <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
@@ -719,21 +724,11 @@
                                                                               <Font size="22.15" />
                                                                            </font>
                                                                         </Label>
-                                                                        <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+                                                                        <Button layoutX="74.5999755859375" layoutY="235.0" mnemonicParsing="false" onAction="#removeNodeFromPropSet1" styleClass="tab" text="Remove From Proposition Set" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                   <Button layoutX="10.0" layoutY="365.0" mnemonicParsing="false" onAction="#createContext" styleClass="tab" text="Submit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                                  <SplitMenuButton alignment="CENTER" layoutX="107.0" layoutY="40.0" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
-                                                               </children>
-                                                            </AnchorPane>
-                                                            <AnchorPane layoutX="10.0" layoutY="402.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-                                                               <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Set Current Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                     <font>
-                                                                        <Font size="22.15" />
-                                                                     </font>
-                                                                  </Label>
-                                                                  <SplitMenuButton alignment="CENTER" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+                                                                  <SplitMenuButton fx:id="chooseContext" alignment="CENTER" layoutX="107.0" layoutY="40.0" mnemonicParsing="false" text="Select Context" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
                                                          </children>

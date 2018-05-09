@@ -52,6 +52,16 @@ public class SemanticHierarchy implements Serializable{
 		Hashtable<String, Semantic> tempSems = (Hashtable<String, Semantic>) sems.readObject();
 		SemanticHierarchy.semantics = tempSems;
 		sems.close();
+		
+		try {
+			Semantic.proposition = getSemantic("Proposition");
+			Semantic.act =  getSemantic("Act");
+			Semantic.individual = getSemantic("Individual");
+			Semantic.infimum = getSemantic("Infimum");
+		} catch (SemanticNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
