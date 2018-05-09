@@ -1,10 +1,20 @@
 package sneps.snebr;
 
 import sneps.exceptions.*;
+import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.network.classes.Relation;
 import sneps.network.classes.setClasses.PropositionSet;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 public class Controller {
@@ -206,4 +216,18 @@ public class Controller {
         return contextSet.getContext(contextName);
     }
 
+    
+    public static void save(String f) throws FileNotFoundException, IOException {
+    	ObjectOutputStream cos = new ObjectOutputStream(new FileOutputStream(new File(f)));
+		cos.writeObject(contextSet);
+		cos.close();
+    }
+    
+    public static void load(String f) throws IOException, ClassNotFoundException {
+    	ObjectInputStream cis= new ObjectInputStream(new FileInputStream(new File(f)));
+    	ContextSet tempSet = (ContextSet) cis.readObject();
+		Controller.contextSet = tempSet;
+		cis.close();
+		tempSet = null;
+    }
 }

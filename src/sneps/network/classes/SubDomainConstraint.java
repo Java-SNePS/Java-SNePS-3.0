@@ -1,9 +1,10 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class SubDomainConstraint {
+public class SubDomainConstraint implements Serializable{
 	/**
 	 * the name of the relation included in this sub-domain constraint.
 	 */

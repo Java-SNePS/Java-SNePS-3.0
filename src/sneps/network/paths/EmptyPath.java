@@ -9,6 +9,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -16,7 +17,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.Node;
 
-public class EmptyPath extends Path{
+public class EmptyPath extends Path implements Serializable{
 
 	/** (non-Javadoc)
      * @see sneps.Paths.Path#follow(sneps.Nodes.Node, sneps.network.PathTrace, SNeBR.Context)

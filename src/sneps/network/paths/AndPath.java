@@ -10,6 +10,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -18,7 +19,7 @@ import sneps.network.classes.Relation;
 import sneps.network.Node;
 import sneps.snebr.Context;
 
-public class AndPath extends Path {
+public class AndPath extends Path implements Serializable{
 	
 	/**
 	 * A LinkedList of Paths included in this and-path. 

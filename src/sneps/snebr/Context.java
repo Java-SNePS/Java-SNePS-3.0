@@ -8,12 +8,13 @@ import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
 
-public class Context {
+public class Context implements Serializable{
     private PropositionSet hyps;
 
     private HashSet<String> names;
