@@ -1954,7 +1954,9 @@ class CUP$parser$actions {
 					for (String context : contexts) {
 						output+=context+'\n';
 					}
-					output=output.substring(0, output.length()-1);
+					if(output.length()!=0) {
+						output=output.substring(0, output.length()-1);
+					}
 					RESULT = output;		
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

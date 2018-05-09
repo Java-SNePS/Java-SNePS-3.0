@@ -738,7 +738,9 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 					for (String context : contexts) {
 						output+=context+'\n';
 					}
-					output=output.substring(0, output.length()-1);
+					if(output.length()!=0) {
+						output=output.substring(0, output.length()-1);
+					}
 					RESULT = output;		
 				:}
 				| LIST_TERMS optionalPTermSet:opts optionalDot

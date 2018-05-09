@@ -817,7 +817,9 @@ public class AP {
 			}
 			break;
 		}
-		output=output.substring(0, output.length()-1);
+		if(output.length()!=0) {
+			output=output.substring(0, output.length()-1);
+		}
 		return output;
 	}
 
@@ -911,7 +913,9 @@ public class AP {
 				result += nodesDescriptions.get(nodes.get(i)) + '\n';
 			}
 		}
-		result=result.substring(0, result.length()-1);
+		if(result.length()!=0) {
+			result=result.substring(0, result.length()-1);
+		}
 		return result;
 	}
 
@@ -938,7 +942,9 @@ public class AP {
 				return "Error executing the command: " + commands.get(i);
 			}
 		}
-		output=output.substring(0, output.length()-1);
+		if(output.length()!=0) {
+			output=output.substring(0, output.length()-1);
+		}
 		return output;
 	}
 
