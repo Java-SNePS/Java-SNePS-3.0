@@ -287,10 +287,10 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("dog(Fido) and animal(Fido).");
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
-		assertTrue(m.getDownCableSet().size()==3);
-		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size()==2);
+		assertTrue(m.getDownCableSet().size() == 3);
+		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size() == 2);
 		Node max = m.getDownCableSet().getDownCable("max").getNodeSet().getNode(0);
 		assertTrue(max.getTerm() instanceof Base);
 		assertTrue(max.getIdentifier().equals("2"));
@@ -326,13 +326,13 @@ public class SnepslogTest {
 			fail("failure to build this infixedTerm!}");
 		}
 	}
-	
+
 	@Test
 	public void testEntailment() throws NodeNotFoundInNetworkException {
 		AP.executeSnepslogCommand("dog(Fido)=>animal(Fido).");
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
-		assertTrue(m.getDownCableSet().size()==2);
+		assertTrue(m.getDownCableSet().size() == 2);
 		Node ant = m.getDownCableSet().getDownCable("ant").getNodeSet().getNode(0);
 		Node cq = m.getDownCableSet().getDownCable("cq").getNodeSet().getNode(0);
 		boolean success1 = false;
@@ -361,9 +361,51 @@ public class SnepslogTest {
 				}
 			}
 		}
-		
+
 		if (!(success1 && success2)) {
 			fail("failure to build this entailment!}");
+		}
+	}
+
+	@Test
+	public void testNegatedTerm() throws NodeNotFoundInNetworkException {
+		AP.executeSnepslogCommand("set-mode-2.");
+		AP.executeSnepslogCommand("thresh(1,2){dog(Fido), animal(Fido)}.");
+		Node n = Network.getNode("M2");
+		Molecular m = (Molecular) n.getTerm();
+		assertTrue(m.getDownCableSet().size() == 3);
+		assertTrue(m.getDownCableSet().getDownCable("threshmax").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("thresh").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size() == 1);
+		Node max = m.getDownCableSet().getDownCable("threshmax").getNodeSet().getNode(0);
+		assertTrue(max.getTerm() instanceof Base);
+		assertTrue(max.getIdentifier().equals("0"));
+		assertTrue(max.getSemantic().getSemanticType().equals("Infimum"));
+		Node min = m.getDownCableSet().getDownCable("thresh").getNodeSet().getNode(0);
+		assertTrue(min.getTerm() instanceof Base);
+		assertTrue(min.getIdentifier().equals("0"));
+		assertTrue(min.getSemantic().getSemanticType().equals("Infimum"));
+		NodeSet args = m.getDownCableSet().getDownCable("arg").getNodeSet();
+		boolean success = false;
+		for (int i = 0; i < args.size(); i++) {
+			Node node = args.getNode(i);
+			if (node.getTerm() instanceof Molecular) {
+				Molecular molecular = (Molecular) node.getTerm();
+				LinkedList<Relation> rels = molecular.getDownCableSet().getCaseFrame().getRelations();
+				if (rels.size() == 2 && rels.get(0).getName().equals("| rel dog|")
+						&& rels.get(1).getName().equals("|rel-arg#dog1|")) {
+					Node dog = Network.getNode("dog");
+					Node animal = Network.getNode("animal");
+					Node Fido = Network.getNode("Fido");
+					if (molecular.getDownCableSet().getDownCable("| rel dog|").getNodeSet().contains(dog)
+							&& molecular.getDownCableSet().getDownCable("|rel-arg#dog1|").getNodeSet().contains(Fido)) {
+						success = true;
+					}
+				}
+			}
+		}
+		if (!success) {
+			fail("failure to build this negatedTerm!}");
 		}
 	}
 
@@ -372,10 +414,10 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("andor(1,2){dog(Fido), animal(Fido)}.");
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
-		assertTrue(m.getDownCableSet().size()==3);
-		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size()==2);
+		assertTrue(m.getDownCableSet().size() == 3);
+		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size() == 2);
 		Node max = m.getDownCableSet().getDownCable("max").getNodeSet().getNode(0);
 		assertTrue(max.getTerm() instanceof Base);
 		assertTrue(max.getIdentifier().equals("2"));
@@ -411,16 +453,16 @@ public class SnepslogTest {
 			fail("failure to build this andorTerm!}");
 		}
 	}
-	
+
 	@Test
 	public void testSetTerm() throws NodeNotFoundInNetworkException {
 		AP.executeSnepslogCommand("and{dog(Fido), animal(Fido)}.");
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
-		assertTrue(m.getDownCableSet().size()==3);
-		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size()==2);
+		assertTrue(m.getDownCableSet().size() == 3);
+		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size() == 2);
 		Node max = m.getDownCableSet().getDownCable("max").getNodeSet().getNode(0);
 		assertTrue(max.getTerm() instanceof Base);
 		assertTrue(max.getIdentifier().equals("2"));
@@ -456,16 +498,16 @@ public class SnepslogTest {
 			fail("failure to build this setTerm!}");
 		}
 	}
-	
+
 	@Test
 	public void testThreshTerm() throws NodeNotFoundInNetworkException {
 		AP.executeSnepslogCommand("thresh(1,2){dog(Fido), animal(Fido)}.");
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
-		assertTrue(m.getDownCableSet().size()==3);
-		assertTrue(m.getDownCableSet().getDownCable("threshmax").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("thresh").getNodeSet().size()==1);
-		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size()==2);
+		assertTrue(m.getDownCableSet().size() == 3);
+		assertTrue(m.getDownCableSet().getDownCable("threshmax").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("thresh").getNodeSet().size() == 1);
+		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size() == 2);
 		Node max = m.getDownCableSet().getDownCable("threshmax").getNodeSet().getNode(0);
 		assertTrue(max.getTerm() instanceof Base);
 		assertTrue(max.getIdentifier().equals("2"));
@@ -501,5 +543,5 @@ public class SnepslogTest {
 			fail("failure to build this threshTerm!}");
 		}
 	}
-	
+
 }
