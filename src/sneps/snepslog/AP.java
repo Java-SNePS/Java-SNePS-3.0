@@ -1073,14 +1073,13 @@ public class AP {
 	
 	public static void main(String[] args) {
 		Network.defineDefaults();
+		Network.defineDefaults();
 		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
 		System.out.println(AP.executeSnepslogCommand("define-semantic Entity."));
 		System.out.println(AP.executeSnepslogCommand("define-semantic Action."));
 		System.out.println(AP.executeSnepslogCommand("define-relation state Proposition."));
 		System.out.println(AP.executeSnepslogCommand("define-relation agent Proposition."));
 		System.out.println(AP.executeSnepslogCommand("define-frame here Proposition (state agent)."));
-		System.out.println(AP.executeSnepslogCommand("define-relation action Action."));
-		System.out.println(AP.executeSnepslogCommand("define-relation obj Entity."));
 		System.out.println(AP.executeSnepslogCommand("define-frame say Act (action obj)."));
 		System.out.println(AP.executeSnepslogCommand("whendo(here(John), say(Hi:Entity))."));
 	}
