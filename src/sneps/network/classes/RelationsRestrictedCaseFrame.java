@@ -327,7 +327,7 @@ public class RelationsRestrictedCaseFrame extends CaseFrame {
 		LinkedList<RCFP> doif = new LinkedList<RCFP>();
 		doif.add(RCFP.doo);
 		doif.add(RCFP.iff);
-		doIf = Network.defineCaseFrameWithConstraints("Prorposition", doif);
+		doIf = Network.defineCaseFrameWithConstraints("Proposition", doif);
 
 		LinkedList<RCFP> acteffect = new LinkedList<RCFP>();
 		acteffect.add(RCFP.act);
