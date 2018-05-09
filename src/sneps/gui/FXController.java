@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.animation.KeyFrame;
@@ -58,14 +59,17 @@ import javafx.scene.web.WebView;
 import javafx.util.Duration;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
+import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
+import sneps.exceptions.SemanticNotFoundInNetworkException;
 import sneps.network.Network;
 import sneps.network.Node;
+import sneps.network.PropositionNode;
 import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -144,7 +148,8 @@ public class FXController implements Initializable {
 	caseFrameRelationList, nodesList, wiresList, variableNodesList, baseNodesList, caseFramesDrawList,
 	relationOfDrawnCF, rrcfrslist, selectCFForSign, selectCFRelForSign,
 	cablesList, sdcsList, listOfSigns, cfListForSign,
-	cfSignsList, propoNodesList, propSet, pathsList, pathRelations;
+	cfSignsList, propoNodesList, propSet, pathsList, pathRelations,
+	contextList, propoNodesList1, propSet1;
 	@FXML
 	private Group dragBaseNode, dragVarNode, wireModeBtn, dragMolNode;
 	@FXML
@@ -155,7 +160,8 @@ public class FXController implements Initializable {
 	@FXML
 	private MenuButton caseFrameChoice, netChoice1, netChoice2, netChoice3,
 	baseNodeSemType, newRT, rrcfSem, resultSemType, cableSem, baseNodeSemTyPop,
-	newRA, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations;
+	newRA, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations,
+	chooseContext;
 	@FXML
 	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN;
 	@FXML
@@ -204,6 +210,7 @@ public class FXController implements Initializable {
 		consoleHandler();
 		addRelsToListSign();
 		createAdjusts();
+		
 		try {
 			Network.loadNetworks();
 			updateNetLists();
@@ -2416,7 +2423,13 @@ public class FXController implements Initializable {
 	public void buildBaseNode() {
 		String nodeName = baseNodeID.getText();
 		String semType = baseNodeSemType.getText();
-		Semantic semantic = new Semantic(semType);
+		Semantic semantic = null;
+		try {
+			semantic = SemanticHierarchy.getSemantic(semType);
+		} catch (SemanticNotFoundInNetworkException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Node node = null;
 		try {
 			node = Network.buildBaseNode(nodeName, semantic);
@@ -2453,6 +2466,7 @@ public class FXController implements Initializable {
 		propoNodesList.getItems().clear();
 		pathNodes1.getItems().clear();
 		pathNodes2.getItems().clear();
+		propoNodesList1.getItems().clear();
 		for (Entry<String, Node> entry : nodes.entrySet()) {
 		    String key = entry.getKey();
 		    sorted.add(key);
@@ -2493,11 +2507,13 @@ public class FXController implements Initializable {
 			   	String semantic = n.getSemantic().getSemanticType();
 				if(semantic.equalsIgnoreCase("proposition")) {
 					propoNodesList.getItems().add(key);
+					propoNodesList1.getItems().add(key);
 				}
 		    }else if(n.getTerm() instanceof Molecular) {
 		    	String semantic = n.getSemantic().getSemanticType();
 		    	if(semantic.equalsIgnoreCase("proposition")) {
 					propoNodesList.getItems().add(key);
+					propoNodesList1.getItems().add(key);
 				}
 		    }
 		}
@@ -2861,6 +2877,9 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		updateListOfContexts();
+		propSet.getItems().clear();
+		updateNodesList();
 	}
 	
 	public void createBUnitPath() {
@@ -3177,6 +3196,102 @@ public class FXController implements Initializable {
 		popUpNotification("Define Path", "Path Defined Successfully", "Path: " + pname + " Relation: " + r.getName(), 1);
 	}
 	
+	public void updateListOfContexts() {
+		Set<String> contexts = Controller.getAllNamesOfContexts();
+		ArrayList<String> sorted = new ArrayList<String>();
+		for(String s : contexts) {
+			sorted.add(s);
+		}
+		Collections.sort(sorted);
+		contextList.getItems().clear();
+		chooseContext.getItems().clear();
+		for (String s : sorted) {
+			MenuItem mi = new MenuItem(s);
+			mi.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent arg0) {
+					chooseContext.setText(mi.getText());
+				}
+				
+			});
+			contextList.getItems().add(s);
+			chooseContext.getItems().add(mi);
+		}
+	}
+	
+	public void deleteContext() {
+		String cname = contextList.getSelectionModel().getSelectedItem();
+		Controller.removeContext(cname);
+		popUpNotification("Context", "Context Deleted", "Context: " + cname + " Deleted Successfully", 1);
+		updateListOfContexts();
+	}
+	
+	public void setCurrentContext() {
+		String cname = contextList.getSelectionModel().getSelectedItem();
+		try {
+			Controller.setCurrentContext(cname);
+			popUpNotification("Context", "Current context is set", "Context: " + cname + " is the current context", 2);
+		} catch (DuplicateContextNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void addNodeToPropSet1() {
+		String identifier = propoNodesList1.getSelectionModel().getSelectedItem();
+		propSet1.getItems().add(identifier);
+		propoNodesList1.getItems().remove(identifier);
+	}
+	
+	public void removeNodeFromPropSet1() {
+		String identifier = propSet1.getSelectionModel().getSelectedItem();
+		propoNodesList1.getItems().add(identifier);
+		propSet1.getItems().remove(identifier);
+	}
+	
+	public void addPropsToContext() {
+		String name = chooseContext.getText();
+		int size = propSet1.getItems().size();
+		int[] prop = new int[size];
+		for(int i = 0; i<size; i++) {
+			String identifier = propSet1.getItems().get(i);
+			Node n = null;
+			try {
+				n = Network.getNode(identifier);
+			} catch (NodeNotFoundInNetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			prop[i] = n.getId();
+		}
+		PropositionSet hyps = null;
+		try {
+			hyps = new PropositionSet(prop);
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			Controller.addPropsToContext(name, hyps);
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CustomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		updateListOfContexts();
+		propSet1.getItems().clear();
+		updateNodesList();
+	}
+	
 	
 	
 //..........END Of Menu Methods........................................	
@@ -3209,6 +3324,7 @@ public class FXController implements Initializable {
 		String udps = name + "udps";
 		String udvs = name + "udvs";
 		String semList = name + "semList";
+		String contexts = name + "contexts";
 		
 		ButtonType yes = new ButtonType("Yes");
 		ButtonType cancel = new ButtonType("Cancel");
@@ -3222,6 +3338,7 @@ public class FXController implements Initializable {
 		    	try {
 					Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
 					SemanticHierarchy.save(semList);
+					Controller.save(contexts);
 					System.out.println("saved");
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -3246,10 +3363,12 @@ public class FXController implements Initializable {
 		String udps = name + "udps";
 		String udvs = name + "udvs";
 		String semList = name + "semList";
+		String contexts = name + "contexts";
 		
     	try {
 			Network.save(relations, caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
 			SemanticHierarchy.save(semList);
+			Controller.save(contexts);
 			System.out.println("saved");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -3270,13 +3389,17 @@ public class FXController implements Initializable {
 		String udps = name + "udps";
 		String udvs = name + "udvs";
 		String semList = name + "semList";
+		String contexts = name + "contexts";
+		
 		try {
 			Network.load(relations , caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
 			SemanticHierarchy.load(semList);
+			Controller.load(contexts);
 			updateNodesList();
 			updateCaseFramesList();
 			updateRelationSetList();
 			updateSemanticLists();
+			updateListOfContexts();
 			Alert a = new Alert(AlertType.INFORMATION);
 			a.setTitle("Load Network");
 			a.setHeaderText("Network loaded successfully");
@@ -3337,6 +3460,7 @@ public class FXController implements Initializable {
 		String udps = name + "udps";
 		String udvs = name + "udvs";
 		String semList = name + "semList";
+		String contexts = name + "contexts";
 		
 		ButtonType yes = new ButtonType("Yes");
 		ButtonType cancel = new ButtonType("Cancel");
@@ -3360,6 +3484,7 @@ public class FXController implements Initializable {
 		    	Path filePath11 = Paths.get(vc);
 		    	Path filePath12 = Paths.get(pn);
 		    	Path filePath13 = Paths.get(semList);
+		    	Path filePath14 = Paths.get(contexts);
 				try {
 					Network.deleteFromSavedNetworks(name);
 					updateNetLists();
@@ -3376,6 +3501,7 @@ public class FXController implements Initializable {
 					Files.delete(filePath11);
 					Files.delete(filePath12);
 					Files.delete(filePath13);
+					Files.delete(filePath14);
 					popUpNotification("Delete network", "Network Deleted!", "The Network: " + name + " is deleted successfully", 2);
 				} catch(IOException e) {
 					e.printStackTrace();
@@ -3530,6 +3656,7 @@ public class FXController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	
 	
 
 }
