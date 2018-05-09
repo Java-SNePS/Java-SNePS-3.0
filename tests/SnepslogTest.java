@@ -368,8 +368,8 @@ public class SnepslogTest {
 	}
 
 	@Test
-	public void andorTerm() throws NodeNotFoundInNetworkException {
-		AP.executeSnepslogCommand("andor(1,2){dog(Fido) and animal(Fido)}.");
+	public void testAndorTerm() throws NodeNotFoundInNetworkException {
+		AP.executeSnepslogCommand("andor(1,2){dog(Fido), animal(Fido)}.");
 		Node n = Network.getNode("M3");
 		Molecular m = (Molecular) n.getTerm();
 		assertTrue(m.getDownCableSet().size()==3);
