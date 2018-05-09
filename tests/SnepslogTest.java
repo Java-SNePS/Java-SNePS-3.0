@@ -40,12 +40,14 @@ public class SnepslogTest {
 	@Before
 	public void before() {
 		Network.defineDefaults();
+		AP.executeSnepslogCommand("clearkb");
 		AP.executeSnepslogCommand("set-mode-1");
 		AP.executeSnepslogCommand("normal");
 	}
 
 	@After
 	public void after() {
+		AP.executeSnepslogCommand("clearkb");
 		AP.executeSnepslogCommand("set-mode-1");
 		AP.executeSnepslogCommand("normal");
 	}
@@ -297,7 +299,7 @@ public class SnepslogTest {
 		assertTrue(min.getTerm() instanceof Base);
 		assertTrue(min.getIdentifier().equals("2"));
 		assertTrue(min.getSemantic().getSemanticType().equals("Infimum"));
-		NodeSet args = m.getDownCableSet().getDownCable("ant").getNodeSet();
+		NodeSet args = m.getDownCableSet().getDownCable("arg").getNodeSet();
 		boolean success1 = false;
 		boolean success2 = false;
 		for (int i = 0; i < args.size(); i++) {
