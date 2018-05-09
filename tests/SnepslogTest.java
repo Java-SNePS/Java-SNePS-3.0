@@ -412,4 +412,49 @@ public class SnepslogTest {
 		}
 	}
 	
+	@Test
+	public void testSetTerm() throws NodeNotFoundInNetworkException {
+		AP.executeSnepslogCommand("and{dog(Fido), animal(Fido)}.");
+		Node n = Network.getNode("M3");
+		Molecular m = (Molecular) n.getTerm();
+		assertTrue(m.getDownCableSet().size()==3);
+		assertTrue(m.getDownCableSet().getDownCable("max").getNodeSet().size()==1);
+		assertTrue(m.getDownCableSet().getDownCable("min").getNodeSet().size()==1);
+		assertTrue(m.getDownCableSet().getDownCable("arg").getNodeSet().size()==2);
+		Node max = m.getDownCableSet().getDownCable("max").getNodeSet().getNode(0);
+		assertTrue(max.getTerm() instanceof Base);
+		assertTrue(max.getIdentifier().equals("2"));
+		assertTrue(max.getSemantic().getSemanticType().equals("Infimum"));
+		Node min = m.getDownCableSet().getDownCable("min").getNodeSet().getNode(0);
+		assertTrue(min.getTerm() instanceof Base);
+		assertTrue(min.getIdentifier().equals("2"));
+		assertTrue(min.getSemantic().getSemanticType().equals("Infimum"));
+		NodeSet args = m.getDownCableSet().getDownCable("arg").getNodeSet();
+		boolean success1 = false;
+		boolean success2 = false;
+		for (int i = 0; i < args.size(); i++) {
+			Node node = args.getNode(i);
+			if (node.getTerm() instanceof Molecular) {
+				Molecular molecular = (Molecular) node.getTerm();
+				LinkedList<Relation> rels = molecular.getDownCableSet().getCaseFrame().getRelations();
+				if (rels.size() == 2 && rels.get(0).getName().equals("r") && rels.get(1).getName().equals("a1")) {
+					Node dog = Network.getNode("dog");
+					Node animal = Network.getNode("animal");
+					Node Fido = Network.getNode("Fido");
+					if (molecular.getDownCableSet().getDownCable("r").getNodeSet().contains(dog)
+							&& molecular.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+						success1 = true;
+					}
+					if (molecular.getDownCableSet().getDownCable("r").getNodeSet().contains(animal)
+							&& molecular.getDownCableSet().getDownCable("a1").getNodeSet().contains(Fido)) {
+						success2 = true;
+					}
+				}
+			}
+		}
+		if (!(success1 && success2)) {
+			fail("failure to build this setTerm!}");
+		}
+	}
+	
 }
