@@ -3620,6 +3620,7 @@ public class FXController implements Initializable {
 						else if(n.getTerm() instanceof Variable) {
 							nodeShape = " " + n.getIdentifier() + " [style=filled,color=green];";
 						}
+						
 						System.out.println(n.getIdentifier());
 						String nodeName = n.getIdentifier();
 						String relation= "[style=filled, color=red, label=\"" + rname + "\", fontcolor=red]";

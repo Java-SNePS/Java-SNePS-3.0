@@ -115,6 +115,7 @@ public class Main extends Application {
 	    stage.setTitle("Node Set"); 
 	    stage.setScene(scene); 
 	    stage.show(); 
+	    
 	}
 	*/
 }
