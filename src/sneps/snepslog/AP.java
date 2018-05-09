@@ -1074,27 +1074,15 @@ public class AP {
 	public static void main(String[] args) {
 		Network.defineDefaults();
 		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
-		System.out.println(AP.executeSnepslogCommand("define-relation rel Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-relation class Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-relation member Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-path rel compose(class, member)."));
-		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
-		System.out.println(AP.executeSnepslogCommand("define-relation class Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-relation mem1 Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-relation mem2 Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-relation mem3 Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-frame dog Proposition (class mem1 mem2 mem3)."));
-		System.out.println(AP.executeSnepslogCommand("dog(Fido, Brian, Abdo)."));
-		System.out.println(AP.executeSnepslogCommand("dog(x1, Brian, Abdo)."));
-		System.out.println(AP.executeSnepslogCommand("dog(cv, Brian, Abdo)."));
-		System.out.println(AP.executeSnepslogCommand("list-asserted-wffs."));
-		System.out.println(AP.executeSnepslogCommand("list-contexts."));
-		System.out.println(AP.executeSnepslogCommand("list-terms."));
-		System.out.println(AP.executeSnepslogCommand("set-mode-1."));
-		System.out.println(AP.executeSnepslogCommand("dog(BadAss)."));
-		System.out.println(AP.executeSnepslogCommand("dog(Fido)."));
-		System.out.println(AP.executeSnepslogCommand("animal(wff1,wff2)."));
-		System.out.println(AP.executeSnepslogCommand("beliefs-about wff3"));
+		System.out.println(AP.executeSnepslogCommand("define-semantic Entity."));
+		System.out.println(AP.executeSnepslogCommand("define-semantic Action."));
+		System.out.println(AP.executeSnepslogCommand("define-relation state Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-relation agent Proposition."));
+		System.out.println(AP.executeSnepslogCommand("define-frame here Proposition (state agent)."));
+		System.out.println(AP.executeSnepslogCommand("define-relation action Action."));
+		System.out.println(AP.executeSnepslogCommand("define-relation obj Entity."));
+		System.out.println(AP.executeSnepslogCommand("define-frame say Act (action obj)."));
+		System.out.println(AP.executeSnepslogCommand("whendo(here(John), say(Hi:Entity))."));
 	}
 	
 }
