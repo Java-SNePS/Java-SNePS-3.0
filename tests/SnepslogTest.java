@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
@@ -173,16 +174,17 @@ public class SnepslogTest {
 		assertTrue(relation.getType().equals("Proposition"));
 	}
 
-	public void testDefineFrame() throws RelationDoesntExistException {
+	public void testDefineFrame() throws RelationDoesntExistException, CaseFrameWithSetOfRelationsNotFoundException {
 		AP.executeSnepslogCommand("set-mode-3.");
 		AP.executeSnepslogCommand("define-relation motherof Proposition.");
 		AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof).");
 		assertTrue(AP.getModeThreeCaseFrames().containsKey("mother"));
 		CaseFrame caseFrame = AP.getModeThreeCaseFrames().get("mother");
 		assertTrue(caseFrame.getSemanticClass().equals("Proposition"));
-		LinkedList<Relation> relations = new LinkedList<String>();
+		LinkedList<Relation> relations = caseFrame.getRelations();
 		assertTrue(relations.size() == 1);
 		assertTrue(relations.contains(Network.getRelation("motherof")));
+		assertTrue(relations.contains(Network.getCaseFrame(caseFrame.getId())));
 	}
 
 }
