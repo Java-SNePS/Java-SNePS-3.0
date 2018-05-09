@@ -184,7 +184,7 @@ public class AP {
 	 * @throws RelationDoesntExistException
 	 *             if a relation was not defined in the Network.
 	 */
-	protected static CaseFrame createModeThreeCaseFrame(String semanticType, String name, ArrayList<String> relations,
+	protected static CaseFrame createModeThreeCaseFrame(String name, String semanticType, ArrayList<String> relations,
 			String description) throws RelationDoesntExistException {
 		// check if already exists
 		if (modeThreeCaseFrames.containsKey(name)) {
