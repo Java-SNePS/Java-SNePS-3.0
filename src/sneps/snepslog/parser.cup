@@ -627,7 +627,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = e.getMessage();
 					}
 				:}
-				| DEFINE_SEMANTIC IDENTIFIER:id
+				| DEFINE_SEMANTIC IDENTIFIER:id optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						AP.defineSemantic(id,null,null);
@@ -636,7 +636,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_SEMANTIC IDENTIFIER:id1 IDENTIFIER:id2
+				| DEFINE_SEMANTIC IDENTIFIER:id1 IDENTIFIER:id2 optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						AP.defineSemantic(id1,id2,null);
@@ -645,7 +645,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_SEMANTIC IDENTIFIER:id1 IDENTIFIER:id2 identifiers_list:ids
+				| DEFINE_SEMANTIC IDENTIFIER:id1 IDENTIFIER:id2 identifiers_list:ids optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						AP.defineSemantic(id1,id2,ids);
@@ -654,7 +654,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2);
@@ -663,7 +663,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 EXPAND:a INT_LIT:l
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 EXPAND:a INT_LIT:l optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
@@ -672,7 +672,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 REDUCE:a INT_LIT:l
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 REDUCE:a INT_LIT:l optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
@@ -681,7 +681,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				:}
-				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 NONE:a INT_LIT:l
+				| DEFINE_RELATION IDENTIFIER:id1 IDENTIFIER:id2 NONE:a INT_LIT:l optionalDot
 				{: 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2, a, Integer.valueOf(l));

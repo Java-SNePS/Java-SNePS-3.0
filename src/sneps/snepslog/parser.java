@@ -82,9 +82,9 @@ public class parser extends java_cup.runtime.lr_parser {
     "\005\005\000\002\005\005\000\002\005\004\000\002\005" +
     "\005\000\002\005\005\000\002\005\004\000\002\005\004" +
     "\000\002\005\004\000\002\005\007\000\002\005\010\000" +
-    "\002\005\006\000\002\005\004\000\002\005\005\000\002" +
-    "\005\006\000\002\005\005\000\002\005\007\000\002\005" +
-    "\007\000\002\005\007\000\002\005\005\000\002\005\005" +
+    "\002\005\006\000\002\005\005\000\002\005\006\000\002" +
+    "\005\007\000\002\005\006\000\002\005\010\000\002\005" +
+    "\010\000\002\005\010\000\002\005\005\000\002\005\005" +
     "\000\002\005\004\000\002\005\005\000\002\005\004\000" +
     "\002\005\005\000\002\005\005\000\002\005\004\000\002" +
     "\005\005\000\002\005\005\000\002\005\005\000\002\005" +
@@ -132,7 +132,7 @@ public class parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\u017b\000\170\004\123\007\025\010\020\011\060\012" +
+    "\000\u0182\000\170\004\123\007\025\010\020\011\060\012" +
     "\015\013\124\014\022\015\034\020\005\021\057\022\120" +
     "\023\102\024\026\025\023\026\012\027\115\030\116\031" +
     "\031\032\045\033\107\034\014\035\052\036\067\037\011" +
@@ -141,14 +141,14 @@ public class parser extends java_cup.runtime.lr_parser {
     "\064\043\065\121\066\104\067\126\070\037\071\127\072" +
     "\125\073\073\074\032\077\055\101\077\103\004\104\027" +
     "\105\035\106\113\107\044\110\110\111\130\112\064\113" +
-    "\117\131\010\136\056\001\002\000\004\077\u0174\001\002" +
-    "\000\006\002\uff7f\006\162\001\002\000\004\131\u0171\001" +
-    "\002\000\010\054\u015f\055\u015d\056\u015e\001\002\000\042" +
+    "\117\131\010\136\056\001\002\000\004\077\u017b\001\002" +
+    "\000\006\002\uff7f\006\162\001\002\000\004\131\u0178\001" +
+    "\002\000\010\054\u0162\055\u0160\056\u0161\001\002\000\042" +
     "\002\uff9a\005\uff9a\006\uff9a\027\uff9a\057\uff9a\060\uff9a\061" +
-    "\uff9a\062\uff9a\065\uff9a\066\uff9a\075\uff9a\076\u016a\077\u016b" +
+    "\uff9a\062\uff9a\065\uff9a\066\uff9a\075\uff9a\076\u0171\077\u0172" +
     "\100\uff9a\102\uff9a\132\uff9a\001\002\000\006\002\uff7f\006" +
-    "\162\001\002\000\004\131\u0161\001\002\000\010\054\u015f" +
-    "\055\u015d\056\u015e\001\002\000\006\002\uff7f\006\162\001" +
+    "\162\001\002\000\004\131\u0164\001\002\000\010\054\u0162" +
+    "\055\u0160\056\u0161\001\002\000\006\002\uff7f\006\162\001" +
     "\002\000\062\027\115\063\036\064\043\065\121\066\104" +
     "\067\126\070\037\071\127\072\125\073\073\074\032\077" +
     "\055\101\077\103\004\104\027\105\035\106\113\107\044" +
@@ -615,52 +615,56 @@ public class parser extends java_cup.runtime.lr_parser {
     "\106\113\107\044\110\110\111\130\112\064\113\117\131" +
     "\010\136\056\001\002\000\006\002\uff7f\006\162\001\002" +
     "\000\004\002\ufff9\001\002\000\004\002\ufffc\001\002\000" +
-    "\006\002\uffea\131\u0153\001\002\000\006\002\uffe9\077\245" +
-    "\001\002\000\004\002\uffe8\001\002\000\006\002\uff7f\006" +
-    "\162\001\002\000\004\002\ufff4\001\002\000\012\002\uff7b" +
-    "\005\144\006\150\027\145\001\002\000\004\002\ufff8\001" +
-    "\002\000\012\002\uff7b\005\144\006\150\027\145\001\002" +
-    "\000\004\002\ufff6\001\002\000\004\002\uffdf\001\002\000" +
-    "\006\002\uff7f\006\162\001\002\000\006\002\uffce\006\uffce" +
-    "\001\002\000\006\002\uffcd\006\uffcd\001\002\000\006\002" +
-    "\uffcf\006\uffcf\001\002\000\004\002\uffd3\001\002\000\004" +
-    "\131\u0162\001\002\000\012\002\uffe7\133\u0163\134\u0164\135" +
-    "\u0165\001\002\000\004\130\u0168\001\002\000\004\130\u0167" +
-    "\001\002\000\004\130\u0166\001\002\000\004\002\uffe4\001" +
-    "\002\000\004\002\uffe5\001\002\000\004\002\uffe6\001\002" +
-    "\000\004\002\uffdc\001\002\000\004\131\u016e\001\002\000" +
-    "\062\027\115\063\036\064\043\065\121\066\104\067\126" +
-    "\070\037\071\127\072\125\073\073\074\032\077\055\101" +
-    "\077\103\004\104\027\105\035\106\113\107\044\110\110" +
-    "\111\130\112\064\113\117\131\010\136\056\001\002\000" +
-    "\004\100\u016d\001\002\000\036\002\uff95\005\uff95\006\uff95" +
-    "\027\uff95\057\uff95\060\uff95\061\uff95\062\uff95\065\uff95\066" +
-    "\uff95\075\uff95\100\uff95\102\uff95\132\uff95\001\002\000\036" +
-    "\002\uff99\005\uff99\006\uff99\027\uff99\057\uff99\060\uff99\061" +
-    "\uff99\062\uff99\065\uff99\066\uff99\075\uff99\100\uff99\102\uff99" +
-    "\132\uff99\001\002\000\006\002\uff7f\006\162\001\002\000" +
-    "\004\002\uffd0\001\002\000\006\002\uff7f\006\162\001\002" +
-    "\000\004\002\uffd2\001\002\000\004\002\ufff0\001\002\000" +
-    "\004\131\204\001\002\000\004\075\u0176\001\002\000\062" +
-    "\027\115\063\036\064\043\065\121\066\104\067\126\070" +
-    "\037\071\127\072\125\073\073\074\032\077\055\101\077" +
-    "\103\004\104\027\105\035\106\113\107\044\110\110\111" +
-    "\130\112\064\113\117\131\010\136\056\001\002\000\004" +
-    "\075\u0178\001\002\000\062\027\115\063\036\064\043\065" +
-    "\121\066\104\067\126\070\037\071\127\072\125\073\073" +
-    "\074\032\077\055\101\077\103\004\104\027\105\035\106" +
-    "\113\107\044\110\110\111\130\112\064\113\117\131\010" +
-    "\136\056\001\002\000\006\075\u017a\100\u017b\001\002\000" +
-    "\062\027\115\063\036\064\043\065\121\066\104\067\126" +
-    "\070\037\071\127\072\125\073\073\074\032\077\055\101" +
-    "\077\103\004\104\027\105\035\106\113\107\044\110\110" +
-    "\111\130\112\064\113\117\131\010\136\056\001\002\000" +
-    "\036\002\uff92\005\uff92\006\uff92\027\uff92\057\uff92\060\uff92" +
-    "\061\uff92\062\uff92\065\uff92\066\uff92\075\uff92\100\uff92\102" +
-    "\uff92\132\uff92\001\002\000\004\100\u017d\001\002\000\036" +
-    "\002\uff93\005\uff93\006\uff93\027\uff93\057\uff93\060\uff93\061" +
-    "\uff93\062\uff93\065\uff93\066\uff93\075\uff93\100\uff93\102\uff93" +
-    "\132\uff93\001\002" });
+    "\010\002\uff7f\006\162\131\u0154\001\002\000\004\002\uffea" +
+    "\001\002\000\010\002\uff7f\006\162\077\245\001\002\000" +
+    "\004\002\uffe9\001\002\000\006\002\uff7f\006\162\001\002" +
+    "\000\004\002\uffe8\001\002\000\006\002\uff7f\006\162\001" +
+    "\002\000\004\002\ufff4\001\002\000\012\002\uff7b\005\144" +
+    "\006\150\027\145\001\002\000\004\002\ufff8\001\002\000" +
+    "\012\002\uff7b\005\144\006\150\027\145\001\002\000\004" +
+    "\002\ufff6\001\002\000\004\002\uffdf\001\002\000\006\002" +
+    "\uff7f\006\162\001\002\000\006\002\uffce\006\uffce\001\002" +
+    "\000\006\002\uffcd\006\uffcd\001\002\000\006\002\uffcf\006" +
+    "\uffcf\001\002\000\004\002\uffd3\001\002\000\004\131\u0165" +
+    "\001\002\000\014\002\uff7f\006\162\133\u0167\134\u0168\135" +
+    "\u0169\001\002\000\004\002\uffe7\001\002\000\004\130\u016e" +
+    "\001\002\000\004\130\u016c\001\002\000\004\130\u016a\001" +
+    "\002\000\006\002\uff7f\006\162\001\002\000\004\002\uffe4" +
+    "\001\002\000\006\002\uff7f\006\162\001\002\000\004\002" +
+    "\uffe5\001\002\000\006\002\uff7f\006\162\001\002\000\004" +
+    "\002\uffe6\001\002\000\004\002\uffdc\001\002\000\004\131" +
+    "\u0175\001\002\000\062\027\115\063\036\064\043\065\121" +
+    "\066\104\067\126\070\037\071\127\072\125\073\073\074" +
+    "\032\077\055\101\077\103\004\104\027\105\035\106\113" +
+    "\107\044\110\110\111\130\112\064\113\117\131\010\136" +
+    "\056\001\002\000\004\100\u0174\001\002\000\036\002\uff95" +
+    "\005\uff95\006\uff95\027\uff95\057\uff95\060\uff95\061\uff95\062" +
+    "\uff95\065\uff95\066\uff95\075\uff95\100\uff95\102\uff95\132\uff95" +
+    "\001\002\000\036\002\uff99\005\uff99\006\uff99\027\uff99\057" +
+    "\uff99\060\uff99\061\uff99\062\uff99\065\uff99\066\uff99\075\uff99" +
+    "\100\uff99\102\uff99\132\uff99\001\002\000\006\002\uff7f\006" +
+    "\162\001\002\000\004\002\uffd0\001\002\000\006\002\uff7f" +
+    "\006\162\001\002\000\004\002\uffd2\001\002\000\004\002" +
+    "\ufff0\001\002\000\004\131\204\001\002\000\004\075\u017d" +
+    "\001\002\000\062\027\115\063\036\064\043\065\121\066" +
+    "\104\067\126\070\037\071\127\072\125\073\073\074\032" +
+    "\077\055\101\077\103\004\104\027\105\035\106\113\107" +
+    "\044\110\110\111\130\112\064\113\117\131\010\136\056" +
+    "\001\002\000\004\075\u017f\001\002\000\062\027\115\063" +
+    "\036\064\043\065\121\066\104\067\126\070\037\071\127" +
+    "\072\125\073\073\074\032\077\055\101\077\103\004\104" +
+    "\027\105\035\106\113\107\044\110\110\111\130\112\064" +
+    "\113\117\131\010\136\056\001\002\000\006\075\u0181\100" +
+    "\u0182\001\002\000\062\027\115\063\036\064\043\065\121" +
+    "\066\104\067\126\070\037\071\127\072\125\073\073\074" +
+    "\032\077\055\101\077\103\004\104\027\105\035\106\113" +
+    "\107\044\110\110\111\130\112\064\113\117\131\010\136" +
+    "\056\001\002\000\036\002\uff92\005\uff92\006\uff92\027\uff92" +
+    "\057\uff92\060\uff92\061\uff92\062\uff92\065\uff92\066\uff92\075" +
+    "\uff92\100\uff92\102\uff92\132\uff92\001\002\000\004\100\u0184" +
+    "\001\002\000\036\002\uff93\005\uff93\006\uff93\027\uff93\057" +
+    "\uff93\060\uff93\061\uff93\062\uff93\065\uff93\066\uff93\075\uff93" +
+    "\100\uff93\102\uff93\132\uff93\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -668,26 +672,26 @@ public class parser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\u017b\000\066\002\053\003\015\004\060\005\067\013" +
+    "\000\u0182\000\066\002\053\003\015\004\060\005\067\013" +
     "\032\022\023\023\111\024\016\025\046\026\050\027\102" +
     "\030\041\031\061\032\020\033\074\034\110\035\052\036" +
     "\047\037\105\040\077\041\037\042\040\043\100\044\073" +
     "\046\113\050\104\001\001\000\002\001\001\000\004\010" +
-    "\u0172\001\001\000\002\001\001\000\004\006\u016e\001\001" +
-    "\000\002\001\001\000\004\010\u0168\001\001\000\002\001" +
-    "\001\000\004\006\u015b\001\001\000\004\010\u015a\001\001" +
-    "\000\056\013\131\022\u0158\023\111\024\016\025\046\026" +
+    "\u0179\001\001\000\002\001\001\000\004\006\u0175\001\001" +
+    "\000\002\001\001\000\004\010\u016f\001\001\000\002\001" +
+    "\001\000\004\006\u015e\001\001\000\004\010\u015d\001\001" +
+    "\000\056\013\131\022\u015b\023\111\024\016\025\046\026" +
     "\050\027\102\030\041\031\061\032\020\033\074\034\110" +
     "\035\052\036\047\037\105\040\077\041\037\042\040\043" +
     "\100\044\073\046\113\050\104\001\001\000\002\001\001" +
-    "\000\002\001\001\000\056\013\131\022\u0156\023\111\024" +
+    "\000\002\001\001\000\056\013\131\022\u0159\023\111\024" +
     "\016\025\046\026\050\027\102\030\041\031\061\032\020" +
     "\033\074\034\110\035\052\036\047\037\105\040\077\041" +
     "\037\042\040\043\100\044\073\046\113\050\104\001\001" +
     "\000\002\001\001\000\052\013\131\025\137\026\050\027" +
     "\102\030\041\031\061\032\020\033\074\034\110\035\052" +
     "\036\047\037\105\040\077\041\037\042\040\043\100\044" +
-    "\073\046\113\047\u0154\050\165\001\001\000\002\001\001" +
+    "\073\046\113\047\u0157\050\165\001\001\000\002\001\001" +
     "\000\004\007\u0150\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\004\010\u0101\001\001\000\054" +
     "\013\131\025\137\026\050\027\102\030\041\031\061\032" +
@@ -933,34 +937,37 @@ public class parser extends java_cup.runtime.lr_parser {
     "\033\074\034\110\035\052\036\047\037\105\040\077\041" +
     "\037\042\040\043\100\044\073\046\113\050\u014e\001\001" +
     "\000\004\010\u014f\001\001\000\002\001\001\000\002\001" +
-    "\001\000\002\001\001\000\004\016\u0153\001\001\000\002" +
-    "\001\001\000\004\010\u0155\001\001\000\002\001\001\000" +
-    "\006\007\145\011\u0157\001\001\000\002\001\001\000\006" +
-    "\007\145\011\u0159\001\001\000\002\001\001\000\002\001" +
-    "\001\000\004\010\u015f\001\001\000\002\001\001\000\002" +
+    "\001\000\004\010\u0152\001\001\000\002\001\001\000\006" +
+    "\010\u0154\016\u0155\001\001\000\002\001\001\000\004\010" +
+    "\u0156\001\001\000\002\001\001\000\004\010\u0158\001\001" +
+    "\000\002\001\001\000\006\007\145\011\u015a\001\001\000" +
+    "\002\001\001\000\006\007\145\011\u015c\001\001\000\002" +
+    "\001\001\000\002\001\001\000\004\010\u0162\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\004\010\u0165\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\004\010\u016a\001\001\000\002\001\001\000" +
+    "\004\010\u016c\001\001\000\002\001\001\000\004\010\u016e" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
-    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\002\001\001\000\002\001\001\000\052" +
-    "\013\131\025\137\026\050\027\102\030\041\031\061\032" +
-    "\020\033\074\034\110\035\052\036\047\037\105\040\077" +
-    "\041\037\042\040\043\100\044\073\046\113\050\205\056" +
-    "\u016b\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001\000\004\010\u016f\001\001\000\002\001\001\000" +
-    "\004\010\u0171\001\001\000\002\001\001\000\002\001\001" +
-    "\000\006\045\365\053\u0174\001\001\000\002\001\001\000" +
-    "\050\013\131\025\137\026\050\027\102\030\041\031\061" +
-    "\032\020\033\074\034\110\035\052\036\047\037\105\040" +
-    "\077\041\037\042\040\043\100\044\073\046\113\050\u0176" +
-    "\001\001\000\002\001\001\000\050\013\131\025\137\026" +
-    "\050\027\102\030\041\031\061\032\020\033\074\034\110" +
-    "\035\052\036\047\037\105\040\077\041\037\042\040\043" +
-    "\100\044\073\046\113\050\u0178\001\001\000\002\001\001" +
-    "\000\050\013\131\025\137\026\050\027\102\030\041\031" +
-    "\061\032\020\033\074\034\110\035\052\036\047\037\105" +
-    "\040\077\041\037\042\040\043\100\044\073\046\113\050" +
-    "\u017b\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001" });
+    "\001\000\052\013\131\025\137\026\050\027\102\030\041" +
+    "\031\061\032\020\033\074\034\110\035\052\036\047\037" +
+    "\105\040\077\041\037\042\040\043\100\044\073\046\113" +
+    "\050\205\056\u0172\001\001\000\002\001\001\000\002\001" +
+    "\001\000\002\001\001\000\004\010\u0176\001\001\000\002" +
+    "\001\001\000\004\010\u0178\001\001\000\002\001\001\000" +
+    "\002\001\001\000\006\045\365\053\u017b\001\001\000\002" +
+    "\001\001\000\050\013\131\025\137\026\050\027\102\030" +
+    "\041\031\061\032\020\033\074\034\110\035\052\036\047" +
+    "\037\105\040\077\041\037\042\040\043\100\044\073\046" +
+    "\113\050\u017d\001\001\000\002\001\001\000\050\013\131" +
+    "\025\137\026\050\027\102\030\041\031\061\032\020\033" +
+    "\074\034\110\035\052\036\047\037\105\040\077\041\037" +
+    "\042\040\043\100\044\073\046\113\050\u017f\001\001\000" +
+    "\002\001\001\000\050\013\131\025\137\026\050\027\102" +
+    "\030\041\031\061\032\020\033\074\034\110\035\052\036" +
+    "\047\037\105\040\077\041\037\042\040\043\100\044\073" +
+    "\046\113\050\u0182\001\001\000\002\001\001\000\002\001" +
+    "\001\000\002\001\001" });
 
   /** Access to <code>reduce_goto</code> table. */
   public short[][] reduce_table() {return _reduce_table;}
@@ -1688,37 +1695,15 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 23: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER 
+          case 23: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER optionalDot 
             {
               String RESULT =null;
-		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
 					if(AP.getSnepslogMode()==3){
 						AP.defineSemantic(id,null,null);
-						RESULT = "";
-					}else{
-						RESULT = "You can only use this command in Mode 3.";
-					}
-				
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 24: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER IDENTIFIER 
-            {
-              String RESULT =null;
-		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 
-					if(AP.getSnepslogMode()==3){
-						AP.defineSemantic(id1,id2,null);
 						RESULT = "";
 					}else{
 						RESULT = "You can only use this command in Mode 3.";
@@ -1729,7 +1714,7 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 25: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER IDENTIFIER identifiers_list 
+          case 24: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER IDENTIFIER optionalDot 
             {
               String RESULT =null;
 		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
@@ -1738,12 +1723,9 @@ class CUP$parser$actions {
 		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int idsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int idsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		ArrayList<String> ids = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
 					if(AP.getSnepslogMode()==3){
-						AP.defineSemantic(id1,id2,ids);
+						AP.defineSemantic(id1,id2,null);
 						RESULT = "";
 					}else{
 						RESULT = "You can only use this command in Mode 3.";
@@ -1754,15 +1736,40 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 26: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER 
+          case 25: // snepslogCommand ::= DEFINE_SEMANTIC IDENTIFIER IDENTIFIER identifiers_list optionalDot 
             {
               String RESULT =null;
-		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int idsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int idsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		ArrayList<String> ids = (ArrayList<String>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		 
+					if(AP.getSnepslogMode()==3){
+						AP.defineSemantic(id1,id2,ids);
+						RESULT = "";
+					}else{
+						RESULT = "You can only use this command in Mode 3.";
+					}
+				
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 26: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER optionalDot 
+            {
+              String RESULT =null;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2);
@@ -1771,26 +1778,26 @@ class CUP$parser$actions {
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 27: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER EXPAND INT_LIT 
+          case 27: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER EXPAND INT_LIT optionalDot 
             {
               String RESULT =null;
-		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
-		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
@@ -1799,26 +1806,26 @@ class CUP$parser$actions {
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER REDUCE INT_LIT 
+          case 28: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER REDUCE INT_LIT optionalDot 
             {
               String RESULT =null;
-		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
-		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
@@ -1827,26 +1834,26 @@ class CUP$parser$actions {
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER NONE INT_LIT 
+          case 29: // snepslogCommand ::= DEFINE_RELATION IDENTIFIER IDENTIFIER NONE INT_LIT optionalDot 
             {
               String RESULT =null;
-		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
-		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		int id1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int id1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		String id1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int id2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int id2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String id2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
 					if(AP.getSnepslogMode()==3){
 						Network.defineRelation(id1, id2, a, Integer.valueOf(l));
@@ -1855,7 +1862,7 @@ class CUP$parser$actions {
 						RESULT = "You can only use this command in Mode 3.";
 					}
 				
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
