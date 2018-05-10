@@ -869,7 +869,7 @@ public class AP {
 		Set<String> keys = Network.getNodes().keySet();
 		for (String key : keys) {
 			if (Network.getNodes().get(key).getTerm() instanceof Closed) {
-				closed.add(Network.getNodes().get(key));
+				closed.add(0, Network.getNodes().get(key));
 			}
 		}
 		return closed;
@@ -902,10 +902,12 @@ public class AP {
 
 	/**
 	 * A method returning the description of some given nodes.
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
+	 * 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
 	 */
-	protected static String describeTerms(ArrayList<Node> nodes) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	protected static String describeTerms(ArrayList<Node> nodes)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		String result = "";
 		if (AP.getSnepslogMode() != 3) {
 			return result;
@@ -919,7 +921,8 @@ public class AP {
 						temp += "!";
 					}
 				}
-				result += "WFF" + nodes.get(i).getIdentifier().substring(1) + temp + ": "+nodesDescriptions.get(nodes.get(i)) + '\n';
+				result += "WFF" + nodes.get(i).getIdentifier().substring(1) + temp + ": "
+						+ nodesDescriptions.get(nodes.get(i)) + '\n';
 			}
 		}
 		if (result.length() != 0) {
@@ -946,7 +949,7 @@ public class AP {
 		String output = "";
 		for (int i = 0; i < commands.size(); i++) {
 			try {
-				output += "$"+commands.get(i) + "\n" + executeSnepslogCommand(commands.get(i)) + '\n';
+				output += "$" + commands.get(i) + "\n" + executeSnepslogCommand(commands.get(i)) + '\n';
 			} catch (Exception e) {
 				return "Error executing the command: " + commands.get(i);
 			}
@@ -1087,8 +1090,10 @@ public class AP {
 		System.out.println(AP.executeSnepslogCommand("define-relation motherof Proposition"));
 		System.out.println(AP.executeSnepslogCommand("define-relation object Proposition"));
 		System.out.println(AP.executeSnepslogCommand("define-relation property Proposition"));
-		System.out.println(AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof) \"the mother of motherof\" "));
-		System.out.println(AP.executeSnepslogCommand("define-frame female Proposition (property object) \"object is property\" "));
+		System.out.println(AP
+				.executeSnepslogCommand("define-frame mother Proposition (nil motherof) \"the mother of motherof\" "));
+		System.out.println(
+				AP.executeSnepslogCommand("define-frame female Proposition (property object) \"object is property\" "));
 		System.out.println(AP.executeSnepslogCommand("female(mother(Betty))."));
 		System.out.println(AP.executeSnepslogCommand("describe-terms."));
 	}
