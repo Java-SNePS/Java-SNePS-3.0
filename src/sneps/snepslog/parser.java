@@ -3362,6 +3362,10 @@ class CUP$parser$actions {
 						try{
 							Node node = Network.buildMolecularNode(wires, caseFrame);
 							if(flag){
+								Set<Node> keys = AP.getNodesDescriptions().keySet();
+								for (Node key : keys) {
+									description = description.replaceAll(key.getIdentifier()+" ", AP.getNodesDescriptions().get(key).substring(1,AP.getNodesDescriptions().get(key).length()-1)+" ");
+								}
 								AP.getNodesDescriptions().put(node, description);
 							}
 							RESULT = node;
@@ -3385,6 +3389,10 @@ class CUP$parser$actions {
 							try{
 								Node node = Network.buildMolecularNode(wires, caseFrame);
 								if(flag){
+									Set<Node> keys = AP.getNodesDescriptions().keySet();
+									for (Node key : keys) {
+										description = description.replaceAll(key.getIdentifier()+" ", AP.getNodesDescriptions().get(key).substring(1,AP.getNodesDescriptions().get(key).length()-1)+" ");
+									}
 									AP.getNodesDescriptions().put(node, description);
 								}
 								RESULT = node;

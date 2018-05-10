@@ -902,15 +902,24 @@ public class AP {
 
 	/**
 	 * A method returning the description of some given nodes.
+	 * @throws NodeNotFoundInNetworkException 
+	 * @throws NotAPropositionNodeException 
 	 */
-	protected static String describeTerms(ArrayList<Node> nodes) {
+	protected static String describeTerms(ArrayList<Node> nodes) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		String result = "";
 		if (AP.getSnepslogMode() != 3) {
 			return result;
 		}
 		for (int i = 0; i < nodes.size(); i++) {
 			if (nodesDescriptions.get(nodes.get(i)) != null) {
-				result += nodesDescriptions.get(nodes.get(i)) + '\n';
+				String temp = "";
+				if (nodes.get(i) instanceof PropositionNode) {
+					PropositionNode pNode = (PropositionNode) nodes.get(i);
+					if (Controller.getCurrentContext().isAsserted(pNode)) {
+						temp += "!";
+					}
+				}
+				result += "WFF" + nodes.get(i).getIdentifier().substring(1) + temp + ": "+nodesDescriptions.get(nodes.get(i)) + '\n';
 			}
 		}
 		if (result.length() != 0) {
@@ -1074,6 +1083,14 @@ public class AP {
 	public static void main(String[] args) {
 		Network.defineDefaults();
 		System.out.println(AP.executeSnepslogCommand("load test.snepslog"));
+		System.out.println(AP.executeSnepslogCommand("set-mode-3"));
+		System.out.println(AP.executeSnepslogCommand("define-relation motherof Proposition"));
+		System.out.println(AP.executeSnepslogCommand("define-relation object Proposition"));
+		System.out.println(AP.executeSnepslogCommand("define-relation property Proposition"));
+		System.out.println(AP.executeSnepslogCommand("define-frame mother Proposition (nil motherof) \"the mother of motherof\" "));
+		System.out.println(AP.executeSnepslogCommand("define-frame female Proposition (property object) \"object is property\" "));
+		System.out.println(AP.executeSnepslogCommand("female(mother(Betty))."));
+		System.out.println(AP.executeSnepslogCommand("describe-terms."));
 	}
 
 }
