@@ -1,5 +1,6 @@
 package sneps.gui;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import javafx.application.Application;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import sneps.network.Network;
 import sneps.network.Node;
@@ -46,7 +48,6 @@ public class Main extends Application {
 		launch(args);
 	}
 	
-	/*
 	public static void visualizeNodes(ArrayList<Node> nodes) throws IOException {
 		Stage stage = new Stage();
 		WebView wv = new WebView();
@@ -66,33 +67,31 @@ public class Main extends Application {
         bw.write("<script>");
         bw.write(data);
         
-        Hashtable<String, NodeSet> nodes = Network.getMolecularNodes();
-		for (Entry<String, NodeSet> entry : nodes.entrySet()) {
-			NodeSet ns = entry.getValue();
-			for(int i = 0; i<ns.size(); i++) {
-				Molecular molNode = (Molecular) ns.getNode(i).getTerm();
-				System.out.println(molNode.getIdentifier());
+		for(int i = 0; i<nodes.size(); i++) {
+			Node n = nodes.get(i);
+			if(n.getTerm() instanceof Molecular) {
+				Molecular molNode = (Molecular) n.getTerm();
 				DownCableSet dcs = molNode.getDownCableSet();
 				Hashtable<String, DownCable> downCables = dcs.getDownCables();
-				for(Entry<String, DownCable> entry1 : downCables.entrySet()) {
-					String rname = entry1.getKey();
-					System.out.println(rname);
-					DownCable dc = entry1.getValue();
+				for(Entry<String, DownCable> entry : downCables.entrySet()) {
+					String rname = entry.getKey();
+					//System.out.println(rname);
+					DownCable dc = entry.getValue();
 					NodeSet cableNodes = dc.getNodeSet();
 					for(int j = 0; j<cableNodes.size(); j++) {
-						Node n = cableNodes.getNode(j);
-						String nodeShape = " " + n.getIdentifier() + " [style=filled,color=white];";
-						if(n.getTerm() instanceof Molecular) {
-							nodeShape = " " + n.getIdentifier() + " [style=filled,color=dodgerblue];";
+						Node x = cableNodes.getNode(j);
+						String nodeShape = null;
+						if(x.getTerm() instanceof Molecular) {
+							nodeShape = " " + x.getIdentifier() + " [style=filled,color=dodgerblue];";
 						}
-						else if(n.getTerm() instanceof Base) {
-							nodeShape = " " + n.getIdentifier() + " [style=filled,color=yellow];";
+						else if(x.getTerm() instanceof Base) {
+							nodeShape = " " + x.getIdentifier() + " [style=filled,color=yellow];";
 						}
-						else if(n.getTerm() instanceof Variable) {
-							nodeShape = " " + n.getIdentifier() + " [style=filled,color=green];";
+						else if(x.getTerm() instanceof Variable) {
+							nodeShape = " " + x.getIdentifier() + " [style=filled,color=green];";
 						}
-						System.out.println(n.getIdentifier());
-						String nodeName = n.getIdentifier();
+						
+						String nodeName = x.getIdentifier();
 						String relation= "[style=filled, color=red, label=\"" + rname + "\", fontcolor=red]";
 						String molShape = " " + molNode.getIdentifier() + " [style=filled,color=dodgerblue];";
 						String dotSyntax = " " + molNode.getIdentifier() + " -> " + nodeName + relation + ";";
@@ -100,16 +99,32 @@ public class Main extends Application {
 						bw.write(molShape);
 						bw.write(dotSyntax);
 					}
-					
 				}
+			}else if(n.getTerm() instanceof Base) {
+				String nodeShape = " " + n.getIdentifier() + " [style=filled,color=yellow];";
+				bw.write(nodeShape);
+			}else if(n.getTerm() instanceof Variable) {
+				String nodeShape = " " + n.getIdentifier() + " [style=filled,color=green];";
+				bw.write(nodeShape);
 			}
 		}
+		
 		bw.write("}');");
 		bw.write("</script></body></html>");
 		bw.close();
 		
 		//-----------------------------------------------------------------------------------------------------------
-		wv.getEngine().load("http://google.com");
+		String url = Main.class.getResource("displayData.html").toExternalForm();
+		
+		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(primaryScreenBounds.getMinX());
+        stage.setY(primaryScreenBounds.getMinY());
+        stage.setWidth(primaryScreenBounds.getWidth());
+        stage.setHeight(primaryScreenBounds.getHeight());
+        
+		wv.getEngine().load(url);
+		wv.prefWidthProperty().bind(stage.widthProperty());
+		wv.prefHeightProperty().bind(stage.heightProperty());
 	    Group root = new Group(wv);
 	    Scene scene = new Scene(root, 600, 300);  
 	    stage.setTitle("Node Set"); 
@@ -117,5 +132,4 @@ public class Main extends Application {
 	    stage.show(); 
 	    
 	}
-	*/
 }

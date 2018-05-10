@@ -259,6 +259,9 @@ public class FXController implements Initializable {
 					}
 					
 					String cmd = lines.get(lines.size() - 1);
+					if(cmd.equalsIgnoreCase("vis")) {
+						testVisualize();
+					}
 					String res = "Result will be here";
 					console.setText(console.getText() + "\n" + res);
 					console.positionCaret(console.getLength());
@@ -3658,6 +3661,35 @@ public class FXController implements Initializable {
 		}
 	}
 	
-	
+	public void testVisualize() {
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		Node n1 = null;
+		Node n2 = null;
+		Node n3 = null;
+		Node n4 = null;
+		Node n5 = null;
+		try {
+			n1 = Network.getNode("Bingo");
+			n2 = Network.getNode("Fido");
+			n3 = Network.getNode("Dog");
+			n4 = Network.getNode("V1");
+			n5 = Network.getNode("M1");
+		} catch (NodeNotFoundInNetworkException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		nodes.add(n1);
+		nodes.add(n2);
+		nodes.add(n3);
+		nodes.add(n4);
+		nodes.add(n5);
+		
+		try {
+			Main.visualizeNodes(nodes);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
