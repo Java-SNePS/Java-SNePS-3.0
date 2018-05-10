@@ -817,8 +817,8 @@ public class AP {
 			}
 			break;
 		}
-		if(output.length()!=0) {
-			output=output.substring(0, output.length()-1);
+		if (output.length() != 0) {
+			output = output.substring(0, output.length() - 1);
 		}
 		return output;
 	}
@@ -913,8 +913,8 @@ public class AP {
 				result += nodesDescriptions.get(nodes.get(i)) + '\n';
 			}
 		}
-		if(result.length()!=0) {
-			result=result.substring(0, result.length()-1);
+		if (result.length() != 0) {
+			result = result.substring(0, result.length() - 1);
 		}
 		return result;
 	}
@@ -937,13 +937,13 @@ public class AP {
 		String output = "";
 		for (int i = 0; i < commands.size(); i++) {
 			try {
-				output += executeSnepslogCommand(commands.get(i)) + '\n';
+				output += "$"+commands.get(i) + "\n" + executeSnepslogCommand(commands.get(i)) + '\n';
 			} catch (Exception e) {
 				return "Error executing the command: " + commands.get(i);
 			}
 		}
-		if(output.length()!=0) {
-			output=output.substring(0, output.length()-1);
+		if (output.length() != 0) {
+			output = output.substring(0, output.length() - 1);
 		}
 		return output;
 	}
@@ -1070,17 +1070,10 @@ public class AP {
 		}
 		return output;
 	}
-	
+
 	public static void main(String[] args) {
 		Network.defineDefaults();
-		System.out.println(AP.executeSnepslogCommand("set-mode-3."));
-		System.out.println(AP.executeSnepslogCommand("define-semantic Entity."));
-		System.out.println(AP.executeSnepslogCommand("define-semantic Action."));
-		System.out.println(AP.executeSnepslogCommand("define-relation state Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-relation agent Proposition."));
-		System.out.println(AP.executeSnepslogCommand("define-frame here Proposition (state agent)."));
-		System.out.println(AP.executeSnepslogCommand("define-frame say Act (action obj)."));
-		System.out.println(AP.executeSnepslogCommand("whendo(here(John), say(Hi:Entity))."));
+		System.out.println(AP.executeSnepslogCommand("load test.snepslog"));
 	}
-	
+
 }
