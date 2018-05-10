@@ -1,5 +1,6 @@
 package sneps.network;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import sneps.exceptions.CustomException;
@@ -27,7 +28,7 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class PropositionNode extends Node {
+public class PropositionNode extends Node implements Serializable{
 	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;

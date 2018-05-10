@@ -11,6 +11,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -21,7 +22,7 @@ import sneps.network.cables.UpCableSet;
 import sneps.network.Node;
 import sneps.network.classes.setClasses.NodeSet;
 
-public class BUnitPath extends Path{
+public class BUnitPath extends Path implements Serializable{
 
 	/**
 	 * The relation that labels the arc of this backward unit path
