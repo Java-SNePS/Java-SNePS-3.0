@@ -83,7 +83,7 @@ public class Controller {
      * @throws DuplicatePropositionException if the hyp to be asserted in the Context is already asserted
      * @throws NodeNotFoundInNetworkException 
      */
-    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExistException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
+    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExistException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException, ContradictionFoundException{
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
@@ -108,7 +108,7 @@ public class Controller {
      * @throws NodeNotFoundInNetworkException 
      * @throws CustomException 
      */
-    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
+    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException {
         Context oldContext =  contextSet.getContext(contextName);
 
         if (oldContext == null)
@@ -149,8 +149,12 @@ public class Controller {
      * @throws DuplicatePropositionException if the hyp to be asserted in the Context is already asserted
      * @throws NodeNotFoundInNetworkException 
      */
-    public static Context addPropToCurrentContext(int hyp) throws ContextNameDoesntExistException, DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public static Context addPropToCurrentContext(int hyp) throws ContextNameDoesntExistException, DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException {
         return addPropToContext(currContext,hyp);
+    }
+
+    public static String getCurrentContextName() {
+        return currContext;
     }
 
     /**
@@ -161,7 +165,7 @@ public class Controller {
      * @throws NodeNotFoundInNetworkException 
      * @throws CustomException 
      */
-    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException {
+    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContradictionFoundException {
         return addPropsToContext(currContext, hyps);
     }
 
