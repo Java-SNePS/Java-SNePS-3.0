@@ -23,7 +23,7 @@ public class ControllerTest {
     private static final Semantic semantic = new Semantic("Proposition");
 
     @Before
-    public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void setUp() throws IllegalIdentifierException, DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         Controller.createContext(testContextName);
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n"+i, semantic);
