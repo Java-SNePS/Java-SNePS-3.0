@@ -133,7 +133,7 @@ public class AndEntailment extends RuleNode {
 	}
 	@Override
 	public NodeSet getDownAntNodeSet() {
-		return this.getDownNodeSet("&ant");//ants for & TODO name convention
+		return this.getDownNodeSet("&ant");//ants for & name convention
 	}
 
 	@Override
