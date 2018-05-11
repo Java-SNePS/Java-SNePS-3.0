@@ -47,6 +47,7 @@ import sneps.exceptions.SemanticNotFoundInNetworkException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.VariableNode;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
@@ -749,31 +750,30 @@ public class AP {
 		for (int i = 0; i < vars.size(); i++) {
 			varNames.add(vars.get(i).getIdentifier());
 		}
-		replaceWithVars(varNames, m.getDownCableSet());
+		resetTheFlags(varNames, m.getDownCableSet());
 		Network.removeNode(wff);
 		return node;
 	}
 
-	private static void replaceWithVars(ArrayList<String> varNames, DownCableSet downCableSet) throws IllegalIdentifierException {
+	private static void resetTheFlags(ArrayList<String> varNames, DownCableSet downCableSet) throws IllegalIdentifierException {
 		Set<String> keys = downCableSet.getDownCables().keySet();
 		for (String key : keys) {
 			NodeSet ns = downCableSet.getDownCables().get(key).getNodeSet();
-			for (int i = ns.size() - 1; i >= 0; i--) {
+			for (int i = ns.size
+					() - 1; i >= 0; i--) {
 				Node node = ns.getNode(i);
 				if (node.getTerm() instanceof Molecular) {
 					Molecular m = (Molecular) node.getTerm();
-					replaceWithVars(varNames, m.getDownCableSet());
+					resetTheFlags(varNames, m.getDownCableSet());
 				} else {
-					String identifier = node.getIdentifier();
-					if (varNames.contains(identifier)) {
-						ns.removeNode(node);
-						ns.addNode(Network.buildVariableNode(identifier));
+					if(node instanceof VariableNode) {
+						((VariableNode) node).setSnepslogFlag(false);
 					}
 				}
 			}
 		}
 	}
-
+	
 	/**
 	 * This method converts a group of Nodes into a String representation according
 	 * to the printing mode in use.
@@ -1094,19 +1094,9 @@ public class AP {
 		return output;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NodeNotFoundInNetworkException {
 		Network.defineDefaults();
-		System.out.println(AP.executeSnepslogCommand("load test.snepslog"));
-		System.out.println(AP.executeSnepslogCommand("set-mode-3"));
-		System.out.println(AP.executeSnepslogCommand("define-relation motherof Proposition"));
-		System.out.println(AP.executeSnepslogCommand("define-relation object Proposition"));
-		System.out.println(AP.executeSnepslogCommand("define-relation property Proposition"));
-		System.out.println(AP
-				.executeSnepslogCommand("define-frame mother Proposition (nil motherof) \"the mother of motherof\" "));
-		System.out.println(
-				AP.executeSnepslogCommand("define-frame female Proposition (property object) \"object is property\" "));
-		System.out.println(AP.executeSnepslogCommand("female(mother(Betty))."));
-		System.out.println(AP.executeSnepslogCommand("describe-terms."));
+		System.out.println(AP.executeSnepslogCommand("all(x)(dog(x)=>animal(x))."));
 	}
 
 }

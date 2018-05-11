@@ -510,18 +510,26 @@ public class Network implements Serializable {
 	 * @param identifier
 	 *            the name of the new variable node.
 	 * @return the newly created variable node.
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
-	public static VariableNode buildVariableNode(String identifier) throws IllegalIdentifierException {
+	public static VariableNode buildVariableNode(String identifier, boolean snepslogFlag)
+			throws IllegalIdentifierException {
 		if (nodes.containsKey(identifier)) {
-			if(nodes.get(identifier).getTerm() instanceof Variable) {
-				return (VariableNode) nodes.get(identifier);
-			}else {
+			if (nodes.get(identifier).getTerm() instanceof Variable) {
+				VariableNode vNode = (VariableNode) nodes.get(identifier);
+				if (snepslogFlag) {
+					vNode.setSnepslogFlag(true);
+				}
+				return vNode;
+			} else {
 				throw new IllegalIdentifierException("A base node already exists with this identifier.");
 			}
 		} else {
 			Variable v = new Variable(identifier);
 			VariableNode node = new VariableNode(v);
+			if (snepslogFlag) {
+				node.setSnepslogFlag(true);
+			}
 			nodes.put(node.getIdentifier(), node);
 			nodesIndex.add(node.getId(), node);
 			return node;
@@ -562,7 +570,7 @@ public class Network implements Serializable {
 	 * @return the newly created base node.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 *
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in the
@@ -574,44 +582,50 @@ public class Network implements Serializable {
 			// System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
 		}
+
 		if (nodes.containsKey(identifier)) {
-			if(nodes.get(identifier).getTerm() instanceof Base) {
+			if (nodes.get(identifier).getTerm() instanceof Base) {
 				return nodes.get(identifier);
-			}else {
-				throw new IllegalIdentifierException("A variable node already exists with this identifier.");
+			}
+			if (nodes.get(identifier) instanceof VariableNode) {
+				VariableNode vNode = (VariableNode) nodes.get(identifier);
+				if (vNode.isSnepslogFlag()) {
+					return nodes.get(identifier);
+				} 
+			}
+			throw new IllegalIdentifierException("A variable node already exists with this identifier.");
+		}
+		
+		Base b = new Base(identifier);
+		if (semantic.getSemanticType().equals("Proposition")) {
+			PropositionNode propNode = new PropositionNode(b);
+			nodes.put(identifier, propNode);
+			propositionNodes.put(identifier, propNode);
+			try {
+				nodesIndex.add(propNode.getId(), propNode);
+				propNode.setBasicSupport();
+			} catch (IndexOutOfBoundsException e) {
+				// System.out.println("wohoo");
 			}
 		} else {
-			Base b = new Base(identifier);
-			if (semantic.getSemanticType().equals("Proposition")) {
-				PropositionNode propNode = new PropositionNode(b);
-				nodes.put(identifier, propNode);
-				propositionNodes.put(identifier, propNode);
-				try {
-					nodesIndex.add(propNode.getId(), propNode);
-					propNode.setBasicSupport();
-				} catch (IndexOutOfBoundsException e) {
-					// System.out.println("wohoo");
-				}
-			} else {
-				Node node;
-				/*
-				 * if (semantic.getSemanticType().equals("Action")) { if
-				 * (semantic.getSemanticType().equals("ControlAction")) { node = new
-				 * ControlActionNode(semantic, b); } else { node = new ActionNode(semantic, b);
-				 * } } else { node = new Node(semantic, b); }
-				 */
-				node = new Node(semantic, b);
-				nodes.put(identifier, node);
-				nodesIndex.add(node.getId(), node);
-			}
-			if (isMolName(identifier) > -1)
-				userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
-			if (isPatName(identifier) > -1)
-				userDefinedPatSuffix.add(new Integer(isPatName(identifier)));
-			if (isVarName(identifier) > -1)
-				userDefinedVarSuffix.add(new Integer(isVarName(identifier)));
-			return nodes.get(identifier);
+			Node node;
+			/*
+			 * if (semantic.getSemanticType().equals("Action")) { if
+			 * (semantic.getSemanticType().equals("ControlAction")) { node = new
+			 * ControlActionNode(semantic, b); } else { node = new ActionNode(semantic, b);
+			 * } } else { node = new Node(semantic, b); }
+			 */
+			node = new Node(semantic, b);
+			nodes.put(identifier, node);
+			nodesIndex.add(node.getId(), node);
 		}
+		if (isMolName(identifier) > -1)
+			userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
+		if (isPatName(identifier) > -1)
+			userDefinedPatSuffix.add(new Integer(isPatName(identifier)));
+		if (isVarName(identifier) > -1)
+			userDefinedVarSuffix.add(new Integer(isVarName(identifier)));
+		return nodes.get(identifier);
 	}
 
 	/**

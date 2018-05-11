@@ -1539,14 +1539,14 @@ wffName ::= WFF:w
 			}
 	    :};
 	    
-qvar ::= QUESTION_MARK snepslogSymbol:ss
+qvar ::= QUESTION_MARK IDENTIFIER:id
 	 {:
-		RESULT = ss;
+		RESULT = Network.buildVariableNode(id, false);
 	 :};
 
 snepslogSymbol ::= IDENTIFIER:id
                {:
-               		RESULT = Network.buildVariableNode(id);
+               		RESULT = Network.buildVariableNode(id, true);
                :};
 
 terminalPunctuation ::= DOT
