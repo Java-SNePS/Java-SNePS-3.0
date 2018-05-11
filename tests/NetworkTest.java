@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneps.exceptions.CustomException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;

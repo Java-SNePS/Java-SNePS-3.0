@@ -15,7 +15,7 @@ public class PropositionSetTest {
     private final Semantic semantic = new Semantic("Proposition");
 
     @Before
-    public void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n"+i, semantic);
     }
