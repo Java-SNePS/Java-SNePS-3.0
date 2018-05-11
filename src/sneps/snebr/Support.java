@@ -16,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import sneps.exceptions.CustomException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -103,7 +104,7 @@ public class Support {
 
 	// toString for UI SNePSlog
 	public static void main(String[] args)
-			throws NotAPropositionNodeException, NodeNotFoundInPropSetException, NodeNotFoundInNetworkException {
+			throws NotAPropositionNodeException, NodeNotFoundInPropSetException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		Semantic sem = new Semantic("PropositionNode");
 		Network net = new Network();
 		net.buildBaseNode("s", sem);// 0

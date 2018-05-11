@@ -47,6 +47,7 @@ import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
@@ -311,7 +312,7 @@ public class FXController implements Initializable {
 	}
 	
 	//Submit base node drawn in draw area
-		public void submitNewBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		public void submitNewBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 			String identifier = baseNodeIdentPop.getText();
 			String semType = baseNodeSemTyPop.getText();
 			Semantic semantic = new Semantic(semType);
@@ -539,7 +540,7 @@ public class FXController implements Initializable {
 	}
 	
 	//Creates a base node
-	public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		String nodeName = baseNodeID.getText();
 		String semType = baseNodeSemType.getText();
 		Semantic semantic = new Semantic(semType);
