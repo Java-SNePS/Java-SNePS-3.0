@@ -723,9 +723,6 @@ public class AP {
 		CaseFrame caseFrame = Network.defineCaseFrame(molecular.getDownCableSet().getCaseFrame().getSemanticClass(),
 				relations);
 		ArrayList<Wire> wires = new ArrayList<Wire>();
-		for (int j = 0; j < vars.size(); j++) {
-			wires.add(new Wire(forAll, vars.get(j)));
-		}
 		DownCableSet downCableSet = molecular.getDownCableSet();
 		Set<String> keys = downCableSet.getDownCables().keySet();
 		for (String key : keys) {
@@ -733,6 +730,9 @@ public class AP {
 			for (int k = 0; k < ns.size(); k++) {
 				wires.add(new Wire(Network.getRelation(key), ns.getNode(k)));
 			}
+		}
+		for (int j = 0; j < vars.size(); j++) {
+			wires.add(new Wire(forAll, vars.get(j)));
 		}
 		Node node = Network.buildMolecularNode(wires, caseFrame);
 		Molecular m = (Molecular) node.getTerm();
@@ -756,8 +756,10 @@ public class AP {
 					replaceWithVars(varNames, m.getDownCableSet());
 				} else {
 					String identifier = node.getIdentifier();
-					ns.removeNode(node);
-					ns.addNode(Network.buildVariableNode(identifier));
+					if (varNames.contains(identifier)) {
+						ns.removeNode(node);
+						ns.addNode(Network.buildVariableNode(identifier));
+					}
 				}
 			}
 		}
