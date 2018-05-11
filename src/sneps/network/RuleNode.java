@@ -1,3 +1,4 @@
+
 package sneps.network;
 
 import java.util.HashSet;
@@ -28,13 +29,14 @@ import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode {
+	private static final long serialVersionUID = 3891988384679269734L;
 	protected NodeSet antNodesWithVars;
 	protected NodeSet antNodesWithoutVars;
 	protected Set<Integer> antNodesWithVarsIDs;
 	protected Set<Integer> antNodesWithoutVarsIDs;
 	protected boolean shareVars;
 	protected VarNodeSet sharedVars;
-	protected ContextRuisSet contextRuisSet;
+	protected ContextRuisSet contextRuisSet;//TODO check
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
 	public RuleNode(Semantic sym){

@@ -12,21 +12,42 @@ public class ContextRuisSet{
 		ruisHandlers = new Hashtable<String, RuisHandler>();
 	}
 
+	/**
+	 * Adds the given RuisHandler by contextName into this.ruisHandlers
+	 * @param contextName
+	 * @param handler
+	 * @return
+	 */
 	public RuisHandler addHandlerSet(String contextName, RuisHandler handler){
 		return ruisHandlers.put(contextName, handler);
 	}
 	
-	public boolean hasContext(String contextID) {
-		RuisHandler set = ruisHandlers.get(contextID);
+	/**
+	 * Checks whether this.ruisHandlers has an entry for the given contextName
+	 * @param contextID
+	 * @return
+	 */
+	public boolean hasContext(String contextName) {
+		RuisHandler set = ruisHandlers.get(contextName);
 		if(set == null)
 			return false;
 		return true;
 	}
 
-	public RuisHandler getByContext(String contextID) {
-		return ruisHandlers.get(contextID);
+	/**
+	 * Gets the stored entry for the given contextName 
+	 * @param contextID
+	 * @return
+	 */
+	public RuisHandler getByContext(String contextName) {
+		return ruisHandlers.get(contextName);
 	}
 	
+	/**
+	 * Checks whether this.ruisHandlers contains the given handler
+	 * @param handler
+	 * @return
+	 */
 	public boolean contains(RuisHandler handler){
 		return ruisHandlers.contains(handler);
 	}

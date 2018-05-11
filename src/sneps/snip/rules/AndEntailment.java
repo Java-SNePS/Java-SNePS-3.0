@@ -122,6 +122,11 @@ public class AndEntailment extends RuleNode {
 		}
 	}
 
+	/**
+	 * Creates an appropriate PTree as a RuisHandler, builds it and inserts it into ContextRuisSet by Context
+	 * @param context
+	 * @return
+	 */
 	@Override
 	public RuisHandler createRuisHandler(String context) {
 		Context contxt = (Context) Controller.getContextByName(context);
