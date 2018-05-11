@@ -576,7 +576,7 @@ public class Network implements Serializable {
 		}
 		if (nodes.containsKey(identifier)) {
 			if(nodes.get(identifier).getTerm() instanceof Base) {
-				return (VariableNode) nodes.get(identifier);
+				return nodes.get(identifier);
 			}else {
 				throw new IllegalIdentifierException("A variable node already exists with this identifier.");
 			}
