@@ -26,7 +26,7 @@ public class NetworkTest {
     }
 
     @Test
-    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void buildBaseNode() throws IllegalIdentifierException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         Network.buildBaseNode("n0", semantic);
         Node n0 =  Network.getNode("n0");
         assertTrue(Network.getNodeById(0) instanceof PropositionNode);
