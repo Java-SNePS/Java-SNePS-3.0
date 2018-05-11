@@ -48,4 +48,11 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		ruis.addAll(ruis);
 	}
 
+	public boolean contains(RuleUseInfo rui){
+		return ruis.contains(rui);
+	}
+
+	public boolean isEmpty() {
+		return ruis.isEmpty();
+	}
 }

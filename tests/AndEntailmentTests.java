@@ -1,7 +1,9 @@
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,22 +22,41 @@ import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 import sneps.setClasses.ContextRuisSet;
+import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snebr.Support;
+import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.rules.AndEntailment;
 
 
 public class AndEntailmentTests {
 	private static AndEntailment and;
+	private static Node fido;
+	private static Node var;
+	private static Node dog;
+	private static RuleUseInfo rui;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Node var = new VariableNode(new Variable("X"));
-		Node fido = Network.buildBaseNode("Fido", new Semantic("Member"));
-		Node dog = Network.buildBaseNode("Dog", new Semantic("Class"));
+		var = new VariableNode(new Variable("X"));
+		fido = Network.buildBaseNode("Fido", new Semantic("Member"));
+		dog = Network.buildBaseNode("Dog", new Semantic("Class"));
+		
+		LinearSubstitutions sub = new LinearSubstitutions();
+		FlagNodeSet fns = new FlagNodeSet();
+		Set<Support> support = new HashSet<Support>();
+		support.add(new Support(0));
+		FlagNode fn = new FlagNode(dog, support, 1);
+		fns.putIn(fn);
+		fn = new FlagNode(fido, support, 1);
+		fns.putIn(fn);
+		rui = new RuleUseInfo(sub, 1, 0, fns);
 
 		NodeSet c1 = new NodeSet();
 		Relation rel = new Relation("Class", "type");
@@ -170,17 +191,14 @@ public class AndEntailmentTests {
 
 	@Test
 	public void testAddNotSentRui() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetConsequents() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetConsequents() {
-		fail("Not yet implemented");
+		and.addNotSentRui(rui, "default", dog);
+		Context contxt = (Context) Controller.getContextByName("default");
+		assertNotNull("AndEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
+				and.getContextRuiHandler(contxt));
+		assertTrue("AndEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
+				and.getContextRuiHandler(contxt).getPositiveNodes().contains(dog));
+		assertTrue("AndEntailment: addNotSentRui doesn't add a PTree in contextRuisHandlers", 
+				and.getContextRuiHandler(contxt)instanceof PTree);
 	}
 
 }
