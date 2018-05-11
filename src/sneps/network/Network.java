@@ -40,6 +40,7 @@ import sneps.exceptions.CaseFrameMissMatchException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -509,10 +510,15 @@ public class Network implements Serializable {
 	 * @param identifier
 	 *            the name of the new variable node.
 	 * @return the newly created variable node.
+	 * @throws IllegalIdentifierException 
 	 */
-	public static VariableNode buildVariableNode(String identifier) {
+	public static VariableNode buildVariableNode(String identifier) throws IllegalIdentifierException {
 		if (nodes.containsKey(identifier)) {
-			return (VariableNode) nodes.get(identifier);
+			if(nodes.get(identifier).getTerm() instanceof Variable) {
+				return (VariableNode) nodes.get(identifier);
+			}else {
+				throw new IllegalIdentifierException("A base node already exists with this identifier.");
+			}
 		} else {
 			Variable v = new Variable(identifier);
 			VariableNode node = new VariableNode(v);
@@ -556,23 +562,24 @@ public class Network implements Serializable {
 	 * @return the newly created base node.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
+	 * @throws IllegalIdentifierException 
 	 *
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in the
 	 *             network.
 	 */
 	public static Node buildBaseNode(String identifier, Semantic semantic)
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		if (semantic.getSemanticType().equals("Act")) {
 			// System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
 		}
 		if (nodes.containsKey(identifier)) {
-			// Already Present
-			return nodes.get(identifier);
-			// throw new CustomException("There is already another node with the same name
-			// existing in the network");
-
+			if(nodes.get(identifier).getTerm() instanceof Base) {
+				return nodes.get(identifier);
+			}else {
+				throw new IllegalIdentifierException("A variable node already exists with this identifier.");
+			}
 		} else {
 			Base b = new Base(identifier);
 			if (semantic.getSemanticType().equals("Proposition")) {
