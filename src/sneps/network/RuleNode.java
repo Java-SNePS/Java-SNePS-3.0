@@ -185,6 +185,9 @@ public abstract class RuleNode extends PropositionNode {
 		return null;
 	}
 
+	public int getAntSize(){
+		return antNodesWithoutVars.size() + antNodesWithVars.size();
+	}
 
 	public RuisHandler addContextRUIS(Context cntxt, RuisHandler cRuis) {
 		return contextRuisSet.addHandlerSet((String) cntxt.getName(), cRuis);

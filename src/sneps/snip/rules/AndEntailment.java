@@ -57,7 +57,7 @@ public class AndEntailment extends RuleNode {
 					1, 0, fns);
 			addNotSentRui(rui, contxt,signature);
 		}
-		if (contextRuisSet.getByContext(contxt).getPositiveNodes().size() >= antNodesWithoutVars.size() + antNodesWithVars.size())
+		if (contextRuisSet.getByContext(contxt).getPositiveNodes().size() >= getAntSize())
 			sendSavedRUIs(report.getContextName());
 	}
 

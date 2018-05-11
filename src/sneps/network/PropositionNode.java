@@ -241,4 +241,8 @@ public class PropositionNode extends Node {
 		return basicSupport.getAssumptionBasedSupport();
 	}
 
+	public ReportSet getNewInstances() {
+		return newInstances;
+	}
+
 }

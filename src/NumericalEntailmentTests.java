@@ -1,5 +1,3 @@
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -30,15 +28,17 @@ import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
-import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.rules.AndEntailment;
+import sneps.snip.rules.NumericalEntailment;
+import junit.framework.TestCase;
 
 
-public class AndEntailmentTests {
-	private static AndEntailment and;
+public class NumericalEntailmentTests extends TestCase {
+
+	private static NumericalEntailment numerical;
 	private static Node fido;
 	private static Node var;
 	private static Node dog;
@@ -87,45 +87,45 @@ public class AndEntailmentTests {
 		dc.add(new DownCable(rel, c1));
 		DownCableSet dcs = new DownCableSet(dc, new CaseFrame("string", rels));
 
-		and = new AndEntailment(new Open("Wat", dcs));
+		numerical = new NumericalEntailment(new Open("Wat", dcs));
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		Network.clearNetwork();
-		and = null;
+		numerical = null;
 	}
 
 	@Test
 	public void testApplyRuleHandler() {
-		and.setKnownInstances(and.getNewInstances());
-		and.getNewInstances().clear();
+		numerical.setKnownInstances(numerical.getNewInstances());
+		numerical.getNewInstances().clear();
 
-		and.applyRuleHandler(report, dog);
-		if(and.getAntSize() <= 1)
-			assertNotNull("AndEntailment: ApplyRuleHandler doesn't broadcast report",
-					((PropositionNode)and).getNewInstances());
+		numerical.applyRuleHandler(report, dog);
+		if(numerical.getAntSize() <= numerical.getI())
+			assertNotNull("NumericalEntailment: ApplyRuleHandler doesn't broadcast report",
+					((PropositionNode)numerical).getNewInstances());
 	}
 
 	@Test
 	public void testGetDownAntNodeSet() {
-		NodeSet downAntNodeSet = and.getDownAntNodeSet();
-		assertNotNull("AndEntailment: getDownAntNodeSet retuns null", downAntNodeSet);
-		assertTrue("AndEntailment: getDownAntNodeSet retuns an empty NodeSet", !downAntNodeSet.isEmpty());
+		NodeSet downAntNodeSet = numerical.getDownAntNodeSet();
+		assertNotNull("NumericalEntailment: getDownAntNodeSet retuns null", downAntNodeSet);
+		assertTrue("NumericalEntailment: getDownAntNodeSet retuns an empty NodeSet", !downAntNodeSet.isEmpty());
 	}
 
 	@Test
 	public void testCreateRuisHandler() {
 		Context contxt = (Context) Controller.getContextByName("default");
-		and.createRuisHandler("default");
-		RuisHandler handler = and.getContextRuiHandler(contxt);
-		assertNotNull("AndEntailment: CreateRuisHandler creats a null RuisHandler", handler);
-		assertTrue("AndEntailment: CreateRuisHandler doesn't create a PTree as a Handler", handler instanceof PTree);
+		numerical.createRuisHandler("default");
+		RuisHandler handler = numerical.getContextRuiHandler(contxt);
+		assertNotNull("NumericalEntailment: CreateRuisHandler creats a null RuisHandler", handler);
+		assertTrue("NumericalEntailment: CreateRuisHandler doesn't create an SIndex as a Handler", handler instanceof SIndex);
 	}
 
 	@Test
 	public void testAndEntailmentTerm() {
-		Class<AndEntailment> aClass = AndEntailment.class;
+		Class<NumericalEntailment> aClass = NumericalEntailment.class;
 		boolean thrown = false;
 		try {
 			aClass.getConstructor(new Class[] {
@@ -134,15 +134,15 @@ public class AndEntailmentTests {
 			thrown = true;
 		}
 		assertFalse(
-				"Missing constructor with Term parameter in AndEntailment class.",
+				"Missing constructor with Term parameter in NumericalEntailment class.",
 				thrown);
 
 		assertEquals(
-				"AndEntailment class should extend RuleNode",
+				"NumericalEntailment class should extend RuleNode",
 				RuleNode.class,
-				AndEntailment.class.getSuperclass());
+				NumericalEntailment.class.getSuperclass());
 
-		AndEntailment e = and;
+		NumericalEntailment e = numerical;
 		Field f;
 		try {
 			f = e.getClass().getDeclaredField("contextRuisSet");
@@ -151,7 +151,7 @@ public class AndEntailmentTests {
 			f.set(e, new ContextRuisSet());
 
 			assertNotNull(
-					"The constructor of AndEntailment class should initialize inherited variables correctly by calling super.",
+					"The constructor of NumericalEntailment class should initialize inherited variables correctly by calling super.",
 					f);
 		} catch(Exception x){
 			assertNull(x.getMessage(), x);
@@ -160,7 +160,7 @@ public class AndEntailmentTests {
 
 	@Test
 	public void testAndEntailmentSemanticTerm() {
-		Class<AndEntailment> aClass = AndEntailment.class;
+		Class<NumericalEntailment> aClass = NumericalEntailment.class;
 		boolean thrown = false;
 		try {
 			aClass.getConstructor(new Class[] {
@@ -169,15 +169,15 @@ public class AndEntailmentTests {
 			thrown = true;
 		}
 		assertFalse(
-				"Missing constructor with Semantic and Term parameters in AndEntailment class.",
+				"Missing constructor with Semantic numerical Term parameters in NumericalEntailment class.",
 				thrown);
 
 		assertEquals(
-				"AndEntailment class should extend RuleNode",
+				"NumericalEntailment class should extend RuleNode",
 				RuleNode.class,
-				AndEntailment.class.getSuperclass());
+				NumericalEntailment.class.getSuperclass());
 
-		AndEntailment e = and;
+		NumericalEntailment e = numerical;
 		Field f;
 		try {
 			f = e.getClass().getDeclaredField("contextRuisSet");
@@ -186,7 +186,7 @@ public class AndEntailmentTests {
 			f.set(e, new ContextRuisSet());
 
 			assertNotNull(
-					"The constructor of AndEntailment class should initialize inherited variables correctly by calling super.",
+					"The constructor of NumericalEntailment class should initialize inherited variables correctly by calling super.",
 					f);
 		} catch(Exception x){
 			assertNull(x.getMessage(), x);
@@ -195,14 +195,14 @@ public class AndEntailmentTests {
 
 	@Test
 	public void testAddNotSentRui() {
-		and.addNotSentRui(rui, "default", dog);
+		numerical.addNotSentRui(rui, "default", dog);
 		Context contxt = (Context) Controller.getContextByName("default");
-		assertNotNull("AndEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
-				and.getContextRuiHandler(contxt));
-		assertTrue("AndEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
-				and.getContextRuiHandler(contxt).getPositiveNodes().contains(dog));
-		assertTrue("AndEntailment: addNotSentRui doesn't add a PTree in contextRuisHandlers", 
-				and.getContextRuiHandler(contxt)instanceof PTree);
+		assertNotNull("NumericalEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
+				numerical.getContextRuiHandler(contxt));
+		assertTrue("NumericalEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
+				numerical.getContextRuiHandler(contxt).getPositiveNodes().contains(dog));
+		assertTrue("NumericalEntailment: addNotSentRui doesn't add a SIndex in contextRuisHandlers", 
+				numerical.getContextRuiHandler(contxt)instanceof SIndex);
 	}
 
 }
