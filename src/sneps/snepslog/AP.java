@@ -32,6 +32,7 @@ import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.IllegalAtomicSymbolException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.InvalidArgumentsException;
 import sneps.exceptions.InvalidWffNameException;
 import sneps.exceptions.ModeOneOnlyException;
@@ -226,10 +227,11 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, arg1));
@@ -276,10 +278,11 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
 			ArrayList<Node> consequents, String optionalI) throws CannotBuildNodeException, EquivalentNodeException,
-			CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (entailmentType) {
@@ -337,10 +340,11 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildNegatedTerm(Node node)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, node));
 		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", Semantic.infimum)));
@@ -366,10 +370,11 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
@@ -396,10 +401,11 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildSetTerm(String type, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int i = 0; i < arguments.size(); i++) {
@@ -457,10 +463,11 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
@@ -641,11 +648,12 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildWithsomeAllTerm(String type, ArrayList<Node> vars, ArrayList<Node> suchthat,
 			ArrayList<Node> doo, ArrayList<Node> elsee)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
@@ -709,10 +717,11 @@ public class AP {
 	 * @throws RelationDoesntExistException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws IllegalIdentifierException 
 	 */
 	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff)
 			throws CannotBuildNodeException, EquivalentNodeException, NodeCannotBeRemovedException,
-			RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);
@@ -745,7 +754,7 @@ public class AP {
 		return node;
 	}
 
-	private static void replaceWithVars(ArrayList<String> varNames, DownCableSet downCableSet) {
+	private static void replaceWithVars(ArrayList<String> varNames, DownCableSet downCableSet) throws IllegalIdentifierException {
 		Set<String> keys = downCableSet.getDownCables().keySet();
 		for (String key : keys) {
 			NodeSet ns = downCableSet.getDownCables().get(key).getNodeSet();
