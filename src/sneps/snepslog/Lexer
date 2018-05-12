@@ -57,6 +57,7 @@ EXPERT=(expert)
 LIST_ASSERTED_WFFS=(list-asserted-wffs)
 LIST_CONTEXTS=(list-contexts)
 LIST_TERMS=(list-terms)
+LIST_WFFS=(list-wffs)
 LOAD=(load)
 NORMAL=(normal)
 PERFORM=(perform)
@@ -205,6 +206,9 @@ IDENTIFIER=([A-Za-z][A-Za-z0-9_"-"]*)
 }
 <YYINITIAL> {LIST_TERMS} { 
 	return (new Symbol(sym.LIST_TERMS,yytext()));
+}
+<YYINITIAL> {LIST_WFFS} { 
+	return (new Symbol(sym.LIST_WFFS,yytext()));
 }
 <YYINITIAL> {LOAD} { 
 	return (new Symbol(sym.LOAD,yytext()));

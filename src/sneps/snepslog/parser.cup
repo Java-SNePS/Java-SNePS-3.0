@@ -82,6 +82,7 @@ terminal ACTIVATE,
          LIST_ASSERTED_WFFS,
          LIST_CONTEXTS,
          LIST_TERMS,
+         LIST_WFFS,
          LOAD,
          NORMAL,
          PERFORM,
@@ -759,6 +760,10 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 					} catch (Exception e) {
 						RESULT = e.getMessage();
 					}	
+				:}
+				| LIST_WFFS optionalDot
+				{: 
+					RESULT = "";
 				:}
 				| LOAD FILEPATH:fp optionalDot
 				{: 
