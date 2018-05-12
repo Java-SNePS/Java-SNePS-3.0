@@ -105,25 +105,20 @@ public class Context {
 
     /**
      * Checks if a propositions is asserted in this context
+     *
      * @param p the proposition to be checked for assertion.
      * @return <code>true</code> if the proposition exists, otherwise <code>false</code>
-     * @throws NotAPropositionNodeException If the node p is not a proposition.
+     * @throws NotAPropositionNodeException   If the node p is not a proposition.
      * @throws NodeNotFoundInNetworkException If the node p doesn't exist in the network.
      */
     public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int hyp = p.getId();
 
-        if (Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) < 0) {
-            return true;
-        } else if (isSupported(p)) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) > 0
+                || isSupported(p);
     }
 
-    private boolean isSupported(PropositionNode node) {
+    public boolean isSupported(PropositionNode node) {
         Collection<PropositionSet> assumptionSet = node.getBasicSupport()
                 .getAssumptionBasedSupport()
                 .values();
@@ -148,10 +143,10 @@ public class Context {
         }
         for (PropositionNode node : allPropositionNodes) {
             try {
-                if (Arrays.binarySearch(hyps, node.getId()) < 0) {
-                    asserted.add(node.getId());
+                if (Arrays.binarySearch(hyps, node.getId()) > 0) {
+                    asserted = asserted.add(node.getId());
                 } else if (isSupported(node)) {
-                    asserted.add(node.getId());
+                    asserted = asserted.add(node.getId());
                 }
             } catch (NodeNotFoundInNetworkException e1) {
                 return null;
@@ -163,6 +158,23 @@ public class Context {
         }
 
         return asserted;
+    }
+    
+    /**
+     * When Removing a node from context, Therefore we must remove it from this Context's nodes Supports also
+     * @param PropositionNode, The node to be removed from all Context's Supports
+     * @throws NodeNotFoundInNetworkException 
+     * @throws NotAPropositionNodeException 
+     */
+    public void removeNodeFromContext(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	
+    	//Remove this node from Context!! Omar Part
+    	//.........................................
+    	
+    	//Remove this node from All Context's nodes Supports!! Amr Part
+    	int[] contextSet = PropositionSet.getPropsSafely(hyps /*TODO change hyps to be the new set without the propNode*/); //The set of hyps after Omar removes from it the propNode!!
+    	for(int i = 0; i< contextSet.length; i++)
+    		((PropositionNode)Network.getNodeById(contextSet[i])).removeNodeFromSupports(propNode);
     }
 
     /**

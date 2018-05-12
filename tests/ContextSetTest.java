@@ -1,8 +1,6 @@
 package tests;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.IllegalIdentifierException;
