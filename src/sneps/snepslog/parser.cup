@@ -9,6 +9,7 @@ import java.util.Set;
 
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.VariableNode;
 import sneps.network.Network;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
@@ -1541,12 +1542,14 @@ wffName ::= WFF:w
 	    
 qvar ::= QUESTION_MARK IDENTIFIER:id
 	 {:
-		RESULT = Network.buildVariableNode(id, false);
+		RESULT = Network.buildVariableNode(id);
 	 :};
 
 snepslogSymbol ::= IDENTIFIER:id
                {:
-               		RESULT = Network.buildVariableNode(id, true);
+               		VariableNode vNode = Network.buildVariableNode(id);
+					vNode.setSnepslogFlag(true);
+					RESULT = vNode;
                :};
 
 terminalPunctuation ::= DOT

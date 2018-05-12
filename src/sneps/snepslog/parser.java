@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.VariableNode;
 import sneps.network.Network;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
@@ -3672,7 +3673,7 @@ class CUP$parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-		RESULT = Network.buildVariableNode(id, false);
+		RESULT = Network.buildVariableNode(id);
 	 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("qvar",36, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -3686,7 +3687,9 @@ class CUP$parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-               		RESULT = Network.buildVariableNode(id, true);
+               		VariableNode vNode = Network.buildVariableNode(id);
+					vNode.setSnepslogFlag(true);
+					RESULT = vNode;
                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogSymbol",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

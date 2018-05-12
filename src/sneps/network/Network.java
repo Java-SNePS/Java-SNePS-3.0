@@ -512,14 +512,11 @@ public class Network implements Serializable {
 	 * @return the newly created variable node.
 	 * @throws IllegalIdentifierException
 	 */
-	public static VariableNode buildVariableNode(String identifier, boolean snepslogFlag)
+	public static VariableNode buildVariableNode(String identifier)
 			throws IllegalIdentifierException {
 		if (nodes.containsKey(identifier)) {
 			if (nodes.get(identifier).getTerm() instanceof Variable) {
 				VariableNode vNode = (VariableNode) nodes.get(identifier);
-				if (snepslogFlag) {
-					vNode.setSnepslogFlag(true);
-				}
 				return vNode;
 			} else {
 				throw new IllegalIdentifierException("A base node already exists with this identifier.");
@@ -527,9 +524,6 @@ public class Network implements Serializable {
 		} else {
 			Variable v = new Variable(identifier);
 			VariableNode node = new VariableNode(v);
-			if (snepslogFlag) {
-				node.setSnepslogFlag(true);
-			}
 			nodes.put(node.getIdentifier(), node);
 			nodesIndex.add(node.getId(), node);
 			return node;
