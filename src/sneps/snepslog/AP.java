@@ -1057,30 +1057,8 @@ public class AP {
 	/**
 	 * Docs goes here
 	 */
-	protected static String getBrMode() {
-		// TODO A wrapper for the method returning the current belief revision mode.
-		return "";
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void setBrMode(String mode) {
-		// TODO A wrapper for the method setting the belief revision mode.
-	}
-
-	/**
-	 * Docs goes here
-	 */
 	protected static void perform(Node node) {
 		// TODO A wrapper for perform.
-	}
-
-	/**
-	 * Docs goes here
-	 */
-	protected static void removeFromContext(String context, PropositionSet hyps) {
-		// TODO A wrapper for the method removing hyps from context.
 	}
 
 	/**
