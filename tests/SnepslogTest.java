@@ -43,6 +43,7 @@ public class SnepslogTest {
 	public void before() {
 		Network.defineDefaults();
 		AP.executeSnepslogCommand("clearkb");
+		AP.executeSnepslogCommand("br-mode manual");
 		AP.executeSnepslogCommand("set-mode-1");
 		AP.executeSnepslogCommand("normal");
 	}
@@ -50,6 +51,7 @@ public class SnepslogTest {
 	@After
 	public void after() {
 		AP.executeSnepslogCommand("clearkb");
+		AP.executeSnepslogCommand("br-mode manual");
 		AP.executeSnepslogCommand("set-mode-1");
 		AP.executeSnepslogCommand("normal");
 	}
@@ -603,6 +605,14 @@ public class SnepslogTest {
 			PropositionNode pNode = (PropositionNode) n;
 			assertTrue(!Controller.getContextByName("default").isAsserted(pNode));
 		}
+	}
+	
+	@Test
+	public void testBrMode() throws NodeNotFoundInNetworkException, NotAPropositionNodeException {
+		AP.executeSnepslogCommand("br-mode auto");
+		assertTrue(Controller.isAutomaticBR());
+		AP.executeSnepslogCommand("br-mode manual");
+		assertTrue(!Controller.isAutomaticBR());
 	}
 	
 }
