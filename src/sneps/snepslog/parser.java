@@ -1859,7 +1859,15 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-					RESULT = "";
+					try{
+						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.allAsserted()));
+					}  catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

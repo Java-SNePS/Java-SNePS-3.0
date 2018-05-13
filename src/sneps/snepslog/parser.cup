@@ -653,7 +653,15 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| LIST_WFFS optionalDot
 				{: 
-					RESULT = "";
+					try{
+						RESULT = AP.displayWffs(AP.propositionSetToArrayList(Controller.allAsserted()));
+					}  catch (NotAPropositionNodeException e) {
+						RESULT = e.getMessage();
+					} catch (NodeNotFoundInNetworkException e) {
+						RESULT = e.getMessage();
+					} catch (Exception e) {
+						RESULT = e.getMessage();
+					}	
 				:}
 				| LOAD FILEPATH:fp optionalDot
 				{: 
