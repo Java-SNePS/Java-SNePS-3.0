@@ -659,7 +659,7 @@ public class AP {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
 		case "withsome":
-			wires.add(new Wire(Relation.action, Network.buildBaseNode("withsome", Semantic.act)));
+			wires.add(new Wire(Relation.action, Network.buildBaseNode("withsome", SemanticHierarchy.createSemanticType("Action"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
@@ -679,7 +679,7 @@ public class AP {
 			}
 			break;
 		case "withall":
-			wires.add(new Wire(Relation.action, Network.buildBaseNode("withall", Semantic.act)));
+			wires.add(new Wire(Relation.action, Network.buildBaseNode("withall", SemanticHierarchy.createSemanticType("Action"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
@@ -700,6 +700,12 @@ public class AP {
 			break;
 		}
 		Node node = Network.buildMolecularNode(wires, caseFrame);
+		Molecular m = (Molecular) node.getTerm();
+		ArrayList<String> varNames = new ArrayList<String>();
+		for (int i = 0; i < vars.size(); i++) {
+			varNames.add(vars.get(i).getIdentifier());
+		}
+		resetTheFlags(varNames, m.getDownCableSet());
 		return node;
 	}
 
@@ -1094,7 +1100,7 @@ public class AP {
 		return output;
 	}
 
-	public static void main(String[] args) throws NodeNotFoundInNetworkException {
+	public static void main(String[] args) {
 		Network.defineDefaults();
 		System.out.println(AP.executeSnepslogCommand("all(x)(dog(x)=>animal(x))."));
 	}
