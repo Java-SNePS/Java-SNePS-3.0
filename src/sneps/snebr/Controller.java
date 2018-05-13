@@ -17,6 +17,7 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static Hashtable<Integer, BitSet> minimalNoGoods = new Hashtable<>();
     private static String conflictingContext = null;
+    private static int conflictingHyp;
 
     /**
      * Creates a new Context given its name and adds it to SNeBR's ContextSet.
@@ -39,7 +40,6 @@ public class Controller {
     public static Context createContext() {
         return new Context();
     }
-
 
     /**
      * Clears the knowledge base
@@ -103,7 +103,6 @@ public class Controller {
         Context newContext = new Context(contextName, hypSet);
 
         return contextSet.add(newContext);
-
     }
 
     /**
@@ -185,20 +184,28 @@ public class Controller {
         return "Context: " + contextName + "\n" + contextSet.getContext(contextName).getHypothesisSet().toString();
     }
 
-//    public static void checkForContradiction(int hyp, Context c) throws NodeNotFoundInNetworkException {
+    public static void checkForContradiction(int hyp, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 //        check in minimalNoGoods
-
-//        if found then contradiction
-
-//        else check in upcable and down cable
-
-//        if found then contradiction and update minimalNoGoods
-
-//        else
-
 //
-//        PropositionNode p = (PropositionNode) Network.getNodeById(hyp);
-//        UpCableSet up = p.getUpCableSet();
+//        if found then contradiction
+//
+//        else check in upcable and down cable
+//
+//        if found then contradiction and update minimalNoGoods
+//
+//        else
+//
+//
+
+        PropositionSet temp = c.getHypothesisSet().add(hyp);
+
+        // temp.add()
+
+        PropositionNode p = (PropositionNode) Network.getNodeById(hyp);
+
+
+
+        UpCableSet up = p.getUpCableSet();
 //        if (up.get)
 //        DownCableSet down;
 //        if (p.getTerm() instanceof Molecular) {
@@ -206,18 +213,30 @@ public class Controller {
 //        }
 //        {3,5}
 //        {{1,3,7}, {3,5}, {}}
-//    }
-//
-//    public static void handleContradiction(PropositionSet hypsToBeRemoved) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException {
-//        if (hypsToBeRemoved != null) {
-//            removeHypsFromContext(hypsToBeRemoved, conflictingContext);
-//        }
-//        int[] props = PropositionSet.getPropsSafely(hypsToBeRemoved);
-//        for (int i = 0; i < props.length; i++) {
-//            minimalNoGoods.keySet().si
-//            minimalNoGoods.remove(props[i]);
-//        }
-//    }
+    }
+
+    public static void handleContradiction(PropositionSet hypsToBeRemoved, boolean ignore) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException {
+      if (ignore) {
+          Context inconsistentContext = new Context(conflictingContext, contextSet.getContext(conflictingContext).getHypothesisSet().add(conflictingHyp));
+          contextSet.add(inconsistentContext);
+          return;
+      }
+
+        if (hypsToBeRemoved == null) {
+            return;
+        }
+
+        removeHypsFromContext(hypsToBeRemoved, conflictingContext);
+
+    }
+
+    /*private static void removeFromMinimalNoGoods(int [] hyps) {
+        BitSet accumlater = minimalNoGoods.get(hyps[0]);
+
+        for (int i = 1; i < hyps.length; i++) {
+            accumlater.and(minimalNoGoods.get(hyps[i]));
+        }
+    }*/
 
     public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         Context c = contextSet.getContext(contextName);
