@@ -94,9 +94,20 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		return nodes.iterator();
 	}
 
-	/*@Override
+	/**
+	 * This method overrides the default toString method inherited from the
+	 * Object class.
+	 */
+	@Override
 	public String toString() {
-		
-	}*/
+		String s = "{";
+		for (int i = 0; i < this.nodes.size(); i++) {
+			s += this.nodes.get(i).toString();
+			if (i < this.nodes.size() - 1)
+				s += " ";
+		}
+		s += "}";
+		return s;
+	}
 	
 }
