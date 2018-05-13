@@ -16,12 +16,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticNotFoundInNetworkException;
 import sneps.network.Network;
 import sneps.network.Node;
+import sneps.network.PropositionNode;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.SemanticHierarchy;
@@ -53,7 +55,7 @@ public class SnepslogTest {
 	}
 
 	@Test
-	public void testWffDot() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public void testWffDot() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		AP.executeSnepslogCommand("dog(Fido).");
 		PropositionSet ps = Controller.getCurrentContext().allAsserted();
 		boolean success = false;
@@ -78,7 +80,7 @@ public class SnepslogTest {
 	}
 
 	@Test
-	public void testAddToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public void testAddToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		AP.executeSnepslogCommand("add-to-context default {dog(Fido), animal(Fido)}");
 		PropositionSet ps = Controller.getCurrentContext().allAsserted();
 		boolean success1 = false;
@@ -589,6 +591,17 @@ public class SnepslogTest {
 
 		if (!(success1 && success2)) {
 			fail("failure to build this SNeRETerm!}");
+		}
+	}
+	
+	@Test
+	public void testRemoveFromContext() throws NodeNotFoundInNetworkException, NotAPropositionNodeException {
+		AP.executeSnepslogCommand("dog(Fido).");
+		AP.executeSnepslogCommand("remove-from-context default wff1");
+		Node n = Network.getNode("M1");
+		if (n instanceof PropositionNode) {
+			PropositionNode pNode = (PropositionNode) n;
+			assertTrue(!Controller.getContextByName("default").isAsserted(pNode));
 		}
 	}
 	
