@@ -1442,7 +1442,7 @@ atomicTerm ::= wffName:wn
            		RESULT = w;
            :};
 
-withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
+withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars CLOSE_PARAN OPEN_PARAN termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
              		try{
@@ -1455,7 +1455,7 @@ withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat 
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              :}
-             | WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
+             | WITHSOME OPEN_PARAN symbolSequence:vars CLOSE_PARAN OPEN_PARAN termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
              		try{
@@ -1469,7 +1469,7 @@ withsomeTerm ::= WITHSOME OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat 
            		}
              :};
              
-withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
+withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars CLOSE_PARAN OPEN_PARAN termSet:suchthat COMMA termSet:doo COMMA termSet:elsee CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
              		try{
@@ -1482,7 +1482,7 @@ withallTerm ::= WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat CO
            			throw new ModeThreeOnlyException("SNeRE in SNePSLOG is only allowed in Mode 3");
            		}
              :}
-             | WITHALL OPEN_PARAN symbolSequence:vars COMMA termSet:suchthat COMMA termSet:doo CLOSE_PARAN
+             | WITHALL OPEN_PARAN symbolSequence:vars CLOSE_PARAN OPEN_PARAN termSet:suchthat COMMA termSet:doo CLOSE_PARAN
              {:
              	if(AP.getSnepslogMode()==3){
              		try{
