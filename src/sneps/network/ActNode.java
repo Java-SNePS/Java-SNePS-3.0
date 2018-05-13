@@ -2,9 +2,13 @@ package sneps.network;
 
 import java.io.Serializable;
 
+import sneps.network.classes.Semantic;
+import sneps.network.classes.term.Term;
+
 public class ActNode extends Node implements Serializable{
 
-	public ActNode() {
+	public ActNode(Semantic sem, Term term) {
+		super(sem, term);
 	}
 
 	public ActNode getAgenda() {

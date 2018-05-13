@@ -1,9 +1,7 @@
 package sneps.snebr;
 
 import sneps.exceptions.*;
-import sneps.network.Network;
 import sneps.network.PropositionNode;
-import sneps.network.classes.Relation;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.io.File;
@@ -14,7 +12,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Set;
 
 public class Controller {

@@ -62,6 +62,7 @@ import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -1688,6 +1689,9 @@ public class FXController implements Initializable {
 				} catch (NodeNotFoundInNetworkException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (IllegalIdentifierException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
@@ -2436,7 +2440,7 @@ public class FXController implements Initializable {
 		Node node = null;
 		try {
 			node = Network.buildBaseNode(nodeName, semantic);
-		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | IllegalIdentifierException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
