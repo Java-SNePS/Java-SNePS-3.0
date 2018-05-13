@@ -1,6 +1,7 @@
 package sneps.snebr;
 
 import sneps.exceptions.*;
+import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
@@ -37,7 +38,7 @@ public class Controller {
     /**
      * Clears the knowledge base
      */
-    public static void clearKB() {
+    public static void clearSNeBR() {
         contextSet.clear();
         currContext = "default";
         contextSet.add(new Context(currContext));

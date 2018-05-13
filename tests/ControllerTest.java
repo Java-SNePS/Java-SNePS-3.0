@@ -1,10 +1,7 @@
 package tests;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
 import static org.junit.Assert.*;
 
 import sneps.exceptions.*;
@@ -14,28 +11,33 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
-    private static final Semantic semantic = new Semantic("PropositionNode");
+    private static final Semantic semantic = new Semantic("Proposition");
 
-    @Before
-    public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
-        Controller.createContext(testContextName);
+    @BeforeClass
+    public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n"+i, semantic);
     }
 
+    @Before
+    public void beforeEach() throws DuplicateContextNameException {
+        Controller.createContext(testContextName);
+    }
 
     @After
-    public void tearDown(){
-        Controller.clearKB();
+    public void afterEach() {
+        Controller.clearSNeBR();
+    }
+
+
+    @AfterClass
+    public static void tearDown(){
+        Network.clearNetwork();
     }
 
     @Test
@@ -159,16 +161,26 @@ public class ControllerTest {
         ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(p);
         assertTrue(Controller.getCurrentContext().isAsserted((PropositionNode)Network.getNodeById(12)));
         assertTrue(Controller.getCurrentContext().isAsserted((PropositionNode)Network.getNodeById(58)));
+        assertTrue(Controller.getCurrentContext().isAsserted((PropositionNode)Network.getNodeById(10)));
+        assertFalse(Controller.getCurrentContext().isAsserted((PropositionNode) Network.getNodeById(37)));
+    }
 
+    @Test
+    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException {
+        ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(new PropositionSet(new int [] {4,5,7}));
+        PropositionSet p = new PropositionSet(new int [] {4,5,7});
+        Controller.addPropsToCurrentContext(p);
+        assertTrue(Controller.getCurrentContext().isSupported((PropositionNode) Network.getNodeById(10)));
+        assertFalse(Controller.getCurrentContext().isAsserted((PropositionNode) Network.getNodeById(37)));
     }
 
     @Test
     public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException {
         PropositionSet p = new PropositionSet(new int [] {12, 58, 10});
-        PropositionSet supp = new PropositionSet(new int [] {12,58});
+        PropositionSet support = new PropositionSet(new int [] {12,58});
         PropositionSet p1 = new PropositionSet(new int [] {12, 58, 32});
         Controller.addPropsToCurrentContext(p1);
-        ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(supp);
+        ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(support);
         assertTrue(p.isSubSet(Controller.getCurrentContext().allAsserted()));
     }
 

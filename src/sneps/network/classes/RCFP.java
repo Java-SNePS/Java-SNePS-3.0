@@ -5,7 +5,7 @@ import sneps.network.Network;
 
 public class RCFP {
 	public static RCFP andAnt, ant, cq, arg, min, max, i, threshMax, thresh, action, obj, precondition, act, doo, iff,
-			when, whenever, plan, goal, effect, vars, suchthat, elsee, withsome, withall, obj1, obj2, obj3, obj4, obj5,
+			when, whenever, plan, goal, effect, vars, suchthat, elsee, obj1, obj2, obj3, obj4, obj5,
 			obj6, obj7, obj8, obj9, obj10;
 
 	/**
@@ -119,8 +119,6 @@ public class RCFP {
 		suchthat = Network.defineRelationPropertiesForCF(Relation.suchthat, "none", 1);
 		vars = Network.defineRelationPropertiesForCF(Relation.vars, "none", 1);
 		elsee = Network.defineRelationPropertiesForCF(Relation.elsee, "none", 1);
-		withsome = Network.defineRelationPropertiesForCF(Relation.withsome, "none", 1);
-		withall = Network.defineRelationPropertiesForCF(Relation.withall, "none", 1);
 
 	}
 
