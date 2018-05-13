@@ -10,6 +10,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -18,7 +19,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.Node;
 
-public class ComposePath extends Path{
+public class ComposePath extends Path implements Serializable{
 
 	/**
 	 * a LinkedList of paths included in this composed path. 

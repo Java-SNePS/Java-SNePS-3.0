@@ -1,11 +1,13 @@
 package sneps.network;
 
+import java.io.Serializable;
+
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 
-public class VariableNode extends Node {
+public class VariableNode extends Node implements Serializable{
 	private VariableSet freeVariables;
 
 	private boolean snepslogFlag;

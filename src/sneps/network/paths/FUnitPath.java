@@ -11,6 +11,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -22,7 +23,7 @@ import sneps.network.Node;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Molecular;
 
-public class FUnitPath extends Path {
+public class FUnitPath extends Path implements Serializable{
 	
 	/**
 	 * The relation that labels the arc of this forward unit path

@@ -1,5 +1,6 @@
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.network.Node;
@@ -7,7 +8,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.snebr.Context;
 
-public abstract class Path {
+public abstract class Path implements Serializable{
 
 	/**
 	 * This method follows the current path starting at the given 

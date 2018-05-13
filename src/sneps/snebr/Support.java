@@ -1,5 +1,6 @@
 package sneps.snebr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
 
-public class Support {
+public class Support implements Serializable{
 	private int id;
 	private Hashtable<String, PropositionSet> justificationSupport;
 	private Hashtable<String, PropositionSet> assumptionBasedSupport;
