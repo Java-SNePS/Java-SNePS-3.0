@@ -38,7 +38,7 @@ public class Context implements Serializable{
     }
 
     /**
-     * Constructs a new Context from another Context
+         * Constructs a new Context from another Context
      *
      * @param c the context that the new Context is constructed from
      */
@@ -131,30 +131,16 @@ public class Context implements Serializable{
         return false;
     }
 
-    public PropositionSet allAsserted() {
+    public PropositionSet allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
         Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
         PropositionSet asserted = new PropositionSet();
         int[] hyps;
-        try {
-            hyps = PropositionSet.getPropsSafely(this.hyps);
-        } catch (NotAPropositionNodeException e) {
-            return null;
-        } catch (NodeNotFoundInNetworkException e1) {
-            return null;
-        }
+        hyps = PropositionSet.getPropsSafely(this.hyps);
         for (PropositionNode node : allPropositionNodes) {
-            try {
-                if (Arrays.binarySearch(hyps, node.getId()) > 0) {
-                    asserted = asserted.add(node.getId());
-                } else if (isSupported(node)) {
-                    asserted = asserted.add(node.getId());
-                }
-            } catch (NodeNotFoundInNetworkException e1) {
-                return null;
-            } catch (NotAPropositionNodeException e) {
-                return null;
-            } catch (DuplicatePropositionException e) {
-                System.err.println(e.getMessage());
+            if (Arrays.binarySearch(hyps, node.getId()) > 0) {
+                asserted = asserted.add(node.getId());
+            } else if (isSupported(node)) {
+                asserted = asserted.add(node.getId());
             }
         }
 
