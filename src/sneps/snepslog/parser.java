@@ -1413,7 +1413,7 @@ class CUP$parser$actions {
               String RESULT =null;
 		 
 					Controller.setAutomaticBR(true);
-					RESULT = "";
+					RESULT = "Belief revision mode will now be set to auto.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1425,7 +1425,7 @@ class CUP$parser$actions {
               String RESULT =null;
 		 
 					Controller.setAutomaticBR(false);
-					RESULT = "";
+					RESULT = "Belief revision mode will now be set to manual.";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

@@ -453,12 +453,12 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				| BR_MODE AUTO optionalDot
 				{: 
 					Controller.setAutomaticBR(true);
-					RESULT = "";
+					RESULT = "Belief revision mode will now be set to auto.";
 				:}
 				| BR_MODE MANUAL optionalDot
 				{: 
 					Controller.setAutomaticBR(false);
-					RESULT = "";
+					RESULT = "Belief revision mode will now be set to manual.";
 				:}
 				| CLEAR_INFER optionalDot
 				{: 
