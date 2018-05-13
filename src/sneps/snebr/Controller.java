@@ -1,7 +1,6 @@
 package sneps.snebr;
 
 import sneps.exceptions.*;
-import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
@@ -18,7 +17,7 @@ public class Controller {
      * @return the newly Created Context object
      * @throws DuplicateContextNameException If a context with the same name exists in SNeBR's ContextSet
      */
-    public static Context createContext(String contextName) throws DuplicateContextNameException {
+    public static Context createContext(String contextName) throws DuplicateContextNameException, ContradictionFoundException {
         if (contextSet.getContext(contextName) != null)
             throw new DuplicateContextNameException(contextName);
 
@@ -65,7 +64,7 @@ public class Controller {
      * @return the created Context
      * @throws DuplicateContextNameException if a Context with this name exists in SNeBr's ContextSet
      */
-    public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException {
+    public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException, ContradictionFoundException {
         if (contextSet.getContext(contextName) != null) {
             throw new DuplicateContextNameException(contextName);
         }
@@ -175,7 +174,7 @@ public class Controller {
      * @param contextName the name of the Context to be set as the current Context
      * @return Context object containing the current Context
      */
-    public static Context setCurrentContext(String contextName) throws DuplicateContextNameException {
+    public static Context setCurrentContext(String contextName) throws DuplicateContextNameException, ContradictionFoundException {
         Context context = contextSet.getContext(contextName);
         if (context == null) {
             context = createContext(contextName);
