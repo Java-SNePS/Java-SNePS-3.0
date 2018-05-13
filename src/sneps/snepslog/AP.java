@@ -841,6 +841,36 @@ public class AP {
 	}
 
 	/**
+	 * This method converts a group of Nodes into a String representation.
+	 * 
+	 * @param terms
+	 *            an ArrayList of some nodes.
+	 * @return a String holding the representation.
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 */
+	protected static String displayTerms(ArrayList<Node> terms)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		String output = "";
+		for (int i = 0; i < terms.size(); i++) {
+			if (terms.get(i).getTerm() instanceof Molecular) {
+				String temp = "";
+				if (terms.get(i) instanceof PropositionNode) {
+					PropositionNode pNode = (PropositionNode) terms.get(i);
+					if (Controller.getCurrentContext().isAsserted(pNode)) {
+						temp += "!";
+					}
+				}
+				output += terms.get(i).getIdentifier() + temp + ": " + terms.get(i).toString() + '\n';
+			}
+		}
+		if (output.length() != 0) {
+			output = output.substring(0, output.length() - 1);
+		}
+		return output;
+	}
+	
+	/**
 	 * A method to convert an ArrayList of Nodes to a PropositionSet.
 	 */
 	protected static PropositionSet arrayListToPropositionSet(ArrayList<Node> nodes)
