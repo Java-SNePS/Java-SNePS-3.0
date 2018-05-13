@@ -18,6 +18,17 @@ public class SIndex extends RuisHandler {
 	private VarNodeSet sharedVars;
 	private NodeSet nodesWithVars;
 
+	/**
+	 * 
+	 * @param context
+	 * 			context Name
+	 * @param SharedVars
+	 * 			set<integers>
+	 * @param ruisType
+	 * 			byte
+	 * @param parentNodes
+	 * 			Set of nodes
+	 */
 	public SIndex(String context, VarNodeSet SharedVars, byte ruisType, NodeSet parentNodes) {
 		super(context);
 		this.sharedVars=SharedVars;
@@ -25,6 +36,17 @@ public class SIndex extends RuisHandler {
 		map = new Hashtable<Substitutions, RuisHandler>();
 	}
 
+	/**
+	 * Insert the rule use info in the map based on the substitution.
+	 * If this rule use info is null from the map, a new one is created based on the type
+	 * and if not, it will be replaced by combining this rui and the existing one
+	 * 
+	 * @param rui
+	 * 			Rule Use Info
+	 * 
+	 * 
+	 * 
+	 */
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
 		
 		RuisHandler trui= map.get(rui.getSub());
@@ -37,6 +59,11 @@ public class SIndex extends RuisHandler {
 		return res;
 	}
 
+	/**
+	 * create a new rule use info based on its type
+	 * 
+	 */
+	
 	private RuisHandler getNewRUIS() {
 		RuisHandler tempRui = null;
 		switch (ruiType) {
@@ -55,6 +82,12 @@ public class SIndex extends RuisHandler {
 		return tempRui;
 	}
 
+	/**
+	 * get the size of the hashtable
+	 * used in testing
+	 * 
+	 * @return int
+	 */
 	
 	public int getSize() {
 		return map.size();

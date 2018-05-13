@@ -37,6 +37,11 @@ public class AndOrNode extends RuleNode {
 		return args;
 	}
 
+	/**
+	 * Constructor for the AndOr Entailment
+	 * @param syn
+	 */
+	
 	public AndOrNode(Term syn) {
 		super(syn);
 		NodeSet minNode = this.getDownNodeSet("min");
@@ -49,6 +54,12 @@ public class AndOrNode extends RuleNode {
 		this.processNodes(antNodes);
 	}
 
+	/**
+	 * Constructor for the AndOr Entailment
+	 * @param sym
+	 * @param syn
+	 */
+	
 	public AndOrNode(Semantic sym, Term syn) {
 		super(sym, syn);
 		NodeSet minNode = this.getDownNodeSet("min");
@@ -62,8 +73,12 @@ public class AndOrNode extends RuleNode {
 	}
 	
 	
-	
-	
+	/**
+	 * Checks the condition for firing the rule.
+	 * If the conditions are true, the sign is set to true
+	 * Then a new report is created with the sign that was set.
+	 * The report is broadcasted to the ants.
+	 */
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
 		if (tRui.getNegCount() == args - min)
@@ -93,7 +108,10 @@ public class AndOrNode extends RuleNode {
 		return this.getDownNodeSet("Xant");
 	}
 
-	
+	/**
+	 * Create the SIndex within the context
+	 * @param ContextName
+	 */
 	protected RuisHandler createRuisHandler(String contextName) {
 		Context contxt = (Context) Controller.getContextByName(contextName);
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0, getDominatingRules());

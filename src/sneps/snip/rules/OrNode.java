@@ -20,18 +20,32 @@ public class OrNode extends RuleNode {
 	private int ant,cq;
 	
 
+	/**
+	 *Constructor for the Or Entailment
+	 * @param syn
+	 */
 	public OrNode(Term syn) {
 		super(syn);
 		ant = getDownNodeSet("ant").size();
 		cq = getDownNodeSet("cq").size();
 	}
 
+	
+	/**
+	 * Constructor for the Or Entailment
+	 * @param sym
+	 * @param syn
+	 */
 	public OrNode(Semantic sym, Term syn) {
 		super(sym, syn);
 		ant = getDownNodeSet("ant").size();
 		cq = getDownNodeSet("cq").size();
 	}
 	
+	/**
+	 * Checks if the report received is true
+	 * If yes, the report is sent to the ants with the true report
+	 */
 	public void applyRuleHandler(Report report, Node node) {
 		
 		if(report.isPositive()) {
