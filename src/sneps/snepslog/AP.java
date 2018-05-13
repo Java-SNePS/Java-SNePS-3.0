@@ -858,10 +858,10 @@ public class AP {
 				if (terms.get(i) instanceof PropositionNode) {
 					PropositionNode pNode = (PropositionNode) terms.get(i);
 					if (Controller.getCurrentContext().isAsserted(pNode)) {
-						temp += "!";
+						temp += "Asserted: ";
 					}
 				}
-				output += terms.get(i).getIdentifier() + temp + ": " + terms.get(i).toString() + '\n';
+				output += temp + terms.get(i).toString() + '\n';
 			}
 		}
 		if (output.length() != 0) {
@@ -1147,10 +1147,7 @@ public class AP {
 		System.out.println(AP.executeSnepslogCommand("define-frame say Act (action obj)."));
 		System.out.println(AP.executeSnepslogCommand("define-frame greet Act (action obj)."));
 		System.out.println(AP.executeSnepslogCommand("whendo(here(John), withsome(x)(here(x),say(Hi:Entity),greet(Hello:Entity)))."));
-		Set<String> keys = Network.getNodes().keySet();
-		for (String key : keys) {
-			System.out.println(Network.getNodes().get(key));
-		}
+		System.out.println(AP.executeSnepslogCommand("list-terms"));
 	}
 
 }
