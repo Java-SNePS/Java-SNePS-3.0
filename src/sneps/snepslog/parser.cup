@@ -443,16 +443,21 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| BR_MODE optionalDot
 				{: 
-					RESULT = AP.getBrMode();
+					boolean auto = Controller.isAutomaticBR();
+					if(auto){
+						RESULT = "Belief revision mode currently set to auto";
+					}else{
+						RESULT = "Belief revision mode currently set to manual";
+					}
 				:}
 				| BR_MODE AUTO optionalDot
 				{: 
-					AP.setBrMode("auto");
+					Controller.setAutomaticBR(true);
 					RESULT = "";
 				:}
 				| BR_MODE MANUAL optionalDot
 				{: 
-					AP.setBrMode("manual");
+					Controller.setAutomaticBR(false);
 					RESULT = "";
 				:}
 				| CLEAR_INFER optionalDot
@@ -670,8 +675,12 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| REMOVE_FROM_CONTEXT IDENTIFIER:id pTermSet:pts
 				{: 
-					Controller.removeHypsFromContext(AP.arrayListToPropositionSet(pts),id);
-					RESULT = "";
+					try {
+						Controller.removeHypsFromContext(AP.arrayListToPropositionSet(pts),id);
+						RESULT = "";
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
 				:}
 				| SET_CONTEXT IDENTIFIER:id optionalPTermSet:opts
 				{: 

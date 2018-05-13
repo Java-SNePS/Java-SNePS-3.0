@@ -1396,7 +1396,12 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-					RESULT = AP.getBrMode();
+					boolean auto = Controller.isAutomaticBR();
+					if(auto){
+						RESULT = "Belief revision mode currently set to auto";
+					}else{
+						RESULT = "Belief revision mode currently set to manual";
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1407,7 +1412,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-					AP.setBrMode("auto");
+					Controller.setAutomaticBR(true);
 					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1419,7 +1424,7 @@ class CUP$parser$actions {
             {
               String RESULT =null;
 		 
-					AP.setBrMode("manual");
+					Controller.setAutomaticBR(false);
 					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1916,8 +1921,12 @@ class CUP$parser$actions {
 		int ptsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> pts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-					Controller.removeHypsFromContext(AP.arrayListToPropositionSet(pts),id);
-					RESULT = "";
+					try {
+						Controller.removeHypsFromContext(AP.arrayListToPropositionSet(pts),id);
+						RESULT = "";
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
+					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
