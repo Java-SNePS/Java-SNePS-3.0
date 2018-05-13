@@ -1,16 +1,22 @@
 package sneps.snebr;
 
 import sneps.exceptions.*;
+import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.network.cables.DownCableSet;
+import sneps.network.cables.UpCableSet;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.network.classes.term.Molecular;
 
-import java.util.HashSet;
+import java.util.BitSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 public class Controller {
     private static String currContext = "default";
     private static ContextSet contextSet = new ContextSet(currContext);
-    private static HashSet<PropositionSet> minimalNoGoods = new HashSet<PropositionSet>();
+    private static Hashtable<Integer, BitSet> minimalNoGoods = new Hashtable<>();
+    private static String conflictingContext = null;
 
     /**
      * Creates a new Context given its name and adds it to SNeBR's ContextSet.
@@ -124,24 +130,6 @@ public class Controller {
 
     }
 
-//    public static Context addPropsToContext(PropositionSet hyps, String contextName) {
-//        Context oldContext =  contextSet.getContext(contextName);
-//        Context newContext;
-//
-//        if (oldContext != null) {
-//            oldContext.removeName(contextName);
-//            PropositionSet oldHypSet = oldContext.getHypothesisSet();
-//            newContext = new Context(contextName, oldHypSet);
-//        } else {
-//            PropositionSet currHypSet = contextSet.getContext(currContext).getHypothesisSet();
-//            newContext = new Context(contextName, currHypSet);
-//        }
-//
-//        for (int i = 0; i < hyps.getProps().length; i++) {
-//
-//        }
-//    }
-
     /**
      * Asserts a hyp in the current Context
      * @param hyp the hyp to be asserted in the current Context
@@ -171,10 +159,10 @@ public class Controller {
      * @param contextName the name of the Context to be set as the current Context
      * @return Context object containing the current Context
      */
-    public static Context setCurrentContext(String contextName) throws DuplicateContextNameException {
+    public static Context setCurrentContext(String contextName) throws ContextNameDoesntExistException {
         Context context = contextSet.getContext(contextName);
         if (context == null) {
-            context = createContext(contextName);
+            throw  new ContextNameDoesntExistException(contextName);
         }
         currContext = contextName;
 
@@ -189,9 +177,52 @@ public class Controller {
         return contextSet.getContext(currContext);
     }
 
-    public static void checkForContradiction(Context c){
-        // TODO: 13/03/18
+    public static String contextToString(String contextName) {
+        return "Context: " + contextName + "\n" + contextSet.getContext(contextName).getHypothesisSet().toString();
     }
+
+//    public static void checkForContradiction(int hyp, Context c) throws NodeNotFoundInNetworkException {
+//        check in minimalNoGoods
+
+//        if found then contradiction
+
+//        else check in upcable and down cable
+
+//        if found then contradiction and update minimalNoGoods
+
+//        else
+
+//
+//        PropositionNode p = (PropositionNode) Network.getNodeById(hyp);
+//        UpCableSet up = p.getUpCableSet();
+//        if (up.get)
+//        DownCableSet down;
+//        if (p.getTerm() instanceof Molecular) {
+//            down = ((Molecular)p.getTerm()).getDownCableSet();
+//        }
+//        {3,5}
+//        {{1,3,7}, {3,5}, {}}
+//    }
+//
+    public static void handleContradiction(PropositionSet hypsToBeRemoved) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException {
+        if (hypsToBeRemoved != null) {
+            removeHypsFromContext(hypsToBeRemoved, conflictingContext);
+        }
+        int[] props = PropositionSet.getPropsSafely(hypsToBeRemoved);
+        for (int i = 0; i < props.length; i++) {
+            minimalNoGoods.keySet().si
+            minimalNoGoods.remove(props[i]);
+        }
+    }
+
+    public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        Context c = contextSet.getContext(contextName);
+        if (c == null) throw new ContextNameDoesntExistException(contextName);
+        PropositionSet propSet = c.getHypothesisSet().removeProps(hyps);
+        c = new Context(contextName, propSet);
+        return contextSet.add(c);
+    }
+
 
     public static Set<String> getAllNamesOfContexts() {
         return contextSet.getNames();

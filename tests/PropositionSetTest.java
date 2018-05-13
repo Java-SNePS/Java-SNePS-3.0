@@ -15,7 +15,7 @@ import sneps.snebr.Controller;
 
 public class PropositionSetTest {
 
- private static final Semantic semantic = new Semantic("PropositionNode");
+ private static final Semantic semantic = new Semantic("Proposition");
 
 
     @BeforeClass
@@ -109,5 +109,12 @@ public class PropositionSetTest {
         } catch (NodeNotFoundInPropSetException e) {
 
         }
+    }
+
+    @Test
+    public void removeHypsTest() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        PropositionSet set = new PropositionSet(new int[] {1,2,3,4,5,6});
+        PropositionSet newSet = set.removeProps(new PropositionSet(new int[] {3,4,5}));
+        assertArrayEquals(PropositionSet.getPropsSafely(newSet), new int [] {1,2,6});
     }
 }

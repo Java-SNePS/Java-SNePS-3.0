@@ -145,7 +145,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException {
         Controller.createContext("c6", new PropositionSet(new int [] {5,7}));
         Controller.createContext("c5", new PropositionSet(new int [] {5,7}));
 
@@ -175,7 +175,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException {
+    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, DuplicatePropositionException {
         PropositionSet p = new PropositionSet(new int [] {12, 58, 10});
         PropositionSet support = new PropositionSet(new int [] {12,58});
         PropositionSet p1 = new PropositionSet(new int [] {12, 58, 32});
