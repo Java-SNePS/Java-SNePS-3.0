@@ -1916,7 +1916,7 @@ class CUP$parser$actions {
 		int ptsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> pts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-					AP.removeFromContext(id, AP.arrayListToPropositionSet(pts));
+					Controller.removeHypsFromContext(AP.arrayListToPropositionSet(pts),id);
 					RESULT = "";
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

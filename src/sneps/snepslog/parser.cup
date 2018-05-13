@@ -670,7 +670,7 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				:}
 				| REMOVE_FROM_CONTEXT IDENTIFIER:id pTermSet:pts
 				{: 
-					AP.removeFromContext(id, AP.arrayListToPropositionSet(pts));
+					Controller.removeHypsFromContext(AP.arrayListToPropositionSet(pts),id);
 					RESULT = "";
 				:}
 				| SET_CONTEXT IDENTIFIER:id optionalPTermSet:opts
