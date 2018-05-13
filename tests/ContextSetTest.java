@@ -12,34 +12,19 @@ import sneps.snebr.Controller;
 import static org.junit.Assert.*;
 
 public class ContextSetTest {
-    private Context context;
-    private ContextSet contextSet;
-    final static String contextName = "test context";
-    private static final Semantic semantic = new Semantic("PropositionNode");
+	private Context context;
+	private ContextSet contextSet;
+	final static String contextName = "test context";
+	private final Semantic semantic = new Semantic("Proposition");
 
-
-    @BeforeClass
-    public static void setUp() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-        for (int i = 0; i < 8889; i++)
-            Network.buildBaseNode("n"+i, semantic);
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        Network.clearNetwork();
-        Controller.clearSNeBR();
-    }
-
-    @Before
-    public void beforeEach() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException, ContradictionFoundException {
-        context = Controller.createContext(contextName, new PropositionSet(new int [] {1,3,4}));
-        contextSet = new ContextSet(context);
-    }
-
-    @After
-    public void removeContext() {
-        Controller.removeContext(contextName);
-    }
+	@Before
+	public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException,
+			NodeNotFoundInNetworkException, IllegalIdentifierException, ContradictionFoundException {
+		for (int i = 0; i < 8889; i++)
+			Network.buildBaseNode("n" + i, semantic);
+		context = Controller.createContext(contextName, new PropositionSet(new int[] { 1, 3, 4 }));
+		contextSet = new ContextSet(context);
+	}
 
     @Test
     public void getContext() {
@@ -64,5 +49,12 @@ public class ContextSetTest {
         Context c2 = Controller.createContext("context 2", new PropositionSet(new int [] {1,3,4}));
         assertEquals(contextSet.identicalContext(c2), context);
     }
+
+		@After
+		public void removeContext() {
+			Network.clearNetwork();
+			Controller.removeContext(contextName);
+			Controller.clearSNeBR();
+		}
 
 }

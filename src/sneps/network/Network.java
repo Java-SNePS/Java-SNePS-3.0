@@ -40,6 +40,7 @@ import sneps.exceptions.CaseFrameMissMatchException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -48,6 +49,13 @@ import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snip.rules.AndEntailment;
+import sneps.snip.rules.AndOrNode;
+import sneps.snip.rules.DoIfNode;
+import sneps.snip.rules.NumericalEntailment;
+import sneps.snip.rules.OrNode;
+import sneps.snip.rules.ThreshNode;
+import sneps.snip.rules.WhenDoNode;
 
 public class Network implements Serializable {
 
@@ -502,10 +510,15 @@ public class Network implements Serializable {
 	 * @param identifier
 	 *            the name of the new variable node.
 	 * @return the newly created variable node.
+	 * @throws IllegalIdentifierException 
 	 */
-	public static VariableNode buildVariableNode(String identifier) {
+	public static VariableNode buildVariableNode(String identifier) throws IllegalIdentifierException {
 		if (nodes.containsKey(identifier)) {
-			return (VariableNode) nodes.get(identifier);
+			if(nodes.get(identifier).getTerm() instanceof Variable) {
+				return (VariableNode) nodes.get(identifier);
+			}else {
+				throw new IllegalIdentifierException("A base node already exists with this identifier.");
+			}
 		} else {
 			Variable v = new Variable(identifier);
 			VariableNode node = new VariableNode(v);
@@ -549,23 +562,24 @@ public class Network implements Serializable {
 	 * @return the newly created base node.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
+	 * @throws IllegalIdentifierException 
 	 *
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in the
 	 *             network.
 	 */
 	public static Node buildBaseNode(String identifier, Semantic semantic)
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		if (semantic.getSemanticType().equals("Act")) {
-			System.out.print("ERROR: Acts cannot be base nodes!!!");
+			// System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
 		}
 		if (nodes.containsKey(identifier)) {
-			// Already Present
-			return nodes.get(identifier);
-			// throw new CustomException("There is already another node with the same name
-			// existing in the network");
-
+			if(nodes.get(identifier).getTerm() instanceof Base) {
+				return nodes.get(identifier);
+			}else {
+				throw new IllegalIdentifierException("A variable node already exists with this identifier.");
+			}
 		} else {
 			Base b = new Base(identifier);
 			if (semantic.getSemanticType().equals("Proposition")) {
@@ -576,7 +590,7 @@ public class Network implements Serializable {
 					nodesIndex.add(propNode.getId(), propNode);
 					propNode.setBasicSupport();
 				} catch (IndexOutOfBoundsException e) {
-					System.out.println("wohoo");
+					// System.out.println("wohoo");
 				}
 			} else {
 				Node node;
@@ -612,13 +626,13 @@ public class Network implements Serializable {
 	 *
 	 * @return the newly created molecular node.
 	 * @throws CannotBuildNodeException
-	 * @throws NodeNotFoundInNetworkException 
-	 * @throws NotAPropositionNodeException 
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
 	 * @throws DuplicateNodeException
 	 *
 	 */
-	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame)
-			throws CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame) throws CannotBuildNodeException,
+			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
@@ -673,7 +687,8 @@ public class Network implements Serializable {
 	}
 
 	public static Node buildMolecularNode(ArrayList<Wire> wires, RelationsRestrictedCaseFrame caseFrame)
-			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
+			NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
@@ -699,10 +714,10 @@ public class Network implements Serializable {
 		if (caseFrame.getSemanticClass().equals("Proposition")) {
 			PropositionNode propNode;
 			if (isToBePattern(array)) {
-				System.out.println("building patt");
+				// System.out.println("building patt");
 				propNode = (PropositionNode) createPatNode(relNodeSet, caseFrame);
 			} else {
-				System.out.println("building closed");
+				// System.out.println("building closed");
 				propNode = (PropositionNode) createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
@@ -715,10 +730,10 @@ public class Network implements Serializable {
 		} else {
 			Node mNode;
 			if (isToBePattern(array)) {
-				System.out.println("building patt");
+				// System.out.println("building patt");
 				mNode = createPatNode(relNodeSet, caseFrame);
 			} else {
-				System.out.println("building closed");
+				// System.out.println("building closed");
 				mNode = createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(mNode.getIdentifier(), mNode);
@@ -854,10 +869,12 @@ public class Network implements Serializable {
 			result[1] = null;
 		}
 
-		if ((ns.size() == 1) && ((Boolean) result[0] == false))
-			System.out.println("Downcable set already exist");
-		if (!(ns.size() == 1))
-			System.out.println("Molecular Node built successfully");
+		if ((ns.size() == 1) && ((Boolean) result[0] == false)) {
+			// System.out.println("Downcable set already exist");
+		}
+		if (!(ns.size() == 1)) {
+			// System.out.println("Molecular Node built successfully");
+		}
 
 		return result;
 
@@ -1054,38 +1071,24 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndNode(open);
+				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = null;
-			// TODO
-			// propNode = new OrNode(open);
+				propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndOrNode(open);
+				propNode = new AndOrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = null;
-			// TODO
-			// propNode = new ThreshNode(open);
+				propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = null;
-			// TODO
-			// propNode = new NumericalNode(open);
+				propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
-				propNode = null;
-			// TODO
-			// propNode = new DoIfNode(open);
+				propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
-				propNode = null;
-			// TODO
-			// propNode = new WhenDoNode(open);
+				propNode = new WhenDoNode(open);
 			else
 				propNode = new PropositionNode(open);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
-			return new ActNode();
+			return new ActNode(semantic.act, open);
 		} else {
 			Node pNode = new Node(semantic, open);
 			return pNode;
@@ -1108,38 +1111,24 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndNode(open);
+				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = null;
-			// TODO
-			// propNode = new OrNode(open);
+				propNode = new OrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = null;
-			// TODO
-			// propNode = new AndOrNode(open);
+				propNode = new AndOrNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = null;
-			// TODO
-			// propNode = new ThreshNode(open);
+				propNode = new ThreshNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
-				propNode = null;
-			// TODO
-			// propNode = new NumericalNode(open);
+				propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
-				propNode = null;
-			// TODO
-			// propNode = new DoIfNode(open);
+				propNode = new DoIfNode(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.whenDo)
-				propNode = null;
-			// TODO
-			// propNode = new WhenDoNode(open);
+				propNode = new WhenDoNode(open);
 			else
 				propNode = new PropositionNode(open);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
-			return new ActNode();
+			return new ActNode(semantic.act, open);
 		} else {
 			Node pNode = new Node(semantic, open);
 			return pNode;
@@ -1180,30 +1169,20 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndNode(c);
+				propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = null;
-				// TODO
-				// propNode = new OrNode(c);
+				propNode = new OrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndOrNode(c);
+				propNode = new AndOrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = null;
-				// TODO
-				// propNode = new ThreshNode(c);
+				propNode = new ThreshNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
-				propNode = null;
-				// TODO
-				// propNode = new NumericalNode(c);
+				propNode = new NumericalEntailment(c);
 			} else
 				propNode = new PropositionNode(c);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
-			return new ActNode();
+			return new ActNode(semantic.act, c);
 		} else {
 			Node cNode = new Node(semantic, c);
 			return cNode;
@@ -1226,30 +1205,20 @@ public class Network implements Serializable {
 		if (semantic.getSemanticType().equals("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndNode(c);
+				propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = null;
-				// TODO
-				// propNode = new OrNode(c);
+				propNode = new OrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = null;
-				// TODO
-				// propNode = new AndOrNode(c);
+				propNode = new AndOrNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = null;
-				// TODO
-				// propNode = new ThreshNode(c);
+				propNode = new ThreshNode(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
-				propNode = null;
-				// TODO
-				// propNode = new NumericalNode(c);
+				propNode = new NumericalEntailment(c);
 			} else
 				propNode = new PropositionNode(c);
 			return propNode;
 		} else if (semantic.getSemanticType().equals("Act")) {
-			return new ActNode();
+			return new ActNode(semantic.act, c);
 		} else {
 			Node cNode = new Node(semantic, c);
 			return cNode;
@@ -1334,7 +1303,7 @@ public class Network implements Serializable {
 						}
 					}
 					if (checks.isEmpty()) {
-						System.out.println("empty checks");
+						// System.out.println("empty checks");
 						rules.remove(j);
 						j--;
 					} else {
@@ -1342,12 +1311,12 @@ public class Network implements Serializable {
 					}
 				}
 				if (rules.isEmpty()) {
-					System.out.println("Satisfied");
+					// System.out.println("Satisfied");
 					return signatures.get(currentId).getResultingType();
 				}
 			}
 		}
-		System.out.println("Not Satisfied");
+		// System.out.println("Not Satisfied");
 		return caseframe.getSemanticClass();
 	}
 
@@ -1848,7 +1817,8 @@ public class Network implements Serializable {
 					n.setId(oldID - empty);
 					nodesIndex.set(n.getId(), n);
 					nodesIndex.set(oldID, null);
-					System.out.println("old id: " + oldID + " new id: " + (oldID - empty) + " empty: " + empty);
+					// System.out.println("old id: " + oldID + " new id: " + (oldID - empty) + "
+					// empty: " + empty);
 				}
 				nodes++;
 			}
@@ -1857,10 +1827,12 @@ public class Network implements Serializable {
 			nodesIndex.remove(i);
 			i--;
 		}
-		System.out.println("");
-		System.out.println("previous count of nodes before deletion: " + Node.getCount());
+		// System.out.println("");
+		// System.out.println("previous count of nodes before deletion: " +
+		// Node.getCount());
 		Node.setCount(nodes);
-		System.out.println("current count of nodes before deletion: " + Node.getCount());
+		// System.out.println("current count of nodes before deletion: " +
+		// Node.getCount());
 	}
 
 	// Other Methods
@@ -1969,6 +1941,7 @@ public class Network implements Serializable {
 		Relation.createDefaultRelations();
 		RCFP.createDefaultProperties();
 		Semantic.createDefaultSemantics();
+		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
 		// CaseFrame.createDefaultCaseFrames();
 		// SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		// ControlActionNode.initControlActions();

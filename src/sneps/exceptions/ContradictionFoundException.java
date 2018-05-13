@@ -1,9 +1,6 @@
 package sneps.exceptions;
 
 import sneps.network.classes.setClasses.PropositionSet;
-import sneps.snebr.Context;
-import sneps.snebr.Contradiction;
-import sneps.snebr.Controller;
 
 import java.util.ArrayList;
 

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
@@ -12,35 +13,41 @@ import sneps.snip.channels.Channel;
 import sneps.snip.matching.Substitutions;
 
 public class Node implements Serializable {
-	
+
 	protected Term term;
 	protected Semantic semanticType;
-	private static int count=0;
+	private static int count = 0;
 	private int id;
-	
-	public Node() {	}
-	
-	public Node(Term trm){
-		term = trm;
-		id = count++;		
+
+	public Node() {
 	}
 
-	public Node(Semantic sem){
+	public Node(Term trm) {
+		term = trm;
+		id = count++;
+		if(this.getTerm() instanceof Molecular) {
+			this.updateUpCables();
+		}
+	}
+
+	public Node(Semantic sem) {
 		semanticType = sem;
 		id = count++;
 	}
-	
-	public Node(Semantic sem, Term trm){
+
+	public Node(Semantic sem, Term trm) {
 		semanticType = sem;
 		term = trm;
 		id = count++;
+		if(this.getTerm() instanceof Molecular) {
+			this.updateUpCables();
+		}
 	}
-	
 
 	/**
 	 *
-	 * @return the instance of term class representing the term type
-	 *         of the current node.
+	 * @return the instance of term class representing the term type of the current
+	 *         node.
 	 */
 	public Term getTerm() {
 		return this.term;
@@ -48,8 +55,8 @@ public class Node implements Serializable {
 
 	/**
 	 *
-	 * @return the instance of semantic class representing the semantic type of
-	 *         the current node.
+	 * @return the instance of semantic class representing the semantic type of the
+	 *         current node.
 	 */
 	public Semantic getSemantic() {
 		return this.semanticType;
@@ -57,8 +64,8 @@ public class Node implements Serializable {
 
 	/**
 	 *
-	 * @return the simple name of term class representing the term
-	 *         type of the current node.
+	 * @return the simple name of term class representing the term type of the
+	 *         current node.
 	 */
 	public String getSyntacticType() {
 		return this.term.getClass().getSimpleName();
@@ -66,18 +73,17 @@ public class Node implements Serializable {
 
 	/**
 	 *
-	 * @return the simple name of the super class of the term class
-	 *         representing the term type of the current node.
+	 * @return the simple name of the super class of the term class representing the
+	 *         term type of the current node.
 	 */
 	public String getSyntacticSuperClass() {
 		return this.term.getClass().getSuperclass().getSimpleName();
 	}
 
-
 	/**
 	 *
-	 * @return the simple name of the super class of the semantic class
-	 *         representing the semantic type of the current node.
+	 * @return the simple name of the super class of the semantic class representing
+	 *         the semantic type of the current node.
 	 */
 	public String getSemanticSuperClass() {
 		return this.term.getClass().getSuperclass().getSimpleName();
@@ -109,8 +115,8 @@ public class Node implements Serializable {
 	}
 
 	/**
-	 * This method overrides the default toString method inherited from the
-	 * Object class.
+	 * This method overrides the default toString method inherited from the Object
+	 * class.
 	 */
 	@Override
 	public String toString() {
@@ -125,8 +131,8 @@ public class Node implements Serializable {
 	 *            an Object that is to be compared to the current node to check
 	 *            whether they are equal.
 	 *
-	 * @return true if the given object is an instance of the Node class and has
-	 *         the same name as the current node, and false otherwise.
+	 * @return true if the given object is an instance of the Node class and has the
+	 *         same name as the current node, and false otherwise.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -139,17 +145,19 @@ public class Node implements Serializable {
 
 	public void receiveRequest(Channel newChannel) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	public void processReports() {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	public void processRequests() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public NodeSet getDominatingRules() {
 		NodeSet ret = new NodeSet();
 		UpCable consequentCable = this.getUpCableSet().getUpCable("cq");
@@ -178,20 +186,20 @@ public class Node implements Serializable {
 		}
 		return ret;
 	}
-	
+
 	public boolean isWhQuestion(Substitutions sub) {
-		/*if (!this.getIdentifier().equalsIgnoreCase("patternnode"))
-			return false;
-
-		PatternNode node = (PatternNode) this;
-		LinkedList<VariableNode> variables = node.getFreeVariables();
-
-		for (int i = 0; i < variables.size(); i++) {
-			Node termNode = sub.term(variables.get(i));
-			if (termNode == null || (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
-				return true;
-
-		}*/
+		/*
+		 * if (!this.getIdentifier().equalsIgnoreCase("patternnode")) return false;
+		 * 
+		 * PatternNode node = (PatternNode) this; LinkedList<VariableNode> variables =
+		 * node.getFreeVariables();
+		 * 
+		 * for (int i = 0; i < variables.size(); i++) { Node termNode =
+		 * sub.term(variables.get(i)); if (termNode == null ||
+		 * (!termNode.getIdentifier().equalsIgnoreCase("basenode"))) return true;
+		 * 
+		 * }
+		 */
 		return false;
 	}
 
@@ -200,56 +208,63 @@ public class Node implements Serializable {
 	}
 
 	public void deduce(Node node) {
-		/*Runner.initiate();
-		NodeSet dominatingRules = getDominatingRules();
-		sendRequests(dominatingRules, channel.getFilter().getSubstitution(),
-				channel.getContextID(), ChannelTypes.RuleCons);
-		// System.out.println("#$#$#$#$# 1");
-		try {
-			List<Object[]> matchesReturned = Matcher.Match(this);
-			if(matchesReturned != null) {
-				ArrayList<Pair> matches = new ArrayList<Pair>();
-				for(Object[] match : matchesReturned) {
-					Pair newPair = new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
-					matches.add(newPair);
-				}
-				sendRequests(matches, channel.getContextID(), ChannelTypes.MATCHED);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Runner.run();
-		// what to return here ?*/
+		/*
+		 * Runner.initiate(); NodeSet dominatingRules = getDominatingRules();
+		 * sendRequests(dominatingRules, channel.getFilter().getSubstitution(),
+		 * channel.getContextID(), ChannelTypes.RuleCons); //
+		 * System.out.println("#$#$#$#$# 1"); try { List<Object[]> matchesReturned =
+		 * Matcher.Match(this); if(matchesReturned != null) { ArrayList<Pair> matches =
+		 * new ArrayList<Pair>(); for(Object[] match : matchesReturned) { Pair newPair =
+		 * new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
+		 * matches.add(newPair); } sendRequests(matches, channel.getContextID(),
+		 * ChannelTypes.MATCHED); } } catch (Exception e) { e.printStackTrace(); }
+		 * Runner.run(); // what to return here ?
+		 */
 	}
 
 	public void setTerm(Term term) {
 		this.term = term;
 	}
+
 	public Semantic getSemanticType() {
 		return semanticType;
 	}
+
 	public void setSemanticType(Semantic semanticType) {
 		this.semanticType = semanticType;
 	}
+
 	public static int getCount() {
 		return count;
 	}
+
 	public static void setCount(int count) {
 		Node.count = count;
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public boolean isTemp() {
 		return this.term.isTemp();
 	}
+
 	public void setTemp(boolean temp) {
 		this.term.setTemp(temp);
 	}
 
+	/**
+	 * This method is invoked from the constructor of this class (while creating any
+	 * molecular node) and it invokes the 'updateUpCables' method in the 'Molecular'
+	 * class and pass the current node as a parameter.
+	 */
+	public void updateUpCables() {
+		((Molecular) this.getTerm()).updateUpCables(this);
+	}
 
-	
 }
