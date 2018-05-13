@@ -60,6 +60,7 @@ import javafx.util.Duration;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.ContradictionFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.IllegalIdentifierException;
@@ -2883,6 +2884,9 @@ public class FXController implements Initializable {
 		} catch (DuplicateContextNameException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ContradictionFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		updateListOfContexts();
 		propSet.getItems().clear();
@@ -3236,13 +3240,16 @@ public class FXController implements Initializable {
 	
 	public void setCurrentContext() {
 		String cname = contextList.getSelectionModel().getSelectedItem();
-		try {
-			Controller.setCurrentContext(cname);
+			try {
+				Controller.setCurrentContext(cname);
+			} catch (ContradictionFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ContextNameDoesntExistException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			popUpNotification("Context", "Current context is set", "Context: " + cname + " is the current context", 2);
-		} catch (DuplicateContextNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	public void addNodeToPropSet1() {
@@ -3284,10 +3291,10 @@ public class FXController implements Initializable {
 		} catch (NotAPropositionNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (CustomException e) {
+		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (NodeNotFoundInNetworkException e) {
+		} catch (ContradictionFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ContextNameDoesntExistException e) {

@@ -1962,7 +1962,7 @@ class CUP$parser$actions {
 					try{
 						Controller.setCurrentContext(id);
 						RESULT = "";
-					} catch (DuplicateContextNameException e) {
+					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
 					}catch (Exception e) {
 						RESULT = e.getMessage();
