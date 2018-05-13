@@ -1740,9 +1740,9 @@ class CUP$parser$actions {
 		String oid = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
 					if(oid!=null){
-						RESULT = Controller.getContextByName(oid).toString();
+						RESULT = Controller.contextToString(oid);
 					}else{
-						RESULT = Controller.getCurrentContext().toString();
+						RESULT = Controller.contextToString(Controller.getCurrentContextName());
 					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

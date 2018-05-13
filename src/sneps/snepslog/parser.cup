@@ -585,9 +585,9 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 				| DESCRIBE_CONTEXT optionalIdentifier:oid optionalDot
 				{: 
 					if(oid!=null){
-						RESULT = Controller.getContextByName(oid).toString();
+						RESULT = Controller.contextToString(oid);
 					}else{
-						RESULT = Controller.getCurrentContext().toString();
+						RESULT = Controller.contextToString(Controller.getCurrentContextName());
 					}
 				:}
 				| DESCRIBE_TERMS optionalPTermSet:opts optionalDot
