@@ -48,6 +48,8 @@ import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
 import sneps.exceptions.IllegalAtomicSymbolException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.gui.Main;
+
 
 parser code {:
 String command;
@@ -844,9 +846,9 @@ snepslogCommand ::= ACTIVATE wff:w optionalDot
 						RESULT = "Mode 3 is already in use.";
 					}
 				:}
-				| SHOW pTermSet optionalDot
+				| SHOW pTermSet:pts optionalDot
 				{: 
-
+					Main.visualizeNodes(pts);
 				:}
 				| TRACE snepslogFunction:sf optionalDot
 				{: 

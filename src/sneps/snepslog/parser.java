@@ -51,6 +51,7 @@ import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
 import sneps.exceptions.IllegalAtomicSymbolException;
 import sneps.exceptions.EquivalentNodeException;
+import sneps.gui.Main;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -2169,8 +2170,11 @@ class CUP$parser$actions {
           case 46: // snepslogCommand ::= SHOW pTermSet optionalDot 
             {
               String RESULT =null;
+		int ptsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int ptsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		ArrayList<Node> pts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-
+					Main.visualizeNodes(pts);
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
