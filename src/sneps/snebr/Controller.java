@@ -163,7 +163,7 @@ public class Controller {
      * @param contextName the name of the Context to be set as the current Context
      * @return Context object containing the current Context
      */
-    public static Context setCurrentContext(String contextName) throws DuplicateContextNameException, ContradictionFoundException {
+    public static Context setCurrentContext(String contextName) throws ContradictionFoundException, ContextNameDoesntExistException {
         Context context = contextSet.getContext(contextName);
         if (context == null) {
             throw  new ContextNameDoesntExistException(contextName);
@@ -208,16 +208,16 @@ public class Controller {
 //        {{1,3,7}, {3,5}, {}}
 //    }
 //
-    public static void handleContradiction(PropositionSet hypsToBeRemoved) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException {
-        if (hypsToBeRemoved != null) {
-            removeHypsFromContext(hypsToBeRemoved, conflictingContext);
-        }
-        int[] props = PropositionSet.getPropsSafely(hypsToBeRemoved);
-        for (int i = 0; i < props.length; i++) {
-            minimalNoGoods.keySet().si
-            minimalNoGoods.remove(props[i]);
-        }
-    }
+//    public static void handleContradiction(PropositionSet hypsToBeRemoved) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException {
+//        if (hypsToBeRemoved != null) {
+//            removeHypsFromContext(hypsToBeRemoved, conflictingContext);
+//        }
+//        int[] props = PropositionSet.getPropsSafely(hypsToBeRemoved);
+//        for (int i = 0; i < props.length; i++) {
+//            minimalNoGoods.keySet().si
+//            minimalNoGoods.remove(props[i]);
+//        }
+//    }
 
     public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         Context c = contextSet.getContext(contextName);
