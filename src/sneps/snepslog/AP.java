@@ -896,6 +896,34 @@ public class AP {
 	}
 
 	/**
+	 * A method returning the molecular nodes from an ArrayList of Nodes.
+	 */
+	protected static ArrayList<Node> getMolecular(ArrayList<Node> nodes) {
+		ArrayList<Node> closed = new ArrayList<>();
+		for (int i = 0; i < nodes.size(); i++) {
+			if (nodes.get(i).getTerm() instanceof Molecular) {
+				closed.add(nodes.get(i));
+			}
+		}
+		return closed;
+	}
+
+	/**
+	 * A method returning all the molecular nodes from the Network.
+	 */
+	protected static ArrayList<Node> getAllMolecularNodesFromTheNetwork() {
+		ArrayList<Node> molecular = new ArrayList<>();
+		Set<String> keys = Network.getNodes().keySet();
+		for (String key : keys) {
+			if (Network.getNodes().get(key).getTerm() instanceof Molecular) {
+				molecular.add(0, Network.getNodes().get(key));
+			}
+		}
+		return molecular;
+	}
+
+	
+	/**
 	 * A method returning the closed nodes from an ArrayList of Nodes.
 	 */
 	protected static ArrayList<Node> getClosed(ArrayList<Node> nodes) {

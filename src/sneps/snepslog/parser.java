@@ -1838,9 +1838,9 @@ class CUP$parser$actions {
 		 
 					try{
 						if(opts!=null){
-							RESULT = AP.displayWffs(AP.getClosed(opts));
+							RESULT = AP.displayTerms(AP.getMolecular(opts));
 						}else{
-							RESULT = AP.displayWffs(AP.getAllClosedNodesFromTheNetwork());
+							RESULT = AP.displayTerms(AP.getAllMolecularNodesFromTheNetwork());
 						}
 					}  catch (NotAPropositionNodeException e) {
 						RESULT = e.getMessage();
