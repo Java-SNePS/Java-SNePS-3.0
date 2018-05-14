@@ -9,6 +9,7 @@ import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.network.PropositionNode;
 import sneps.network.classes.term.Term;
+import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
@@ -90,11 +91,14 @@ public class ThreshNode extends RuleNode {
 		for (FlagNode fn : tRui.getFlagNodeSet()) {
 			nodesSentReports.add(fn.getNode().getId());
 		}
-		
-		Support originSupports = this.getBasicSupport();
-		HashSet<Support> sup = new HashSet<Support>();
-		sup.add(originSupports);
-		Report forwardReport = new Report(tRui.getSub(), tRui.getSupport(sup), sign,contextID);
+
+		FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
+		NodeSet temp = new NodeSet();
+		temp.addNode(this);
+		FlagNode fn = new FlagNode(this, temp, 1);
+		justification.insert(fn);
+
+		Report forwardReport = new Report(tRui.getSub(), justification, true, contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
 			if(!nodesSentReports.contains(outChannel.getRequester().getId()))

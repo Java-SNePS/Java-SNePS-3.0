@@ -8,10 +8,12 @@ import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.network.PropositionNode;
 import sneps.network.classes.term.Term;
+import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
+import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
@@ -50,10 +52,13 @@ public class OrNode extends RuleNode {
 		
 		if(report.isPositive()) {
 			
-			Support originSupports = this.getBasicSupport();
-			HashSet<Support> sup = new HashSet<Support>();
-			sup.add(originSupports);
-			Report reply = new Report(report.getSubstitutions(), sup, true, report.getContextName());
+			FlagNodeSet justification = contextRuisSet.getByContext(report.getContextName()).getPositiveNodes();
+			NodeSet temp = new NodeSet();
+			temp.addNode(this);
+			FlagNode fn = new FlagNode(this, temp, 1);
+			justification.insert(fn);
+
+			Report reply = new Report(report.getSubstitutions(), justification, true, report.getContextName());
 			
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(reply);
