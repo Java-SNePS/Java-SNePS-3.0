@@ -28,6 +28,7 @@ import sneps.exceptions.CannotFindCaseFrameException;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameMissMatchException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
+import sneps.exceptions.ContradictionFoundException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
@@ -44,6 +45,7 @@ import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticAlreadySetException;
 import sneps.exceptions.SemanticNotFoundInNetworkException;
+import sneps.gui.Main;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -581,44 +583,9 @@ public class AP {
 			is.close();
 			dis.close();
 			return output;
-		} catch (CannotBuildNodeException e) {
-			return e.getMessage();
-		} catch (CannotFindCaseFrameException e) {
-			return e.getMessage();
-		} catch (CaseFrameCannotBeRemovedException e) {
-			return e.getMessage();
-		} catch (CaseFrameMissMatchException e) {
-			return e.getMessage();
-		} catch (CaseFrameWithSetOfRelationsNotFoundException e) {
-			return e.getMessage();
-		} catch (DuplicateContextNameException e) {
-			return e.getMessage();
-		} catch (DuplicatePropositionException e) {
-			return e.getMessage();
-		} catch (IllegalAtomicSymbolException e) {
-			return e.getMessage();
-		} catch (InvalidArgumentsException e) {
-			return e.getMessage();
-		} catch (InvalidWffNameException e) {
-			return e.getMessage();
-		} catch (ModeOneOnlyException e) {
-			return e.getMessage();
-		} catch (ModeThreeOnlyException e) {
-			return e.getMessage();
-		} catch (NodeCannotBeRemovedException e) {
-			return e.getMessage();
-		} catch (NodeNotFoundInNetworkException e) {
-			return e.getMessage();
-		} catch (NodeNotFoundInPropSetException e) {
-			return e.getMessage();
-		} catch (NotAPropositionNodeException e) {
-			return e.getMessage();
-		} catch (RelationDoesntExistException e) {
-			return e.getMessage();
-		} catch (SemanticAlreadySetException e) {
-			return e.getMessage();
-		} catch (SemanticNotFoundInNetworkException e) {
-			return e.getMessage();
+		} catch (ContradictionFoundException e) {
+			Main.userAction(e.getContradictoryHyps());
+			return "The GUI is used to handle the contradiction!";
 		} catch (Exception e) {
 			return e.getMessage();
 		}

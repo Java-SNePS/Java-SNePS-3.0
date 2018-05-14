@@ -39,6 +39,7 @@ import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
 import sneps.exceptions.CannotFindCaseFrameException;
 import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.ContradictionFoundException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.InvalidArgumentsException;
@@ -1110,6 +1111,9 @@ class CUP$parser$actions {
 						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
+					} catch (ContradictionFoundException e) {
+						Main.userAction(e.getContradictoryHyps());
+						RESULT = "The GUI is used to handle the contradiction!";
 					} catch (Exception e) {
 						RESULT = e.getMessage();
 					}
@@ -1269,6 +1273,9 @@ class CUP$parser$actions {
 						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
 						RESULT = e.getMessage();
+					} catch (ContradictionFoundException e) {
+						Main.userAction(e.getContradictoryHyps());
+						RESULT = "The GUI is used to handle the contradiction!";
 					} catch (Exception e) {
 						RESULT = e.getMessage();
 					}
@@ -1960,6 +1967,9 @@ class CUP$parser$actions {
 						RESULT = "";
 					} catch (DuplicateContextNameException e) {
 						RESULT = e.getMessage();
+					} catch (ContradictionFoundException e) {
+						Main.userAction(e.getContradictoryHyps());
+						RESULT = "The GUI is used to handle the contradiction!";
 					} catch (Exception e) {
 						RESULT = e.getMessage();
 					}
