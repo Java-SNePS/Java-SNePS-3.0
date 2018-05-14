@@ -80,8 +80,8 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
 		SIndex set = (SIndex) contextRuisSet.getByContext(contxt);
-		//if (set == null) 
-		//set = new SIndex(contxt, sharedVars, 0, consequents);
+		if (set == null) 
+			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0, null);
 		set.insertRUI(rui);
 		NodeSet temp = new NodeSet();
 		temp.addNode(signature);
