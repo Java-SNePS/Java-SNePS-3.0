@@ -229,7 +229,7 @@ public class Main extends Application {
 		return propNodes;
 	}
 	
-	public void userAction(ArrayList<PropositionSet> propSet) {
+	public static void userAction(ArrayList<PropositionSet> propSet) {
 		ButtonType ignore = new ButtonType("Ignore");
 		ButtonType resolve = new ButtonType("Resolve Conflict");
 		ButtonType ca = new ButtonType("Cancel Assertion");
@@ -245,7 +245,7 @@ public class Main extends Application {
 		    }else if (response == ignore) {
 		        //ignore
 		    }else if(response == ca) {
-		    	//cancel 
+		    	//cancel assertion
 		    }
 		});
 	}

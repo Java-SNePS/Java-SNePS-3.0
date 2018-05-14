@@ -133,7 +133,8 @@
                                                       <Font size="20.0" />
                                                    </font>
                                                 </Label>
-                                                <Button layoutX="14.0" layoutY="91.0" mnemonicParsing="false" onAction="#deleteNode" styleClass="tab" text="Delete Node" />
+                                                <Button layoutX="14.0" layoutY="91.0" mnemonicParsing="false" onAction="#deleteNode" styleClass="tab" text="Delete Node" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="55.0" />
+                                                <Button fx:id="assertBTN" disable="true" layoutX="20.0" layoutY="65.0" mnemonicParsing="false" onAction="#assertNodeToCurrentContext" styleClass="tab" text="Assert node to current context" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="95.0" />
                                              </children>
                                           </AnchorPane>
                                        </children>

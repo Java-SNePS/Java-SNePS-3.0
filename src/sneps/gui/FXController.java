@@ -62,6 +62,7 @@ import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -164,7 +165,7 @@ public class FXController implements Initializable {
 	newRA, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations,
 	chooseContext;
 	@FXML
-	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN;
+	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN, assertBTN;
 	@FXML
 	private Rectangle wireBtnRect;
 	@FXML
@@ -181,7 +182,18 @@ public class FXController implements Initializable {
 			public void handle(MouseEvent arg0) {
 				String nodeName = nodesList.getSelectionModel().getSelectedItem();
 				nodeDetails(nodeName);
-				
+				Node n = null;
+				try {
+					n = Network.getNode(nodeName);
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(!(n.getTerm() instanceof Variable) && n.getSemantic().getSemanticType().equalsIgnoreCase("proposition")) {
+					assertBTN.setDisable(false);
+				}else {
+					assertBTN.setDisable(true);
+				}
 			}
 			
 		});
@@ -302,7 +314,7 @@ public class FXController implements Initializable {
 					    props.add(set2);
 					    props.add(set3);
 					    
-					    Main.resolveConflicts(props);
+					    Main.userAction(props);
 					    //End Test
 					}
 					String res = "Result will be here";
@@ -3341,6 +3353,32 @@ public class FXController implements Initializable {
 		updateNodesList();
 	}
 	
+	public void assertNodeToCurrentContext() {
+		String identifier = nodesList.getSelectionModel().getSelectedItem();
+		Node n = null;
+		try {
+			n = Network.getNode(identifier);
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Controller.addPropToCurrentContext(n.getId());
+			popUpNotification("Assert Node", "Node Asserted", "Proposition added to current context", 2);
+		} catch (DuplicatePropositionException e) {
+			popUpNotification("Assert Node", "Error:", "Proposition already exists in current context", 2);
+			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 //..........END Of Menu Methods........................................	
