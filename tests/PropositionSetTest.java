@@ -1,5 +1,3 @@
-package tests;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -7,7 +5,7 @@ import org.junit.Test;
 import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.setClasses.PropositionSet;
 
 
 public class PropositionSetTest {

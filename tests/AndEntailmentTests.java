@@ -1,10 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +24,6 @@ import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
@@ -53,10 +49,12 @@ public class AndEntailmentTests {
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		Set<Support> support = new HashSet<Support>();
-		support.add(new Support(0));
+		NodeSet support = new NodeSet();
+		support.addNode(dog);
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.putIn(fn);
+		support.clear();
+		support.addNode(fido);
 		fn = new FlagNode(fido, support, 1);
 		fns.putIn(fn);
 		rui = new RuleUseInfo(sub, 1, 0, fns);
@@ -199,8 +197,19 @@ public class AndEntailmentTests {
 		Context contxt = (Context) Controller.getContextByName("default");
 		assertNotNull("AndEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
 				and.getContextRuiHandler(contxt));
-		assertTrue("AndEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
-				and.getContextRuiHandler(contxt).getPositiveNodes().contains(dog));
+
+		FlagNodeSet fns = new FlagNodeSet();
+		NodeSet support = new NodeSet();
+		support.addNode(dog);
+		FlagNode fn = new FlagNode(dog, support, 1);
+		fns.putIn(fn);
+
+		FlagNodeSet positives = and.getContextRuiHandler(contxt).getPositiveNodes();
+		
+		for(FlagNode currFN : positives){
+			assertTrue("NumericalEntailment: addNotSentRui doesn't add signature to positiveNodes set", fns.contains(currFN)); 
+		}
+
 		assertTrue("AndEntailment: addNotSentRui doesn't add a PTree in contextRuisHandlers", 
 				and.getContextRuiHandler(contxt)instanceof PTree);
 	}

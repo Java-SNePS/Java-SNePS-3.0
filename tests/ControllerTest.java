@@ -1,5 +1,3 @@
-package tests;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,14 +5,10 @@ import static org.junit.Assert.*;
 
 import sneps.exceptions.*;
 import sneps.network.Network;
-import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class ControllerTest {
 

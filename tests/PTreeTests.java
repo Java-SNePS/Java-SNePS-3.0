@@ -1,7 +1,4 @@
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
@@ -13,7 +10,6 @@ import sneps.network.classes.Semantic;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
-import sneps.snebr.Support;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.PTree.PSubTree;
@@ -37,10 +33,12 @@ public class PTreeTests extends TestCase {
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		Set<Support> support = new HashSet<Support>();
-		support.add(new Support(0));
+		NodeSet support = new NodeSet();
+		support.addNode(n1);
 		FlagNode fn = new FlagNode(n1, support, 1);
 		fns.putIn(fn);
+		support.clear();
+		support.addNode(n2);
 		fn = new FlagNode(n2, support, 1);
 		fns.putIn(fn);
 		rui = new RuleUseInfo(sub, 1, 0, fns);

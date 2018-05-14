@@ -6,7 +6,7 @@ import java.util.Iterator;
 import sneps.snip.classes.FlagNode;
 
 public class FlagNodeSet implements Iterable<FlagNode> {
-private HashSet<FlagNode> flagNodes;
+	private HashSet<FlagNode> flagNodes;
 
 	@Override
 	public Iterator<FlagNode> iterator() {
@@ -16,7 +16,7 @@ private HashSet<FlagNode> flagNodes;
 	public void putIn(FlagNode fn) {
 		flagNodes.add(fn);
 	}
-	
+
 	/**
 	 * Check if the flag node set is new (empty)
 	 * 
@@ -26,7 +26,7 @@ private HashSet<FlagNode> flagNodes;
 		return flagNodes.isEmpty();
 	}
 
-	
+
 	/**
 	 * Check if fn is in this
 	 * 
@@ -35,13 +35,13 @@ private HashSet<FlagNode> flagNodes;
 	 * @return true or false
 	 */
 	public boolean isMember(FlagNode fn) {
-		
+
 		for (FlagNode tFn : flagNodes) {
 			if (tFn.isEqual(fn))
 				return true;
 		}
 		return false;
-		
+
 	}
 
 	/**
@@ -75,7 +75,7 @@ private HashSet<FlagNode> flagNodes;
 	 */
 	public FlagNodeSet union(FlagNodeSet f) {
 		FlagNodeSet res = new FlagNodeSet();
-		
+
 		for (FlagNode fn : flagNodes) {
 			res.insert(fn);
 		}
@@ -88,5 +88,8 @@ private HashSet<FlagNode> flagNodes;
 	public int size() {
 		return flagNodes.size();
 	}
-	
+
+	public boolean contains(FlagNode fn){
+		return flagNodes.contains(fn);
+	}
 }

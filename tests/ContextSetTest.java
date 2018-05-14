@@ -1,5 +1,3 @@
-package tests;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +7,7 @@ import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.ContextSet;
 import sneps.snebr.Controller;

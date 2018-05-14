@@ -1,10 +1,7 @@
-package tests;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sneps.exceptions.CustomException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
