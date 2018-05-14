@@ -1002,29 +1002,20 @@ public class AP {
 		return output;
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for defineSemantic
 	protected static Semantic defineSemantic(String identifier, String parent, ArrayList<String> children) {
-		// TODO A wrapper for defineSemantic
 		return SemanticHierarchy.createSemanticType(identifier);
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for match
 	protected static ArrayList<Node> match(Node node) {
-		// TODO A wrapper for match
 		ArrayList<Node> output = new ArrayList<Node>();
 		output.add(node);
 		return output;
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for setting tacing variables to true
 	protected static void activateTracing(String type) {
-		// TODO A wrapper for setting tacing variables to true
 		switch (type) {
 		case "inference":
 			break;
@@ -1035,11 +1026,8 @@ public class AP {
 		}
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for setting tracing variables to false
 	protected static void deactivateTracing(String type) {
-		// TODO A wrapper for setting tracing variables to false
 		switch (type) {
 		case "inference":
 			break;
@@ -1050,11 +1038,8 @@ public class AP {
 		}
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for deduce
 	protected static ArrayList<Node> deduce(Node node, String type, int i, int j) {
-		// TODO A wrapper for deduce
 		ArrayList<Node> output = new ArrayList<Node>();
 		switch (type) {
 		case "ask":
@@ -1072,25 +1057,16 @@ public class AP {
 		return output;
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for the method clearing the acg
 	protected static void clearInfer() {
-		// TODO A wrapper for the method clearing the acg
 	}
 
-	/**
-	 * Docs goes here
-	 */
-	protected static void perform(Node node) {
-		// TODO A wrapper for perform.
+	// TODO A wrapper for perform.
+	protected static void perform(Node node) {	
 	}
 
-	/**
-	 * Docs goes here
-	 */
+	// TODO A wrapper for forward inference
 	protected static ArrayList<Node> forwardInference(Node node, String type) {
-		// TODO A wrapper for forward inference
 		ArrayList<Node> output = new ArrayList<Node>();
 		switch (type) {
 		case "activate":
