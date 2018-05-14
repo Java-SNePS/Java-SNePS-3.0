@@ -65,17 +65,16 @@ public class AndEntailment extends RuleNode {
 	 */
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
-		if (Rui.getPosCount() != antNodesWithVars.size() + antNodesWithoutVars.size())
-			return;
-		//TODO Issue
-		FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
-		NodeSet temp = new NodeSet();
-		temp.addNode(this);
-		FlagNode fn = new FlagNode(this, temp, 1);
-		justification.insert(fn);
+		if (Rui.getPosCount() >= getAntSize()){
+			FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
+			NodeSet temp = new NodeSet();
+			temp.addNode(this);
+			FlagNode fn = new FlagNode(this, temp, 1);
+			justification.insert(fn);
 
-		Report reply = new Report(Rui.getSub(), justification, true, contextID);
-		sendReportToConsequents(reply);
+			Report reply = new Report(Rui.getSub(), justification, true, contextID);
+			sendReportToConsequents(reply);
+		}
 	}
 
 	/**

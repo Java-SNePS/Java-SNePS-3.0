@@ -52,6 +52,7 @@ public class NumericalEntailment extends RuleNode {
 		if ((curPos >= i) && ((curPos < n-i+1) || (curPos < n-1) ) )
 			sendSavedRUIs(report.getContextName());
 	}
+
 	/**
 	 * Creates a Report from a given RuleUseInfo to be broadcasted to outgoing channels
 	 * @param rui
