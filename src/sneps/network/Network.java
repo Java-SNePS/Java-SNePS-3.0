@@ -46,6 +46,7 @@ import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
+import sneps.gui.Main;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -2114,6 +2115,7 @@ public class Network implements Serializable {
 		udvsis.close();
 		
 		Node.setCount(nodes.size());
+		
 	}
 
 	/**

@@ -263,6 +263,48 @@ public class FXController implements Initializable {
 					String cmd = lines.get(lines.size() - 1);
 					if(cmd.equalsIgnoreCase("vis")) {
 						testVisualize();
+					}else if(cmd.equalsIgnoreCase("test")) {
+						// TEST
+					    int a[] = {0,1};
+					    int b[] = {1,2};
+					    int c[] = {2,3};
+					    PropositionSet set1 = null;
+						try {
+							set1 = new PropositionSet(a);
+						} catch (NotAPropositionNodeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					    PropositionSet set2 = null;
+						try {
+							set2 = new PropositionSet(b);
+						} catch (NotAPropositionNodeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					    PropositionSet set3 = null;
+						try {
+							set3 = new PropositionSet(c);
+						} catch (NotAPropositionNodeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					    ArrayList<PropositionSet> props = new ArrayList<PropositionSet>();
+					    props.add(set1);
+					    props.add(set2);
+					    props.add(set3);
+					    
+					    Main.resolveConflicts(props);
+					    //End Test
 					}
 					String res = "Result will be here";
 					console.setText(console.getText() + "\n" + res);
@@ -3406,6 +3448,7 @@ public class FXController implements Initializable {
 		String contexts = name + "contexts";
 		
 		try {
+			Network.clearNetwork();
 			Network.load(relations , caseFrames, nodes, molnodes, mc, pc, vc, pn, ni, udms, udps, udvs);
 			SemanticHierarchy.load(semList);
 			Controller.load(contexts);

@@ -6,29 +6,50 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.swing.GroupLayout.Alignment;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
 
 public class Main extends Application {
+	private static ArrayList<Node> propNodes = new ArrayList<Node>();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -39,6 +60,7 @@ public class Main extends Application {
 		    primaryStage.setScene(new Scene(root));   
 		    primaryStage.show();
 		    
+		    
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -46,6 +68,7 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+		
 	}
 	
 	public static void visualizeNodes(ArrayList<Node> nodes) throws IOException {
@@ -131,5 +154,99 @@ public class Main extends Application {
 	    stage.setScene(scene); 
 	    stage.show(); 
 	    
+	}
+	
+	public static ArrayList<Node> resolveConflicts(ArrayList<PropositionSet> propSet) {
+		for(PropositionSet props : propSet) {
+			Stage stage = new Stage();
+			Scene scene = new Scene(new VBox()); 
+			String styles = Main.class.getResource("application.css").toExternalForm();
+			scene.getStylesheets().add(styles);
+			AnchorPane pane3 = new AnchorPane();
+			ListView<String> list = new ListView<String>();
+			pane3.getChildren().add(list);
+			int ids[] = null;
+			try {
+				ids = PropositionSet.getPropsSafely(props);
+			} catch (NotAPropositionNodeException e) {
+				e.printStackTrace();
+			} catch (NodeNotFoundInNetworkException e) {
+				e.printStackTrace();
+			}
+			for(int id : ids) {
+				Node n = null;
+				try {
+					n = Network.getNodeById(id);
+				} catch (NodeNotFoundInNetworkException e) {
+					e.printStackTrace();
+				}
+				list.getItems().add(n.getIdentifier());
+			}
+			
+			AnchorPane pane1 = new AnchorPane();
+			Button btn = new Button("Delete Node");
+			btn.getStyleClass().add("tab");
+			pane1.getChildren().add(btn);
+			btn.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent arg0) {
+					String identifier = list.getSelectionModel().getSelectedItem();
+					Node x = null;
+					try {
+						x = Network.getNode(identifier);
+					} catch (NodeNotFoundInNetworkException e) {
+						e.printStackTrace();
+					}
+					propNodes.add(x);
+					stage.close();
+				}
+				
+			});
+			
+			AnchorPane pane2 = new AnchorPane();
+			Label lbl = new Label("Please delete a node to resolve contradiction");
+			lbl.setStyle("-fx-font-size: 24px;");
+			lbl.getStyleClass().add("title");
+			
+			pane2.getChildren().add(lbl);
+			
+			btn.prefWidthProperty().bind(stage.widthProperty());
+			lbl.prefWidthProperty().bind(stage.widthProperty());
+			list.prefWidthProperty().bind(stage.widthProperty());
+			
+			((VBox)scene.getRoot()).getChildren().add(lbl);
+			((VBox)scene.getRoot()).getChildren().add(list);
+			((VBox)scene.getRoot()).getChildren().add(btn);
+			
+		    stage.setTitle("Resolve Contradiction");
+		    stage.setScene(scene); 
+		    stage.setWidth(600);
+		    stage.setHeight(360);
+			stage.setResizable(false);
+		    stage.show(); 
+		}
+		return propNodes;
+	}
+	
+	public void userAction(ArrayList<PropositionSet> propSet) {
+		ButtonType ignore = new ButtonType("Ignore");
+		ButtonType resolve = new ButtonType("Resolve Conflict");
+		ButtonType ca = new ButtonType("Cancel Assertion");
+		
+		Alert a = new Alert(AlertType.NONE, "", ignore, resolve, ca);
+		a.setTitle("Contradiction Detected!");
+		a.setHeaderText("Error asserting nodes!");
+		a.setResizable(false);
+		a.setContentText("Contradiction Detected");
+		a.showAndWait().ifPresent(response -> {
+		    if (response == resolve) {
+		    	resolveConflicts(propSet);
+		    }else if (response == ignore) {
+		        //ignore
+		    }else if(response == ca) {
+		    	//cancel 
+		    }
+		});
 	}
 }
