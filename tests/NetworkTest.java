@@ -3,7 +3,6 @@ package tests;
 import org.junit.*;
 
 import sneps.exceptions.CustomException;
-import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -33,8 +32,8 @@ public class NetworkTest {
         Controller.clearSNeBR();
     }
 
-     @Test   
-     public void buildBaseNode() throws IllegalIdentifierException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    @Test
+    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int sizeOfNodes = Network.getNodes().size();
         int sizeOfProps = Network.getPropositionNodes().size();
         Network.buildBaseNode("n0", semantic);

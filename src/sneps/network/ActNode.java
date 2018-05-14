@@ -1,4 +1,5 @@
 package sneps.network;
+
 import java.io.Serializable;
 
 import sneps.network.classes.Semantic;
