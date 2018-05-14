@@ -189,9 +189,9 @@ public abstract class RuleNode extends PropositionNode {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
 			if (shareVars)
-				si = new SIndex(contextName, sharedVars, SIndex.SINGLETONRUIS, getPatternNodes());
+				si = new SIndex(contextName, sharedVars, SIndex.SINGLETONRUIS);
 			else
-				si = new SIndex(contextName, sharedVars, getSIndexContextType(), getParentNodes());
+				si = new SIndex(contextName, sharedVars, getSIndexContextType());
 			return this.addContextRUIS(si);
 		} else {
 			return this.addContextRUIS(contxt,createRuisHandler(contextName));

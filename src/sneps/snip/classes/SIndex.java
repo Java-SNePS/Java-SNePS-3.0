@@ -29,7 +29,7 @@ public class SIndex extends RuisHandler {
 	 * @param parentNodes
 	 * 			Set of nodes
 	 */
-	public SIndex(String context, VarNodeSet SharedVars, byte ruisType, NodeSet parentNodes) {
+	public SIndex(String context, VarNodeSet SharedVars, byte ruisType) {
 		super(context);
 		this.sharedVars=SharedVars;
 		this.ruiType=ruisType;

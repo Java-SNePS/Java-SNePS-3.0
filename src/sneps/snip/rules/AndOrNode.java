@@ -118,7 +118,7 @@ public class AndOrNode extends RuleNode {
 	 */
 	protected RuisHandler createRuisHandler(String contextName) {
 		Context contxt = (Context) Controller.getContextByName(contextName);
-		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0, getDominatingRules());
+		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		return this.addContextRUIS(contxt, index);
 	}
 	

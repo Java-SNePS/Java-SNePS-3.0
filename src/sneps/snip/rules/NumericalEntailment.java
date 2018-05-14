@@ -81,7 +81,7 @@ public class NumericalEntailment extends RuleNode {
 	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
 		SIndex set = (SIndex) contextRuisSet.getByContext(contxt);
 		if (set == null) 
-			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0, null);
+			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		set.insertRUI(rui);
 		NodeSet temp = new NodeSet();
 		temp.addNode(signature);
@@ -122,7 +122,7 @@ public class NumericalEntailment extends RuleNode {
 	@Override
 	public RuisHandler createRuisHandler(String contextName) {
 		Context contxt = (Context) Controller.getContextByName(contextName);
-		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0, getDominatingRules());
+		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		return this.addContextRUIS(contxt, index);
 	}
 	@Override
