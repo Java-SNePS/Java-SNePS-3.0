@@ -6,7 +6,7 @@ import java.util.Iterator;
 import sneps.snip.classes.FlagNode;
 
 public class FlagNodeSet implements Iterable<FlagNode> {
-	private HashSet<FlagNode> flagNodes;
+private HashSet<FlagNode> flagNodes;
 
 	@Override
 	public Iterator<FlagNode> iterator() {
@@ -27,7 +27,6 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 	}
 
 	
-
 	/**
 	 * Check if fn is in this
 	 * 
@@ -56,7 +55,7 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 			flagNodes.add(fn);
 	}
 
-	
+
 
 	/**
 	 * Return the number of flagged nodes in this set
@@ -86,4 +85,8 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		return res;
 	}
 
+	public int size() {
+		return flagNodes.size();
+	}
+	
 }

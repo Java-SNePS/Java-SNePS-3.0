@@ -1,11 +1,8 @@
 package sneps.snip.classes;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
-
 import sneps.setClasses.FlagNodeSet;
-import sneps.snebr.Support;
+import sneps.setClasses.NodeSet;
 import sneps.snip.matching.Substitutions;
 
 
@@ -155,7 +152,7 @@ public class RuleUseInfo {
 	 * @return RuleUseInfo
 	 */
 	public RuleUseInfo combine(RuleUseInfo rui) {
-		System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
+		//System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
 			return new RuleUseInfo(this.getSub().union(rui.getSub()), this.pos
 					+ rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));
@@ -163,22 +160,19 @@ public class RuleUseInfo {
 		return null;
 	}
 	
-	public Set<Support> getSupport(Set<Support> originSupport) {
-		Set<Support> ruiSupports = getSupports();
-		return Support.combine(originSupport, ruiSupports);
+	public NodeSet getSupport(NodeSet originSupport) {
+		NodeSet ruiSupports = getSupports();
+		ruiSupports.addAll(originSupport);
+		return ruiSupports;
 	}
 
-	private Set<Support> getSupports() {
+	private NodeSet getSupports() {
 		if (fns.isNew())
-			return new HashSet<Support>();
+			return new NodeSet();
 		if (fns.cardinality() == 1)
 			return fns.iterator().next().getSupports();
 		Iterator<FlagNode> fnIter = fns.iterator();
-		Set<Support> res = fnIter.next().getSupports();
-		while (fnIter.hasNext()) {
-			Set<Support> toBeCombined = fnIter.next().getSupports();
-			res = Support.combine(res, toBeCombined);
-		}
+		NodeSet res = fnIter.next().getSupports();
 		return res;
 	}
 

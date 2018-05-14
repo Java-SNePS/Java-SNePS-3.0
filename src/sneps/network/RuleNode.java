@@ -30,13 +30,14 @@ import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode {
 	private static final long serialVersionUID = 3891988384679269734L;
+	private NodeSet consequents;
 	protected NodeSet antNodesWithVars;
 	protected NodeSet antNodesWithoutVars;
 	protected Set<Integer> antNodesWithVarsIDs;
 	protected Set<Integer> antNodesWithoutVarsIDs;
 	protected boolean shareVars;
 	protected VarNodeSet sharedVars;
-	protected ContextRuisSet contextRuisSet;//TODO check
+	protected ContextRuisSet contextRuisSet;
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
 	public RuleNode(Semantic sym){
@@ -67,6 +68,14 @@ public abstract class RuleNode extends PropositionNode {
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 
+	protected void sendReportToConsequents(Report reply) {
+		if(!knownInstances.contains(reply))
+			newInstances.addReport(reply);
+		for (Channel outChannel : outgoingChannels)
+			if(outChannel instanceof RuleToConsequentChannel)
+				outChannel.addReport(reply);
+	}
+
 	protected void processNodes(NodeSet antNodes) {
 		this.splitToNodesWithVarsAndWithout(antNodes, antNodesWithVars, antNodesWithoutVars);
 		for (Node n : antNodesWithVars) {
@@ -83,14 +92,17 @@ public abstract class RuleNode extends PropositionNode {
 		String contextID = report.getContextName();
 		RuleUseInfo rui;
 		if (report.isPositive()) {
-			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.putIn(fn);
-			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
+			FlagNodeSet fns = report.getSupports();
+			NodeSet temp = new NodeSet();
+			temp.addNode(signature);
+			fns.insert(new FlagNode(signature, temp, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					1, 0, fns);
 		} else {
-			FlagNode fn = new FlagNode(signature, report.getSupports(), 2);
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.putIn(fn);
+			FlagNodeSet fns = report.getSupports();
+			NodeSet temp = new NodeSet();
+			temp.addNode(signature);
+			fns.insert(new FlagNode(signature, temp, 2));
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
 		RuisHandler crtemp = contextRuisSet.getByContext(contextID);
@@ -126,6 +138,10 @@ public abstract class RuleNode extends PropositionNode {
 			}
 		}
 		return res;
+	}
+
+	public NodeSet getConsequents() {
+		return consequents;
 	}
 
 	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {

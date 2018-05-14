@@ -286,7 +286,7 @@ public class PTree extends RuisHandler {
 		}
 
 		public RuleUseInfoSet getRootRUIS() {
-			return root.getRUIS(0);
+			return root.getRUIS(new Integer[]{0});
 		}
 
 	}
@@ -294,13 +294,13 @@ public class PTree extends RuisHandler {
 	public class PTreeNode {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;
-		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
+		private Hashtable<Integer[], RuleUseInfoSet> ruisMap;//Substitutions node IDs
 		private Set<Integer> pats;
 		private VarNodeSet vars;
 		private VarNodeSet siblingIntersection;
 
 		public PTreeNode(){
-			ruisMap = new Hashtable<Integer, RuleUseInfoSet>();
+			ruisMap = new Hashtable<Integer[], RuleUseInfoSet>();
 			parent = null;			sibling = null;
 			leftChild = null;		rightChild = null;
 			pats = null;			vars = null;
@@ -311,7 +311,7 @@ public class PTree extends RuisHandler {
 		}
 
 		public void insertIntoTree(RuleUseInfo rui, RuleUseInfoSet ruiSet) {
-			int key = insertRUI(rui);
+			Integer[] key = insertRUI(rui);
 			if (sibling == null) {
 				ruiSet.add(rui);
 				return;
@@ -339,32 +339,31 @@ public class PTree extends RuisHandler {
 			rightChild = rightNode;
 		}
 
-		public int insertRUI(RuleUseInfo rui) {
+		public Integer[] insertRUI(RuleUseInfo rui) {
 			if (sibling == null) {
-				RuleUseInfoSet ruiSet = ruisMap.get(0);
+				RuleUseInfoSet ruiSet = ruisMap.get(new Integer[]{0});
 				if (ruiSet == null) {
 					ruiSet = new RuleUseInfoSet();
-					ruisMap.put(0, ruiSet);
+					ruisMap.put(new Integer[]{0}, ruiSet);
 				}
 				ruiSet.add(rui);
-				return 0;
+				return new Integer[]{0};
 			}
 
-			int[] vs = new int[siblingIntersection.size()];
+			Integer[] vs = new Integer[siblingIntersection.size()];
 			int index = 0;
 			for (VariableNode var : siblingIntersection)
 				vs[index++] = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
-			int key = getKey(vs);
-			RuleUseInfoSet ruis = ruisMap.get(key);
+			RuleUseInfoSet ruis = ruisMap.get(vs);
 			if (ruis == null) {
 				ruis = new RuleUseInfoSet();
-				ruisMap.put(key, ruis);
+				ruisMap.put(vs, ruis);
 			}
 			ruis.add(rui);
-			return key;
+			return vs;
 		}
 
-		public RuleUseInfoSet getRUIS(int index) {
+		public RuleUseInfoSet getRUIS(Integer[] index) {
 			return ruisMap.get(index);
 		}
 
@@ -380,24 +379,10 @@ public class PTree extends RuisHandler {
 		public VarNodeSet getVars() {
 			return vars;
 		}
-		private int getKey(int[] x) {
-			int p = 16777619;
-			int hash = (int) 2166136261L;
-			for (int i = 0; i < x.length; ++i) {
-				hash += (hash ^ x[i]) * p;
-			}
-			hash += hash << 13;
-			hash ^= hash >> 7;
-			hash += hash << 3;
-			hash ^= hash >> 17;
-			hash += hash << 5;
-			return hash;
-		}
 		@Override
 		public String toString(){
 			return pats.toString();
 		}
 
 	}
-	//TODO key
 }

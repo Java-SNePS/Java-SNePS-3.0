@@ -1,13 +1,11 @@
 package sneps.snip.classes;
 
-import java.util.Set;
-
 import sneps.network.Node;
-import sneps.snebr.Support;
+import sneps.setClasses.NodeSet;
 
 public class FlagNode {
 	private Node node;
-	private Set<Support> supports;
+	private NodeSet supports;
 	private int flag;
 
 	/**
@@ -20,7 +18,7 @@ public class FlagNode {
 	 * @param f
 	 *            true or false
 	 */
-	public FlagNode(Node n, Set<Support> set, int f) {
+	public FlagNode(Node n, NodeSet set, int f) {
 		node = n;
 		supports = set;
 		flag = f;
@@ -40,7 +38,7 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public Set<Support> getSupports() {
+	public NodeSet getSupports() {
 		return supports;
 	}
 

@@ -105,7 +105,7 @@ public class PropositionNode extends Node {
 
 	public void processSingleRequest(Channel currentChannel) {
 		//TODO check correctness
-		
+		/*
 		PropositionSet propSet = new PropositionSet();
 		propSet.addProposition((PropositionNode) this);
 
@@ -151,7 +151,7 @@ public class PropositionNode extends Node {
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	public void processRequests() {

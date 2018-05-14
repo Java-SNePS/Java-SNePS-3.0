@@ -1,6 +1,5 @@
 package sneps.snip.rules;
 
-import java.util.HashSet;
 import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
@@ -10,7 +9,6 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
@@ -21,7 +19,6 @@ import sneps.snip.classes.RuleUseInfo;
  */
 public class AndEntailment extends RuleNode {
 	private static final long serialVersionUID = -8545987005610860977L;
-	private NodeSet consequents;//TODO Proposition Nodes get
 
 	/**
 	 * Constructor for the AndEntailment rule node
@@ -29,7 +26,6 @@ public class AndEntailment extends RuleNode {
 	 */
 	public AndEntailment(Term syn) {
 		super(syn);
-		setConsequents(new NodeSet());
 	}
 	/**
 	 * Constructor for the AndEntailment rule node
@@ -38,7 +34,6 @@ public class AndEntailment extends RuleNode {
 	 */
 	public AndEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
-		setConsequents(new NodeSet());
 	}
 
 	/**
@@ -51,11 +46,13 @@ public class AndEntailment extends RuleNode {
 	public void applyRuleHandler(Report report, Node signature) {
 		String contxt = report.getContextName();
 		if (report.isPositive()) {
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.putIn(new FlagNode(signature, report.getSupports(), 1));
+			FlagNodeSet fns = report.getSupports();
+			NodeSet temp = new NodeSet();
+			temp.addNode(signature);
+			fns.insert(new FlagNode(signature, temp, 1));
 			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
-			addNotSentRui(rui, contxt,signature);
+			addNotSentRui(rui, contxt, signature);
 		}
 		if (contextRuisSet.getByContext(contxt).getPositiveNodes().size() >= getAntSize())
 			sendSavedRUIs(report.getContextName());
@@ -70,16 +67,15 @@ public class AndEntailment extends RuleNode {
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
 		if (Rui.getPosCount() != antNodesWithVars.size() + antNodesWithoutVars.size())
 			return;
-		Support originSupports = this.getBasicSupport();
-		HashSet<Support> sup = new HashSet<Support>();
-		sup.add(originSupports);
-		
-		//Send this V
-		NodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
-		justification.addNode(this);
+		//TODO Issue
+		FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
+		NodeSet temp = new NodeSet();
+		temp.addNode(this);
+		FlagNode fn = new FlagNode(this, temp, 1);
+		justification.insert(fn);
 
-		Report reply = new Report(Rui.getSub(), Rui.getSupport(sup), true, contextID);
-		broadcastReport(reply);
+		Report reply = new Report(Rui.getSub(), justification, true, contextID);
+		sendReportToConsequents(reply);
 	}
 
 	/**
@@ -93,7 +89,9 @@ public class AndEntailment extends RuleNode {
 		if (tree == null)
 			tree = (PTree) createRuisHandler(contxt);
 		tree.insertRUI(rui);
-		tree.getPositiveNodes().addNode(signature);
+		NodeSet temp = new NodeSet();
+		temp.addNode(signature);
+		tree.getPositiveNodes().insert(new FlagNode(signature, temp, 1));
 		contextRuisSet.addHandlerSet(contxt, tree);
 	}
 	/**
@@ -139,20 +137,6 @@ public class AndEntailment extends RuleNode {
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");//ants for & name convention
-	}
-
-	@Override
-	public void clear(){
-		super.clear();
-		consequents.clear();
-	}
-
-
-	public NodeSet getConsequents() {
-		return consequents;
-	}
-	public void setConsequents(NodeSet consequents) {
-		this.consequents = consequents;
 	}
 
 }

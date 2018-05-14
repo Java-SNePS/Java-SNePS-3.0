@@ -1,8 +1,5 @@
 package sneps.snip.rules;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
@@ -12,7 +9,6 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
@@ -24,7 +20,6 @@ import sneps.snip.classes.SIndex;
  */
 public class NumericalEntailment extends RuleNode {
 	private static final long serialVersionUID = 3546852401118194013L;
-	private NodeSet consequents;
 	private int i;
 
 	public NumericalEntailment(Term syn) {
@@ -44,8 +39,10 @@ public class NumericalEntailment extends RuleNode {
 	public void applyRuleHandler(Report report, Node signature) {
 		String contxt = report.getContextName();
 		if (report.isPositive()) {
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.putIn(new FlagNode(signature, report.getSupports(), 1));
+			FlagNodeSet fns = report.getSupports();
+			NodeSet temp = new NodeSet();
+			temp.addNode(signature);
+			fns.insert(new FlagNode(signature, temp, 1));
 			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
 			addNotSentRui(rui, contxt, signature);
@@ -63,10 +60,14 @@ public class NumericalEntailment extends RuleNode {
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo rui, String contextID) {
 		if (rui.getPosCount() >= i){
-			Set<Support> originSupports = new HashSet<Support>();
-			originSupports.add(this.getBasicSupport());
-			Report reply = new Report(rui.getSub(),rui.getSupport(originSupports), true, contextID);
-			broadcastReport(reply);
+			FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
+			NodeSet temp = new NodeSet();
+			temp.addNode(this);
+			FlagNode fn = new FlagNode(this, temp, 1);
+			justification.insert(fn);
+
+			Report reply = new Report(rui.getSub(), justification, true, contextID);
+			sendReportToConsequents(reply);
 		}
 	}
 
@@ -81,7 +82,9 @@ public class NumericalEntailment extends RuleNode {
 		//if (set == null) 
 		//set = new SIndex(contxt, sharedVars, 0, consequents);
 		set.insertRUI(rui);
-		set.getPositiveNodes().addNode(signature);
+		NodeSet temp = new NodeSet();
+		temp.addNode(signature);
+		set.getPositiveNodes().insert(new FlagNode(signature, temp, 1));
 		contextRuisSet.addHandlerSet(contxt, set);
 	}
 	/**
@@ -126,9 +129,6 @@ public class NumericalEntailment extends RuleNode {
 		return this.getDownNodeSet("iant");
 	}
 
-	public NodeSet getConsequents() {
-		return consequents;
-	}
 	public int getI() {
 		return i;
 	}

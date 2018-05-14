@@ -1,17 +1,15 @@
 package sneps.snip;
 
-import java.util.Set;
-
-import sneps.snebr.Support;
+import sneps.setClasses.FlagNodeSet;
 import sneps.snip.matching.Substitutions;
 
 public class Report {
-	private Substitutions substitution;
-	private Set<Support> supports;
+	private Substitutions substitution;//Bound to same thing(if bound)
+	private FlagNodeSet supports;//then add to new support
 	private boolean sign;
 	private String contextName;
 
-	public Report(Substitutions substitution, Set<Support> set, boolean sign, String contextID) {
+	public Report(Substitutions substitution, FlagNodeSet set, boolean sign, String contextID) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
@@ -22,7 +20,7 @@ public class Report {
 		return substitution;
 	}
 
-	public Set<Support> getSupports() {
+	public FlagNodeSet getSupports() {
 		return supports;
 	}
 
@@ -46,7 +44,7 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
+		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports.toString();
 	}
 
 	public String getContextName() {
