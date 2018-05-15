@@ -101,7 +101,6 @@ terminal ACTIVATE,
          UNTRACE,
          INFERENCE,
          ACTING,
-         PARSING,
          EQUALITY,
          IMPLICATION,
          OR_ENTAILMENT,
@@ -799,10 +798,6 @@ snepslogFunction ::=	 INFERENCE
 		      	| ACTING
 		     	{:
 					RESULT = "acting";
-		     	:}
-		     	| PARSING
-		     	{:
-					RESULT = "parsing";
 		     	:};
 				
 wff ::= infixedTerm:it

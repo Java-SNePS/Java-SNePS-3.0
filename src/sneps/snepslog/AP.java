@@ -1020,8 +1020,6 @@ public class AP {
 			break;
 		case "acting":
 			break;
-		case "parsing":
-			break;
 		}
 	}
 
@@ -1031,8 +1029,6 @@ public class AP {
 		case "inference":
 			break;
 		case "acting":
-			break;
-		case "parsing":
 			break;
 		}
 	}
