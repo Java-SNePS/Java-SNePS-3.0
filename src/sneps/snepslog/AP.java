@@ -1,7 +1,7 @@
 /**
  * @className AP.java
  * 
- * @ClassDescription This is the class that acts as an interface to the snepslog 
+ * @ClassDescription This is the class that acts as an interface to the SNePSLOG 
  *  parser. It contains some static fields and some helper methods used to make 
  *  changes in the backend.
  * 
@@ -67,43 +67,58 @@ import sneps.snebr.Controller;
 public class AP {
 
 	/**
-	 * This is a hashtable to store the descriptions of cfs in mode 3.
-	 */
-	private static Hashtable<String, String> cfsDescriptions = new Hashtable<String, String>();
-
-	/**
-	 * This is a hashtable to store the descriptions of nodes in mode 3.
-	 */
-	private static Hashtable<Node, String> nodesDescriptions = new Hashtable<Node, String>();
-
-	/**
-	 * This is a hashtable to store the case frames used in mode 3 where the key is
-	 * the name used in creating the case frame.
+	 * This is a Hashtable to store the CaseFrames used in mode 3 where the key is
+	 * the name used in creating the CaseFrame.
 	 */
 	private static Hashtable<String, CaseFrame> modeThreeCaseFrames = new Hashtable<String, CaseFrame>();
 
 	/**
-	 * an integer which holds the number of the snepslog mode currently in use. It
+	 * This is a Hashtable to store the descriptions of CaseFrames created in mode 3
+	 * where the key is the name of the CaseFrame.
+	 */
+	private static Hashtable<String, String> cfsDescriptions = new Hashtable<String, String>();
+
+	/**
+	 * This is a Hashtable to store the descriptions of Nodes created in mode 3
+	 * where the key is the node itself.
+	 */
+	private static Hashtable<Node, String> nodesDescriptions = new Hashtable<Node, String>();
+
+	/**
+	 * An integer which holds the number of the SNePSLOG mode currently in use. It
 	 * is initially set to 1.
 	 */
 	private static int snepslogMode = 1;
 
 	/**
-	 * a String which holds the name of the printing mode currently in use. It is
+	 * A String which holds the name of the printing mode currently in use. It is
 	 * initially set to normal.
 	 */
 	private static String printingMode = "normal";
 
+	/**
+	 * @return A Hashtable representing the field modeThreeCaseFrames.
+	 */
+	protected static Hashtable<String, CaseFrame> getModeThreeCaseFrames() {
+		return modeThreeCaseFrames;
+	}
+
+	/**
+	 * @return A Hashtable representing the field cfsDescriptions.
+	 */
 	protected static Hashtable<String, String> getCfsDescriptions() {
 		return cfsDescriptions;
 	}
 
+	/**
+	 * @return A Hashtable representing the field nodesDescriptions.
+	 */
 	protected static Hashtable<Node, String> getNodesDescriptions() {
 		return nodesDescriptions;
 	}
 
 	/**
-	 * @return an int representing the number of the snepslog mode currently in use.
+	 * @return An int representing the number of the SNePSLOG mode currently in use.
 	 */
 	protected static int getSnepslogMode() {
 		return snepslogMode;
@@ -111,14 +126,14 @@ public class AP {
 
 	/**
 	 * @param snepslogMode
-	 *            the number of the snepslog mode to be used.
+	 *            The number of the SNePSLOG mode to be used.
 	 */
 	protected static void setSnepslogMode(int snepslogMode) {
 		AP.snepslogMode = snepslogMode;
 	}
 
 	/**
-	 * @return a String representing the name of the printing mode currently in use.
+	 * @return A String representing the name of the printing mode currently in use.
 	 */
 	protected static String getPrintingMode() {
 		return printingMode;
@@ -126,19 +141,19 @@ public class AP {
 
 	/**
 	 * @param printingMode
-	 *            the name of the printing mode to be used.
+	 *            The name of the printing mode to be used.
 	 */
 	protected static void setPrintingMode(String printingMode) {
 		AP.printingMode = printingMode;
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 1.
+	 * This method is used to create a customized CaseFrame for Mode 1.
 	 *
 	 * @param noOfArguments
-	 *            the number of argument relations.
+	 *            The number of argument relations.
 	 *
-	 * @return the case frame after being created.
+	 * @return The created CaseFrame.
 	 */
 	protected static CaseFrame createModeOneCaseFrame(int noOfArguments) {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
@@ -152,15 +167,15 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to create a customized case frame for mode 2.
+	 * This method is used to create a customized CaseFrame for Mode 2.
 	 * 
 	 * @param p
-	 *            the name of the p relation.
+	 *            The name of the p relation.
 	 *
 	 * @param noOfArguments
-	 *            the number of argument relations.
+	 *            The number of argument relations.
 	 *
-	 * @return the case frame after being created.
+	 * @return The created CaseFrame.
 	 */
 	protected static CaseFrame createModeTwoCaseFrame(String p, int noOfArguments) {
 		LinkedList<Relation> rels = new LinkedList<Relation>();
@@ -174,19 +189,19 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to create a case frame for mode 3 and stores it in a
-	 * hashtable using the name as key.
+	 * This method is used to create a CaseFrame for Mode 3 and stores it in a
+	 * Hashtable using the name as key.
 	 * 
 	 * @param semanticType
-	 *            this specifies the semantic type of the case frame.
+	 *            This specifies the semantic type of the case frame.
 	 * @param name
-	 *            this acts as an identifier for the case frame.
+	 *            This acts as an identifier for the case frame.
 	 * @param relations
-	 *            this String contains the relations that is used to create a case
-	 *            frame.
-	 * @return the case frame after being created.
+	 *            This String contains the relations that is used to create the
+	 *            CaseFrame.
+	 * @return The created CaseFrame case frame.
 	 * @throws RelationDoesntExistException
-	 *             if a relation was not defined in the Network.
+	 *             If a relation was not defined in the Network.
 	 */
 	protected static CaseFrame createModeThreeCaseFrame(String name, String semanticType, ArrayList<String> relations,
 			String description) throws RelationDoesntExistException {
@@ -218,13 +233,13 @@ public class AP {
 	 * network.
 	 * 
 	 * @param type
-	 *            a String specifying the type of the infixed term. It should have
+	 *            A String specifying the type of the infixed term. It should have
 	 *            one of the following values: and, or, or equality.
 	 * @param arg1
-	 *            the first argument node.
+	 *            The first argument node.
 	 * @param arg2
-	 *            the second argument node.
-	 * @return a molecular node representing the infixed term.
+	 *            The second argument node.
+	 * @return A molecular node representing the infixed term.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
@@ -265,17 +280,17 @@ public class AP {
 	 * network.
 	 * 
 	 * @param entailmentType
-	 *            a String specifying the type of the entailment. It should have one
+	 *            A String specifying the type of the entailment. It should have one
 	 *            of the following values: AndEntailment, OrEntailment,
 	 *            NumericalEntailment or Implication.
 	 * @param antecedents
-	 *            an ArrayList of the nodes representing the antecedents.
+	 *            An ArrayList of the nodes representing the antecedents.
 	 * @param consequents
-	 *            an ArrayList of the nodes representing the consequents.
+	 *            An ArrayList of the nodes representing the consequents.
 	 * @param optionalI
-	 *            a String which contains the value of "i" in case of a numerical
+	 *            A String which contains the value of "i" in case of a numerical
 	 *            entailment.
-	 * @return a molecular node representing the entailment
+	 * @return A molecular node representing the entailment.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
@@ -337,8 +352,8 @@ public class AP {
 	 * network.
 	 * 
 	 * @param node
-	 *            a node to be negated.
-	 * @return a molecular node representing a negatedTerm.
+	 *            A node to be negated.
+	 * @return A molecular node representing a negatedTerm.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
@@ -363,12 +378,12 @@ public class AP {
 	 * network.
 	 * 
 	 * @param i
-	 *            the andor min.
+	 *            The andor min.
 	 * @param j
-	 *            the andor max.
+	 *            The andor max.
 	 * @param arguments
-	 *            an ArrayList of the nodes representing the arguments.
-	 * @return a molecular node representing an andorTerm.
+	 *            An ArrayList of the nodes representing the arguments.
+	 * @return A molecular node representing an andorTerm.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
@@ -395,11 +410,11 @@ public class AP {
 	 * network.
 	 * 
 	 * @param type
-	 *            a String specifying the type of the setTerm. It should have one of
+	 *            A String specifying the type of the setTerm. It should have one of
 	 *            the following values: and, or, nand, nor, xor or iff.
 	 * @param arguments
-	 *            an ArrayList of the nodes representing the arguments.
-	 * @return a molecular node representing a setTerm
+	 *            An ArrayList of the nodes representing the arguments.
+	 * @return A molecular node representing a setTerm.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException
@@ -456,12 +471,12 @@ public class AP {
 	 * network.
 	 * 
 	 * @param thresh
-	 *            the thresh min.
+	 *            The thresh min.
 	 * @param threshmax
-	 *            the thresh max.
+	 *            The thresh max.
 	 * @param arguments
-	 *            an ArrayList of the nodes representing the arguments.
-	 * @return a molecular node representing a threshTerm.
+	 *            An ArrayList of the nodes representing the arguments.
+	 * @return A molecular node representing a threshTerm.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
@@ -488,14 +503,14 @@ public class AP {
 	 * network.
 	 * 
 	 * @param type
-	 *            a String specifying the type of the SNeRE term. It should have one
+	 *            A String specifying the type of the SNeRE term. It should have one
 	 *            of the following values: ifdo, whendo, wheneverdo, ActPlan,
 	 *            Effect, GoalPlan or Precondition.
 	 * @param arg1
-	 *            the first argument node.
+	 *            The first argument node.
 	 * @param arg2
-	 *            the second argument node.
-	 * @return a molecular node representing the SNeRE term.
+	 *            The second argument node.
+	 * @return A molecular node representing the SNeRE term.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
@@ -549,69 +564,21 @@ public class AP {
 	}
 
 	/**
-	 * This method is used to clear the knowledge base entirely.
-	 */
-	protected static void clearKnowledgeBase() {
-		Controller.clearSNeBR();
-		Network.clearNetwork();
-		SemanticHierarchy.getSemantics().clear();
-		cfsDescriptions.clear();
-		nodesDescriptions.clear();
-		modeThreeCaseFrames.clear();
-		Network.defineDefaults();
-	}
-
-	/**
-	 * This method is used to execute a snepslog command.
-	 * 
-	 * @param command
-	 *            a String holding the command that is to be executed.
-	 * 
-	 * @return a String representing the output of that command.
-	 * 
-	 * @throws Exception
-	 *             if the command is syntactically incorrect.
-	 */
-	public static String executeSnepslogCommand(String command) {
-		try {
-			InputStream is = new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8));
-			DataInputStream dis = new DataInputStream(is);
-			parser parser = new parser(new Lexer(dis));
-			parser.command = command;
-			Symbol res;
-			res = parser.parse();
-			String output = (String) res.value;
-			is.close();
-			dis.close();
-			return output;
-		} catch (ContradictionFoundException e) {
-			Main.userAction(e.getContradictoryHyps());
-			return "The GUI is used to handle the contradiction!";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	protected static Hashtable<String, CaseFrame> getModeThreeCaseFrames() {
-		return modeThreeCaseFrames;
-	}
-
-	/**
 	 * This method is used to construct the nodes representing withsome and withall
 	 * terms in the network.
 	 * 
 	 * @param type
-	 *            a String specifying the type of the term. It should have one of
+	 *            A String specifying the type of the term. It should have one of
 	 *            the following values: withsome or withall.
 	 * @param vars
-	 *            an ArrayList of the nodes representing the vars.
+	 *            An ArrayList of the nodes representing the vars.
 	 * @param suchthat
-	 *            an ArrayList of the nodes representing the suchthat.
+	 *            An ArrayList of the nodes representing the suchthat.
 	 * @param doo
-	 *            an ArrayList of the nodes representing the doo.
+	 *            An ArrayList of the nodes representing the doo.
 	 * @param elsee
-	 *            an ArrayList of the nodes representing the elsee.
-	 * @return a molecular node representing the entailment
+	 *            An ArrayList of the nodes representing the elsee.
+	 * @return A molecular node representing the withsome/allTerm.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
@@ -681,10 +648,10 @@ public class AP {
 	 * network.
 	 * 
 	 * @param vars
-	 *            an ArrayList of the nodes representing the vars.
+	 *            An ArrayList of the nodes representing the vars.
 	 * @param wff
-	 *            a node representing the scope of the quantifier.
-	 * @return a molecular node representing the allTerm
+	 *            A node representing the scope of the quantifier.
+	 * @return A molecular node representing the allTerm.
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws NodeCannotBeRemovedException
@@ -728,6 +695,16 @@ public class AP {
 		return node;
 	}
 
+	/**
+	 * This method traverses the nodes in the given DownCableSet and set the
+	 * snepslogFlag of any variable node with one of the given names to false.
+	 * 
+	 * @param varNames
+	 *            An ArrayList which contains the names of these variable nodes.
+	 * @param downCableSet
+	 *            The DownCableSet of a node.
+	 * @throws IllegalIdentifierException
+	 */
 	private static void resetTheFlags(ArrayList<String> varNames, DownCableSet downCableSet)
 			throws IllegalIdentifierException {
 		Set<String> keys = downCableSet.getDownCables().keySet();
@@ -752,8 +729,8 @@ public class AP {
 	 * to the printing mode in use.
 	 * 
 	 * @param wffs
-	 *            an ArrayList of some nodes.
-	 * @return a String holding the representation.
+	 *            An ArrayList of some nodes.
+	 * @return A String holding the representation.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 */
@@ -811,8 +788,8 @@ public class AP {
 	 * This method converts a group of Nodes into a String representation.
 	 * 
 	 * @param terms
-	 *            an ArrayList of some nodes.
-	 * @return a String holding the representation.
+	 *            An ArrayList of some nodes.
+	 * @return A String holding the representation.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 */
@@ -839,6 +816,12 @@ public class AP {
 
 	/**
 	 * A method to convert an ArrayList of Nodes to a PropositionSet.
+	 * 
+	 * @param nodes
+	 *            An ArrayList that contains a group of nodes.
+	 * @return A PropositionSet which contains the nodes in the given ArrayList.
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
 	 */
 	protected static PropositionSet arrayListToPropositionSet(ArrayList<Node> nodes)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
@@ -851,6 +834,12 @@ public class AP {
 
 	/**
 	 * A method to convert a PropositionSet to an ArrayList of Nodes.
+	 * 
+	 * @param nodes
+	 *            A PropositionSet that contains a group of nodes.
+	 * @return An ArrayList which contains the nodes in the given PropositionSet
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
 	 */
 	protected static ArrayList<Node> propositionSetToArrayList(PropositionSet set)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
@@ -864,6 +853,11 @@ public class AP {
 
 	/**
 	 * A method returning the molecular nodes from an ArrayList of Nodes.
+	 * 
+	 * @param nodes
+	 *            An ArrayList that contains a group of nodes.
+	 * @return A ArrayList which contains only the molecular nodes from the ones in
+	 *         given ArrayList.
 	 */
 	protected static ArrayList<Node> getMolecular(ArrayList<Node> nodes) {
 		ArrayList<Node> closed = new ArrayList<>();
@@ -877,6 +871,8 @@ public class AP {
 
 	/**
 	 * A method returning all the molecular nodes from the Network.
+	 * 
+	 * @return A ArrayList which contains all the molecular nodes in the Network.
 	 */
 	protected static ArrayList<Node> getAllMolecularNodesFromTheNetwork() {
 		ArrayList<Node> molecular = new ArrayList<>();
@@ -891,6 +887,11 @@ public class AP {
 
 	/**
 	 * A method returning the closed nodes from an ArrayList of Nodes.
+	 * 
+	 * @param nodes
+	 *            An ArrayList that contains a group of nodes.
+	 * @return A ArrayList which contains only the closed nodes from the ones in
+	 *         given ArrayList.
 	 */
 	protected static ArrayList<Node> getClosed(ArrayList<Node> nodes) {
 		ArrayList<Node> closed = new ArrayList<>();
@@ -904,6 +905,8 @@ public class AP {
 
 	/**
 	 * A method returning all the closed nodes from the Network.
+	 * 
+	 * @return A ArrayList which contains all the closed nodes in the Network.
 	 */
 	protected static ArrayList<Node> getAllClosedNodesFromTheNetwork() {
 		ArrayList<Node> closed = new ArrayList<>();
@@ -917,9 +920,11 @@ public class AP {
 	}
 
 	/**
-	 * A method returning the asserted nodes dominating the nodes in the given
-	 * ArrayList.
+	 * A method returning the asserted nodes dominating a set of nodes.
 	 * 
+	 * @param nodes
+	 *            An ArrayList that contains a group of nodes.
+	 * @return An ArrayList which contains the nodes dominating the given nodes.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 */
@@ -944,6 +949,9 @@ public class AP {
 	/**
 	 * A method returning the description of some given nodes.
 	 * 
+	 * @param nodes
+	 *            An ArrayList that contains a group of nodes.
+	 * @return A String which contains the descriptions of the given nodes.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 */
@@ -974,6 +982,11 @@ public class AP {
 
 	/**
 	 * A method that loads some commands from a file and execute them.
+	 * 
+	 * @param path
+	 *            A String which contains the path of the file.
+	 * 
+	 * @return A String representing the output of the commands in this file.
 	 */
 	protected static String loadFile(String path) {
 		ArrayList<String> commands = new ArrayList<String>();
@@ -1072,6 +1085,48 @@ public class AP {
 			break;
 		}
 		return output;
+	}
+
+	/**
+	 * This method is used to clear the knowledge base entirely.
+	 */
+	protected static void clearKnowledgeBase() {
+		Controller.clearSNeBR();
+		Network.clearNetwork();
+		SemanticHierarchy.getSemantics().clear();
+		cfsDescriptions.clear();
+		nodesDescriptions.clear();
+		modeThreeCaseFrames.clear();
+		Network.defineDefaults();
+	}
+
+	/**
+	 * This method is used to execute a SNePSLOG command.
+	 * 
+	 * @param command
+	 *            A String holding the command that is to be executed.
+	 * 
+	 * @return A String representing the output of that command.
+	 * 
+	 */
+	public static String executeSnepslogCommand(String command) {
+		try {
+			InputStream is = new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8));
+			DataInputStream dis = new DataInputStream(is);
+			parser parser = new parser(new Lexer(dis));
+			parser.command = command;
+			Symbol res;
+			res = parser.parse();
+			String output = (String) res.value;
+			is.close();
+			dis.close();
+			return output;
+		} catch (ContradictionFoundException e) {
+			Main.userAction(e.getContradictoryHyps());
+			return "The GUI is used to handle the contradiction!";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 
 	public static void main(String[] args) {
