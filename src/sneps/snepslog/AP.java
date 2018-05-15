@@ -629,18 +629,15 @@ public class AP {
 		case "withsome":
 			wires.add(new Wire(Relation.action,
 					Network.buildBaseNode("withsome", SemanticHierarchy.createSemanticType("Action"))));
-			for (int i = 0; i < vars.size(); i++) {
-				wires.add(new Wire(Relation.vars, vars.get(i)));
+			for (int i = 0; i < suchthat.size(); i++) {
+				wires.add(new Wire(Relation.suchthat, suchthat.get(i)));
 			}
-			for (int j = 0; j < suchthat.size(); j++) {
-				wires.add(new Wire(Relation.suchthat, suchthat.get(j)));
-			}
-			for (int k = 0; k < doo.size(); k++) {
-				wires.add(new Wire(Relation.doo, doo.get(k)));
+			for (int j = 0; j < doo.size(); j++) {
+				wires.add(new Wire(Relation.doo, doo.get(j)));
 			}
 			if (elsee != null) {
-				for (int x = 0; x < elsee.size(); x++) {
-					wires.add(new Wire(Relation.elsee, elsee.get(x)));
+				for (int k = 0; k < elsee.size(); k++) {
+					wires.add(new Wire(Relation.elsee, elsee.get(k)));
 				}
 				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withSome;
 			} else {
@@ -650,24 +647,24 @@ public class AP {
 		case "withall":
 			wires.add(new Wire(Relation.action,
 					Network.buildBaseNode("withall", SemanticHierarchy.createSemanticType("Action"))));
-			for (int i = 0; i < vars.size(); i++) {
-				wires.add(new Wire(Relation.vars, vars.get(i)));
+			for (int i = 0; i < suchthat.size(); i++) {
+				wires.add(new Wire(Relation.suchthat, suchthat.get(i)));
 			}
-			for (int j = 0; j < suchthat.size(); j++) {
-				wires.add(new Wire(Relation.suchthat, suchthat.get(j)));
-			}
-			for (int k = 0; k < doo.size(); k++) {
-				wires.add(new Wire(Relation.doo, doo.get(k)));
+			for (int j = 0; j < doo.size(); j++) {
+				wires.add(new Wire(Relation.doo, doo.get(j)));
 			}
 			if (elsee != null) {
-				for (int x = 0; x < elsee.size(); x++) {
-					wires.add(new Wire(Relation.elsee, elsee.get(x)));
+				for (int k = 0; k < elsee.size(); k++) {
+					wires.add(new Wire(Relation.elsee, elsee.get(k)));
 				}
 				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withAll;
 			} else {
 				caseFrame = (RelationsRestrictedCaseFrame) RelationsRestrictedCaseFrame.withAllNoElse;
 			}
 			break;
+		}
+		for (int x = 0; x < vars.size(); x++) {
+			wires.add(new Wire(Relation.vars, vars.get(x)));
 		}
 		Node node = Network.buildMolecularNode(wires, caseFrame);
 		Molecular m = (Molecular) node.getTerm();
