@@ -22,7 +22,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
@@ -33,6 +36,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
+import sneps.snebr.Controller;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -49,7 +53,6 @@ import javafx.scene.web.WebView;
 
 
 public class Main extends Application {
-	private static ArrayList<Node> propNodes = new ArrayList<Node>();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -156,7 +159,8 @@ public class Main extends Application {
 	    
 	}
 	
-	public static ArrayList<Node> resolveConflicts(ArrayList<PropositionSet> propSet) {
+	public static void resolveConflicts(ArrayList<PropositionSet> propSet) {
+		ArrayList<Integer> tempHyps = new ArrayList<Integer>();
 		for(PropositionSet props : propSet) {
 			Stage stage = new Stage();
 			Scene scene = new Scene(new VBox()); 
@@ -198,7 +202,7 @@ public class Main extends Application {
 					} catch (NodeNotFoundInNetworkException e) {
 						e.printStackTrace();
 					}
-					propNodes.add(x);
+					tempHyps.add(x.getId());
 					stage.close();
 				}
 				
@@ -226,7 +230,36 @@ public class Main extends Application {
 			stage.setResizable(false);
 		    stage.show(); 
 		}
-		return propNodes;
+		
+		int[] hyps = new int[tempHyps.size()];
+		for(int i = 0; i<hyps.length; i++) {
+			hyps[i] = tempHyps.get(i);
+		}
+		PropositionSet propNodes = null;
+		try {
+			propNodes = new PropositionSet(hyps);
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Controller.handleContradiction(propNodes, false);
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInPropSetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DuplicatePropositionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void userAction(ArrayList<PropositionSet> propSet) {

@@ -2,7 +2,7 @@ package sneps.snebr;
 
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -91,6 +91,10 @@ public class ContextSet implements Serializable{
                 return c;
         }
         return context;
+    }
+
+    public Collection<Context> getContexts() {
+        return this.contexts.values();
     }
 
 }

@@ -60,6 +60,7 @@ import javafx.util.Duration;
 import sneps.exceptions.CaseFrameCannotBeRemovedException;
 import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
 import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.ContradictionFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
@@ -2934,7 +2935,7 @@ public class FXController implements Initializable {
 		}
 		try {
 			Controller.createContext(name, hyps);
-		} catch (DuplicateContextNameException e) {
+		} catch (DuplicateContextNameException | ContradictionFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3293,7 +3294,7 @@ public class FXController implements Initializable {
 		try {
 			Controller.setCurrentContext(cname);
 			popUpNotification("Context", "Current context is set", "Context: " + cname + " is the current context", 2);
-		} catch (DuplicateContextNameException e) {
+		} catch (ContradictionFoundException | ContextNameDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3338,14 +3339,14 @@ public class FXController implements Initializable {
 		} catch (NotAPropositionNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (CustomException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ContextNameDoesntExistException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContradictionFoundException e) {
+			Main.userAction(e.getContradictoryHyps());
 			e.printStackTrace();
 		}
 		updateListOfContexts();
@@ -3375,6 +3376,9 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContradictionFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
