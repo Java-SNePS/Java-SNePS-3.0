@@ -649,8 +649,10 @@ public class Network implements Serializable {
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null))
-			return (Node) find(array, Controller.getCurrentContext()).get(0)[0];
+		if (((Boolean) result[0] == true) && (result[1] == null)) {
+			// TODO Look for that node and return it
+			return null;
+		}
 
 		if (((Boolean) result[0] == true) && (result[1] != null)) {
 			throw new EquivalentNodeException("The equivalent node '" + "' was used instead", (Node) result[1]);
@@ -705,8 +707,10 @@ public class Network implements Serializable {
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null))
-			return (Node) find(array, Controller.getCurrentContext()).get(0)[0];
+		if (((Boolean) result[0] == true) && (result[1] == null)) {
+			// TODO Look for that node and return it
+			return null;
+		}
 		if (((Boolean) result[0] == true) && (result[1] != null)) {
 			throw new EquivalentNodeException(
 					"The equivalent node '" + ((Node) result[1]).toString() + "' was used instead", (Node) result[1]);
