@@ -40,7 +40,6 @@ import sneps.snebr.Controller;
 import sneps.exceptions.CannotFindCaseFrameException;
 import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.ContradictionFoundException;
-import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.InvalidArgumentsException;
 import sneps.exceptions.InvalidWffNameException;
@@ -1965,9 +1964,7 @@ class CUP$parser$actions {
 							Controller.createContext(id);
 						}
 						RESULT = "";
-					} catch (DuplicateContextNameException e) {
-						RESULT = e.getMessage();
-					} catch (ContradictionFoundException e) {
+					}  catch (ContradictionFoundException e) {
 						Main.userAction(e.getContradictoryHyps());
 						RESULT = "The GUI is used to handle the contradiction!";
 					} catch (Exception e) {
