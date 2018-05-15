@@ -230,7 +230,7 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
@@ -281,11 +281,12 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
-			ArrayList<Node> consequents, String optionalI) throws CannotBuildNodeException, EquivalentNodeException,
-			CaseFrameMissMatchException, NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+			ArrayList<Node> consequents, String optionalI)
+			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (entailmentType) {
@@ -343,7 +344,7 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildNegatedTerm(Node node)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
@@ -373,7 +374,7 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
@@ -404,7 +405,7 @@ public class AP {
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildSetTerm(String type, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
@@ -466,7 +467,7 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
@@ -616,7 +617,7 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
 	protected static Node buildWithsomeAllTerm(String type, ArrayList<Node> vars, ArrayList<Node> suchthat,
 			ArrayList<Node> doo, ArrayList<Node> elsee)
@@ -626,7 +627,8 @@ public class AP {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
 		case "withsome":
-			wires.add(new Wire(Relation.action, Network.buildBaseNode("withsome", SemanticHierarchy.createSemanticType("Action"))));
+			wires.add(new Wire(Relation.action,
+					Network.buildBaseNode("withsome", SemanticHierarchy.createSemanticType("Action"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
@@ -646,7 +648,8 @@ public class AP {
 			}
 			break;
 		case "withall":
-			wires.add(new Wire(Relation.action, Network.buildBaseNode("withall", SemanticHierarchy.createSemanticType("Action"))));
+			wires.add(new Wire(Relation.action,
+					Network.buildBaseNode("withall", SemanticHierarchy.createSemanticType("Action"))));
 			for (int i = 0; i < vars.size(); i++) {
 				wires.add(new Wire(Relation.vars, vars.get(i)));
 			}
@@ -691,11 +694,11 @@ public class AP {
 	 * @throws RelationDoesntExistException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
-	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff)
-			throws CannotBuildNodeException, EquivalentNodeException, NodeCannotBeRemovedException,
-			RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
+			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException,
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);
@@ -728,25 +731,25 @@ public class AP {
 		return node;
 	}
 
-	private static void resetTheFlags(ArrayList<String> varNames, DownCableSet downCableSet) throws IllegalIdentifierException {
+	private static void resetTheFlags(ArrayList<String> varNames, DownCableSet downCableSet)
+			throws IllegalIdentifierException {
 		Set<String> keys = downCableSet.getDownCables().keySet();
 		for (String key : keys) {
 			NodeSet ns = downCableSet.getDownCables().get(key).getNodeSet();
-			for (int i = ns.size
-					() - 1; i >= 0; i--) {
+			for (int i = ns.size() - 1; i >= 0; i--) {
 				Node node = ns.getNode(i);
 				if (node.getTerm() instanceof Molecular) {
 					Molecular m = (Molecular) node.getTerm();
 					resetTheFlags(varNames, m.getDownCableSet());
 				} else {
-					if(node instanceof VariableNode) {
+					if (node instanceof VariableNode) {
 						((VariableNode) node).setSnepslogFlag(false);
 					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * This method converts a group of Nodes into a String representation according
 	 * to the printing mode in use.
@@ -825,10 +828,10 @@ public class AP {
 				if (terms.get(i) instanceof PropositionNode) {
 					PropositionNode pNode = (PropositionNode) terms.get(i);
 					if (Controller.getCurrentContext().isAsserted(pNode)) {
-						temp += "Asserted: ";
+						temp += "!";
 					}
 				}
-				output += temp + terms.get(i).toString() + '\n';
+				output += terms.get(i).toString() + temp + '\n';
 			}
 		}
 		if (output.length() != 0) {
@@ -836,7 +839,7 @@ public class AP {
 		}
 		return output;
 	}
-	
+
 	/**
 	 * A method to convert an ArrayList of Nodes to a PropositionSet.
 	 */
@@ -889,7 +892,6 @@ public class AP {
 		return molecular;
 	}
 
-	
 	/**
 	 * A method returning the closed nodes from an ArrayList of Nodes.
 	 */
@@ -1062,7 +1064,7 @@ public class AP {
 	}
 
 	// TODO A wrapper for perform.
-	protected static void perform(Node node) {	
+	protected static void perform(Node node) {
 	}
 
 	// TODO A wrapper for forward inference
@@ -1089,7 +1091,8 @@ public class AP {
 		System.out.println(AP.executeSnepslogCommand("define-frame here Proposition (state agent)."));
 		System.out.println(AP.executeSnepslogCommand("define-frame say Act (action obj)."));
 		System.out.println(AP.executeSnepslogCommand("define-frame greet Act (action obj)."));
-		System.out.println(AP.executeSnepslogCommand("whendo(here(John), withsome(x)(here(x),say(Hi:Entity),greet(Hello:Entity)))."));
+		System.out.println(AP.executeSnepslogCommand(
+				"whendo(here(John), withsome(x)(here(x),say(Hi:Entity),greet(Hello:Entity)))."));
 		System.out.println(AP.executeSnepslogCommand("list-terms"));
 	}
 
