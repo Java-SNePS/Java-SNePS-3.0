@@ -3,8 +3,10 @@ package sneps.snebr;
 import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.cables.UpCableSet;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 
@@ -219,7 +221,7 @@ public class Controller {
         return p;
     }
 
-    public static void checkForContradiction(int hyp, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+    public static void checkForContradiction(int prop, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 
         //TODO
         //        check in minimalNoGoods
@@ -227,6 +229,28 @@ public class Controller {
 //        if found then contradiction
 //
 //        else check in upcable and down cable
+
+        PropositionNode node = (PropositionNode) Network.getNodeById(prop);
+
+
+
+//        if (node.getTerm() instanceof Molecular) {
+//            Hashtable<String, DownCable> downCables = ((Molecular)node.getTerm()).getDownCableSet().getDownCables();
+//            DownCable min = downCables.get("min");
+//            DownCable max = downCables.get("max");
+//            DownCable arg = downCables.get("arg");
+//
+//            if (min != null && max!= null && arg != null) {
+//             if (min.getNodeSet().getNode(0).getIdentifier().equals("0") && max.getNodeSet().getNode(0).getIdentifier().equals(0)
+//                     && )
+//            }
+//
+//        }
+
+        UpCableSet up = node.getUpCableSet();
+
+//        if (up.getUpCables().l)
+
 //
 //        if found then contradiction and update minimalNoGoods
 //
@@ -238,7 +262,6 @@ public class Controller {
 //
 //        // temp.add()
 //
-//        PropositionNode p = (PropositionNode) Network.getNodeById(hyp);
 //
 //
 //        UpCableSet up = p.getUpCableSet();

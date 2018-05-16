@@ -111,7 +111,7 @@ public class PropositionSetTest {
     }
 
     @Test
-    public void removeHypsTest() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void removePropsTest() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         PropositionSet set = new PropositionSet(new int[] {1,2,3,4,5,6});
         PropositionSet newSet = set.removeProps(new PropositionSet(new int[] {3,4,5}));
         assertArrayEquals(PropositionSet.getPropsSafely(newSet), new int [] {1,2,6});
