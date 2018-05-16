@@ -3,16 +3,14 @@ package sneps.snebr;
 import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
-import sneps.network.cables.DownCableSet;
+import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 
-import java.util.BitSet;
-import java.util.Hashtable;
-import java.util.Set;
+import java.util.*;
 
 public class Controller {
     private static String currContext = "default";
@@ -212,16 +210,40 @@ public class Controller {
         boolean first = true;
         for (Context c : contextSet.getContexts()) {
             if (first) {
-                p  = new PropositionSet(PropositionSet.getPropsSafely(c.getHypothesisSet()));
+                p = new PropositionSet(PropositionSet.getPropsSafely(c.getHypothesisSet()));
                 first = false;
-            }
-            else
+            } else
                 p = p.union(c.getHypothesisSet());
         }
         return p;
     }
 
-    public static void checkForContradiction(int prop, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+    public static Collection<PropositionSet> combine(Collection<PropositionSet> negatingPropSupports, Collection<PropositionSet> negatedPropSupports) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        Collection<PropositionSet> output = new ArrayList<PropositionSet>();
+
+        for (PropositionSet negatingPropSupp : negatedPropSupports) {
+            for (PropositionSet negatedPropSupp : negatedPropSupports) {
+                output.add(negatingPropSupp.union(negatingPropSupp));
+            }
+        }
+        return output;
+
+
+    }
+
+    public static boolean negationExists(Cable min, Cable max, Cable arg) {
+        if (
+                min != null && max != null && arg != null &&
+                        min.getNodeSet().size() == 1 && min.getNodeSet().getNode(0).getIdentifier().equals("0") &&
+                        max.getNodeSet().size() == 1 && max.getNodeSet().getNode(0).getIdentifier().equals("0") &&
+                        arg.getNodeSet().size() == 1
+                )
+            return true;
+        else
+            return false;
+    }
+
+    public static Collection<PropositionSet> checkForContradiction(int prop, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 
         //TODO
         //        check in minimalNoGoods
@@ -233,23 +255,72 @@ public class Controller {
         PropositionNode node = (PropositionNode) Network.getNodeById(prop);
 
 
+        if (node.getTerm() instanceof Molecular) {
+            Hashtable<String, DownCable> downCables = ((Molecular) node.getTerm()).getDownCableSet().getDownCables();
+            DownCable min = downCables.get("min");
+            DownCable max = downCables.get("max");
+            DownCable arg = downCables.get("arg");
 
-//        if (node.getTerm() instanceof Molecular) {
-//            Hashtable<String, DownCable> downCables = ((Molecular)node.getTerm()).getDownCableSet().getDownCables();
-//            DownCable min = downCables.get("min");
-//            DownCable max = downCables.get("max");
-//            DownCable arg = downCables.get("arg");
-//
-//            if (min != null && max!= null && arg != null) {
-//             if (min.getNodeSet().getNode(0).getIdentifier().equals("0") && max.getNodeSet().getNode(0).getIdentifier().equals(0)
-//                     && )
-//            }
-//
-//        }
+            if (negationExists(min, max, arg)) {
+                PropositionNode node2 = (PropositionNode) arg.getNodeSet().getNode(0);
+                Collection<PropositionSet> negatingPropSupports = node.getAssumptionBasedSupport().values();
+                Collection<PropositionSet> negatedPropSupports = node2.getAssumptionBasedSupport().values();
+
+                Collection<PropositionSet> combinedContradictorySupports = combine(negatingPropSupports, negatedPropSupports);
+
+//                    add to minimalNoGoods
+
+                Collection<PropositionSet> combinedInContext = new ArrayList<>();
+
+
+                for (PropositionSet set : combinedContradictorySupports) {
+
+                    if (set.isSubSet(c.getHypothesisSet()))
+                        combinedInContext.add(set);
+
+                }
+
+                if (combinedInContext.size() > 0)
+                    return combinedInContext;
+                else
+                    return null;
+
+            }
+        }
+
 
         UpCableSet up = node.getUpCableSet();
 
-//        if (up.getUpCables().l)
+        if (up.getUpCables().size() > 0) {
+            UpCable min = up.getUpCable("min");
+            UpCable max = up.getUpCable("max");
+            UpCable arg = up.getUpCable("arg");
+            if (negationExists(min, max, arg)) {
+                PropositionNode node2 = (PropositionNode) arg.getNodeSet().getNode(0);
+                Collection<PropositionSet> negatedPropSupports = node.getAssumptionBasedSupport().values();
+                Collection<PropositionSet> negatingPropSupports = node2.getAssumptionBasedSupport().values();
+
+                Collection<PropositionSet> combinedContradictorySupports = combine(negatingPropSupports, negatedPropSupports);
+
+//                    add to minimalNoGoods
+
+                Collection<PropositionSet> combinedInContext = new ArrayList<>();
+
+
+                for (PropositionSet set : combinedContradictorySupports) {
+
+                    if (set.isSubSet(c.getHypothesisSet()))
+                        combinedInContext.add(set);
+
+                }
+
+                if (combinedInContext.size() > 0)
+                    return combinedInContext;
+                else
+                    return null;
+
+            }
+        }
 
 //
 //        if found then contradiction and update minimalNoGoods
@@ -272,6 +343,7 @@ public class Controller {
 //        }
 //        {3,5}
 //        {{1,3,7}, {3,5}, {}}
+        return null;
     }
 
     public static void handleContradiction(PropositionSet hypsToBeRemoved, boolean ignore) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException {
