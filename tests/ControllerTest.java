@@ -25,7 +25,7 @@ public class ControllerTest {
     }
 
     @Before
-    public void beforeEach() throws DuplicateContextNameException {
+    public void beforeEach() throws DuplicateContextNameException, ContradictionFoundException {
         Controller.createContext(testContextName);
     }
 
@@ -45,7 +45,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void createNewContextWithNoHyps() throws DuplicateContextNameException {
+    public void createNewContextWithNoHyps() throws DuplicateContextNameException, ContradictionFoundException {
         Context expectedContext = Controller.createContext(testContext2);
         Context actualContext = Controller.getContextByName(testContext2);
         assertEquals(expectedContext, actualContext);
@@ -59,13 +59,14 @@ public class ControllerTest {
             fail("should throw exception");
         } catch (DuplicateContextNameException e) {
 
+        } catch (ContradictionFoundException e) {
         }
 
         Controller.removeContext(testContextName);
     }
 
     @Test
-    public void createContextWithHyps() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void createContextWithHyps() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException {
         Context expectedContext = Controller.createContext(testContext2, new PropositionSet(new int[] {1,3,4,5}));
         Context actualContext = Controller.getContextByName(testContext2);
         assertEquals(expectedContext, actualContext);
@@ -74,14 +75,14 @@ public class ControllerTest {
     }
 
     @Test
-    public void removeContext() throws DuplicateContextNameException {
+    public void removeContext() throws DuplicateContextNameException, ContradictionFoundException {
         Controller.createContext("Test context3");
         Controller.removeContext("Test context3");
         assertNull(Controller.getContextByName("Test context3"));
     }
 
     @Test
-    public void addSingleHypToContext() throws NodeNotFoundInNetworkException, ContextNameDoesntExistException, DuplicatePropositionException, NotAPropositionNodeException, CustomException {
+    public void addSingleHypToContext() throws NodeNotFoundInNetworkException, ContextNameDoesntExistException, DuplicatePropositionException, NotAPropositionNodeException, CustomException, ContradictionFoundException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropToContext(testContextName, 4);
@@ -103,7 +104,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException {
+    public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToContext(testContextName, new PropositionSet(new int [] {3,4,5,6}));
@@ -114,7 +115,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addSingleHypToCurrentContext() throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException {
+    public void addSingleHypToCurrentContext() throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
         Context cxt = Controller.getContextByName("default");
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropToCurrentContext( 4);
@@ -134,7 +135,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToCurrentContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException {
+    public void addHypsToCurrentContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
         Context cxt = Controller.getContextByName("default");
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToCurrentContext(new PropositionSet(new int [] {3,5,6}));
@@ -145,7 +146,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
         Controller.createContext("c6", new PropositionSet(new int [] {5,7}));
         Controller.createContext("c5", new PropositionSet(new int [] {5,7}));
 
@@ -155,7 +156,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException {
+    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException, ContradictionFoundException {
         PropositionSet p = new PropositionSet(new int [] {12, 58});
         Controller.addPropsToCurrentContext(p);
         ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(p);
@@ -166,7 +167,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException {
+    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException {
         ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(new PropositionSet(new int [] {4,5,7}));
         PropositionSet p = new PropositionSet(new int [] {4,5,7});
         Controller.addPropsToCurrentContext(p);
@@ -175,7 +176,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException {
+    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, DuplicatePropositionException, ContradictionFoundException {
         PropositionSet p = new PropositionSet(new int [] {12, 58, 10});
         PropositionSet support = new PropositionSet(new int [] {12,58});
         PropositionSet p1 = new PropositionSet(new int [] {12, 58, 32});
@@ -197,7 +198,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void getNames() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException {
+    public void getNames() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException, ContradictionFoundException {
         PropositionSet set = new PropositionSet(new int[] {5,6,7,8});
         for (int i = 1; i < 4; i++)
             Controller.createContext("c"+i, set);

@@ -7,4 +7,8 @@ public class ContextNameDoesntExistException extends Throwable {
         super("A context with this name doesn't exist");
         this.contextName = contextName;
     }
+
+    public ContextNameDoesntExistException() {
+
+    }
 }

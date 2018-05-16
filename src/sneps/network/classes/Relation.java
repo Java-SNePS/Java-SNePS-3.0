@@ -19,8 +19,8 @@ import sneps.network.paths.Path;
 public class Relation implements Serializable {
 
 	public static Relation andAnt, ant, cq, arg, min, max, i, threshMax, thresh, action, obj, precondition, act, when,
-			whenever, doo, iff, effect, plan, goal, vars, suchthat, elsee, obj1, obj2, obj3, obj4,
-			obj5, obj6, obj7, obj8, obj9, obj10;
+			whenever, doo, iff, effect, plan, goal, vars, suchthat, elsee, obj1, obj2, obj3, obj4, obj5, obj6, obj7,
+			obj8, obj9, obj10;
 
 	/**
 	 * the name (string) that should label any arc representing this relation. Any
@@ -154,7 +154,7 @@ public class Relation implements Serializable {
 	public void setQuantifier() {
 		if (name.equals("forall") || name.equals("min") || name.equals("max") || name.equals("thresh")
 				|| name.equals("threshmax") || name.equals("emin") || name.equals("emax") || name.equals("etot")
-				|| name.equals("pevb")) {
+				|| name.equals("pevb") || name.equals("vars")) {
 			this.quantifier = true;
 		}
 	}
@@ -201,7 +201,7 @@ public class Relation implements Serializable {
 		thresh = Network.defineRelation("thresh", "Infimum", "none", 1);
 		threshMax = Network.defineRelation("threshmax", "Infimum", "none", 1);
 
-		action = Network.defineRelation("action", "Act", "none", 1);
+		action = Network.defineRelation("action", "Action", "none", 1);
 
 		obj = Network.defineRelation("obj", "Entity", "none", 1);
 

@@ -9,10 +9,13 @@
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
 	      <classpath path="lib/jacocoant.jar"/>
 	</taskdef>
+	
 
   <path id="classpath.test">
     <pathelement location="lib/junit.jar"/>
     <pathelement location="lib/hamcrest.jar"/>
+    <pathelement location="lib/java-cup-11b.jar"/> 
+    <pathelement location="lib/java-cup-11b-runtime.jar"/>
     <pathelement location="${main.build.dir}"/>
   	 <fileset dir="lib/">
   	       <include name="**/*.jar"/>
@@ -23,6 +26,7 @@
   <target name="compile">
     <mkdir dir="${main.build.dir}"/>
     <javac srcdir="${main.src.dir}" destdir="${main.build.dir}" includeantruntime="false" debug="on">
+	    <classpath refid="classpath.test"/>
     	</javac>
   </target>
 

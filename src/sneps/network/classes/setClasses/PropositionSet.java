@@ -12,10 +12,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class PropositionSet implements Serializable{
-    @Override
-    public String toString() {
-        return "PropositionSet [props=" + Arrays.toString(props) + "]";
-    }
+	@Override
+	public String toString() {
+		return "PropositionSet [props=" + Arrays.toString(props) + "]";
+	}
 
     private int[] props;
     private String hash = "";

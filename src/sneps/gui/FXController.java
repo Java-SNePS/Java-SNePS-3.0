@@ -107,6 +107,7 @@ import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Controller;
+import sneps.snepslog.AP;
 
 public class FXController implements Initializable {
 	Network network = new Network();
@@ -267,13 +268,14 @@ public class FXController implements Initializable {
 			@Override
 			public void handle(KeyEvent event) {
 				ArrayList<String> lines = new ArrayList<String>();
+				ArrayList<String> resLines = new ArrayList<String>();
 				if(event.getCode() == KeyCode.ENTER) {
 					for(String line : console.getText().split("\n")) {
 						lines.add(line);
 					}
 					
 					String cmd = lines.get(lines.size() - 1);
-					if(cmd.equalsIgnoreCase("vis")) {
+					/*if(cmd.equalsIgnoreCase("vis")) {
 						testVisualize();
 					}else if(cmd.equalsIgnoreCase("test")) {
 						// TEST
@@ -317,20 +319,42 @@ public class FXController implements Initializable {
 					    
 					    Main.userAction(props);
 					    //End Test
+					}*/
+					
+					String res = AP.executeSnepslogCommand(cmd);
+					for(String rl : res.split("\n")) {
+						resLines.add(rl);
 					}
-					String res = "Result will be here";
-					console.setText(console.getText() + "\n" + res);
+					for(int i = 0; i<resLines.size(); i++) {
+						console.setText(console.getText() + "\n" + " -" + resLines.get(i));
+					}
+					//console.setText(console.getText() + "\n" + " -" + res);
 					console.positionCaret(console.getLength());
 					ocp = console.getCaretPosition();
 					ScrollDown();
+					updateNodesList();
+					updateCaseFramesList();
+					updateRelationSetList();
+					updatePathsList();
+					updateSemanticLists();
+					updateNetLists();
+					updateListOfContexts();
 					//System.out.println(cmd);
 				}
 				
 				if(event.getCode() == KeyCode.BACK_SPACE) {
 					ncp = console.getCaretPosition();
-					if(ncp > ocp) {
+					if(ncp > ocp+1) {
 						console.deletePreviousChar();
 					}
+					event.consume();
+				}
+				
+				if(event.getCode() == KeyCode.DELETE) {
+					event.consume();
+				}
+				
+				if(event.getCode() == KeyCode.UP) {
 					event.consume();
 				}
 			}
@@ -2840,6 +2864,7 @@ public class FXController implements Initializable {
 		a.setContentText("SubDomain Constraint: " + sdc.getId() + " has been created successfully.");
 		a.showAndWait();
 	}
+	
 	public void deleteSubDomConst() {
 		String sdcID = sdcsList.getSelectionModel().getSelectedItem();
 		for(int i = 0; i<sdcs.size(); i++) {
@@ -2976,7 +3001,6 @@ public class FXController implements Initializable {
 		updatePathsList();
 		popUpNotification("Forward Unit Path", "Forward Unit Path has been created successfully", pathName, 1);
 	}
-	
 	
 	public void createCFRBUP() {
 		String rname = pathRelations.getSelectionModel().getSelectedItem();
@@ -3741,13 +3765,9 @@ public class FXController implements Initializable {
 	
 
 	public void createDefaults() {
-		try {
-			Network.defineDefaults();
-			updateRelationSetList();
-			updateCaseFramesList();
-		} catch (CustomException e) {
-			e.printStackTrace();
-		}
+		Network.defineDefaults();
+		updateRelationSetList();
+		updateCaseFramesList();
 	}
 	
 	public void testVisualize() {
