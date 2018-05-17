@@ -276,7 +276,25 @@ public class Main extends Application {
 		    if (response == resolve) {
 		    	resolveConflicts(propSet);
 		    }else if (response == ignore) {
-		        //ignore
+		    	PropositionSet propNodes = null;
+		    	try {
+					Controller.handleContradiction(propNodes, true);
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NotAPropositionNodeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NodeNotFoundInPropSetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DuplicatePropositionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ContextNameDoesntExistException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }else if(response == ca) {
 		    	//cancel assertion
 		    }

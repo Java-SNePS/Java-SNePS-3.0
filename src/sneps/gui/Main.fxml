@@ -553,13 +553,35 @@
                                                             <Font size="22.15" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="23.0" layoutY="35.0" text="Please select two paths from the temporary list, &amp; a node">
+                                                      <Label layoutX="57.0" layoutY="34.0" text="Please select two paths from the list, &amp; a node">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <SplitMenuButton fx:id="pathNodes1" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
-                                                      <Button mnemonicParsing="false" onAction="#createDomainRestrictPath" styleClass="tab" text="Create Domain Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                      <SplitMenuButton fx:id="pathNodes1" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="90.0" />
+                                                      <Button mnemonicParsing="false" onAction="#createDomainRestrictPath" styleClass="tab" text="Create Domain Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="160.0" />
+                                                      <Label layoutX="57.0" layoutY="54.0" text="1- P Path: " AnchorPane.topAnchor="54.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="57.0" layoutY="68.0" text="2- Q Path:" AnchorPane.topAnchor="70.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="ppath" layoutX="127.0" layoutY="54.0" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="54.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="qpath" layoutX="127.0" layoutY="70.0" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="70.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button layoutX="299.0" layoutY="57.0" mnemonicParsing="false" onAction="#clearPQPath" styleClass="tab" text="Clear" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="125.0" />
+                                                      <Button layoutX="259.0" layoutY="57.0" mnemonicParsing="false" onAction="#addPQPath" styleClass="tab" text="Add Path" AnchorPane.leftAnchor="259.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="57.0" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets top="5.0" />
@@ -572,13 +594,35 @@
                                                             <Font size="22.15" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="23.0" layoutY="35.0" text="Please select two paths from the temporary list, &amp; a node">
+                                                      <Label layoutX="57.0" layoutY="34.0" text="Please select two paths from the list, &amp; a node">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <SplitMenuButton fx:id="pathNodes2" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
-                                                      <Button mnemonicParsing="false" onAction="#createRangeRestrictPath" styleClass="tab" text="Create Range Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
+                                                      <SplitMenuButton fx:id="pathNodes2" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="90.0" />
+                                                      <Button mnemonicParsing="false" onAction="#createRangeRestrictPath" styleClass="tab" text="Create Range Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="160.0" />
+                                                      <Label layoutX="57.0" text="1- P Path: " AnchorPane.topAnchor="54.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="57.0" text="2- Q Path:" AnchorPane.topAnchor="70.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="ppath1" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="54.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="qpath1" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="70.0">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button mnemonicParsing="false" onAction="#clearPQ1Path" styleClass="tab" text="Clear" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="125.0" />
+                                                      <Button mnemonicParsing="false" onAction="#addPQ1Path" styleClass="tab" text="Add Path" AnchorPane.leftAnchor="259.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="57.0" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets top="5.0" />

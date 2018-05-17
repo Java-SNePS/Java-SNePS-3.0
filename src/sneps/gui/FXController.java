@@ -141,7 +141,7 @@ public class FXController implements Initializable {
 	@FXML
 	private TextArea console;
 	@FXML
-	private Label nodeDetails, relationDetails;
+	private Label nodeDetails, relationDetails, ppath, qpath, ppath1, qpath1;
 	@FXML
 	private TextField newRN, newRL, baseNodeIdentPop,
 	caseFrameSTN, baseNodeID, overrideAdjust,
@@ -3210,6 +3210,38 @@ public class FXController implements Initializable {
 		popUpNotification("Compose Path", "Compose Path Created Successfully", "Path: " + pname, 1);
 	}
 	
+	public void addPQPath() {
+		if(ppath.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			ppath.setText(pname);
+		}else if(qpath.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			qpath.setText(pname);
+		}
+	}
+	
+	public void clearPQ1Path() {
+		ppath1.setText("...");
+		qpath1.setText("...");
+		pathNodes2.setText("Select a node");
+	}
+	
+	public void addPQ1Path() {
+		if(ppath1.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			ppath1.setText(pname);
+		}else if(qpath1.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			qpath1.setText(pname);
+		}
+	}
+	
+	public void clearPQPath() {
+		ppath.setText("...");
+		qpath.setText("...");
+		pathNodes1.setText("Select a node");
+	}
+	
 	public void createDomainRestrictPath() {
 		String identifier = pathNodes1.getText();
 		Node n = null;
@@ -3219,20 +3251,18 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String pPathName = ppath.getText();
+		String qPathName = qpath.getText();
+		sneps.network.paths.Path pPath = paths.get(pPathName);
+		sneps.network.paths.Path qPath = paths.get(qPathName);
 		
-		ArrayList<sneps.network.paths.Path> tempPaths = new ArrayList<sneps.network.paths.Path>();
-		ObservableList selectedIndices = pathsList.getSelectionModel().getSelectedItems();
-		String name = "";
-		for(Object o : selectedIndices){
-            tempPaths.add(paths.get(o));
-            name += o + " ";
-        }
-		
-		DomainRestrictPath p = new DomainRestrictPath(tempPaths.get(0), n, tempPaths.get(1));
+		String name = "{ " + qPathName + " } { " + n.getIdentifier() + " } { " + pPathName + " }";
+		DomainRestrictPath p = new DomainRestrictPath(qPath, n, pPath);
 		String pname = "Domain Restrict Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
 		popUpNotification("Domain Restrict Path", "Domain Restrict Path Created Successfully", "Path: " + pname, 1);
+		clearPQPath();
 	}
 	
 	public void createRangeRestrictPath() {
@@ -3244,20 +3274,19 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String pPathName = ppath1.getText();
+		String qPathName = qpath1.getText();
+		sneps.network.paths.Path pPath = paths.get(pPathName);
+		sneps.network.paths.Path qPath = paths.get(qPathName);
 		
-		ArrayList<sneps.network.paths.Path> tempPaths = new ArrayList<sneps.network.paths.Path>();
-		ObservableList selectedIndices = pathsList.getSelectionModel().getSelectedItems();
-		String name = "";
-		for(Object o : selectedIndices){
-            tempPaths.add(paths.get(o));
-            name += o + " ";
-        }
+		String name = "{ " + qPathName + " } { " + n.getIdentifier() + " } { " + pPathName + " }";
 		
-		RangeRestrictPath p = new RangeRestrictPath(tempPaths.get(0), tempPaths.get(1), n);
+		RangeRestrictPath p = new RangeRestrictPath(pPath, qPath, n);
 		String pname = "Range Restrict Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
 		popUpNotification("Range Restrict Path", "Range Restrict Path Created Successfully", "Path: " + pname, 1);
+		clearPQ1Path();
 	}
 	
 	public void createBangPath() {
