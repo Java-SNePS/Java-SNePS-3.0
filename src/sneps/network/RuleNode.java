@@ -42,28 +42,37 @@ public abstract class RuleNode extends PropositionNode {
 
 	public RuleNode(Semantic sym){
 		super(sym);
+		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
+		shareVars = false;
+		sharedVars = new VarNodeSet();
 		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 	public RuleNode(Term trm){
 		super(trm);
+		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
+		shareVars = false;
+		sharedVars = new VarNodeSet();
 		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 	public RuleNode(Semantic sym, Term syn) {
 		super(sym, syn);
+		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
+		shareVars = false;
+		sharedVars = new VarNodeSet();
 		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
@@ -142,6 +151,17 @@ public abstract class RuleNode extends PropositionNode {
 
 	public NodeSet getConsequents() {
 		return consequents;
+	}
+
+	public void addAntecedent(Node ant){
+		if(ant instanceof VariableNode || ant.getTerm() instanceof Open)
+			antNodesWithVars.addNode(ant);
+		else
+			antNodesWithoutVars.addNode(ant);
+	}
+
+	public ContextRuisSet getContextRuisSet() {
+		return contextRuisSet;
 	}
 
 	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {

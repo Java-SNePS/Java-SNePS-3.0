@@ -33,10 +33,9 @@ import junit.framework.TestCase;
 
 
 public class NumericalEntailmentTests extends TestCase {
-
 	private static NumericalEntailment numerical;
-	private static Node fido;
 	private static Node var;
+	private static Node fido;
 	private static Node dog;
 	private static RuleUseInfo rui;
 	private static Report report;
@@ -46,17 +45,23 @@ public class NumericalEntailmentTests extends TestCase {
 		var = new VariableNode(new Variable("X"));
 		fido = Network.buildBaseNode("Fido", new Semantic("Member"));
 		dog = Network.buildBaseNode("Dog", new Semantic("Class"));
+		numerical.addAntecedent(var);
+		numerical.addAntecedent(dog);
+		numerical.addAntecedent(fido);
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
 		NodeSet support = new NodeSet();
+
 		support.addNode(dog);
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.putIn(fn);
+
 		support.clear();
 		support.addNode(fido);
 		fn = new FlagNode(fido, support, 1);
 		fns.putIn(fn);
+
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 
 		NodeSet c1 = new NodeSet();
@@ -84,14 +89,9 @@ public class NumericalEntailmentTests extends TestCase {
 
 		dc.add(new DownCable(rel, c1));
 		DownCableSet dcs = new DownCableSet(dc, new CaseFrame("string", rels));
+		report = new Report(sub, fns, true, "default");
 
 		numerical = new NumericalEntailment(new Open("Wat", dcs));
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		Network.clearNetwork();
-		numerical = null;
 	}
 
 	@Test
@@ -101,7 +101,25 @@ public class NumericalEntailmentTests extends TestCase {
 
 		numerical.applyRuleHandler(report, dog);
 		if(numerical.getAntSize() <= numerical.getI())
-			assertNotNull("NumericalEntailment: ApplyRuleHandler doesn't broadcast report",
+			assertNotNull(
+					"NumericalEntailment: ApplyRuleHandler doesn't broadcast report",
+					((PropositionNode)numerical).getNewInstances());
+
+		numerical.setKnownInstances(numerical.getNewInstances());
+		numerical.getNewInstances().clear();
+		LinearSubstitutions sub = new LinearSubstitutions();
+		FlagNodeSet fns = new FlagNodeSet();
+		NodeSet support = new NodeSet();
+
+		support.addNode(dog);
+		FlagNode fn = new FlagNode(dog, support, 1);
+		fns.putIn(fn);
+		report = new Report(sub, fns, false, "default");
+
+		numerical.applyRuleHandler(report, dog);
+		if(numerical.getAntSize() <= 1)
+			assertNull(
+					"NumericalEntailment: ApplyRuleHandler broadcasts negative report",
 					((PropositionNode)numerical).getNewInstances());
 	}
 
@@ -213,4 +231,14 @@ public class NumericalEntailmentTests extends TestCase {
 				numerical.getContextRuiHandler(contxt)instanceof SIndex);
 	}
 
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		Network.clearNetwork();
+		numerical.clear();
+		fido = null;
+		var = null;
+		dog = null;
+		rui = null;
+		report = null;
+	}
 }

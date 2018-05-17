@@ -1,7 +1,8 @@
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Field;
 import java.util.LinkedList;
+
+import junit.framework.TestCase;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +34,7 @@ import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.rules.AndEntailment;
 
 
-public class AndEntailmentTests {
+public class AndEntailmentTests extends TestCase{
 	private static AndEntailment and;
 	private static Node fido;
 	private static Node var;
@@ -46,17 +47,23 @@ public class AndEntailmentTests {
 		var = new VariableNode(new Variable("X"));
 		fido = Network.buildBaseNode("Fido", new Semantic("Member"));
 		dog = Network.buildBaseNode("Dog", new Semantic("Class"));
+		and.addAntecedent(var);
+		and.addAntecedent(dog);
+		and.addAntecedent(fido);
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
 		NodeSet support = new NodeSet();
+
 		support.addNode(dog);
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.putIn(fn);
+
 		support.clear();
 		support.addNode(fido);
 		fn = new FlagNode(fido, support, 1);
 		fns.putIn(fn);
+
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 
 		NodeSet c1 = new NodeSet();
@@ -84,14 +91,9 @@ public class AndEntailmentTests {
 
 		dc.add(new DownCable(rel, c1));
 		DownCableSet dcs = new DownCableSet(dc, new CaseFrame("string", rels));
+		report = new Report(sub, fns, true, "default");
 
 		and = new AndEntailment(new Open("Wat", dcs));
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		Network.clearNetwork();
-		and = null;
 	}
 
 	@Test
@@ -99,9 +101,26 @@ public class AndEntailmentTests {
 		and.setKnownInstances(and.getNewInstances());
 		and.getNewInstances().clear();
 
-		and.applyRuleHandler(report, dog);
+		and.applyRuleHandler(report, fido);
 		if(and.getAntSize() <= 1)
 			assertNotNull("AndEntailment: ApplyRuleHandler doesn't broadcast report",
+					((PropositionNode)and).getNewInstances());
+
+		and.setKnownInstances(and.getNewInstances());
+		and.getNewInstances().clear();
+		LinearSubstitutions sub = new LinearSubstitutions();
+		FlagNodeSet fns = new FlagNodeSet();
+		NodeSet support = new NodeSet();
+
+		support.addNode(dog);
+		FlagNode fn = new FlagNode(dog, support, 1);
+		fns.putIn(fn);
+		report = new Report(sub, fns, false, "default");
+
+		and.applyRuleHandler(report, dog);
+		if(and.getAntSize() <= 1)
+			assertNull(
+					"AndEntailment: ApplyRuleHandler broadcasts negative report",
 					((PropositionNode)and).getNewInstances());
 	}
 
@@ -117,8 +136,12 @@ public class AndEntailmentTests {
 		Context contxt = (Context) Controller.getContextByName("default");
 		and.createRuisHandler("default");
 		RuisHandler handler = and.getContextRuiHandler(contxt);
-		assertNotNull("AndEntailment: CreateRuisHandler creats a null RuisHandler", handler);
-		assertTrue("AndEntailment: CreateRuisHandler doesn't create a PTree as a Handler", handler instanceof PTree);
+		assertNotNull(
+				"AndEntailment: CreateRuisHandler creats a null RuisHandler",
+				handler);
+		assertTrue(
+				"AndEntailment: CreateRuisHandler doesn't create a PTree as a Handler",
+				handler instanceof PTree);
 	}
 
 	@Test
@@ -214,4 +237,14 @@ public class AndEntailmentTests {
 				and.getContextRuiHandler(contxt)instanceof PTree);
 	}
 
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		Network.clearNetwork();
+		and.clear();
+		fido = null;
+		var = null;
+		dog = null;
+		rui = null;
+		report = null;
+	}
 }
