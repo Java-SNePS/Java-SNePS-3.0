@@ -2,6 +2,7 @@ package sneps.snebr;
 
 import sneps.exceptions.*;
 import sneps.network.Network;
+import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
@@ -233,7 +234,7 @@ public class Controller {
 
     public static ArrayList<PropositionSet> generatePropositionSets(ArrayList<BitSet> conflictingHypsCollection) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
         ArrayList<PropositionSet> propsList = new ArrayList<PropositionSet>();
-        for (BitSet b: conflictingHypsCollection) {
+        for (BitSet b : conflictingHypsCollection) {
             PropositionSet propSet = new PropositionSet();
             for (int i = b.nextSetBit(0); i != -1; i = b.nextSetBit(i + 1))
                 propSet = propSet.add(i);
@@ -254,62 +255,129 @@ public class Controller {
             return false;
     }
 
-    public static Collection<PropositionSet> checkForContradiction(int prop, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
-
-/*       First check in minimalNoGoods */
-
-
-        ArrayList<BitSet> minimalNoGoodsBitset = new ArrayList<>();
-
-        int length = -1;
-
-//        find the max size among the bitsets
-        for (BitSet bitSet: minimalNoGoods.values()) {
-            int bitSetLength = bitSet.length();
-            if (bitSetLength > length)
-                length = bitSetLength;
-        }
-
-        for (int i = 0; i < length; i++) {
-            BitSet newBitset = new BitSet();
-            for (Integer val : minimalNoGoods.keySet()) {
-                if (minimalNoGoods.get(val).get(i))
-                    newBitset.set(val);
-            }
-            minimalNoGoodsBitset.add(newBitset);
-        }
-
-  
-        /*   Construct a bitset for the Context c hyps */
-
-//        PropositionSet set = c.getHypothesisSet();
-//        PropositionSet tempHyps = set.add(prop);
-
-//        int [] hypsArr = PropositionSet.getPropsSafely(tempHyps);
-
-        BitSet contextBitset = c.getHypsBitset();
-
-//        for (int i = 0; i < hypsArr.length; i++) {
-//            contextBitset.set(hypsArr[i]);
-//        }
-
-        ArrayList<BitSet> conflictingHypsInContext = new ArrayList<BitSet>();
-
-        for (BitSet bitSet: minimalNoGoodsBitset) {
+    public static ArrayList<BitSet> getConflictingHypsFromMinimalNoGoods(BitSet contextBitset) {
+        ArrayList<BitSet> conflictingHypsInContext = new ArrayList<>();
+        for (BitSet bitSet : minimalNoGoods) {
             BitSet temp = (BitSet) bitSet.clone();
             temp.and(contextBitset);
             if (temp.equals(bitSet))
                 conflictingHypsInContext.add(temp);
         }
-
         if (conflictingHypsInContext.size() > 0)
+            return conflictingHypsInContext;
+        return null;
+    }
+
+    public static Collection<BitSet> generateBitsets(Collection<PropositionSet> propositionSetCollection) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        Collection<BitSet> bitSets = new ArrayList<>();
+        for (PropositionSet propSet : propositionSetCollection) {
+            int[] props = PropositionSet.getPropsSafely(propSet);
+            BitSet temp = new BitSet();
+            for (int i = 0; i < props.length; i++)
+                temp.set(props[i]);
+            bitSets.add(temp);
+        }
+        return bitSets;
+
+    }
+
+    public static ArrayList<PropositionSet> getConflictingHypsCollectionForNegating(PropositionNode negatingNode, DownCable arg, BitSet tempContextBitset) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
+        Collection<PropositionSet> negatingPropSupports = negatingNode.getAssumptionBasedSupport().values();
+        Collection<PropositionSet> combinedContradictorySupports = new ArrayList<>();
+
+        for (Node dominatedNode : arg.getNodeSet()) {
+            Collection<PropositionSet> negatedNodeSupports = ((PropositionNode) dominatedNode).getAssumptionBasedSupport().values();
+            combinedContradictorySupports.addAll(combine(negatingPropSupports, negatedNodeSupports));
+        }
+
+
+        /*                    add to minimalNoGoods  */
+        Collection<BitSet> bitSetCollection = generateBitsets(combinedContradictorySupports);
+
+        for (BitSet bitSet : bitSetCollection) {
+            boolean intersects = false;
+            for (BitSet bitSet1 : minimalNoGoods) {
+                BitSet temp = (BitSet) bitSet.clone();
+                temp.and(bitSet1);
+                if (temp.equals(bitSet)) {
+                    intersects = true;
+                    int index = minimalNoGoods.indexOf(bitSet1);
+                    if (intersects)
+                        minimalNoGoods.add(index, temp);
+                    else
+                        minimalNoGoods.remove(index);
+                }
+            }
+            if (!intersects)
+                minimalNoGoods.add(bitSet);
+        }
+
+        ArrayList<BitSet> conlifctingHypsInContextCollection = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
+        if (conlifctingHypsInContextCollection != null)
+            return generatePropositionSets(conlifctingHypsInContextCollection);
+        else
+            return null;
+
+    }
+
+    public static ArrayList<PropositionSet> getConflictingHypsCollectionForNegated(PropositionNode negatedNode, UpCable arg, BitSet tempContextBitset) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
+        PropositionNode negatingNode = (PropositionNode) arg.getNodeSet().getNode(0);
+        Collection<PropositionSet> negatedPropSupports = negatedNode.getAssumptionBasedSupport().values();
+        Collection<PropositionSet> negatingPropSupports = negatingNode.getAssumptionBasedSupport().values();
+
+        Collection<PropositionSet> combinedContradictorySupports = combine(negatingPropSupports, negatedPropSupports);
+
+        /*                    add to minimalNoGoods  */
+        Collection<BitSet> bitSetCollection = generateBitsets(combinedContradictorySupports);
+
+        for (BitSet bitSet : bitSetCollection) {
+            boolean intersects = false;
+            for (BitSet bitSet1 : minimalNoGoods) {
+                BitSet temp = (BitSet) bitSet.clone();
+                temp.and(bitSet1);
+                if (temp.equals(bitSet)) {
+                    intersects = true;
+                    int index = minimalNoGoods.indexOf(bitSet1);
+                    if (intersects)
+                        minimalNoGoods.add(index, temp);
+                    else
+                        minimalNoGoods.remove(index);
+                }
+            }
+            if (!intersects)
+                minimalNoGoods.add(bitSet);
+        }
+
+        ArrayList<BitSet> conlifctingHypsInContextCollection = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
+        if (conlifctingHypsInContextCollection != null)
+            return generatePropositionSets(conlifctingHypsInContextCollection);
+        else
+            return null;
+    }
+
+    public static Collection<PropositionSet> checkForContradiction(PropositionNode node, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+
+        /*       First check in minimalNoGoods */
+
+//     add  prop to a clone of the context's bitset
+        BitSet tempContextBitset = (BitSet) c.getHypsBitset().clone();
+
+        Collection<PropositionSet> propsCollection = node.getAssumptionBasedSupport().values();
+
+        for (PropositionSet propSet : propsCollection) {
+            int[] props = PropositionSet.getPropsSafely(propSet);
+            for (int i = 0; i < props.length; i++)
+                tempContextBitset.set(props[i]);
+        }
+
+        ArrayList<BitSet> conflictingHypsInContext = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
+
+        if (conflictingHypsInContext != null)
             return generatePropositionSets(conflictingHypsInContext);
 
-//        else check in upcable and down cable
+//        else check in down cables and up cables
 
-        PropositionNode node = (PropositionNode) Network.getNodeById(prop);
-
-
+        /*          check in downcable          */
         if (node.getTerm() instanceof Molecular) {
             Hashtable<String, DownCable> downCables = ((Molecular) node.getTerm()).getDownCableSet().getDownCables();
             DownCable min = downCables.get("min");
@@ -317,33 +385,11 @@ public class Controller {
             DownCable arg = downCables.get("arg");
 
             if (negationExists(min, max, arg)) {
-                PropositionNode node2 = (PropositionNode) arg.getNodeSet();
-                PropositionSet node2Set =
-                Collection<PropositionSet> negatingPropSupports = node.getAssumptionBasedSupport().values();
-                Collection<PropositionSet> negatedPropSupports = node2.getAssumptionBasedSupport().values();
-
-                Collection<PropositionSet> combinedContradictorySupports = combine(negatingPropSupports, negatedPropSupports);
-
-//                    add to minimalNoGoods
-
-                Collection<PropositionSet> combinedInContext = new ArrayList<>();
-
-
-                for (PropositionSet set : combinedContradictorySupports) {
-
-                    if (set.isSubSet(c.getHypothesisSet()))
-                        combinedInContext.add(set);
-
-                }
-
-                if (combinedInContext.size() > 0)
-                    return combinedInContext;
-                else
-                    return null;
-
+                ArrayList<PropositionSet> conflictingHypsInContextFromDownCables = getConflictingHypsCollectionForNegating(node, arg, tempContextBitset);
+                if (conflictingHypsInContextFromDownCables != null)
+                    return conflictingHypsInContextFromDownCables;
             }
         }
-
 
         UpCableSet up = node.getUpCableSet();
 
@@ -352,53 +398,13 @@ public class Controller {
             UpCable max = up.getUpCable("max");
             UpCable arg = up.getUpCable("arg");
             if (negationExists(min, max, arg)) {
-                PropositionNode node2 = (PropositionNode) arg.getNodeSet().getNode(0);
-                Collection<PropositionSet> negatedPropSupports = node.getAssumptionBasedSupport().values();
-                Collection<PropositionSet> negatingPropSupports = node2.getAssumptionBasedSupport().values();
-
-                Collection<PropositionSet> combinedContradictorySupports = combine(negatingPropSupports, negatedPropSupports);
-
-//                    add to minimalNoGoods
-
-                Collection<PropositionSet> combinedInContext = new ArrayList<>();
-
-
-                for (PropositionSet set : combinedContradictorySupports) {
-
-                    if (set.isSubSet(c.getHypothesisSet()))
-                        combinedInContext.add(set);
-
-                }
-
-                if (combinedInContext.size() > 0)
-                    return combinedInContext;
-                else
-                    return null;
-
+                ArrayList<PropositionSet> conflictingHypsInContextFromUpCables = getConflictingHypsCollectionForNegated(node, arg, tempContextBitset);
+                if (conflictingHypsInContextFromUpCables != null)
+                    return conflictingHypsInContextFromUpCables;
             }
+
         }
 
-//
-//        if found then contradiction and update minimalNoGoods
-//
-//        else
-//
-//
-//
-//        PropositionSet temp = c.getHypothesisSet().add(hyp);
-//
-//        // temp.add()
-//
-//
-//
-//        UpCableSet up = p.getUpCableSet();
-//        if (up.get)
-//        DownCableSet down;
-//        if (p.getTerm() instanceof Molecular) {
-//            down = ((Molecular)p.getTerm()).getDownCableSet();
-//        }
-//        {3,5}
-//        {{1,3,7}, {3,5}, {}}
         return null;
     }
 

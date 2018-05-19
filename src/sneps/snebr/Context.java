@@ -160,7 +160,7 @@ public class Context {
 
         return asserted;
     }
-    
+
     /**
      * When Removing a node from context, Therefore we must remove it from this Context's nodes Supports also
      * @param PropositionNode, The node to be removed from all Context's Supports
