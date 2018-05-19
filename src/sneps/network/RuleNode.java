@@ -13,6 +13,7 @@ import sneps.network.classes.term.Variable;
 import sneps.setClasses.ContextRuisSet;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.setClasses.ReportSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
@@ -101,17 +102,15 @@ public abstract class RuleNode extends PropositionNode {
 		String contextID = report.getContextName();
 		RuleUseInfo rui;
 		if (report.isPositive()) {
-			FlagNodeSet fns = report.getSupports();
-			NodeSet temp = new NodeSet();
-			temp.addNode(signature);
-			fns.insert(new FlagNode(signature, temp, 1));
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
 			rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
 		} else {
-			FlagNodeSet fns = report.getSupports();
-			NodeSet temp = new NodeSet();
-			temp.addNode(signature);
-			fns.insert(new FlagNode(signature, temp, 2));
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 2));
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
 		RuisHandler crtemp = contextRuisSet.getByContext(contextID);
@@ -279,7 +278,7 @@ public abstract class RuleNode extends PropositionNode {
 	}
 
 	public static boolean isConstantNode(Node n) {
-		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);//TODO check
+		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);
 	}
 
 	@Override

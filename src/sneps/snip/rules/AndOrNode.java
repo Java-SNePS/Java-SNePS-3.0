@@ -3,12 +3,15 @@ package sneps.snip.rules;
 import java.util.HashSet;
 import java.util.Set;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
@@ -92,13 +95,19 @@ public class AndOrNode extends RuleNode {
 			nodesSentReports.add(fn.getNode().getId());
 		}
 		
-		FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
-		NodeSet temp = new NodeSet();
-		temp.addNode(this);
-		FlagNode fn = new FlagNode(this, temp, 1);
-		justification.insert(fn);
+		FlagNodeSet justification = new FlagNodeSet();
+		justification.addAll(tRui.getFlagNodeSet());
 
-		Report forwardReport = new Report(tRui.getSub(), justification, true, contextID);
+		PropositionSet supports = new PropositionSet();
+		for(FlagNode fn : justification){
+			try {
+				supports = supports.union(fn.getSupports());
+			} catch (NotAPropositionNodeException
+					| NodeNotFoundInNetworkException e) {
+			}
+		}
+
+		Report forwardReport = new Report(tRui.getSub(), supports, true, contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
 			if(!nodesSentReports.contains(outChannel.getRequester().getId()))

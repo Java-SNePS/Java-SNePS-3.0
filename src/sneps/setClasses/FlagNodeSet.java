@@ -55,8 +55,6 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 			flagNodes.add(fn);
 	}
 
-
-
 	/**
 	 * Return the number of flagged nodes in this set
 	 * 
@@ -91,5 +89,10 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 
 	public boolean contains(FlagNode fn){
 		return flagNodes.contains(fn);
+	}
+
+	public void addAll(FlagNodeSet fns) {
+		for(FlagNode fn : fns)
+			flagNodes.add(fn);
 	}
 }

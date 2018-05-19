@@ -1,11 +1,11 @@
 package sneps.snip.classes;
 
 import sneps.network.Node;
-import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 
 public class FlagNode {
 	private Node node;
-	private NodeSet supports;
+	private PropositionSet supports;
 	private int flag;
 
 	/**
@@ -18,7 +18,7 @@ public class FlagNode {
 	 * @param f
 	 *            true or false
 	 */
-	public FlagNode(Node n, NodeSet set, int f) {
+	public FlagNode(Node n, PropositionSet set, int f) {
 		node = n;
 		supports = set;
 		flag = f;
@@ -38,7 +38,7 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public NodeSet getSupports() {
+	public PropositionSet getSupports() {
 		return supports;
 	}
 

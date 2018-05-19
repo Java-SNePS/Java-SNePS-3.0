@@ -1,8 +1,12 @@
 package sneps.snip.classes;
 
 import java.util.Iterator;
+
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
 
@@ -159,20 +163,21 @@ public class RuleUseInfo {
 		}
 		return null;
 	}
-	
-	public NodeSet getSupport(NodeSet originSupport) {
-		NodeSet ruiSupports = getSupports();
-		ruiSupports.addAll(originSupport);
-		return ruiSupports;
-	}
 
-	private NodeSet getSupports() {
+	public PropositionSet getSupports() {
 		if (fns.isNew())
-			return new NodeSet();
+			return new PropositionSet();
 		if (fns.cardinality() == 1)
 			return fns.iterator().next().getSupports();
-		Iterator<FlagNode> fnIter = fns.iterator();
-		NodeSet res = fnIter.next().getSupports();
+
+		PropositionSet res = new PropositionSet();
+		for(FlagNode fn : fns){			
+			try {
+				res = res.union(fn.getSupports());
+			} catch (NotAPropositionNodeException
+					| NodeNotFoundInNetworkException e) {
+			}
+		}
 		return res;
 	}
 

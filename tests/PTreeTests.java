@@ -40,14 +40,14 @@ public class PTreeTests extends TestCase {
 		NodeSet support = new NodeSet();
 		FlagNode fn;
 
-		support.addNode(var);
+		/*support.addNode(var);
 		fn = new FlagNode(var, support, 1);
 		fns.putIn(fn);
 
 		support.clear();
 		support.addNode(dog);
 		fn = new FlagNode(dog, support, 1);
-		fns.putIn(fn);
+		fns.putIn(fn);*/
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 		tree = new PTree("default");
