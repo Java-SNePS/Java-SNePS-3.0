@@ -114,8 +114,15 @@ public class Controller {
             throw new ContextNameDoesntExistException(contextName);
 
         oldContext.removeName(contextName);
+
+        Context temp = new Context(contextName, new PropositionSet(PropositionSet.getPropsSafely(oldContext.getHypothesisSet())));
+
+        ArrayList<PropositionSet> contradictions = checkForContradiction((PropositionNode)Network.getNodeById(hyp), temp);
+
+        if (contradictions != null)
+            throw new ContradictionFoundException(contradictions);
+
         PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
-        // TODO: 03/04/18 check for contradiction
 
         Context newContext = new Context(contextName, hypSet);
 
@@ -219,12 +226,12 @@ public class Controller {
         return p;
     }
 
-    public static Collection<PropositionSet> combine(Collection<PropositionSet> negatingPropSupports, Collection<PropositionSet> negatedPropSupports) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-        Collection<PropositionSet> output = new ArrayList<PropositionSet>();
+    public static ArrayList<PropositionSet> combine(Collection<PropositionSet> negatingPropSupports, Collection<PropositionSet> negatedPropSupports) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        ArrayList<PropositionSet> output = new ArrayList<>();
 
-        for (PropositionSet negatingPropSupp : negatedPropSupports) {
+        for (PropositionSet negatingPropSupp : negatingPropSupports) {
             for (PropositionSet negatedPropSupp : negatedPropSupports) {
-                output.add(negatingPropSupp.union(negatingPropSupp));
+                output.add(negatingPropSupp.union(negatedPropSupp));
             }
         }
         return output;
@@ -232,8 +239,8 @@ public class Controller {
 
     }
 
-    public static ArrayList<PropositionSet> generatePropositionSets(ArrayList<BitSet> conflictingHypsCollection) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
-        ArrayList<PropositionSet> propsList = new ArrayList<PropositionSet>();
+    public static ArrayList<PropositionSet> generatePropositionSetsFromBitSets(ArrayList<BitSet> conflictingHypsCollection) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+        ArrayList<PropositionSet> propsList = new ArrayList<>();
         for (BitSet b : conflictingHypsCollection) {
             PropositionSet propSet = new PropositionSet();
             for (int i = b.nextSetBit(0); i != -1; i = b.nextSetBit(i + 1))
@@ -314,7 +321,7 @@ public class Controller {
 
         ArrayList<BitSet> conlifctingHypsInContextCollection = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
         if (conlifctingHypsInContextCollection != null)
-            return generatePropositionSets(conlifctingHypsInContextCollection);
+            return generatePropositionSetsFromBitSets(conlifctingHypsInContextCollection);
         else
             return null;
 
@@ -350,12 +357,12 @@ public class Controller {
 
         ArrayList<BitSet> conlifctingHypsInContextCollection = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
         if (conlifctingHypsInContextCollection != null)
-            return generatePropositionSets(conlifctingHypsInContextCollection);
+            return generatePropositionSetsFromBitSets(conlifctingHypsInContextCollection);
         else
             return null;
     }
 
-    public static Collection<PropositionSet> checkForContradiction(PropositionNode node, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+    public static ArrayList<PropositionSet> checkForContradiction(PropositionNode node, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 
         /*       First check in minimalNoGoods */
 
@@ -373,7 +380,7 @@ public class Controller {
         ArrayList<BitSet> conflictingHypsInContext = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
 
         if (conflictingHypsInContext != null)
-            return generatePropositionSets(conflictingHypsInContext);
+            return generatePropositionSetsFromBitSets(conflictingHypsInContext);
 
 //        else check in down cables and up cables
 

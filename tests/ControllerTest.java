@@ -12,6 +12,8 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 
+import java.util.*;
+
 public class ControllerTest {
 
     private static final String testContextName = "Test context";
@@ -204,6 +206,78 @@ public class ControllerTest {
             Controller.createContext("c"+i, set);
         for (int i = 1; i < 4; i++)
             assertTrue(Controller.getAllNamesOfContexts().contains("c" + i));
+    }
+
+    @Test
+    public void combine() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        ArrayList<PropositionSet> propSet = new ArrayList<>();
+        propSet.add(new PropositionSet(new int [] {1,3,5}));
+        propSet.add(new PropositionSet(new int [] {4,6,7}));
+
+        ArrayList<PropositionSet> negation = new ArrayList<>();
+        negation.add(new PropositionSet(new int [] {9,23,53}));
+        negation.add(new PropositionSet(new int [] {24,61,72}));
+
+        ArrayList<PropositionSet> combination = Controller.combine(propSet, negation);
+
+        for (PropositionSet propSett: combination) {
+            System.out.println(propSett.toString());
+        }
+
+        LinkedList<Integer[]> expectedCombos = new LinkedList<>();
+        expectedCombos.add(new Integer[] {1,3,5,9,23,53});
+        expectedCombos.add(new Integer[] {1,3,5,24,61,72});
+
+        expectedCombos.add(new Integer[] {4,6,7,9,23,53});
+        expectedCombos.add(new Integer[] {4,6,7,24,61,72});
+
+
+        for (PropositionSet p : combination) {
+            assertTrue(equateIntegerArrWithInt(expectedCombos.pop(), PropositionSet.getPropsSafely(p)));
+        }
+    }
+
+    @Test
+    public void generatePropositionSetsFromBitSetsTest() throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+        ArrayList<BitSet> bitSetsCollection = new ArrayList<>();
+        BitSet bitSet1 = new BitSet();
+        bitSet1.set(1, 3);
+        bitSet1.set(4);
+
+        BitSet bitSet2 = new BitSet();
+        bitSet2.set(0,3);
+        bitSet2.set(4);
+        bitSet2.set(6);
+
+        bitSetsCollection.add(bitSet1);
+        bitSetsCollection.add(bitSet2);
+
+        ArrayList<PropositionSet> propositionSetCollection = Controller.generatePropositionSetsFromBitSets(bitSetsCollection);
+
+        PropositionSet propositionSet1 = new PropositionSet(new int[]{1,2,4});
+        PropositionSet propositionSet2 = new PropositionSet(new int[]{0,1,2,4,6});
+
+        assertTrue(propositionSetCollection.get(0).equals(propositionSet1));
+
+        assertTrue(propositionSetCollection.get(1).equals(propositionSet2));
+
+    }
+
+    @Test
+    public void equate() {
+        assertTrue(equateIntegerArrWithInt(new Integer[]{1,2,3}, new int [] {1,2,3}));
+    }
+
+    public boolean equateIntegerArrWithInt(Integer [] arrInteger, int[] arrInt) {
+        if (arrInteger.length != arrInt.length) {
+            return false;
+        } else {
+            for (int i = 0; i < arrInt.length; i++) {
+                if (arrInt[i] != arrInteger[i])
+                    return false;
+            }
+        }
+        return true;
     }
 
 }
