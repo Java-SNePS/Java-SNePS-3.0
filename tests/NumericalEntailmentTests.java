@@ -1,12 +1,15 @@
 import java.lang.reflect.Field;
 import java.util.LinkedList;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
-import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
 import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
@@ -20,10 +23,12 @@ import sneps.network.classes.term.Variable;
 import sneps.setClasses.ContextRuisSet;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
+import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
@@ -48,19 +53,19 @@ public class NumericalEntailmentTests extends TestCase {
 		numerical.addAntecedent(var);
 		numerical.addAntecedent(dog);
 		numerical.addAntecedent(fido);
-		
+
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
+		PropositionSet support = new PropositionSet();
 
-		/*support.addNode(dog);
+		support.add(dog.getId());
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.putIn(fn);
 
-		support.clear();
-		support.addNode(fido);
+		support.clearSet();
+		support.add(fido.getId());
 		fn = new FlagNode(fido, support, 1);
-		fns.putIn(fn);*/
+		fns.putIn(fn);
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 
@@ -89,7 +94,10 @@ public class NumericalEntailmentTests extends TestCase {
 
 		dc.add(new DownCable(rel, c1));
 		DownCableSet dcs = new DownCableSet(dc, new CaseFrame("string", rels));
-		//report = new Report(sub, fns, true, "default");
+		support.add(dog.getId());
+		support.add(fido.getId());
+		support.add(var.getId());
+		report = new Report(sub, support, true, "default");
 
 		numerical = new NumericalEntailment(new Open("Wat", dcs));
 	}
@@ -99,28 +107,36 @@ public class NumericalEntailmentTests extends TestCase {
 		numerical.setKnownInstances(numerical.getNewInstances());
 		numerical.getNewInstances().clear();
 
-		numerical.applyRuleHandler(report, dog);
-		if(numerical.getAntSize() <= numerical.getI())
-			assertNotNull(
-					"NumericalEntailment: ApplyRuleHandler doesn't broadcast report",
-					((PropositionNode)numerical).getNewInstances());
+		numerical.applyRuleHandler(report, fido);
+		if(numerical.getAntSize() <= 1)
+			assertNotNull("NumericalEntailment: ApplyRuleHandler doesn't broadcast reports",
+					numerical.getNewInstances());
+		else
+			assertNull("NumericalEntailment: ApplyRuleHandler broacdcasts final report without waiting for enough positive antecedents reports",
+					numerical.getNewInstances());
+
 
 		numerical.setKnownInstances(numerical.getNewInstances());
-		numerical.getNewInstances().clear();
+		//numerical.getNewInstances().clear();
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
+		PropositionSet support = new PropositionSet();
 
-		support.addNode(dog);
-		//FlagNode fn = new FlagNode(dog, support, 1);
-		//fns.putIn(fn);
-		//report = new Report(sub, fns, false, "default");
+		try {
+			support.add(dog.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException
+				| NodeNotFoundInNetworkException e) {}
+
+		FlagNode fn = new FlagNode(dog, support, 1);
+		fns.putIn(fn);
+		report = new Report(sub, support, true, "default");
 
 		numerical.applyRuleHandler(report, dog);
-		if(numerical.getAntSize() <= 1)
+		if(numerical.getContextRuisSet().getByContext("default")
+				.getPositiveNodes().size() >= numerical.getI())
 			assertNull(
-					"NumericalEntailment: ApplyRuleHandler broadcasts negative report",
-					((PropositionNode)numerical).getNewInstances());
+					"NumericalEntailment: ApplyRuleHandler doesn't broadcast reports",
+					numerical.getNewInstances());
 	}
 
 	@Test
@@ -213,23 +229,18 @@ public class NumericalEntailmentTests extends TestCase {
 	public void testAddNotSentRui() {
 		numerical.addNotSentRui(rui, "default", dog);
 		Context contxt = (Context) Controller.getContextByName("default");
-		assertNotNull("NumericalEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
+		assertNotNull("AndEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
 				numerical.getContextRuiHandler(contxt));
-		
-		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
-		support.addNode(dog);
-		//FlagNode fn = new FlagNode(dog, support, 1);
-		//fns.putIn(fn);
 
-		//FlagNodeSet positives = numerical.getContextRuiHandler(contxt).getPositiveNodes();
-		
-/*		for(FlagNode currFN : positives){
-			assertTrue("NumericalEntailment: addNotSentRui doesn't add signature to positiveNodes set", fns.contains(currFN)); 
-		}
-		assertTrue("NumericalEntailment: addNotSentRui doesn't add a SIndex in contextRuisHandlers", 
-				numerical.getContextRuiHandler(contxt)instanceof SIndex);
-		*/
+		NodeSet positives = numerical.getContextRuiHandler(contxt).getPositiveNodes();
+		assertTrue("AndEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
+				positives.contains(dog));
+		assertTrue("AndEntailment: addNotSentRui adds wrong signatures to positiveNodes set", 
+				!positives.contains(fido));
+
+		assertTrue("AndEntailment: addNotSentRui doesn't add a PTree in contextRuisHandlers", 
+				numerical.getContextRuiHandler(contxt)instanceof PTree);
+
 	}
 
 	@AfterClass

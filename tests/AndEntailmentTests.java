@@ -7,6 +7,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -23,6 +26,7 @@ import sneps.network.classes.term.Variable;
 import sneps.setClasses.ContextRuisSet;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
@@ -50,19 +54,19 @@ public class AndEntailmentTests extends TestCase{
 		and.addAntecedent(var);
 		and.addAntecedent(dog);
 		and.addAntecedent(fido);
-		
+
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
+		PropositionSet support = new PropositionSet();
 
-		/*support.addNode(dog);
+		support.add(dog.getId());
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.putIn(fn);
 
-		support.clear();
-		support.addNode(fido);
+		support.clearSet();
+		support.add(fido.getId());
 		fn = new FlagNode(fido, support, 1);
-		fns.putIn(fn);*/
+		fns.putIn(fn);
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 
@@ -91,7 +95,10 @@ public class AndEntailmentTests extends TestCase{
 
 		dc.add(new DownCable(rel, c1));
 		DownCableSet dcs = new DownCableSet(dc, new CaseFrame("string", rels));
-		//report = new Report(sub, fns, true, "default");
+		support.add(dog.getId());
+		support.add(fido.getId());
+		support.add(var.getId());
+		report = new Report(sub, support, true, "default");
 
 		and = new AndEntailment(new Open("Wat", dcs));
 	}
@@ -104,18 +111,26 @@ public class AndEntailmentTests extends TestCase{
 		and.applyRuleHandler(report, fido);
 		if(and.getAntSize() <= 1)
 			assertNotNull("AndEntailment: ApplyRuleHandler doesn't broadcast report",
-					((PropositionNode)and).getNewInstances());
+					and.getNewInstances());
+		else
+			assertNull("AndEntailment: ApplyRuleHandler broacdcasts final report without waiting for enough positive antecedents reports",
+					and.getNewInstances());
+
 
 		and.setKnownInstances(and.getNewInstances());
 		and.getNewInstances().clear();
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
+		PropositionSet support = new PropositionSet();
 
-		support.addNode(dog);
-		//FlagNode fn = new FlagNode(dog, support, 1);
-		//fns.putIn(fn);
-		//report = new Report(sub, fns, false, "default");
+		try {
+			support.add(dog.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException
+				| NodeNotFoundInNetworkException e) {}
+
+		FlagNode fn = new FlagNode(dog, support, 1);
+		fns.putIn(fn);
+		report = new Report(sub, support, false, "default");
 
 		and.applyRuleHandler(report, dog);
 		if(and.getAntSize() <= 1)
@@ -221,21 +236,15 @@ public class AndEntailmentTests extends TestCase{
 		assertNotNull("AndEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
 				and.getContextRuiHandler(contxt));
 
-		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
-		support.addNode(dog);
-		//FlagNode fn = new FlagNode(dog, support, 1);
-		//fns.putIn(fn);
-
-		//FlagNodeSet positives = and.getContextRuiHandler(contxt).getPositiveNodes();
-		
-		/*for(FlagNode currFN : positives){
-			assertTrue("NumericalEntailment: addNotSentRui doesn't add signature to positiveNodes set", fns.contains(currFN)); 
-		}
+		NodeSet positives = and.getContextRuiHandler(contxt).getPositiveNodes();
+		assertTrue("AndEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
+				positives.contains(dog));
+		assertTrue("AndEntailment: addNotSentRui adds wrong signatures to positiveNodes set", 
+				!positives.contains(fido));
 
 		assertTrue("AndEntailment: addNotSentRui doesn't add a PTree in contextRuisHandlers", 
 				and.getContextRuiHandler(contxt)instanceof PTree);
-		*/
+
 	}
 
 	@AfterClass

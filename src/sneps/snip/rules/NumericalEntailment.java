@@ -6,7 +6,6 @@ import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.VariableNode;
 import sneps.network.classes.Semantic;
-import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.setClasses.FlagNodeSet;
@@ -71,34 +70,26 @@ public class NumericalEntailment extends RuleNode {
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
 		if (Rui.getPosCount() >= i){
 			Substitutions sub = Rui.getSub();
-
 			FlagNodeSet justification = new FlagNodeSet();
 			justification.addAll(Rui.getFlagNodeSet());
-
 			PropositionSet supports = new PropositionSet();
+
 			for(FlagNode fn : justification){
 				try {
 					supports = supports.union(fn.getSupports());
 				} catch (NotAPropositionNodeException
-						| NodeNotFoundInNetworkException e) {
-				}
+						| NodeNotFoundInNetworkException e) {}
 			}
 
-			if(this.getTerm() instanceof Closed){
-				//add this and send
-				try {
-					supports = supports.union(Rui.getSupports());
-				} catch (NotAPropositionNodeException
-						| NodeNotFoundInNetworkException e) {
-				}
-
-				Report reply = new Report(sub, supports, true, contextID);
-				sendReportToConsequents(reply);
-			}
+			try {
+				supports = supports.union(Rui.getSupports());
+			} catch (NotAPropositionNodeException
+					| NodeNotFoundInNetworkException e) {}
 
 			if(this.getTerm() instanceof Open){
 				//knownInstances check this.free vars - > bound
 				VarNodeSet freeVars = ((Open)this.getTerm()).getFreeVariables();
+				Substitutions ruiSub = Rui.getSubstitutions();
 				boolean allBound = true;
 
 				for(Report report : knownInstances){
@@ -111,7 +102,6 @@ public class NumericalEntailment extends RuleNode {
 					}
 					if(allBound){//if yes
 						Substitutions instanceSub = report.getSubstitutions();
-						Substitutions ruiSub = Rui.getSubstitutions();
 
 						for(int i = 0; i < ruiSub.cardinality(); i++){
 							Binding ruiBind = ruiSub.getBinding(i);//if rui also bound
@@ -132,11 +122,14 @@ public class NumericalEntailment extends RuleNode {
 							//add to new support and send
 							Report reply = new Report(newSub, supports, true, contextID);
 							sendReportToConsequents(reply);
+							return;
 						}
 					}
-				}	
-
+				}
 			}
+
+			Report reply = new Report(sub, supports, true, contextID);
+			sendReportToConsequents(reply);
 		}
 	}
 
@@ -151,8 +144,6 @@ public class NumericalEntailment extends RuleNode {
 		if (set == null) 
 			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		set.insertRUI(rui);
-		NodeSet temp = new NodeSet();
-		temp.addNode(signature);
 		if(!set.getPositiveNodes().contains(signature))
 			set.getPositiveNodes().addNode(signature);
 		contextRuisSet.addHandlerSet(contxt, set);

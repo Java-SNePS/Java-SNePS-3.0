@@ -11,6 +11,7 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Variable;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
@@ -37,17 +38,17 @@ public class PTreeTests extends TestCase {
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
-		NodeSet support = new NodeSet();
+		PropositionSet supports = new PropositionSet();
 		FlagNode fn;
 
-		/*support.addNode(var);
-		fn = new FlagNode(var, support, 1);
+		supports.add(var.getId());
+		fn = new FlagNode(var, supports, 1);
 		fns.putIn(fn);
 
-		support.clear();
-		support.addNode(dog);
-		fn = new FlagNode(dog, support, 1);
-		fns.putIn(fn);*/
+		supports.clearSet();
+		supports.add(dog.getId());
+		fn = new FlagNode(dog, supports, 1);
+		fns.putIn(fn);
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 		tree = new PTree("default");
@@ -55,6 +56,7 @@ public class PTreeTests extends TestCase {
 
 	@Test
 	public void testInsertRUI() {
+		tree.buildTree(ants);
 		RuleUseInfoSet ruiSet = new RuleUseInfoSet();
 
 		tree.insertRUI(rui);
