@@ -3954,7 +3954,6 @@ public class FXController implements Initializable {
 	public void displayNetwork() {
 		String url = this.getClass().getResource("displayData.html").toExternalForm();
 		webView.getEngine().load(url);
-		//System.out.println(url.toString());
 	}
 	
 
