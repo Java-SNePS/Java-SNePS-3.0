@@ -10,6 +10,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -19,12 +20,19 @@ public class Context implements Serializable{
 
     private HashSet<String> names;
 
+    protected BitSet getHypsBitset() {
+        return hypsBitset;
+    }
+
+    private BitSet hypsBitset;
+
     /**
      * Constructs a new empty Context
      */
     protected Context() {
         names = new HashSet<String>();
         this.hyps = new PropositionSet();
+        this.hypsBitset = new BitSet();
     }
 
     /**
@@ -45,6 +53,7 @@ public class Context implements Serializable{
     protected Context(Context c) {
         this.hyps = c.getHypothesisSet();
         this.names = c.getNames();
+        this.hypsBitset = c.getHypsBitset();
     }
 
     /**
@@ -58,6 +67,8 @@ public class Context implements Serializable{
     protected Context(Context c, int hyp) throws NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
         this.names = c.getNames();
         this.hyps = c.getHypothesisSet().add(hyp);
+        this.hypsBitset = (BitSet) c.getHypsBitset().clone();
+        this.hypsBitset.set(hyp);
     }
 
     /**
@@ -77,9 +88,13 @@ public class Context implements Serializable{
      * @param contextName name of the new Context
      * @param hyps        the hyps the Context's hyps should be set to
      */
-    protected Context(String contextName, PropositionSet hyps) {
+    protected Context(String contextName, PropositionSet hyps) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         this(contextName);
         this.hyps = hyps;
+        this.hypsBitset = new BitSet();
+        int [] arr = PropositionSet.getPropsSafely(this.hyps);
+        for (int i = 0; i < arr.length; i++)
+            this.hypsBitset.set(arr[i]);
     }
 
     /**
@@ -146,7 +161,7 @@ public class Context implements Serializable{
 
         return asserted;
     }
-    
+
     /**
      * When Removing a node from context, Therefore we must remove it from this Context's nodes Supports also
      * @param PropositionNode, The node to be removed from all Context's Supports

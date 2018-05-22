@@ -23,7 +23,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sneps.gui.FXController">
+<AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@application2.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sneps.gui.FXController">
    <children>
    
       <TabPane fx:id="mainTabPane" layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -45,13 +45,13 @@
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutY="34.400001525878906" text="Node Identifier" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label layoutY="34.400001525878906" styleClass="miniTitle" text="Node Identifier" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
                                                 <TextField fx:id="baseNodeID" layoutY="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                <Label layoutY="85.5999984741211" text="Semantic Type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label layoutY="85.5999984741211" styleClass="miniTitle" text="Semantic Type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
@@ -129,7 +129,7 @@
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label fx:id="nodeDetails" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="51.0" text="Please select a node" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label fx:id="nodeDetails" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="51.0" styleClass="miniTitle" text="Please select a node" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
@@ -152,25 +152,25 @@
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutY="34.400001525878906" text="Name:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label layoutY="34.400001525878906" styleClass="miniTitle" text="Name:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
                                                 <TextField fx:id="newRN" layoutY="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                <Label layoutY="85.5999984741211" text="Type:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label layoutY="85.5999984741211" styleClass="miniTitle" text="Type:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
                                                 <SplitMenuButton fx:id="newRT" mnemonicParsing="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0" />
-                                                <Label layoutY="136.8000030517578" text="Adjust:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label layoutY="136.8000030517578" styleClass="miniTitle" text="Adjust:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
                                                 <SplitMenuButton fx:id="newRA" layoutX="10.0" layoutY="162.0" mnemonicParsing="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                <Label layoutY="188.0" text="Limit:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label layoutY="188.0" styleClass="miniTitle" text="Limit:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
@@ -197,7 +197,7 @@
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label fx:id="relationDetails" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="51.0" text="Please select a relations" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label fx:id="relationDetails" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="51.0" styleClass="miniTitle" text="Please select a relations" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
@@ -219,12 +219,12 @@
                                                          <children>
                                                             <AnchorPane AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                                                <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Define a new Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Define a new Case Frame" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                                      <font>
                                                                         <Font size="22.15" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="10.0" layoutY="45.0" text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="50.0">
+                                                                  <Label layoutX="10.0" layoutY="45.0" styleClass="miniTitle" text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="50.0">
                                                                      <font>
                                                                         <Font size="16.0" />
                                                                      </font>
@@ -336,19 +336,19 @@
                                                                         <Font size="22.15" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label text="Semantic type: " AnchorPane.topAnchor="40.0">
+                                                                  <Label styleClass="miniTitle" text="Semantic type: " AnchorPane.topAnchor="40.0">
                                                                      <font>
                                                                         <Font size="16.0" />
                                                                      </font>
                                                                   </Label>
                                                                   <SplitMenuButton fx:id="cableSem" mnemonicParsing="false" prefHeight="26.0" prefWidth="292.0" AnchorPane.leftAnchor="108.0" AnchorPane.topAnchor="40.0" />
-                                                                  <Label layoutY="53.0" text="Minimum number of nodes:" AnchorPane.topAnchor="80.0">
+                                                                  <Label layoutY="53.0" styleClass="miniTitle" text="Minimum number of nodes:" AnchorPane.topAnchor="80.0">
                                                                      <font>
                                                                         <Font size="16.0" />
                                                                      </font>
                                                                   </Label>
                                                                   <TextField fx:id="cableMinNodes" layoutX="201.0" layoutY="79.0" prefHeight="26.0" prefWidth="200.0" AnchorPane.topAnchor="80.0" />
-                                                                  <Label layoutX="1.0" layoutY="89.0" text="Maximum number of nodes:" AnchorPane.topAnchor="120.0">
+                                                                  <Label layoutX="1.0" layoutY="89.0" styleClass="miniTitle" text="Maximum number of nodes:" AnchorPane.topAnchor="120.0">
                                                                      <font>
                                                                         <Font size="16.0" />
                                                                      </font>
@@ -412,7 +412,7 @@
                                                                   </Label>
                                                                   <ListView fx:id="cfListForSign" layoutY="37.0" prefHeight="180.0" prefWidth="1346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="37.0" />
                                                                   <TextField fx:id="signPriority" layoutX="68.0" layoutY="224.0" />
-                                                                  <Label layoutY="224.0" text="Priority:" AnchorPane.leftAnchor="0.0">
+                                                                  <Label layoutY="224.0" styleClass="miniTitle" text="Priority:" AnchorPane.leftAnchor="0.0">
                                                                      <font>
                                                                         <Font size="16.0" />
                                                                      </font>
@@ -433,12 +433,12 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Create a new semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                          <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Create a new semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                              <font>
                                                 <Font size="22.15" />
                                              </font>
                                           </Label>
-                                          <Label text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="55.0">
+                                          <Label styleClass="miniTitle" text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="55.0">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -455,7 +455,7 @@
                                        <children>
                                           <AnchorPane layoutY="5.0" prefHeight="350.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
                                              <children>
-                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Forward / Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Forward / Backward Unit Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
@@ -475,12 +475,12 @@
                                           </AnchorPane>
                                           <AnchorPane layoutY="360.0" prefWidth="400.0">
                                              <children>
-                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="And Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="And Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                <Label layoutX="74.0" layoutY="34.0" styleClass="miniTitle" text="Please select one or multiple paths..">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
@@ -491,7 +491,7 @@
                                           <AnchorPane layoutX="350.0" prefWidth="666.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <ListView fx:id="pathsList" layoutX="72.0" prefHeight="200.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
-                                                <Label layoutX="-14.0" layoutY="7.0" prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="List Of Created Paths" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                <Label layoutX="-14.0" layoutY="7.0" prefHeight="34.0" prefWidth="324.0" styleClass="title" text="List Of Created Paths" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
@@ -511,7 +511,7 @@
                                                             <Button minWidth="130.0" mnemonicParsing="false" onAction="#createKStarPath" styleClass="tab" text="Create K-Star Path" />
                                                          </children>
                                                       </HBox>
-                                                      <Label alignment="CENTER" text="Please select only one path from the list" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label alignment="CENTER" styleClass="miniTitle" text="Please select only one path from the list" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <font>
                                                             <Font size="17.0" />
                                                          </font>
@@ -522,12 +522,12 @@
                                           </AnchorPane>
                                           <AnchorPane layoutY="450.0" prefWidth="400.0">
                                              <children>
-                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Compose Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Compose Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="10.0" layoutY="32.0" text="Please select one paths from the list and click add path">
+                                                <Label layoutX="10.0" layoutY="32.0" styleClass="miniTitle" text="Please select one paths from the list and click add path">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
@@ -548,12 +548,12 @@
                                           </AnchorPane>
                                           <AnchorPane layoutY="600.0" prefWidth="400.0">
                                              <children>
-                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Or Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Or Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                    <font>
                                                       <Font size="22.15" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="74.0" layoutY="34.0" text="Please select one or multiple paths..">
+                                                <Label layoutX="74.0" layoutY="34.0" styleClass="miniTitle" text="Please select one or multiple paths..">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
@@ -565,34 +565,34 @@
                                              <children>
                                                 <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="400.0">
                                                    <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Domain Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Domain Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                          <font>
                                                             <Font size="22.15" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="57.0" layoutY="34.0" text="Please select two paths from the list, &amp; a node">
+                                                      <Label layoutX="57.0" layoutY="34.0" styleClass="miniTitle" text="Please select two paths from the list, &amp; a node">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
                                                       <SplitMenuButton fx:id="pathNodes1" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="90.0" />
                                                       <Button mnemonicParsing="false" onAction="#createDomainRestrictPath" styleClass="tab" text="Create Domain Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="160.0" />
-                                                      <Label layoutX="57.0" layoutY="54.0" text="1- P Path: " AnchorPane.topAnchor="54.0">
+                                                      <Label layoutX="57.0" layoutY="54.0" styleClass="miniTitle" text="1- P Path: " AnchorPane.topAnchor="54.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="57.0" layoutY="68.0" text="2- Q Path:" AnchorPane.topAnchor="70.0">
+                                                      <Label layoutX="57.0" layoutY="68.0" styleClass="miniTitle" text="2- Q Path:" AnchorPane.topAnchor="70.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label fx:id="ppath" layoutX="127.0" layoutY="54.0" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="54.0">
+                                                      <Label fx:id="ppath" layoutX="127.0" layoutY="54.0" styleClass="miniTitle" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="54.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label fx:id="qpath" layoutX="127.0" layoutY="70.0" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="70.0">
+                                                      <Label fx:id="qpath" layoutX="127.0" layoutY="70.0" styleClass="miniTitle" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="70.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -606,34 +606,34 @@
                                                 </AnchorPane>
                                                 <AnchorPane layoutX="10.0" layoutY="281.0" prefWidth="400.0">
                                                    <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Range Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Range Restrict Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                          <font>
                                                             <Font size="22.15" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="57.0" layoutY="34.0" text="Please select two paths from the list, &amp; a node">
+                                                      <Label layoutX="57.0" layoutY="34.0" styleClass="miniTitle" text="Please select two paths from the list, &amp; a node">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
                                                       <SplitMenuButton fx:id="pathNodes2" alignment="CENTER" mnemonicParsing="false" text="Select a node" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="90.0" />
                                                       <Button mnemonicParsing="false" onAction="#createRangeRestrictPath" styleClass="tab" text="Create Range Restrict Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="160.0" />
-                                                      <Label layoutX="57.0" text="1- P Path: " AnchorPane.topAnchor="54.0">
+                                                      <Label layoutX="57.0" styleClass="miniTitle" text="1- P Path: " AnchorPane.topAnchor="54.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="57.0" text="2- Q Path:" AnchorPane.topAnchor="70.0">
+                                                      <Label layoutX="57.0" styleClass="miniTitle" text="2- Q Path:" AnchorPane.topAnchor="70.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label fx:id="ppath1" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="54.0">
+                                                      <Label fx:id="ppath1" styleClass="miniTitle" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="54.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label fx:id="qpath1" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="70.0">
+                                                      <Label fx:id="qpath1" styleClass="miniTitle" text="..." AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="70.0">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -647,7 +647,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane layoutX="10.0" layoutY="145.0" prefWidth="400.0">
                                                    <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Bang Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Bang Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                          <font>
                                                             <Font size="22.15" />
                                                          </font>
@@ -660,14 +660,14 @@
                                                 </AnchorPane>
                                                 <AnchorPane layoutX="10.0" layoutY="276.0" prefWidth="400.0">
                                                    <children>
-                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Define Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                                      <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Define Path" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                          <font>
                                                             <Font size="22.15" />
                                                          </font>
                                                       </Label>
                                                       <Button mnemonicParsing="false" onAction="#definePath" styleClass="tab" text="Define Path" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0" />
                                                       <SplitMenuButton fx:id="definePathRelations" alignment="CENTER" layoutX="128.0" layoutY="45.0" mnemonicParsing="false" text="Select a relation" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="60.0" />
-                                                      <Label layoutX="92.0" layoutY="35.0" text="Please select one path from the list">
+                                                      <Label layoutX="92.0" layoutY="35.0" styleClass="miniTitle" text="Please select one path from the list">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -695,12 +695,12 @@
                                                          <children>
                                                             <AnchorPane layoutX="10.0" layoutY="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                                <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Create context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Create context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                      <font>
                                                                         <Font size="22.15" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutY="40.0" text="Context Name:" AnchorPane.leftAnchor="0.0">
+                                                                  <Label layoutY="40.0" styleClass="miniTitle" text="Context Name:" AnchorPane.leftAnchor="0.0">
                                                                      <font>
                                                                         <Font size="16.0" />
                                                                      </font>
@@ -709,7 +709,7 @@
                                                                   <AnchorPane layoutY="91.0" AnchorPane.leftAnchor="10.0">
                                                                      <children>
                                                                         <ListView fx:id="propoNodesList" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
-                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Select A Proposition Node">
                                                                            <font>
                                                                               <Font size="22.15" />
                                                                            </font>
@@ -720,7 +720,7 @@
                                                                   <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
                                                                      <children>
                                                                         <ListView fx:id="propSet" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
-                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Proposition Set">
                                                                            <font>
                                                                               <Font size="22.15" />
                                                                            </font>
@@ -733,7 +733,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane layoutX="14.0" layoutY="404.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="404.0">
                                                                <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Context Options" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Context Options" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                      <font>
                                                                         <Font size="22.15" />
                                                                      </font>
@@ -751,13 +751,13 @@
                                                       </AnchorPane>
                                                    </content>
                                               </Tab>
-                                                <Tab text="Edit Context">
+                                               <Tab text="Edit Context">
                                                   <content>
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                          <children>
                                                             <AnchorPane AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Add Propositions To Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Add Propositions To Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                      <font>
                                                                         <Font size="22.15" />
                                                                      </font>
@@ -770,7 +770,7 @@
                                                                   <AnchorPane layoutY="91.0" AnchorPane.leftAnchor="10.0">
                                                                      <children>
                                                                         <ListView fx:id="propoNodesList1" layoutX="37.0" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
-                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Select A Proposition Node">
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Select A Proposition Node">
                                                                            <font>
                                                                               <Font size="22.15" />
                                                                            </font>
@@ -781,7 +781,7 @@
                                                                   <AnchorPane layoutX="1022.4000244140625" layoutY="91.0" AnchorPane.rightAnchor="10.0">
                                                                      <children>
                                                                         <ListView fx:id="propSet1" layoutX="36.5999755859375" layoutY="41.0" prefHeight="187.0" prefWidth="250.0" />
-                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" stylesheets="@application.css" text="Proposition Set">
+                                                                        <Label prefHeight="34.0" prefWidth="324.0" styleClass="title" text="Proposition Set">
                                                                            <font>
                                                                               <Font size="22.15" />
                                                                            </font>
@@ -795,7 +795,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="400.0">
                                                                <children>
-                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" stylesheets="@application.css" text="Remove Propositions From Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                  <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Remove Propositions From Context" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                      <font>
                                                                         <Font size="22.15" />
                                                                      </font>
@@ -858,7 +858,7 @@
                                              <children>
                                                 <Rectangle fx:id="wireBtnRect" arcHeight="5.0" arcWidth="5.0" fill="#ff000080" height="200.0" layoutX="-62.0" layoutY="-83.0" scaleX="0.4" scaleY="0.4" stroke="BLACK" strokeType="INSIDE" visible="false" width="200.0" />
                                                 <Line endX="100.0" layoutX="-12.0" layoutY="17.0" rotate="45.0" stroke="RED" strokeWidth="4.0" />
-                                                <Text fill="WHITE" layoutX="15.683765411376953" layoutY="25.101730346679688" strokeType="OUTSIDE" strokeWidth="0.0" text="Wire">
+                                                <Text layoutX="15.683765411376953" layoutY="25.101730346679688" strokeType="OUTSIDE" strokeWidth="0.0" text="Wire">
                                                    <font>
                                                       <Font name="System Bold" size="20.0" />
                                                    </font>
@@ -923,7 +923,7 @@
                                     <Font size="22.15" />
                                  </font>
                               </Label>
-                              <Label text="New Save File: " AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
+                              <Label styleClass="miniTitle" text="New Save File: " AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
