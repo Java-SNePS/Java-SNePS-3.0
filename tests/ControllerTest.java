@@ -6,9 +6,17 @@ import static org.junit.Assert.*;
 
 import sneps.exceptions.*;
 import sneps.network.Network;
+import sneps.network.Node;
 import sneps.network.PropositionNode;
+import sneps.network.cables.Cable;
+import sneps.network.cables.DownCable;
+import sneps.network.classes.Relation;
+import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.Wire;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.network.classes.term.Molecular;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 
@@ -18,12 +26,13 @@ public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
-    private static final Semantic semantic = new Semantic("Proposition");
-   
+
     @BeforeClass
     public static void setUp() throws IllegalIdentifierException, DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        Semantic.createDefaultSemantics();
         for (int i = 0; i < 8889; i++)
-            Network.buildBaseNode("n"+i, semantic);
+            Network.buildBaseNode("n"+i, Semantic.proposition);
+
     }
 
     @Before
@@ -68,7 +77,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void createContextWithHyps() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException {
+    public void createContextWithHyps() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException, ContextNameDoesntExistException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context expectedContext = Controller.createContext(testContext2, new PropositionSet(new int[] {1,3,4,5}));
         Context actualContext = Controller.getContextByName(testContext2);
         assertEquals(expectedContext, actualContext);
@@ -106,7 +115,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
+    public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToContext(testContextName, new PropositionSet(new int [] {3,4,5,6}));
@@ -137,7 +146,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToCurrentContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
+    public void addHypsToCurrentContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context cxt = Controller.getContextByName("default");
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToCurrentContext(new PropositionSet(new int [] {3,5,6}));
@@ -148,7 +157,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {
+    public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Controller.createContext("c6", new PropositionSet(new int [] {5,7}));
         Controller.createContext("c5", new PropositionSet(new int [] {5,7}));
 
@@ -158,7 +167,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException, ContradictionFoundException {
+    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException, ContradictionFoundException, DuplicatePropositionException {
         PropositionSet p = new PropositionSet(new int [] {12, 58});
         Controller.addPropsToCurrentContext(p);
         ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(p);
@@ -169,7 +178,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException {
+    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException, DuplicatePropositionException {
         ((PropositionNode)Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(new PropositionSet(new int [] {4,5,7}));
         PropositionSet p = new PropositionSet(new int [] {4,5,7});
         Controller.addPropsToCurrentContext(p);
@@ -200,7 +209,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void getNames() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException, ContradictionFoundException {
+    public void getNames() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException, ContradictionFoundException, ContextNameDoesntExistException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         PropositionSet set = new PropositionSet(new int[] {5,6,7,8});
         for (int i = 1; i < 4; i++)
             Controller.createContext("c"+i, set);
@@ -261,6 +270,143 @@ public class ControllerTest {
 
         assertTrue(propositionSetCollection.get(1).equals(propositionSet2));
 
+    }
+
+    @Test
+    public void negationShouldExist() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException {
+        NodeSet x = new NodeSet();
+        x.addNode(Network.getNodeById(4));
+        Cable arg = new DownCable(Relation.arg, x);
+        NodeSet y = new NodeSet();
+        Node zero = Network.buildBaseNode("0", Semantic.individual);
+        y.addNode(zero);
+        Cable min = new DownCable(Relation.min, y);
+
+        Cable max = new DownCable(Relation.max, y);
+
+        assertTrue(Controller.negationExists(min, max, arg));
+
+    }
+
+    @Test
+    public void negationShouldNotExist() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException {
+        NodeSet x = new NodeSet();
+        x.addNode(Network.getNodeById(4));
+        Cable arg = new DownCable(Relation.arg, x);
+        NodeSet y = new NodeSet();
+        Node zero = Network.buildBaseNode("0", new Semantic("Identifier"));
+        y.addNode(zero);
+        Node one = Network.buildBaseNode("1", new Semantic("Identifier"));
+
+        NodeSet z = new NodeSet();
+        z.addNode(one);
+
+        Cable min = new DownCable(Relation.min, y);
+
+        Cable max = new DownCable(Relation.max, z);
+
+        assertFalse(Controller.negationExists(min, max, arg));
+    }
+
+    @Test
+    public void getConflictingHypsFromMinimalNoGoodsTest() {
+
+        BitSet conetextBitSet = new BitSet();
+        conetextBitSet.set(300,310);
+        conetextBitSet.set(340, 346);
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+        BitSet bitset1 = new BitSet();
+        bitset1.set(345);
+        bitset1.set(301, 303);
+
+        BitSet bitSet2 = new BitSet();
+        bitSet2.set(301);
+        bitSet2.set(380);
+        bitSet2.set(420);
+
+        minimalNoGoods.add(bitset1);
+        minimalNoGoods.add(bitSet2);
+
+        ArrayList<BitSet> bitSetArrayList = Controller.getConflictingHypsFromMinimalNoGoods(conetextBitSet);
+
+        ArrayList<BitSet> expectedBitSetCollection = new ArrayList<>();
+
+        BitSet expectedBitSet1= (BitSet) bitset1.clone();
+
+        assertTrue(bitSetArrayList.size() == 1);
+        assertTrue(bitSetArrayList.get(0).equals(expectedBitSet1));
+    }
+
+    @Test
+    public void generateBitSetsFromPropositionSetsTest() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        ArrayList<PropositionSet> propositionSetArrayList = new ArrayList<>();
+        int [] arr1  = new int[] {1,9,10,246};
+        int [] arr2 = new int[] {23,12,34};
+
+        propositionSetArrayList.add(new PropositionSet(arr1));
+        propositionSetArrayList.add(new PropositionSet(arr2));
+
+        ArrayList<BitSet> expectedBitSetArrayList = new ArrayList<>();
+        expectedBitSetArrayList.add(genBitSetFromArray(arr1));
+        expectedBitSetArrayList.add(genBitSetFromArray(arr2));
+
+        ArrayList<BitSet> actualBitSetArrayList = Controller.generateBitSetsFromPropositionSets(propositionSetArrayList);
+
+        assertTrue(actualBitSetArrayList.get(0).equals(expectedBitSetArrayList.get(0)));
+        assertTrue(actualBitSetArrayList.get(0).equals(expectedBitSetArrayList.get(0)));
+    }
+
+    @Test
+    public void getConflictingHypsCollectionForNegatingTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException {
+        PropositionNode negated = (PropositionNode) Network.getNodeById(80);
+        negated.addJustificationBasedSupport(new PropositionSet(new int[] {60, 64, 75, 78}));
+        negated.addJustificationBasedSupport(new PropositionSet(new int[] {80, 85, 89}));
+
+        Node zero = Network.buildBaseNode("0", Semantic.infimum);
+
+        ArrayList<Wire> wires = new ArrayList<>();
+        wires.add(new Wire(Relation.arg, Network.getNodeById(80)));
+        wires.add(new Wire(Relation.max, zero));
+        wires.add(new Wire(Relation.min, zero));
+
+        PropositionNode negating = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+
+        negating.addJustificationBasedSupport(new PropositionSet(new int[] {46,48,49}));
+
+        BitSet temp = genBitSetFromArray(new int[]{40,43, 46, 48, 49, 80, 85, 89});
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {1,4,6}));
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,80, 85, 89, 90}));
+
+        ArrayList<PropositionSet> expectedPropositionSetsArrayList = Controller.getConflictingHypsCollectionForNegating(negating,
+                ((Molecular)negating.getTerm()).getDownCableSet().getDownCable("arg"),
+                temp);
+
+        assertEquals(1, expectedPropositionSetsArrayList.size());
+
+        assertTrue(expectedPropositionSetsArrayList.get(0).equals(new PropositionSet(new int[]{46,48,49,80,85,89})));
+
+        assertEquals(2, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,80,85,89,90})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+
+    }
+
+    @Test
+    public void getConflictingHypsCollectionForNegatedTest() {
+//        PropositionNode negated =
+    }
+
+    public BitSet genBitSetFromArray(int [] arr) {
+        BitSet output = new BitSet();
+
+        for (int i = 0; i < arr.length; i++)
+            output.set(arr[i]);
+        return output;
     }
 
     @Test
