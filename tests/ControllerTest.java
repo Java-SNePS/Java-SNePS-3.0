@@ -26,10 +26,11 @@ public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
+    private PropositionNode negated, negating;
 
     @BeforeClass
     public static void setUp() throws IllegalIdentifierException, DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
-        Semantic.createDefaultSemantics();
+        Network.defineDefaults();
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n"+i, Semantic.proposition);
 
@@ -246,8 +247,9 @@ public class ControllerTest {
         }
     }
 
+
     @Test
-    public void generatePropositionSetsFromBitSetsTest() throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+    public void generateNodeSetsFromBitSetsTest() throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
         ArrayList<BitSet> bitSetsCollection = new ArrayList<>();
         BitSet bitSet1 = new BitSet();
         bitSet1.set(1, 3);
@@ -261,14 +263,14 @@ public class ControllerTest {
         bitSetsCollection.add(bitSet1);
         bitSetsCollection.add(bitSet2);
 
-        ArrayList<PropositionSet> propositionSetCollection = Controller.generatePropositionSetsFromBitSets(bitSetsCollection);
+        ArrayList<NodeSet> nodeSetArrayList = Controller.generateNodeSetsFromBitSets(bitSetsCollection);
 
-        PropositionSet propositionSet1 = new PropositionSet(new int[]{1,2,4});
-        PropositionSet propositionSet2 = new PropositionSet(new int[]{0,1,2,4,6});
+        NodeSet nodeSet1 = genNodeSetFromArrayOfIds(new int[] {1,2,4});
+        NodeSet nodeSet2 = genNodeSetFromArrayOfIds(new int[]{0,1,2,4,6});
 
-        assertTrue(propositionSetCollection.get(0).equals(propositionSet1));
+        assertTrue(nodeSetArrayList.get(0).equals(nodeSet1));
 
-        assertTrue(propositionSetCollection.get(1).equals(propositionSet2));
+        assertTrue(nodeSetArrayList.get(1).equals(nodeSet2));
 
     }
 
@@ -358,48 +360,129 @@ public class ControllerTest {
 
     @Test
     public void getConflictingHypsCollectionForNegatingTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException {
-        PropositionNode negated = (PropositionNode) Network.getNodeById(80);
-        negated.addJustificationBasedSupport(new PropositionSet(new int[] {60, 64, 75, 78}));
-        negated.addJustificationBasedSupport(new PropositionSet(new int[] {80, 85, 89}));
 
-        Node zero = Network.buildBaseNode("0", Semantic.infimum);
-
-        ArrayList<Wire> wires = new ArrayList<>();
-        wires.add(new Wire(Relation.arg, Network.getNodeById(80)));
-        wires.add(new Wire(Relation.max, zero));
-        wires.add(new Wire(Relation.min, zero));
-
-        PropositionNode negating = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
-
-        negating.addJustificationBasedSupport(new PropositionSet(new int[] {46,48,49}));
-
-        BitSet temp = genBitSetFromArray(new int[]{40,43, 46, 48, 49, 80, 85, 89});
+        setupContradiction();
+        BitSet temp = genBitSetFromArray(new int[]{40,43, 46, 48, 49, 81, 85, 89});
 
         ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
 
-        minimalNoGoods.add(genBitSetFromArray(new int[] {1,4,6}));
-
-        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,80, 85, 89, 90}));
-
-        ArrayList<PropositionSet> expectedPropositionSetsArrayList = Controller.getConflictingHypsCollectionForNegating(negating,
+        ArrayList<NodeSet> expectedNodeSetsArrayList = Controller.getConflictingHypsCollectionForNegating(negating,
                 ((Molecular)negating.getTerm()).getDownCableSet().getDownCable("arg"),
                 temp);
 
-        assertEquals(1, expectedPropositionSetsArrayList.size());
+        assertEquals(1, expectedNodeSetsArrayList.size());
 
-        assertTrue(expectedPropositionSetsArrayList.get(0).equals(new PropositionSet(new int[]{46,48,49,80,85,89})));
+        assertTrue(expectedNodeSetsArrayList.get(0).equals(genNodeSetFromArrayOfIds(new int[]{46,48,49,81,85,89})));
 
-        assertEquals(2, minimalNoGoods.size());
+        assertEquals(3, minimalNoGoods.size());
         assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
-        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,80,85,89,90})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
         assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
 
     }
 
     @Test
-    public void getConflictingHypsCollectionForNegatedTest() {
-//        PropositionNode negated =
+    public void getConflictingHypsCollectionForNegatedTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotBuildNodeException, EquivalentNodeException, IllegalIdentifierException {
+
+        setupContradiction();
+
+        BitSet temp = genBitSetFromArray(new int[]{40,43, 46, 48, 49, 81, 85, 89});
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        ArrayList<NodeSet> expectedNodeSetsArrayList = Controller.getConflictingHypsCollectionForNegated(negated,
+                negated.getTerm().getUpCableSet().getUpCable("arg"),
+                temp);
+
+        assertEquals(1, expectedNodeSetsArrayList.size());
+
+        assertTrue(expectedNodeSetsArrayList.get(0).equals(genNodeSetFromArrayOfIds(new int[]{46,48,49,81,85,89})));
+
+        assertEquals(3, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
     }
+
+    @Test
+    public void checkForContradictionTest() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException {
+        setupContradiction();
+        Context c  = Controller.createDummyContext("contradictoryContext", new PropositionSet(new int[]{81, 85, 89}));
+
+        ArrayList<NodeSet> contradictoryHyps = Controller.checkForContradiction(negating, c, false);
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        assertEquals(3, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+        contradictoryHyps.contains(genNodeSetFromArrayOfIds(new int[]{46,48,49,81,85,89}));
+
+
+        contradictoryHyps = Controller.checkForContradiction(negating, c, false);
+
+        assertEquals(3, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+        contradictoryHyps.contains(genNodeSetFromArrayOfIds(new int[]{46,48,49,81,85,89}));
+
+
+        c  = Controller.createDummyContext("contradictoryContext", new PropositionSet(new int[]{46,48,49}));
+
+
+        contradictoryHyps = Controller.checkForContradiction(negated, c, false);
+
+        assertEquals(3, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+        contradictoryHyps.contains(genNodeSetFromArrayOfIds(new int[]{46,48,49,81,85,89}));
+
+
+
+        contradictoryHyps = Controller.checkForContradiction((PropositionNode) Network.getNodeById(8030), c, false);
+
+        assertEquals(3, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+        assertNull(contradictoryHyps);
+
+        PropositionNode negated2 = (PropositionNode) Network.getNodeById(7000);
+
+        Node zero = Network.buildBaseNode("0", Semantic.infimum);
+
+        ArrayList<Wire> wires = new ArrayList<>();
+        wires.add(new Wire(Relation.arg, negated2));
+        wires.add(new Wire(Relation.max, zero));
+        wires.add(new Wire(Relation.min, zero));
+
+        PropositionNode negating2 = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+
+        c  = Controller.createDummyContext("contradictoryContext", new PropositionSet(new int[]{81, 7000}));
+
+        contradictoryHyps = Controller.checkForContradiction(negating2, c, false);
+
+        assertEquals(4, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{7000, negating2.getId()})));
+        contradictoryHyps.contains(genNodeSetFromArrayOfIds(new int[]{7000, negating2.getId()}));
+
+        contradictoryHyps = Controller.checkForContradiction(negating2, c, false);
+
+        assertEquals(4, minimalNoGoods.size());
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{1,4,6})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,81,85,89})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{46,48,49,60, 64, 75, 78})));
+        assertTrue(minimalNoGoods.contains(genBitSetFromArray(new int[]{7000, negating2.getId()})));
+        contradictoryHyps.contains(genNodeSetFromArrayOfIds(new int[]{7000, negating2.getId()}));
+
+    }
+
 
     public BitSet genBitSetFromArray(int [] arr) {
         BitSet output = new BitSet();
@@ -408,6 +491,15 @@ public class ControllerTest {
             output.set(arr[i]);
         return output;
     }
+
+    public NodeSet genNodeSetFromArrayOfIds(int [] arr) throws NodeNotFoundInNetworkException {
+        NodeSet x = new NodeSet();
+
+        for (int i = 0; i < arr.length; i++)
+            x.addNode(Network.getNodeById(arr[i]));
+        return x;
+    }
+
 
     @Test
     public void equate() {
@@ -424,6 +516,32 @@ public class ControllerTest {
             }
         }
         return true;
+    }
+
+    public void setupContradiction() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException {
+        negated = (PropositionNode) Network.getNodeById(80);
+        negated.addJustificationBasedSupport(new PropositionSet(new int[] {60, 64, 75, 78}));
+        negated.addJustificationBasedSupport(new PropositionSet(new int[] {81, 85, 89}));
+
+        Node zero = Network.buildBaseNode("0", Semantic.infimum);
+
+        ArrayList<Wire> wires = new ArrayList<>();
+        wires.add(new Wire(Relation.arg, Network.getNodeById(80)));
+        wires.add(new Wire(Relation.max, zero));
+        wires.add(new Wire(Relation.min, zero));
+
+        negating = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+
+        negating.addJustificationBasedSupport(new PropositionSet(new int[] {46,48,49}));
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {1,4,6}));
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,81, 85, 89, 90}));
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,81, 85, 89, 95}));
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,81, 85, 89, 95, 99}));
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,81, 85, 89, 97, 102}));
     }
 
 }
