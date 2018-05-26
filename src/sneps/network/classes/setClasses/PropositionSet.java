@@ -209,6 +209,9 @@ public class PropositionSet {
      * @throws NodeNotFoundInNetworkException
      */
     public PropositionSet remove(int prop) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        if (this.props.length == 0)
+            return new PropositionSet();
+
         int[] current = this.getProps();
         int[] newSet = new int[current.length - 1];
         int j = 0;
