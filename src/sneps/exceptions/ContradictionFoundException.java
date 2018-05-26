@@ -13,4 +13,8 @@ public class ContradictionFoundException extends Exception{
         super("A contradiction has occured!");
         this.contradictoryHyps = contradictoryHyps;
     }
+
+    public ArrayList<NodeSet> getContradictoryHyps() {
+        return contradictoryHyps;
+    }
 }

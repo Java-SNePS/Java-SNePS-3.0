@@ -153,14 +153,13 @@ public class PropositionSet {
      */
 
     public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-
         int[] props = propSet.getProps();
         int[] props1 = this.getProps();
         int[] props2 = new int[props.length + props1.length];
 
         int i = 0, j = 0, k = 0;
 
-        while (i < props.length || j < props1.length) {
+        while (i < props.length || j < props1.leqngth) {
 
             if (i >= props.length) {  // length of arg passed
                 props2[k++] = props1[j++];

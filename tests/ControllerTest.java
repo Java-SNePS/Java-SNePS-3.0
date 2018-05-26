@@ -26,7 +26,7 @@ public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
-    private PropositionNode negated, negating;
+    private PropositionNode negated, negating, negatedHyp, negatingHyp;
 
     @BeforeClass
     public static void setUp() throws IllegalIdentifierException, DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
@@ -115,11 +115,113 @@ public class ControllerTest {
 
     }
 
+    public void setupContradiction2() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException {
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {1,4,6}));
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,81, 85, 89}));
+    }
+
+    public void setupContradiction3() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException {
+
+        negatedHyp = (PropositionNode) Network.getNodeById(60);
+
+        Node zero = Network.buildBaseNode("0", Semantic.infimum);
+
+        ArrayList<Wire> wires = new ArrayList<>();
+        wires.add(new Wire(Relation.arg, Network.getNodeById(60)));
+        wires.add(new Wire(Relation.max, zero));
+        wires.add(new Wire(Relation.min, zero));
+
+        negatingHyp = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {1,4,6}));
+
+        minimalNoGoods.add(genBitSetFromArray(new int[] {46,48,49,81, 85, 89, 90}));
+        minimalNoGoods.add(genBitSetFromArray(new int[] {60,negatingHyp.getId(),62}));
+    }
+
+
+
+
     @Test
-    public void addConflictingHypToContext() {
+    public void addConflictingHypToContextUtilizingCache() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException {
+        setupContradiction2();
+        try {
+            Controller.addPropsToContext(testContextName, new PropositionSet(new int[] {46,48,49}));
+        }
+        catch (ContradictionFoundException e) {
+            fail();
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        }
+
+        try {
+            Controller.addPropsToContext(testContextName, new PropositionSet(new int[] {81, 85}));
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (ContradictionFoundException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        }
+
+        boolean caught = false;
+
+        try {
+            Controller.addPropToContext(testContextName, 89);
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        } catch (ContradictionFoundException e) {
+            caught = true;
+            e.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{46,48,49,81,85,89}));
+        }
+        if (!caught)
+            fail();
+
 
     }
 
+
+    @Test
+    public void addConflictingHypToContextWithoutUtilizingCache() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException {
+        setupContradiction3();
+        int id = negatingHyp.getId();
+        try {
+            Controller.addPropToContext(testContextName, 60);
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        } catch (ContradictionFoundException e) {
+            fail();
+        }
+
+        boolean caught = false;
+
+        try {
+            Controller.addPropToContext(testContextName, id);
+        } catch (ContradictionFoundException e) {
+            caught = true;
+            e.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{60,id}));
+            Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{60,id}));
+            assertEquals(Controller.getMinimalNoGoods().size(), 3);
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        }
+        if (!caught)
+            fail();
+    }
 
     @Test
     public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
