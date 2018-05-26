@@ -2968,9 +2968,6 @@ public class FXController implements Initializable {
 		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ContradictionFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		updateListOfContexts();
 		propSet.getItems().clear();
@@ -3440,7 +3437,6 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 	
 	public void addNodeToPropSet1() {
@@ -3483,9 +3479,6 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NodeNotFoundInNetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ContradictionFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ContextNameDoesntExistException e) {
@@ -3965,9 +3958,9 @@ public class FXController implements Initializable {
 	
 
 	public void createDefaults() {
-			Network.defineDefaults();
-			updateRelationSetList();
-			updateCaseFramesList();
+		Network.defineDefaults();
+		updateRelationSetList();
+		updateCaseFramesList();
 	}
 	
 	public void testVisualize() {
