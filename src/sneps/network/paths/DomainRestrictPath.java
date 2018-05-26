@@ -12,6 +12,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -19,7 +20,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.Node;
 
-public class DomainRestrictPath extends Path {
+public class DomainRestrictPath extends Path implements Serializable{
 	
 	/**
 	 *  A path that should exist between the starting node 

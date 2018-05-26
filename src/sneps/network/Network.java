@@ -2,6 +2,7 @@ package sneps.network;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,6 +46,7 @@ import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
+import sneps.gui.Main;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -58,6 +60,8 @@ import sneps.snip.rules.ThreshNode;
 import sneps.snip.rules.WhenDoNode;
 
 public class Network implements Serializable {
+
+	private static ArrayList<String> savedNetworks = new ArrayList<String>();
 
 	/*
 	 * A hash table that stores all the nodes defined(available) in the network.
@@ -510,13 +514,15 @@ public class Network implements Serializable {
 	 * @param identifier
 	 *            the name of the new variable node.
 	 * @return the newly created variable node.
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 */
-	public static VariableNode buildVariableNode(String identifier) throws IllegalIdentifierException {
+	public static VariableNode buildVariableNode(String identifier)
+			throws IllegalIdentifierException {
 		if (nodes.containsKey(identifier)) {
-			if(nodes.get(identifier).getTerm() instanceof Variable) {
-				return (VariableNode) nodes.get(identifier);
-			}else {
+			if (nodes.get(identifier).getTerm() instanceof Variable) {
+				VariableNode vNode = (VariableNode) nodes.get(identifier);
+				return vNode;
+			} else {
 				throw new IllegalIdentifierException("A base node already exists with this identifier.");
 			}
 		} else {
@@ -562,7 +568,7 @@ public class Network implements Serializable {
 	 * @return the newly created base node.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
-	 * @throws IllegalIdentifierException 
+	 * @throws IllegalIdentifierException
 	 *
 	 * @throws CustomException
 	 *             if another node with the same given name already exists in the
@@ -574,44 +580,50 @@ public class Network implements Serializable {
 			// System.out.print("ERROR: Acts cannot be base nodes!!!");
 			return null;
 		}
+
 		if (nodes.containsKey(identifier)) {
-			if(nodes.get(identifier).getTerm() instanceof Base) {
+			if (nodes.get(identifier).getTerm() instanceof Base) {
 				return nodes.get(identifier);
-			}else {
-				throw new IllegalIdentifierException("A variable node already exists with this identifier.");
+			}
+			if (nodes.get(identifier) instanceof VariableNode) {
+				VariableNode vNode = (VariableNode) nodes.get(identifier);
+				if (vNode.isSnepslogFlag()) {
+					return nodes.get(identifier);
+				} 
+			}
+			throw new IllegalIdentifierException("A variable node already exists with this identifier.");
+		}
+		
+		Base b = new Base(identifier);
+		if (semantic.getSemanticType().equals("Proposition")) {
+			PropositionNode propNode = new PropositionNode(b);
+			nodes.put(identifier, propNode);
+			propositionNodes.put(identifier, propNode);
+			try {
+				nodesIndex.add(propNode.getId(), propNode);
+				propNode.setBasicSupport();
+			} catch (IndexOutOfBoundsException e) {
+				// System.out.println("wohoo");
 			}
 		} else {
-			Base b = new Base(identifier);
-			if (semantic.getSemanticType().equals("Proposition")) {
-				PropositionNode propNode = new PropositionNode(b);
-				nodes.put(identifier, propNode);
-				propositionNodes.put(identifier, propNode);
-				try {
-					nodesIndex.add(propNode.getId(), propNode);
-					propNode.setBasicSupport();
-				} catch (IndexOutOfBoundsException e) {
-					// System.out.println("wohoo");
-				}
-			} else {
-				Node node;
-				/*
-				 * if (semantic.getSemanticType().equals("Action")) { if
-				 * (semantic.getSemanticType().equals("ControlAction")) { node = new
-				 * ControlActionNode(semantic, b); } else { node = new ActionNode(semantic, b);
-				 * } } else { node = new Node(semantic, b); }
-				 */
-				node = new Node(semantic, b);
-				nodes.put(identifier, node);
-				nodesIndex.add(node.getId(), node);
-			}
-			if (isMolName(identifier) > -1)
-				userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
-			if (isPatName(identifier) > -1)
-				userDefinedPatSuffix.add(new Integer(isPatName(identifier)));
-			if (isVarName(identifier) > -1)
-				userDefinedVarSuffix.add(new Integer(isVarName(identifier)));
-			return nodes.get(identifier);
+			Node node;
+			/*
+			 * if (semantic.getSemanticType().equals("Action")) { if
+			 * (semantic.getSemanticType().equals("ControlAction")) { node = new
+			 * ControlActionNode(semantic, b); } else { node = new ActionNode(semantic, b);
+			 * } } else { node = new Node(semantic, b); }
+			 */
+			node = new Node(semantic, b);
+			nodes.put(identifier, node);
+			nodesIndex.add(node.getId(), node);
 		}
+		if (isMolName(identifier) > -1)
+			userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
+		if (isPatName(identifier) > -1)
+			userDefinedPatSuffix.add(new Integer(isPatName(identifier)));
+		if (isVarName(identifier) > -1)
+			userDefinedVarSuffix.add(new Integer(isVarName(identifier)));
+		return nodes.get(identifier);
 	}
 
 	/**
@@ -637,8 +649,10 @@ public class Network implements Serializable {
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null))
-			return (Node) find(array, Controller.getCurrentContext()).get(0)[0];
+		if (((Boolean) result[0] == true) && (result[1] == null)) {
+			// TODO Look for that node and return it
+			return null;
+		}
 
 		if (((Boolean) result[0] == true) && (result[1] != null)) {
 			throw new EquivalentNodeException("The equivalent node '" + "' was used instead", (Node) result[1]);
@@ -693,8 +707,10 @@ public class Network implements Serializable {
 		Object[] result = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null))
-			return (Node) find(array, Controller.getCurrentContext()).get(0)[0];
+		if (((Boolean) result[0] == true) && (result[1] == null)) {
+			// TODO Look for that node and return it
+			return null;
+		}
 		if (((Boolean) result[0] == true) && (result[1] != null)) {
 			throw new EquivalentNodeException(
 					"The equivalent node '" + ((Node) result[1]).toString() + "' was used instead", (Node) result[1]);
@@ -1942,46 +1958,168 @@ public class Network implements Serializable {
 		RCFP.createDefaultProperties();
 		Semantic.createDefaultSemantics();
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
-		// CaseFrame.createDefaultCaseFrames();
-		// SNeBR.getContextSet().add(SNeBR.getCurrentContext());
-		// ControlActionNode.initControlActions();
+		//SNeBR.getContextSet().add(SNeBR.getCurrentContext());
+		//ControlActionNode.initControlActions();
 	}
-
-	public static void save(String relationsData, String caseFramesData, String nodesData) throws IOException {
+	
+	public static void save(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException {
 		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
 		ros.writeObject(relations);
 		ros.close();
-
+		
 		ObjectOutputStream cFos = new ObjectOutputStream(new FileOutputStream(new File(caseFramesData)));
 		cFos.writeObject(caseFrames);
 		cFos.close();
-
+		
+		
 		ObjectOutputStream nodesOS = new ObjectOutputStream(new FileOutputStream(new File(nodesData)));
 		nodesOS.writeObject(nodes);
 		nodesOS.close();
+		
+		ObjectOutputStream molNodesOs = new ObjectOutputStream(new FileOutputStream(new File(molData)));
+		molNodesOs.writeObject(molecularNodes);
+		molNodesOs.close();
+		
+		ObjectOutputStream mc = new ObjectOutputStream(new FileOutputStream(new File(mcd)));
+		mc.writeObject(molCounter);
+		mc.close();
+		
+		ObjectOutputStream pc = new ObjectOutputStream(new FileOutputStream(new File(pcd)));
+		pc.writeObject(patternCounter);
+		pc.close();
+		
+		ObjectOutputStream vc = new ObjectOutputStream(new FileOutputStream(new File(vcd)));
+		vc.writeObject(varCounter);
+		vc.close();
 
+		ObjectOutputStream pnd = new ObjectOutputStream(new FileOutputStream(new File(pNData)));
+		pnd.writeObject(propositionNodes);
+		pnd.close();
+
+		ObjectOutputStream ni = new ObjectOutputStream(new FileOutputStream(new File(nodesIndexData)));
+		ni.writeObject(nodesIndex);
+		ni.close();
+
+		ObjectOutputStream udms = new ObjectOutputStream(new FileOutputStream(new File(userDefinedMolSuffixData)));
+		udms.writeObject(userDefinedMolSuffix);
+		udms.close();
+
+		ObjectOutputStream udps = new ObjectOutputStream(new FileOutputStream(new File(userDefinedPatSuffixData)));
+		udps.writeObject(userDefinedPatSuffix);
+		udps.close();
+
+		ObjectOutputStream udvs = new ObjectOutputStream(new FileOutputStream(new File(userDefinedVarSuffixData)));
+		udvs.writeObject(userDefinedVarSuffix);
+		udvs.close();
+	}
+	
+	public static void saveNetworks() throws IOException {
+		ObjectOutputStream networks = new ObjectOutputStream(new FileOutputStream(new File("Networks")));
+		networks.writeObject(savedNetworks);
+		networks.close();
+	}
+	
+	public static void loadNetworks() throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInputStream ns= new ObjectInputStream(new FileInputStream(new File("Networks")));
+		ArrayList<String> temp = (ArrayList<String>) ns.readObject();
+		Network.savedNetworks = temp;
+		ns.close();
+	}
+	
+	public static ArrayList<String> getSavedNetworks() {
+		return savedNetworks;
 	}
 
-	public static void load(String relationsData, String caseFramesData, String nodesData)
-			throws IOException, ClassNotFoundException {
-		ObjectInputStream ris = new ObjectInputStream(new FileInputStream(new File(relationsData)));
+	public static boolean addToSavedNetworks(String n) {
+		boolean r;
+		if(savedNetworks.contains(n)) {
+			r = false;
+		}else {
+			savedNetworks.add(n);
+			r = true;
+		}
+		return r;
+	}
+	
+	public static void deleteFromSavedNetworks(String f) {
+		savedNetworks.remove(f);
+		try {
+			saveNetworks();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void load(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException, ClassNotFoundException {
+		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
 		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
 		Network.relations = tempRelations;
 		ris.close();
 		tempRelations = null;
-
-		ObjectInputStream cFis = new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
+		
+		ObjectInputStream cFis= new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
 		Hashtable<String, CaseFrame> tempcF = (Hashtable<String, CaseFrame>) cFis.readObject();
 		Network.caseFrames = tempcF;
 		cFis.close();
 		tempcF = null;
-
-		ObjectInputStream nodesis = new ObjectInputStream(new FileInputStream(new File(nodesData)));
+		
+		
+		ObjectInputStream nodesis= new ObjectInputStream(new FileInputStream(new File(nodesData)));
 		Hashtable<String, Node> tempNodes = (Hashtable<String, Node>) nodesis.readObject();
 		Network.nodes = tempNodes;
 		nodesis.close();
 		tempNodes = null;
+		
 
+		ObjectInputStream molNodesis= new ObjectInputStream(new FileInputStream(new File(molData)));
+		Hashtable<String, NodeSet> tempMolNodes = (Hashtable<String, NodeSet>) molNodesis.readObject();
+		Network.molecularNodes = tempMolNodes;
+		molNodesis.close();
+		tempMolNodes = null;
+		
+		ObjectInputStream mc= new ObjectInputStream(new FileInputStream(new File(mcd)));
+		int tempMC = (int) mc.readObject();
+		Network.molCounter = tempMC;
+		mc.close();
+		
+		ObjectInputStream pc= new ObjectInputStream(new FileInputStream(new File(pcd)));
+		int tempPC = (int) pc.readObject();
+		Network.patternCounter = tempPC;
+		pc.close();
+		
+		ObjectInputStream vc= new ObjectInputStream(new FileInputStream(new File(vcd)));
+		int tempVC = (int) vc.readObject();
+		Network.varCounter = tempVC;
+		vc.close();
+
+		ObjectInputStream pn= new ObjectInputStream(new FileInputStream(new File(pNData)));
+		Hashtable<String, PropositionNode> temppn = (Hashtable<String, PropositionNode>) pn.readObject();
+		Network.propositionNodes = temppn;
+		pn.close();
+
+		ObjectInputStream niis= new ObjectInputStream(new FileInputStream(new File(nodesIndexData)));
+		ArrayList<Node> tempni = (ArrayList<Node>) niis.readObject();
+		Network.nodesIndex = tempni;
+		niis.close();
+
+		ObjectInputStream udmsis= new ObjectInputStream(new FileInputStream(new File(userDefinedMolSuffixData)));
+		LinkedList<Integer> tempudms = (LinkedList<Integer>) udmsis.readObject();
+		Network.userDefinedMolSuffix = tempudms;
+		udmsis.close();
+
+		ObjectInputStream udpsis= new ObjectInputStream(new FileInputStream(new File(userDefinedPatSuffixData)));
+		LinkedList<Integer> tempudps = (LinkedList<Integer>) udpsis.readObject();
+		Network.userDefinedPatSuffix = tempudps;
+		udpsis.close();
+
+		ObjectInputStream udvsis= new ObjectInputStream(new FileInputStream(new File(userDefinedVarSuffixData)));
+		LinkedList<Integer> tempudvs = (LinkedList<Integer>) udvsis.readObject();
+		Network.userDefinedVarSuffix = tempudvs;
+		udvsis.close();
+		
+		Node.setCount(nodes.size());
+		
 	}
 
 	/**
