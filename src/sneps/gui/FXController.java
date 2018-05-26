@@ -3433,15 +3433,8 @@ public class FXController implements Initializable {
 	
 	public void setCurrentContext() {
 		String cname = contextList.getSelectionModel().getSelectedItem();
-			try {
-				Controller.setCurrentContext(cname);
-			} catch (ContradictionFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ContextNameDoesntExistException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			Controller.setCurrentContext(cname);
 			popUpNotification("Context", "Current context is set", "Context: " + cname + " is the current context", 2);
 		} catch (ContradictionFoundException | ContextNameDoesntExistException e) {
 			// TODO Auto-generated catch block
