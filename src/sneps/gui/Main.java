@@ -22,7 +22,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
@@ -33,6 +37,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
+import sneps.snebr.Controller;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -49,26 +54,51 @@ import javafx.scene.web.WebView;
 
 
 public class Main extends Application {
-	private static ArrayList<Node> propNodes = new ArrayList<Node>();
+	private static boolean isDark;
+	private static int windows;
 	
 	@Override
 	public void start(Stage primaryStage) {
-		try {
-			
-			Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-		    primaryStage.setTitle("Java SNePS 3.0");
-		    primaryStage.setScene(new Scene(root));   
-		    primaryStage.show();
-		    
-		    
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		ButtonType dark = new ButtonType("Dark");
+		ButtonType light = new ButtonType("Light");
+		Alert a = new Alert(AlertType.NONE, "", dark, light);
+		a.setTitle("Theme");
+		a.setHeaderText("Please choose a theme");
+		a.setResizable(false);
+		a.setContentText("Please choose a theme");
+		a.showAndWait().ifPresent(response -> {
+		    if (response == dark) {
+		    	try {
+					isDark = true;
+					Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+				    primaryStage.setTitle("Java SNePS 3.0");
+				    primaryStage.setScene(new Scene(root));   
+				    primaryStage.show();
+				    
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+		    } else if (response == light) {
+		    	try {
+					isDark = false;
+					Parent root = FXMLLoader.load(getClass().getResource("Main2.fxml"));
+				    primaryStage.setTitle("Java SNePS 3.0");
+				    primaryStage.setScene(new Scene(root));   
+				    primaryStage.show();
+				    
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+		    }
+		});
+	}
+
+	public static boolean isDark() {
+		return isDark;
 	}
 
 	public static void main(String[] args) {
 		launch(args);
-		
 	}
 	
 	public static void visualizeNodes(ArrayList<Node> nodes) throws IOException {
@@ -76,14 +106,23 @@ public class Main extends Application {
 		WebView wv = new WebView();
 		
 		//-------------------------------------------------------------------------------------------------
-		String data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=gray20;";
+		String data = null;
+		if(isDark) {
+			data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=gray20;";
+		}else {
+			data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=none;";
+		}
 		File f = new File("bin/sneps/gui/displayData.html");
         BufferedWriter bw = new BufferedWriter(new FileWriter(f));
         bw.write("<!DOCTYPE html>");
         bw.write("<html>");
         bw.write("<head>");
         bw.write("<title>Test</title>");
-        bw.write("<style>body {background-color: #333333;}</style>");
+        if(isDark) {
+        	bw.write("<style>body {background-color: #333333;}</style>");
+        }else {
+        	bw.write("<style>body {background-color: #ffffff;}</style>");
+        }
         bw.write("<script src='viz.js'></script>");
         bw.write("</head>");
         bw.write("<body>");
@@ -156,11 +195,21 @@ public class Main extends Application {
 	    
 	}
 	
-	public static ArrayList<Node> resolveConflicts(ArrayList<PropositionSet> propSet) {
-		for(PropositionSet props : propSet) {
+	public static void resolveConflicts(ArrayList<PropositionSet> propSet) {
+		ArrayList<Integer> tempHyps = new ArrayList<Integer>();
+		int x = 0;
+		int y = 0;
+		windows = propSet.size();
+		for(int i = 0; i<propSet.size(); i++) {
+			PropositionSet props = propSet.get(i);
 			Stage stage = new Stage();
 			Scene scene = new Scene(new VBox()); 
-			String styles = Main.class.getResource("application.css").toExternalForm();
+			String styles = null;
+			if(isDark) {
+				styles = Main.class.getResource("application.css").toExternalForm();
+			}else if(!isDark) {
+				styles = Main.class.getResource("application2.css").toExternalForm();
+			}
 			scene.getStylesheets().add(styles);
 			AnchorPane pane3 = new AnchorPane();
 			ListView<String> list = new ListView<String>();
@@ -198,8 +247,9 @@ public class Main extends Application {
 					} catch (NodeNotFoundInNetworkException e) {
 						e.printStackTrace();
 					}
-					propNodes.add(x);
+					tempHyps.add(x.getId());
 					stage.close();
+					windows--;
 				}
 				
 			});
@@ -224,9 +274,51 @@ public class Main extends Application {
 		    stage.setWidth(600);
 		    stage.setHeight(360);
 			stage.setResizable(false);
-		    stage.show(); 
+			stage.setX(x);
+			stage.setY(y);
+			x += 100;
+			y += 100;
+			stage.show();
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+				@Override
+				public void handle(WindowEvent event) {
+					if(windows == 0) {
+						int[] hyps = new int[tempHyps.size()];
+						for(int i = 0; i<hyps.length; i++) {
+							hyps[i] = tempHyps.get(i);
+						}
+						PropositionSet propNodes = null;
+						try {
+							propNodes = new PropositionSet(hyps);
+						} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							Controller.handleContradiction(propNodes, false);
+						} catch (NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NotAPropositionNodeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NodeNotFoundInPropSetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (DuplicatePropositionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ContextNameDoesntExistException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+				}
+				
+			});
 		}
-		return propNodes;
 	}
 	
 	public static void userAction(ArrayList<PropositionSet> propSet) {
@@ -243,9 +335,27 @@ public class Main extends Application {
 		    if (response == resolve) {
 		    	resolveConflicts(propSet);
 		    }else if (response == ignore) {
-		        //ignore
+		    	PropositionSet propNodes = null;
+		    	try {
+					Controller.handleContradiction(propNodes, true);
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NotAPropositionNodeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NodeNotFoundInPropSetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DuplicatePropositionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ContextNameDoesntExistException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }else if(response == ca) {
-		    	//cancel 
+		    	//cancel assertion
 		    }
 		});
 	}

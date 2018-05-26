@@ -63,9 +63,11 @@ import sneps.exceptions.ContextNameDoesntExistException;
 import sneps.exceptions.ContradictionFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
 import sneps.exceptions.SemanticNotFoundInNetworkException;
@@ -105,7 +107,9 @@ import sneps.network.paths.KPlusPath;
 import sneps.network.paths.KStarPath;
 import sneps.network.paths.OrPath;
 import sneps.network.paths.RangeRestrictPath;
+import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snepslog.AP;
 
 public class FXController implements Initializable {
 	Network network = new Network();
@@ -139,19 +143,19 @@ public class FXController implements Initializable {
 	@FXML
 	private TextArea console;
 	@FXML
-	private Label nodeDetails, relationDetails;
+	private Label nodeDetails, relationDetails, ppath, qpath, ppath1, qpath1;
 	@FXML
 	private TextField newRN, newRL, baseNodeIdentPop,
 	caseFrameSTN, baseNodeID, overrideAdjust,
 	overrideLimit, newNetName, cableMinNodes, cableMaxNodes, 
-	signPriority, contextName, semanticName;
+	signPriority, contextName, semanticName, searchNodes;
 	@FXML
 	private ListView<String> relationSetList, relationSetList1, relationSetList2, cfRS, caseFramesList,
 	caseFrameRelationList, nodesList, wiresList, variableNodesList, baseNodesList, caseFramesDrawList,
 	relationOfDrawnCF, rrcfrslist, selectCFForSign, selectCFRelForSign,
 	cablesList, sdcsList, listOfSigns, cfListForSign,
 	cfSignsList, propoNodesList, propSet, pathsList, pathRelations,
-	contextList, propoNodesList1, propSet1;
+	contextList, propoNodesList1, propSet1, composeList, propNodesListOfSelCont;
 	@FXML
 	private Group dragBaseNode, dragVarNode, wireModeBtn, dragMolNode;
 	@FXML
@@ -163,9 +167,9 @@ public class FXController implements Initializable {
 	private MenuButton caseFrameChoice, netChoice1, netChoice2, netChoice3,
 	baseNodeSemType, newRT, rrcfSem, resultSemType, cableSem, baseNodeSemTyPop,
 	newRA, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations,
-	chooseContext;
+	chooseContext, chooseContext1;
 	@FXML
-	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN;
+	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN, assertBTN;
 	@FXML
 	private Rectangle wireBtnRect;
 	@FXML
@@ -182,7 +186,18 @@ public class FXController implements Initializable {
 			public void handle(MouseEvent arg0) {
 				String nodeName = nodesList.getSelectionModel().getSelectedItem();
 				nodeDetails(nodeName);
-				
+				Node n = null;
+				try {
+					n = Network.getNode(nodeName);
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(!(n.getTerm() instanceof Variable) && n.getSemantic().getSemanticType().equalsIgnoreCase("proposition")) {
+					assertBTN.setDisable(false);
+				}else {
+					assertBTN.setDisable(true);
+				}
 			}
 			
 		});
@@ -212,7 +227,7 @@ public class FXController implements Initializable {
 		consoleHandler();
 		addRelsToListSign();
 		createAdjusts();
-		
+		searchNodes();
 		try {
 			Network.loadNetworks();
 			updateNetLists();
@@ -255,6 +270,7 @@ public class FXController implements Initializable {
 			@Override
 			public void handle(KeyEvent event) {
 				ArrayList<String> lines = new ArrayList<String>();
+				ArrayList<String> resLines = new ArrayList<String>();
 				if(event.getCode() == KeyCode.ENTER) {
 					for(String line : console.getText().split("\n")) {
 						lines.add(line);
@@ -303,22 +319,44 @@ public class FXController implements Initializable {
 					    props.add(set2);
 					    props.add(set3);
 					    
-					    Main.resolveConflicts(props);
+					    Main.userAction(props);
 					    //End Test
 					}
-					String res = "Result will be here";
-					console.setText(console.getText() + "\n" + res);
+					
+					String res = AP.executeSnepslogCommand(cmd);
+					for(String rl : res.split("\n")) {
+						resLines.add(rl);
+					}
+					for(int i = 0; i<resLines.size(); i++) {
+						console.setText(console.getText() + "\n" + " -" + resLines.get(i));
+					}
+					//console.setText(console.getText() + "\n" + " -" + res);
 					console.positionCaret(console.getLength());
 					ocp = console.getCaretPosition();
 					ScrollDown();
+					updateNodesList();
+					updateCaseFramesList();
+					updateRelationSetList();
+					updatePathsList();
+					updateSemanticLists();
+					updateNetLists();
+					updateListOfContexts();
 					//System.out.println(cmd);
 				}
 				
 				if(event.getCode() == KeyCode.BACK_SPACE) {
 					ncp = console.getCaretPosition();
-					if(ncp > ocp) {
+					if(ncp > ocp+1) {
 						console.deletePreviousChar();
 					}
+					event.consume();
+				}
+				
+				if(event.getCode() == KeyCode.DELETE) {
+					event.consume();
+				}
+				
+				if(event.getCode() == KeyCode.UP) {
 					event.consume();
 				}
 			}
@@ -2516,7 +2554,6 @@ public class FXController implements Initializable {
 		propoNodesList.getItems().clear();
 		pathNodes1.getItems().clear();
 		pathNodes2.getItems().clear();
-		propoNodesList1.getItems().clear();
 		for (Entry<String, Node> entry : nodes.entrySet()) {
 		    String key = entry.getKey();
 		    sorted.add(key);
@@ -2557,13 +2594,11 @@ public class FXController implements Initializable {
 			   	String semantic = n.getSemantic().getSemanticType();
 				if(semantic.equalsIgnoreCase("proposition")) {
 					propoNodesList.getItems().add(key);
-					propoNodesList1.getItems().add(key);
 				}
 		    }else if(n.getTerm() instanceof Molecular) {
 		    	String semantic = n.getSemantic().getSemanticType();
 		    	if(semantic.equalsIgnoreCase("proposition")) {
 					propoNodesList.getItems().add(key);
-					propoNodesList1.getItems().add(key);
 				}
 		    }
 		}
@@ -2828,6 +2863,7 @@ public class FXController implements Initializable {
 		a.setContentText("SubDomain Constraint: " + sdc.getId() + " has been created successfully.");
 		a.showAndWait();
 	}
+	
 	public void deleteSubDomConst() {
 		String sdcID = sdcsList.getSelectionModel().getSelectedItem();
 		for(int i = 0; i<sdcs.size(); i++) {
@@ -2923,7 +2959,13 @@ public class FXController implements Initializable {
 		}
 		try {
 			Controller.createContext(name, hyps);
-		} catch (DuplicateContextNameException e) {
+		} catch (DuplicateContextNameException | ContradictionFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ContradictionFoundException e) {
@@ -2967,7 +3009,6 @@ public class FXController implements Initializable {
 		updatePathsList();
 		popUpNotification("Forward Unit Path", "Forward Unit Path has been created successfully", pathName, 1);
 	}
-	
 	
 	public void createCFRBUP() {
 		String rname = pathRelations.getSelectionModel().getSelectedItem();
@@ -3164,9 +3205,9 @@ public class FXController implements Initializable {
 	
 	public void createComposePath() {
 		LinkedList<sneps.network.paths.Path> tempPaths = new LinkedList<sneps.network.paths.Path>();
-		ObservableList selectedIndices = pathsList.getSelectionModel().getSelectedItems();
+		ObservableList<String> selectedIndices = composeList.getItems();
 		String name = "";
-		for(Object o : selectedIndices){
+		for(String o : selectedIndices){
             tempPaths.add(paths.get(o));
             name += o + " ";
         }
@@ -3174,7 +3215,40 @@ public class FXController implements Initializable {
 		String pname = "Compose Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
+		clearComposeList();
 		popUpNotification("Compose Path", "Compose Path Created Successfully", "Path: " + pname, 1);
+	}
+	
+	public void addPQPath() {
+		if(ppath.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			ppath.setText(pname);
+		}else if(qpath.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			qpath.setText(pname);
+		}
+	}
+	
+	public void clearPQ1Path() {
+		ppath1.setText("...");
+		qpath1.setText("...");
+		pathNodes2.setText("Select a node");
+	}
+	
+	public void addPQ1Path() {
+		if(ppath1.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			ppath1.setText(pname);
+		}else if(qpath1.getText().equalsIgnoreCase("...")) {
+			String pname = pathsList.getSelectionModel().getSelectedItem();
+			qpath1.setText(pname);
+		}
+	}
+	
+	public void clearPQPath() {
+		ppath.setText("...");
+		qpath.setText("...");
+		pathNodes1.setText("Select a node");
 	}
 	
 	public void createDomainRestrictPath() {
@@ -3186,20 +3260,18 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String pPathName = ppath.getText();
+		String qPathName = qpath.getText();
+		sneps.network.paths.Path pPath = paths.get(pPathName);
+		sneps.network.paths.Path qPath = paths.get(qPathName);
 		
-		ArrayList<sneps.network.paths.Path> tempPaths = new ArrayList<sneps.network.paths.Path>();
-		ObservableList selectedIndices = pathsList.getSelectionModel().getSelectedItems();
-		String name = "";
-		for(Object o : selectedIndices){
-            tempPaths.add(paths.get(o));
-            name += o + " ";
-        }
-		
-		DomainRestrictPath p = new DomainRestrictPath(tempPaths.get(0), n, tempPaths.get(1));
+		String name = "{ " + qPathName + " } { " + n.getIdentifier() + " } { " + pPathName + " }";
+		DomainRestrictPath p = new DomainRestrictPath(qPath, n, pPath);
 		String pname = "Domain Restrict Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
 		popUpNotification("Domain Restrict Path", "Domain Restrict Path Created Successfully", "Path: " + pname, 1);
+		clearPQPath();
 	}
 	
 	public void createRangeRestrictPath() {
@@ -3211,20 +3283,19 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String pPathName = ppath1.getText();
+		String qPathName = qpath1.getText();
+		sneps.network.paths.Path pPath = paths.get(pPathName);
+		sneps.network.paths.Path qPath = paths.get(qPathName);
 		
-		ArrayList<sneps.network.paths.Path> tempPaths = new ArrayList<sneps.network.paths.Path>();
-		ObservableList selectedIndices = pathsList.getSelectionModel().getSelectedItems();
-		String name = "";
-		for(Object o : selectedIndices){
-            tempPaths.add(paths.get(o));
-            name += o + " ";
-        }
+		String name = "{ " + qPathName + " } { " + n.getIdentifier() + " } { " + pPathName + " }";
 		
-		RangeRestrictPath p = new RangeRestrictPath(tempPaths.get(0), tempPaths.get(1), n);
+		RangeRestrictPath p = new RangeRestrictPath(pPath, qPath, n);
 		String pname = "Range Restrict Path " + name;
 		paths.put(pname, p);
 		updatePathsList();
 		popUpNotification("Range Restrict Path", "Range Restrict Path Created Successfully", "Path: " + pname, 1);
+		clearPQ1Path();
 	}
 	
 	public void createBangPath() {
@@ -3258,18 +3329,98 @@ public class FXController implements Initializable {
 		Collections.sort(sorted);
 		contextList.getItems().clear();
 		chooseContext.getItems().clear();
+		chooseContext1.getItems().clear();
 		for (String s : sorted) {
 			MenuItem mi = new MenuItem(s);
+			MenuItem mi1 = new MenuItem(s);
 			mi.setOnAction(new EventHandler<ActionEvent>() {
 
 				@Override
 				public void handle(ActionEvent arg0) {
 					chooseContext.setText(mi.getText());
+					propoNodesList1.getItems().clear();
+					ArrayList<String> sorted = new ArrayList<String>();
+					Hashtable<String, Node> propsOfCxt = new Hashtable<String, Node>();
+					Context cxt = Controller.getContextByName(mi1.getText());
+					PropositionSet props = cxt.getHypothesisSet();
+					int[] a = null;
+					try {
+						a = PropositionSet.getPropsSafely(props);
+					} catch (NotAPropositionNodeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NodeNotFoundInNetworkException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					for(int i : a) {
+						Node n = null;
+						try {
+							n = Network.getNodeById(i);
+						} catch (NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						propsOfCxt.put(n.getIdentifier(), n);
+					}
+					Hashtable<String, Node> nodes = Network.getNodes();
+					for(Entry<String, Node> entry : nodes.entrySet()) {
+						Node x = propsOfCxt.get(entry.getKey());
+						if(x == null) {
+							if(!(entry.getValue().getTerm() instanceof Variable)) {
+								if(entry.getValue().getSemantic().getSemanticType().equalsIgnoreCase("proposition")) {
+									sorted.add(entry.getKey());
+								}
+							}
+						}
+					}
+					
+					Collections.sort(sorted);
+					for(String x : sorted) {
+						propoNodesList1.getItems().add(x);
+					}
+				}
+				
+			});
+			mi1.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent arg0) {
+					propNodesListOfSelCont.getItems().clear();
+					ArrayList<String> sorted = new ArrayList<String>();
+					chooseContext1.setText(mi1.getText());
+					Context cxt = Controller.getContextByName(mi1.getText());
+					PropositionSet props = cxt.getHypothesisSet();
+					int[] a = null;
+					try {
+						a = PropositionSet.getPropsSafely(props);
+					} catch (NotAPropositionNodeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NodeNotFoundInNetworkException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					for(int i : a) {
+						Node n = null;
+						try {
+							n = Network.getNodeById(i);
+						} catch (NodeNotFoundInNetworkException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						sorted.add(n.getIdentifier());
+					}
+					Collections.sort(sorted);
+					for(String x : sorted) {
+						propNodesListOfSelCont.getItems().add(x);
+					}
 				}
 				
 			});
 			contextList.getItems().add(s);
 			chooseContext.getItems().add(mi);
+			chooseContext1.getItems().add(mi1);
 		}
 	}
 	
@@ -3292,6 +3443,11 @@ public class FXController implements Initializable {
 				e.printStackTrace();
 			}
 			popUpNotification("Context", "Current context is set", "Context: " + cname + " is the current context", 2);
+		} catch (ContradictionFoundException | ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 	public void addNodeToPropSet1() {
@@ -3342,14 +3498,116 @@ public class FXController implements Initializable {
 		} catch (ContextNameDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ContradictionFoundException e) {
+			Main.userAction(e.getContradictoryHyps());
+			e.printStackTrace();
 		}
 		updateListOfContexts();
 		propSet1.getItems().clear();
-		updateNodesList();
 	}
 	
+	public void assertNodeToCurrentContext() {
+		String identifier = nodesList.getSelectionModel().getSelectedItem();
+		Node n = null;
+		try {
+			n = Network.getNode(identifier);
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Controller.addPropToCurrentContext(n.getId());
+			popUpNotification("Assert Node", "Node Asserted", "Proposition added to current context", 2);
+		} catch (DuplicatePropositionException e) {
+			popUpNotification("Assert Node", "Error:", "Proposition already exists in current context", 2);
+			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContradictionFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
+	public void searchNodes() {
+		searchNodes.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent arg0) {
+				Hashtable<String, Node> nodes = Network.getNodes();
+				ArrayList<String> sorted = new ArrayList<String>();
+				nodesList.getItems().clear();
+				for (Entry<String, Node> entry : nodes.entrySet()) {
+					String nodename = searchNodes.getText();
+				    String key = entry.getKey();
+				    String tempKey = key.toLowerCase();
+				    if(tempKey.contains(nodename.toLowerCase())) {
+				    	sorted.add(key);
+				    }
+				}
+				
+				Collections.sort(sorted);
+				for(String x : sorted) {
+					nodesList.getItems().add(x);
+				}
+			}
+			
+		});
+	}
+
+	public void addToComposePath() {
+		String pname = pathsList.getSelectionModel().getSelectedItem();
+		composeList.getItems().add(pname);
+	}
 	
+	public void clearComposeList() {
+		composeList.getItems().clear();
+	}
+	
+	public void removePropFromContext() {
+		String propname = propNodesListOfSelCont.getSelectionModel().getSelectedItem();
+		Node n = null;
+		try {
+			n = Network.getNode(propname);
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int[] i = {n.getId()};
+		PropositionSet props = null;
+		try {
+			props = new PropositionSet(i);
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Controller.removeHypsFromContext(props, chooseContext1.getText());
+		} catch (NodeNotFoundInPropSetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotAPropositionNodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		propNodesListOfSelCont.getItems().remove(propname);
+	}
 //..........END Of Menu Methods........................................	
 
 	
@@ -3638,14 +3896,23 @@ public class FXController implements Initializable {
 	
 	
 	public void generateNetwork() throws IOException {
-		String data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=gray20;";
+		String data = null;
+		if(Main.isDark()) {
+			data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=gray20;";
+		}else {
+			data = "document.body.innerHTML += Viz('digraph { nodesep=0.5; ranksep=2.5; bgcolor=none;";
+		}
 		File f = new File("bin/sneps/gui/displayData.html");
         BufferedWriter bw = new BufferedWriter(new FileWriter(f));
         bw.write("<!DOCTYPE html>");
         bw.write("<html>");
         bw.write("<head>");
         bw.write("<title>Test</title>");
-        bw.write("<style>body {background-color: #333333;}</style>");
+        if(Main.isDark()) {
+        	bw.write("<style>body {background-color: #333333;}</style>");
+        }else {
+        	bw.write("<style>body {background-color: #ffffff;}</style>");
+        }
         bw.write("<script src='viz.js'></script>");
         bw.write("</head>");
         bw.write("<body>");
@@ -3701,7 +3968,6 @@ public class FXController implements Initializable {
 	public void displayNetwork() {
 		String url = this.getClass().getResource("displayData.html").toExternalForm();
 		webView.getEngine().load(url);
-		//System.out.println(url.toString());
 	}
 	
 
