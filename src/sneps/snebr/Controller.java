@@ -18,16 +18,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashSet;
-import java.util.BitSet;
-import java.util.Hashtable;
-import java.util.Set;
 import java.util.*;
 
 public class Controller {
     private static String currContext = "default";
     private static ContextSet contextSet = new ContextSet(currContext);
-
     private static ArrayList<BitSet> minimalNoGoods = new ArrayList<>();
     private static String conflictingContext = null;
     private static int conflictingHyp;
@@ -99,7 +94,6 @@ public class Controller {
      * @return the created Context
      * @throws DuplicateContextNameException if a Context with this name exists in SNeBr's ContextSet
      */
-
     public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException, ContradictionFoundException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         if (contextSet.getContext(contextName) != null) {
             throw new DuplicateContextNameException(contextName);
@@ -239,37 +233,6 @@ public class Controller {
         return p;
     }
 
-
-    public static void checkForContradiction(int hyp, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
-
-        //TODO
-        //        check in minimalNoGoods
-//
-//        if found then contradiction
-//
-//        else check in upcable and down cable
-//
-//        if found then contradiction and update minimalNoGoods
-//
-//        else
-//
-//
-//
-//        PropositionSet temp = c.getHypothesisSet().add(hyp);
-//
-//        // temp.add()
-//
-//        PropositionNode p = (PropositionNode) Network.getNodeById(hyp);
-//
-//
-//        UpCableSet up = p.getUpCableSet();
-//        if (up.get)
-//        DownCableSet down;
-//        if (p.getTerm() instanceof Molecular) {
-//            down = ((Molecular)p.getTerm()).getDownCableSet();
-//        }
-//        {3,5}
-//        {{1,3,7}, {3,5}, {}}
     public static ArrayList<PropositionSet> combine(Collection<PropositionSet> negatingPropSupports, Collection<PropositionSet> negatedPropSupports) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         ArrayList<PropositionSet> output = new ArrayList<>();
 
