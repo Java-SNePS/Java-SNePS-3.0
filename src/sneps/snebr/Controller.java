@@ -476,6 +476,14 @@ public class Controller {
         return contextSet.add(c);
     }
 
+    public static void removeHypFromAllContexts(PropositionNode node) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        int hyp = node.getId();
+        for (String contextName: contextSet.getNames()) {
+            Context c = new Context(contextName, contextSet.getContext(contextName).getHypothesisSet().remove(hyp));
+            contextSet.add(c);
+        }
+    }
+
 
     public static Set<String> getAllNamesOfContexts() {
         return contextSet.getNames();

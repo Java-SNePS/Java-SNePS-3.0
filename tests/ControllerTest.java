@@ -116,6 +116,12 @@ public class ControllerTest {
     }
 
     @Test
+    public void addConflictingHypToContext() {
+
+    }
+
+
+    @Test
     public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
@@ -125,6 +131,8 @@ public class ControllerTest {
         assertEquals(props.length, length + 4);
         assertArrayEquals(props, new int [] {3,4,5,6});
     }
+
+
 
     @Test
     public void addSingleHypToCurrentContext() throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException {

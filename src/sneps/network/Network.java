@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import sneps.exceptions.*;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -34,17 +35,6 @@ import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
-import sneps.exceptions.CannotBuildNodeException;
-import sneps.exceptions.CaseFrameCannotBeRemovedException;
-import sneps.exceptions.CaseFrameMissMatchException;
-import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
-import sneps.exceptions.CustomException;
-import sneps.exceptions.EquivalentNodeException;
-import sneps.exceptions.IllegalIdentifierException;
-import sneps.exceptions.NodeCannotBeRemovedException;
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
-import sneps.exceptions.RelationDoesntExistException;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
@@ -446,7 +436,7 @@ public class Network implements Serializable {
 	 * @throws NodeCannotBeRemovedException
 	 *             if the node cannot be removed because it is not isolated.
 	 */
-	public static void removeNode(Node node) throws NodeCannotBeRemovedException {
+	public static void removeNode(Node node) throws NodeCannotBeRemovedException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
 			throw new NodeCannotBeRemovedException(
@@ -459,6 +449,9 @@ public class Network implements Serializable {
 		nodes.remove(node.getIdentifier());
 		// nullify entry of the removed node in the array list
 		nodesIndex.set(node.getId(), null);
+
+		// remove node from all contexts
+		Controller.removeHypFromAllContexts((PropositionNode) node);
 		// removing child nodes that are dominated by the removed node and has
 		// no other parents
 		if (node.getTerm().getClass().getSuperclass().getSimpleName().equals("Molecular")) {
