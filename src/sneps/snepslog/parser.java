@@ -1968,6 +1968,8 @@ class CUP$parser$actions {
 						RESULT = "The GUI is used to handle the contradiction!";
 					} catch (Exception e) {
 						RESULT = e.getMessage();
+					} catch (ContextNameDoesntExistException e) {
+						RESULT = e.getMessage();
 					}
 				
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
