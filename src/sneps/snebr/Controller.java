@@ -124,8 +124,11 @@ public class Controller {
 
         ArrayList<NodeSet> contradictions = checkForContradiction((PropositionNode) Network.getNodeById(hyp), temp, false);
 
-        if (contradictions != null)
+        if (contradictions != null) {
+            conflictingContext = contextName;
+            conflictingHyps = new PropositionSet(new int[] {hyp});
             throw new ContradictionFoundException(contradictions);
+        }
 
         PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
 
