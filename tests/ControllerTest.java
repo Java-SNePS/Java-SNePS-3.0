@@ -268,6 +268,16 @@ public class ControllerTest {
     }
 
     @Test
+    public void removeHypsFromCotnextTest() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException, ContradictionFoundException {
+        Controller.addPropsToContext(testContextName, new PropositionSet(new int[] {1,2,3,4,5,6,7,8}));
+
+        Controller.removeHypsFromContext(new PropositionSet(new int[] {5,6,7}), testContextName);
+
+        assertTrue(Controller.getContextByName(testContextName).getHypothesisSet().equals(new PropositionSet(new int[] {1,2,3,4,8})));
+
+    }
+
+    @Test
     public void setCurrentContext() throws DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Controller.createContext("c6", new PropositionSet(new int [] {5,7}));
         Controller.createContext("c5", new PropositionSet(new int [] {5,7}));
@@ -339,10 +349,6 @@ public class ControllerTest {
         negation.add(new PropositionSet(new int [] {24,61,72}));
 
         ArrayList<PropositionSet> combination = Controller.combine(propSet, negation);
-
-        for (PropositionSet propSett: combination) {
-            System.out.println(propSett.toString());
-        }
 
         LinkedList<Integer[]> expectedCombos = new LinkedList<>();
         expectedCombos.add(new Integer[] {1,3,5,9,23,53});

@@ -456,15 +456,17 @@ public class Controller {
         if (ignore) {
             Context inconsistentContext = new Context(conflictingContext, contextSet.getContext(conflictingContext).getHypothesisSet().union(conflictingHyps));
             contextSet.add(inconsistentContext);
-            return;
         }
 
-        if (hypsToBeRemoved != null) {
+        if (!ignore && hypsToBeRemoved != null) {
             removeHypsFromContext(hypsToBeRemoved, conflictingContext);
             PropositionSet modifiedHyps = conflictingHyps.removeProps(hypsToBeRemoved);
             Context resolvedContext = new Context(conflictingContext, contextSet.getContext(conflictingContext).getHypothesisSet().union(modifiedHyps));
             contextSet.add(resolvedContext);
         }
+
+        conflictingContext = null;
+        conflictingHyps = null;
 
     }
 

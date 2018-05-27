@@ -159,7 +159,7 @@ public class PropositionSet {
 
         int i = 0, j = 0, k = 0;
 
-        while (i < props.length || j < props1.leqngth) {
+        while (i < props.length || j < props1.length) {
 
             if (i >= props.length) {  // length of arg passed
                 props2[k++] = props1[j++];
@@ -233,14 +233,14 @@ public class PropositionSet {
     public PropositionSet removeProps(PropositionSet propSet) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int[] props = this.getProps();
         int[] props1 = propSet.getProps();
-        int[] props2 = new int[props1.length];
+        int[] props2 = new int[props.length];
 
         int i = 0, j = 0, k = 0;
 
         for (; i < props.length; i++) {
 
             if (j >= props1.length) {
-                props2[k++] = props[i++];
+                props2[k++] = props[i];
                 continue;
             }
 
