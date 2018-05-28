@@ -339,7 +339,24 @@ public class Main extends Application {
 					e.printStackTrace();
 				}
 		    }else if(response == ca) {
-		    	//cancel assertion
+		    	try {
+					Controller.handleContradiction(null, false);
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NotAPropositionNodeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NodeNotFoundInPropSetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DuplicatePropositionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ContextNameDoesntExistException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }
 		});
 	}
