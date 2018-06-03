@@ -451,7 +451,7 @@ public class Network implements Serializable {
 		nodesIndex.set(node.getId(), null);
 
 		// remove node from all contexts
-		Controller.removeHypFromAllContexts((PropositionNode) node);
+		Controller.removePropositionFromAllContexts((PropositionNode) node);
 		// removing child nodes that are dominated by the removed node and has
 		// no other parents
 		if (node.getTerm().getClass().getSuperclass().getSimpleName().equals("Molecular")) {

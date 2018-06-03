@@ -71,7 +71,6 @@ public class ControllerTest {
             fail("should throw exception");
         } catch (DuplicateContextNameException e) {
 
-        } catch (ContradictionFoundException e) {
         }
 
         Controller.removeContext(testContextName);
@@ -305,10 +304,7 @@ public class ControllerTest {
             if (!caught)
                 fail("Should throw ContradictionFoundException after asserting a new Prop when an earlier contradiction is ignored");
         }
-
-
     }
-
 
     @Test
     public void addHypsToCurrentContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
