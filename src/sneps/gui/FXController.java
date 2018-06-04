@@ -139,8 +139,6 @@ public class FXController implements Initializable {
 	private ArrayList<VarNodeShape> listOfVarNodesDrawn = new ArrayList<VarNodeShape>();
 	private ArrayList<MolNodeShape> listOfMolNodesDrawn = new ArrayList<MolNodeShape>();
 	private LinkedList<RCFP> rrcflist = new LinkedList<RCFP>();
-	private int ocp;
-	private int ncp;
 	private int bpcounter = 0;
 	
 	@FXML
