@@ -2,11 +2,7 @@ package tests;
 
 import org.junit.*;
 
-import sneps.exceptions.CustomException;
-import sneps.exceptions.IllegalIdentifierException;
-import sneps.exceptions.NodeCannotBeRemovedException;
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -47,7 +43,7 @@ public class NetworkTest {
     }
 
     @After
-    public void removeNodes() throws NodeNotFoundInNetworkException, NodeCannotBeRemovedException {
+    public void removeNodes() throws NodeNotFoundInNetworkException, NodeCannotBeRemovedException, NodeNotFoundInPropSetException, NotAPropositionNodeException {
         Network.removeNode(Network.getNode("n0"));
     }
 

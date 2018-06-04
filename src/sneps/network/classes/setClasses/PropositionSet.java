@@ -12,10 +12,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class PropositionSet implements Serializable{
-	@Override
-	public String toString() {
-		return "PropositionSet [props=" + Arrays.toString(props) + "]";
-	}
+    @Override
+    public String toString() {
+        return "PropositionSet [props=" + Arrays.toString(props) + "]";
+    }
 
     private int[] props;
     private String hash = "";
@@ -154,7 +154,6 @@ public class PropositionSet implements Serializable{
      */
 
     public PropositionSet union(PropositionSet propSet) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-
         int[] props = propSet.getProps();
         int[] props1 = this.getProps();
         int[] props2 = new int[props.length + props1.length];
@@ -210,6 +209,9 @@ public class PropositionSet implements Serializable{
      * @throws NodeNotFoundInNetworkException
      */
     public PropositionSet remove(int prop) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        if (this.props.length == 0)
+            return new PropositionSet();
+
         int[] current = this.getProps();
         int[] newSet = new int[current.length - 1];
         int j = 0;
@@ -232,14 +234,14 @@ public class PropositionSet implements Serializable{
     public PropositionSet removeProps(PropositionSet propSet) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int[] props = this.getProps();
         int[] props1 = propSet.getProps();
-        int[] props2 = new int[props1.length];
+        int[] props2 = new int[props.length];
 
         int i = 0, j = 0, k = 0;
 
         for (; i < props.length; i++) {
 
             if (j >= props1.length) {
-                props2[k++] = props[i++];
+                props2[k++] = props[i];
                 continue;
             }
 

@@ -19,7 +19,7 @@ public class ContextSetTest {
 
 	@Before
 	public void setUp() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException,
-			NodeNotFoundInNetworkException, IllegalIdentifierException, ContradictionFoundException {
+            NodeNotFoundInNetworkException, IllegalIdentifierException, ContradictionFoundException, ContextNameDoesntExistException, DuplicatePropositionException, NodeNotFoundInPropSetException {
 		for (int i = 0; i < 8889; i++)
 			Network.buildBaseNode("n" + i, semantic);
 		context = Controller.createContext(contextName, new PropositionSet(new int[] { 1, 3, 4 }));
@@ -38,14 +38,14 @@ public class ContextSetTest {
     }
 
     @Test
-    public void add() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContradictionFoundException {
+    public void add() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContradictionFoundException, ContextNameDoesntExistException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context temp = Controller.createContext("temp context", new PropositionSet(new int [] {34,89}));
         contextSet.add(temp);
         assertEquals(temp, contextSet.getContext("temp context"));
     }
 
     @Test
-    public void identicalContext() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContradictionFoundException {
+    public void identicalContext() throws DuplicateContextNameException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContradictionFoundException, ContextNameDoesntExistException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context c2 = Controller.createContext("context 2", new PropositionSet(new int [] {1,3,4}));
         assertEquals(contextSet.identicalContext(c2), context);
     }
