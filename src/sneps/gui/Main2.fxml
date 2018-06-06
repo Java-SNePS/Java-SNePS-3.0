@@ -261,7 +261,6 @@
                                                                            </font>
                                                                         </Label>
                                                                         <Button layoutX="127.0" layoutY="254.0" mnemonicParsing="false" onAction="#addOverriddenRelationToCaseFrame" styleClass="tab" text="Add to case frame relation set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                                        <TextField fx:id="overrideAdjust" layoutX="72.0" layoutY="54.0" promptText="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
                                                                         <TextField fx:id="overrideLimit" layoutX="72.0" layoutY="212.0" promptText="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
                                                                         <Label layoutX="14.0" layoutY="54.0" text="Adjust:" AnchorPane.leftAnchor="10.0">
                                                                            <font>
@@ -273,9 +272,11 @@
                                                                               <Font size="16.0" />
                                                                            </font>
                                                                         </Label>
+                                                                        <SplitMenuButton fx:id="overrideAdjust" alignment="CENTER" layoutY="54.0" mnemonicParsing="false" text="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                   <Button layoutX="913.0" layoutY="370.0" mnemonicParsing="false" onAction="#submitRRCF" styleClass="tab" text="Submit Case Frame" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                                                  <SplitMenuButton fx:id="overrideAdjust" alignment="CENTER" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Optional" />
                                                                </children>
                                                             </AnchorPane>
                                                             <AnchorPane layoutX="14.0" layoutY="390.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="26.0">
