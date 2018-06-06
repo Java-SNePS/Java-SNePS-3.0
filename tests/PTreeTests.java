@@ -16,6 +16,7 @@ import sneps.setClasses.RuleUseInfoSet;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.PTree.PSubTree;
+import sneps.snip.classes.PTree.PTreeNode;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.matching.LinearSubstitutions;
@@ -43,12 +44,12 @@ public class PTreeTests extends TestCase {
 
 		supports.add(var.getId());
 		fn = new FlagNode(var, supports, 1);
-		fns.putIn(fn);
+		fns.insert(fn);
 
 		supports.clearSet();
 		supports.add(dog.getId());
 		fn = new FlagNode(dog, supports, 1);
-		fns.putIn(fn);
+		fns.insert(fn);
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 		tree = new PTree("default");
@@ -124,4 +125,43 @@ public class PTreeTests extends TestCase {
 		tree = null;
 		rui = null;
 	}
+
+	//PSubTree
+	@Test
+	public void testPSubTreeInsert(){
+		tree.buildTree(ants);
+		for(PSubTree subTree : tree.getSubTrees()){
+			subTree.insert(rui);
+			assertNotNull(
+					"PSubTree: PSubTree RootRUIS cannot be null",
+					subTree.getRootRUIS());
+		}
+	}
+	@Test
+	public void testPSubTreeGetLeafPattern(){
+		tree.buildTree(ants);
+		tree.insertRUI(rui);
+		for(PSubTree subTree : tree.getSubTrees()){
+			assertNotNull(
+					"PSubTree: PSubTree RootRUIS cannot be null",
+					subTree.getRootRUIS());
+			PTreeNode node = subTree.getLeafPattern(1, subTree.getRoot());
+			assertNotNull(
+					"PSubTree: PSubTree GetLeafPattern cannot return null",
+					node);
+		}
+	}
+
+	
+	//PTreeNode
+	@Test
+	public void testPTreeNodeInsertRUI(){
+		tree.buildTree(ants);
+	}
+	
+	@Test
+	public void testPTreeNodeInsertIntoTree(){
+		tree.buildTree(ants);
+	}
+
 }

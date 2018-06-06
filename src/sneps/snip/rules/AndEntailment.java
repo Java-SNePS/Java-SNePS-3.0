@@ -68,13 +68,14 @@ public class AndEntailment extends RuleNode {
 
 	/**
 	 * Creates a Report from a given RuleUseInfo to be broadcasted to outgoing channels
+	 * Also checks report supports and modifies accordingly
 	 * @param Rui
 	 * @param contextID 
 	 */
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
 		if (Rui.getPosCount() >= getAntSize()){
-			Substitutions sub = Rui.getSub();
+			Substitutions sub = Rui.getSubstitutions();
 			FlagNodeSet justification = new FlagNodeSet();
 			justification.addAll(Rui.getFlagNodeSet());
 			PropositionSet supports = new PropositionSet();
@@ -154,7 +155,7 @@ public class AndEntailment extends RuleNode {
 		contextRuisSet.addHandlerSet(contxt, tree);
 	}
 	/**
-	 * Prepares the appropriate PTree and all its root RuleUseInfo for broadcasting  
+	 * Prepares the appropriate PTree and all its root RuleUseInfo for broadcasting
 	 * @param contextID
 	 */
 	private void sendSavedRUIs(String contextID) {

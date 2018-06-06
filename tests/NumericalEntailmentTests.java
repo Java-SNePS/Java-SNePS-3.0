@@ -46,7 +46,7 @@ public class NumericalEntailmentTests extends TestCase {
 	private static Report report;
 
 	@BeforeClass
- 	public static void setUpBeforeClass() throws Exception {
+ 	public void setUp() throws Exception {
 		var = new VariableNode(new Variable("X"));
 		fido = Network.buildBaseNode("Fido", new Semantic("Member"));
 		dog = Network.buildBaseNode("Dog", new Semantic("Class"));
@@ -60,12 +60,12 @@ public class NumericalEntailmentTests extends TestCase {
 
 		support.add(dog.getId());
 		FlagNode fn = new FlagNode(dog, support, 1);
-		fns.putIn(fn);
+		fns.insert(fn);
 
 		support.clearSet();
 		support.add(fido.getId());
 		fn = new FlagNode(fido, support, 1);
-		fns.putIn(fn);
+		fns.insert(fn);
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 
@@ -128,7 +128,7 @@ public class NumericalEntailmentTests extends TestCase {
 				| NodeNotFoundInNetworkException e) {}
 
 		FlagNode fn = new FlagNode(dog, support, 1);
-		fns.putIn(fn);
+		fns.insert(fn);
 		report = new Report(sub, support, true, "default");
 
 		numerical.applyRuleHandler(report, dog);
@@ -244,7 +244,7 @@ public class NumericalEntailmentTests extends TestCase {
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public void tearDown() throws Exception {
 		Network.clearNetwork();
 		numerical.clear();
 		fido = null;

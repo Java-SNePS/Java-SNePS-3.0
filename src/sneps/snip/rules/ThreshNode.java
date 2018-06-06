@@ -108,7 +108,7 @@ public class ThreshNode extends RuleNode {
 			}
 		}
 
-		Report forwardReport = new Report(tRui.getSub(), supports, true, contextID);
+		Report forwardReport = new Report(tRui.getSubstitutions(), supports, true, contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
 			if(!nodesSentReports.contains(outChannel.getRequester().getId()))

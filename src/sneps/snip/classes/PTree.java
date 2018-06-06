@@ -275,7 +275,7 @@ public class PTree extends RuisHandler {
 			return res;
 		}
 
-		private PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
+		public PTreeNode getLeafPattern(int pattern, PTreeNode pNode) {
 			if (pNode.getLeftChild() == null)
 				return pNode;
 			PTreeNode left = pNode.getLeftChild(), right = pNode.getRightChild();
@@ -289,6 +289,9 @@ public class PTree extends RuisHandler {
 			return root.getRUIS(new Integer[]{0});
 		}
 
+		public PTreeNode getRoot(){
+			return root;
+		}
 	}
 
 	public class PTreeNode {

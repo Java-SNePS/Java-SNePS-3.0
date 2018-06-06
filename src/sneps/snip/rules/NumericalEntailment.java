@@ -69,7 +69,7 @@ public class NumericalEntailment extends RuleNode {
 	@Override
 	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
 		if (Rui.getPosCount() >= i){
-			Substitutions sub = Rui.getSub();
+			Substitutions sub = Rui.getSubstitutions();
 			FlagNodeSet justification = new FlagNodeSet();
 			justification.addAll(Rui.getFlagNodeSet());
 			PropositionSet supports = new PropositionSet();
