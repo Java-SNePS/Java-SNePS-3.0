@@ -3,6 +3,8 @@ package sneps.snip.rules;
 import java.util.HashSet;
 import java.util.Set;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
@@ -10,6 +12,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.term.Term;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
@@ -48,14 +51,14 @@ public class OrNode extends RuleNode {
 	public void applyRuleHandler(Report report, Node node) {
 		
 		if(report.isPositive()) {
+			
 			sign = true;
-			FlagNodeSet justification = contextRuisSet.getByContext(report.getContextName()).getPositiveNodes();
-			NodeSet temp = new NodeSet();
-			temp.addNode(this);
-			FlagNode fn = new FlagNode(this, temp, 1);
-			justification.insert(fn);
+			
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(node, propSet, 1));
 
-			Report reply = new Report(report.getSubstitutions(), justification, sign, report.getContextName());
+			Report reply = new Report(report.getSubstitutions(), propSet, sign, report.getContextName());
 			
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(reply);

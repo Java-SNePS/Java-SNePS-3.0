@@ -63,6 +63,7 @@ public class SIndex extends RuisHandler {
 		if (trui == null) {
 			trui = getNewRUIS();
 			map.put(x, trui);
+
 		}
 		
 		RuleUseInfoSet res = trui.insertRUI(rui);
