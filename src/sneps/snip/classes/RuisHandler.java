@@ -1,14 +1,14 @@
 package sneps.snip.classes;
 
-import sneps.setClasses.FlagNodeSet;
+import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 
 public abstract class RuisHandler {
 	protected String context;
-	private FlagNodeSet positiveNodes;
+	private NodeSet positiveNodes;
 
 	public RuisHandler(){
-		positiveNodes = new FlagNodeSet();
+		positiveNodes = new NodeSet();
 	}
 	public RuisHandler(String contextID) {
 		this();
@@ -20,10 +20,10 @@ public abstract class RuisHandler {
 	}
 
 	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
-	public FlagNodeSet getPositiveNodes() {
+	public NodeSet getPositiveNodes() {
 		return positiveNodes;
 	}
-	public void setPositiveNodes(FlagNodeSet positiveNodes) {
+	public void setPositiveNodes(NodeSet positiveNodes) {
 		this.positiveNodes = positiveNodes;
 	}
 }

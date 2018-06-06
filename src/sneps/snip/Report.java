@@ -1,15 +1,15 @@
 package sneps.snip;
 
-import sneps.setClasses.FlagNodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
 public class Report {
-	private Substitutions substitution;//Bound to same thing(if bound)
-	private FlagNodeSet supports;//then add to new support
+	private Substitutions substitution;
+	private PropositionSet supports;
 	private boolean sign;
 	private String contextName;
 
-	public Report(Substitutions substitution, FlagNodeSet set, boolean sign, String contextID) {
+	public Report(Substitutions substitution, PropositionSet set, boolean sign, String contextID) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
@@ -20,7 +20,7 @@ public class Report {
 		return substitution;
 	}
 
-	public FlagNodeSet getSupports() {
+	public PropositionSet getSupports() {
 		return supports;
 	}
 

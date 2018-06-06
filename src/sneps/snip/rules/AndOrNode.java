@@ -3,12 +3,18 @@ package sneps.snip.rules;
 import java.util.HashSet;
 import java.util.Set;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
+import sneps.network.VariableNode;
 import sneps.network.classes.Semantic;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
+import sneps.setClasses.VarNodeSet;
+import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
@@ -17,6 +23,9 @@ import sneps.snip.Report;
 import sneps.snip.channels.Channel;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
+import sneps.snip.matching.Binding;
+import sneps.snip.matching.LinearSubstitutions;
+import sneps.snip.matching.Substitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 
@@ -100,13 +109,72 @@ public class AndOrNode extends RuleNode {
 			nodesSentReports.add(fn.getNode().getId());
 		}
 		
-		FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
-		NodeSet temp = new NodeSet();
-		temp.addNode(this);
-		FlagNode fn = new FlagNode(this, temp, 1);
-		justification.insert(fn);
 
-		Report forwardReport = new Report(tRui.getSub(), justification, true, contextID);
+
+		
+		
+		Substitutions sub = tRui.getSubstitutions();
+		FlagNodeSet justification = new FlagNodeSet();
+		justification.addAll(tRui.getFlagNodeSet());
+		PropositionSet supports = new PropositionSet();
+
+		for(FlagNode fn : justification){
+			try {
+				supports = supports.union(fn.getSupports());
+			} catch (NotAPropositionNodeException
+					| NodeNotFoundInNetworkException e) {}
+		}
+
+		try {
+			supports = supports.union(tRui.getSupports());
+		} catch (NotAPropositionNodeException
+				| NodeNotFoundInNetworkException e) {}
+
+		if(this.getTerm() instanceof Open){
+			//knownInstances check this.free vars - > bound
+			VarNodeSet freeVars = ((Open)this.getTerm()).getFreeVariables();
+			Substitutions ruiSub = tRui.getSubstitutions();
+			boolean allBound = true;
+
+			for(Report report : knownInstances){
+				//Bound to same thing(if bound)
+				for(VariableNode var : freeVars){
+					if(!report.getSubstitutions().isBound(var)){
+						allBound = false;
+						break;
+					}
+				}
+				if(allBound){//if yes
+					Substitutions instanceSub = report.getSubstitutions();
+
+					for(int i = 0; i < ruiSub.cardinality(); i++){
+						Binding ruiBind = ruiSub.getBinding(i);//if rui also bound
+						Binding instanceBind = instanceSub.
+								getBindingByVariable(ruiBind.getVariable());
+						if( !((instanceBind != null) &&
+								(instanceBind.isEqual(ruiBind))) ){
+							allBound = false;
+							break;
+						}
+					}
+					if(allBound){
+						//combine known with rui
+						Substitutions newSub = new LinearSubstitutions();
+						newSub.insert(instanceSub);
+						newSub.insert(ruiSub);
+
+					}
+				}
+			}
+		}
+		
+		
+		
+		
+		
+
+
+		Report forwardReport = new Report(sub, supports, sign, contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
 			if(!nodesSentReports.contains(outChannel.getRequester().getId()))

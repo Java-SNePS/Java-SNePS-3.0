@@ -1,10 +1,10 @@
 package sneps.snip.classes;
 
-import java.util.Iterator;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.setClasses.FlagNodeSet;
-import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
-
 
 public class RuleUseInfo {
 	private Substitutions sub;
@@ -19,15 +19,6 @@ public class RuleUseInfo {
 		fns = f;
 	}
 	
-	/**
-	 * Return the substitutions list
-	 * 
-	 * @return Substitutions
-	 */
-	public Substitutions getSub() {
-		return sub;
-	}
-
 	/**
 	 * Return the number of positive substitutions
 	 * 
@@ -59,7 +50,7 @@ public class RuleUseInfo {
 		// }
 		for (FlagNode fn : fns) {
 			if (fn.getFlag() == 2)
-				res.putIn(fn);
+				res.insert(fn);
 		}
 		return res;
 	}
@@ -77,11 +68,10 @@ public class RuleUseInfo {
 		// }
 		for (FlagNode fn : fns) {
 			if (fn.getFlag() == 1)
-				res.putIn(fn);
+				res.insert(fn);
 		}
 		return res;
 	}
-	
 	
 	/**
 	 * Return the flag node set of the rule use info
@@ -131,7 +121,6 @@ public class RuleUseInfo {
 		return false;
 	}
 
-	
 	/**
 	 * Check if this and r are disjoint
 	 * 
@@ -143,7 +132,6 @@ public class RuleUseInfo {
 		return !isJoint(r);
 	}
 	
-	
 	/**
 	 * combine rui with this rule use info
 	 * 
@@ -154,38 +142,36 @@ public class RuleUseInfo {
 	public RuleUseInfo combine(RuleUseInfo rui) {
 		//System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
-			return new RuleUseInfo(this.getSub().union(rui.getSub()), this.pos
+			return new RuleUseInfo(this.getSubstitutions().union(rui.getSubstitutions()), this.pos
 					+ rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));
 		}
 		return null;
 	}
-	
-	public NodeSet getSupport(NodeSet originSupport) {
-		NodeSet ruiSupports = getSupports();
-		ruiSupports.addAll(originSupport);
-		return ruiSupports;
-	}
 
-	private NodeSet getSupports() {
+	public PropositionSet getSupports() {
 		if (fns.isNew())
-			return new NodeSet();
+			return new PropositionSet();
 		if (fns.cardinality() == 1)
 			return fns.iterator().next().getSupports();
-		Iterator<FlagNode> fnIter = fns.iterator();
-		NodeSet res = fnIter.next().getSupports();
+
+		PropositionSet res = new PropositionSet();
+		for(FlagNode fn : fns){			
+			try {
+				res = res.union(fn.getSupports());
+			} catch (NotAPropositionNodeException
+					| NodeNotFoundInNetworkException e) {
+			}
+		}
 		return res;
 	}
-
 	
-	
+	/**
+	 * Return the substitutions list
+	 * 
+	 * @return Substitutions
+	 */
 	public Substitutions getSubstitutions() {
 		return sub;
-	}
-	public int getPos() {
-		return pos;
-	}
-	public int getNeg() {
-		return neg;
 	}
 
 }

@@ -1,12 +1,18 @@
 package sneps.snip.rules;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
+import sneps.network.VariableNode;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.setClasses.RuleUseInfoSet;
+import sneps.setClasses.VarNodeSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
@@ -15,6 +21,9 @@ import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
+import sneps.snip.matching.Binding;
+import sneps.snip.matching.LinearSubstitutions;
+import sneps.snip.matching.Substitutions;
 /**
  * @author Amgad Ashraf
  */
@@ -39,10 +48,9 @@ public class NumericalEntailment extends RuleNode {
 	public void applyRuleHandler(Report report, Node signature) {
 		String contxt = report.getContextName();
 		if (report.isPositive()) {
-			FlagNodeSet fns = report.getSupports();
-			NodeSet temp = new NodeSet();
-			temp.addNode(signature);
-			fns.insert(new FlagNode(signature, temp, 1));
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
 			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
 			addNotSentRui(rui, contxt, signature);
@@ -59,15 +67,68 @@ public class NumericalEntailment extends RuleNode {
 	 * @param contextID 
 	 */
 	@Override
-	protected void applyRuleOnRui(RuleUseInfo rui, String contextID) {
-		if (rui.getPosCount() >= i){
-			FlagNodeSet justification = contextRuisSet.getByContext(contextID).getPositiveNodes();
-			NodeSet temp = new NodeSet();
-			temp.addNode(this);
-			FlagNode fn = new FlagNode(this, temp, 1);
-			justification.insert(fn);
+	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
+		if (Rui.getPosCount() >= i){
+			Substitutions sub = Rui.getSubstitutions();
+			FlagNodeSet justification = new FlagNodeSet();
+			justification.addAll(Rui.getFlagNodeSet());
+			PropositionSet supports = new PropositionSet();
 
-			Report reply = new Report(rui.getSub(), justification, true, contextID);
+			for(FlagNode fn : justification){
+				try {
+					supports = supports.union(fn.getSupports());
+				} catch (NotAPropositionNodeException
+						| NodeNotFoundInNetworkException e) {}
+			}
+
+			try {
+				supports = supports.union(Rui.getSupports());
+			} catch (NotAPropositionNodeException
+					| NodeNotFoundInNetworkException e) {}
+
+			if(this.getTerm() instanceof Open){
+				//knownInstances check this.free vars - > bound
+				VarNodeSet freeVars = ((Open)this.getTerm()).getFreeVariables();
+				Substitutions ruiSub = Rui.getSubstitutions();
+				boolean allBound = true;
+
+				for(Report report : knownInstances){
+					//Bound to same thing(if bound)
+					for(VariableNode var : freeVars){
+						if(!report.getSubstitutions().isBound(var)){
+							allBound = false;
+							break;
+						}
+					}
+					if(allBound){//if yes
+						Substitutions instanceSub = report.getSubstitutions();
+
+						for(int i = 0; i < ruiSub.cardinality(); i++){
+							Binding ruiBind = ruiSub.getBinding(i);//if rui also bound
+							Binding instanceBind = instanceSub.
+									getBindingByVariable(ruiBind.getVariable());
+							if( !((instanceBind != null) &&
+									(instanceBind.isEqual(ruiBind))) ){
+								allBound = false;
+								break;
+							}
+						}
+						if(allBound){
+							//combine known with rui
+							Substitutions newSub = new LinearSubstitutions();
+							newSub.insert(instanceSub);
+							newSub.insert(ruiSub);
+
+							//add to new support and send
+							Report reply = new Report(newSub, supports, true, contextID);
+							sendReportToConsequents(reply);
+							return;
+						}
+					}
+				}
+			}
+
+			Report reply = new Report(sub, supports, true, contextID);
 			sendReportToConsequents(reply);
 		}
 	}
@@ -83,9 +144,8 @@ public class NumericalEntailment extends RuleNode {
 		if (set == null) 
 			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		set.insertRUI(rui);
-		NodeSet temp = new NodeSet();
-		temp.addNode(signature);
-		set.getPositiveNodes().insert(new FlagNode(signature, temp, 1));
+		if(!set.getPositiveNodes().contains(signature))
+			set.getPositiveNodes().addNode(signature);
 		contextRuisSet.addHandlerSet(contxt, set);
 	}
 	/**

@@ -13,10 +13,6 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		return flagNodes.iterator();
 	}
 
-	public void putIn(FlagNode fn) {
-		flagNodes.add(fn);
-	}
-
 	/**
 	 * Check if the flag node set is new (empty)
 	 * 
@@ -26,24 +22,6 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		return flagNodes.isEmpty();
 	}
 
-
-	/**
-	 * Check if fn is in this
-	 * 
-	 * @param fn
-	 *            FlagNode
-	 * @return true or false
-	 */
-	public boolean isMember(FlagNode fn) {
-
-		for (FlagNode tFn : flagNodes) {
-			if (tFn.isEqual(fn))
-				return true;
-		}
-		return false;
-
-	}
-
 	/**
 	 * Insert fn in the flag node set if it is not in
 	 * 
@@ -51,11 +29,9 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 	 *            FlagNode
 	 */
 	public void insert(FlagNode fn) {
-		if (!this.isMember(fn))
+		if (!this.contains(fn))
 			flagNodes.add(fn);
 	}
-
-
 
 	/**
 	 * Return the number of flagged nodes in this set
@@ -88,8 +64,19 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 	public int size() {
 		return flagNodes.size();
 	}
-
+	/**
+	 * Check if fn is in this
+	 * 
+	 * @param fn
+	 *            FlagNode
+	 * @return true or false
+	 */
 	public boolean contains(FlagNode fn){
 		return flagNodes.contains(fn);
+	}
+
+	public void addAll(FlagNodeSet fns) {
+		for(FlagNode fn : fns)
+			flagNodes.add(fn);
 	}
 }
