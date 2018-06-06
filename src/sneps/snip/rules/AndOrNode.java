@@ -25,7 +25,7 @@ public class AndOrNode extends RuleNode {
 	boolean sign = false;
 	
 	private int min, max, args;
-	
+	private int received=0;
 	public int getAndOrMin() {
 		return min;
 	}
@@ -38,6 +38,18 @@ public class AndOrNode extends RuleNode {
 		return args;
 	}
 
+	public void setAndOrMin(int min) {
+		this.min = min;
+	}
+
+	public void setAndOrMax(int max) {
+		this.max = max;
+	}
+
+	public void setAndOrArgs(int args) {
+		this.args = args;
+	}
+
 	/**
 	 * Constructor for the AndOr Entailment
 	 * @param syn
@@ -45,14 +57,6 @@ public class AndOrNode extends RuleNode {
 	
 	public AndOrNode(Term syn) {
 		super(syn);
-		NodeSet minNode = this.getDownNodeSet("min");
-		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
-		NodeSet maxNode = this.getDownNodeSet("max");
-		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
-		NodeSet antNodes = this.getDownNodeSet("arg");
-		args = antNodes.size();
-
-		this.processNodes(antNodes);
 	}
 
 	/**
@@ -63,14 +67,11 @@ public class AndOrNode extends RuleNode {
 	
 	public AndOrNode(Semantic sym, Term syn) {
 		super(sym, syn);
-		NodeSet minNode = this.getDownNodeSet("min");
-		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
-		NodeSet maxNode = this.getDownNodeSet("max");
-		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
-		NodeSet antNodes = this.getDownNodeSet("arg");
-		args = antNodes.size();
-
-		this.processNodes(antNodes);
+	}
+	
+	public void applyRuleHandler(Report report, Node signature) {
+		super.applyRuleHandler(report, signature);
+		received++;
 	}
 	
 	
@@ -86,6 +87,13 @@ public class AndOrNode extends RuleNode {
 			sign = true;
 		else if (tRui.getPosCount() != max)
 			return;
+		
+		
+		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
+		if(rem<min && (min-tRui.getPosCount())>rem) {
+			sign=false;
+		}
+		
 		
 		Set<Integer> nodesSentReports = new HashSet<Integer>();
 		for (FlagNode fn : tRui.getFlagNodeSet()) {

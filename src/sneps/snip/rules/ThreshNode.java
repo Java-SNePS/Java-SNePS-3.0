@@ -38,6 +38,18 @@ public class ThreshNode extends RuleNode {
 	public int getThreshArgs() {
 		return args;
 	}
+	
+	public void setThreshMin(int min) {
+		this.min = min;
+	}
+
+	public void setThreshMax(int max) {
+		this.max = max;
+	}
+
+	public void setThreshArgs(int args) {
+		this.args = args;
+	}
 
 
 	/**
@@ -46,13 +58,6 @@ public class ThreshNode extends RuleNode {
 	 */
 	public ThreshNode(Term syn) {
 		super(syn);
-		NodeSet minNode = this.getDownNodeSet("thresh");
-		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
-		NodeSet maxNode = this.getDownNodeSet("threshmax");
-		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
-		NodeSet antNodes = this.getDownNodeSet("arg");
-		args = antNodes.size();
-		this.processNodes(antNodes);
 	}
 
 	/**
@@ -62,14 +67,12 @@ public class ThreshNode extends RuleNode {
 	 */
 	public ThreshNode(Semantic sym, Term syn) {
 		super(sym, syn);
-		NodeSet minNode = this.getDownNodeSet("thresh");
-		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
-		NodeSet maxNode = this.getDownNodeSet("threshmax");
-		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
-		NodeSet antNodes = this.getDownNodeSet("arg");
-		args = antNodes.size();
-		this.processNodes(antNodes);
 	}
+	
+	public void applyRuleHandler(Report report, Node signature) {
+		super.applyRuleHandler(report, signature);
+	}
+	
 	
 	/**
 	 * Checks the condition for firing the rule.
@@ -85,7 +88,10 @@ public class ThreshNode extends RuleNode {
 		else if (tRui.getPosCount() != min - 1 || tRui.getNegCount() != args - max)
 			sign = false;
 		
-		
+		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
+		if(tRui.getPosCount()>min && tRui.getPosCount()<max && max-tRui.getPosCount()>rem) {
+			sign=false;
+		}
 		
 		Set<Integer> nodesSentReports = new HashSet<Integer>();
 		for (FlagNode fn : tRui.getFlagNodeSet()) {

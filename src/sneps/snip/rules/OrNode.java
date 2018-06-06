@@ -19,6 +19,7 @@ import sneps.snip.classes.RuleUseInfo;
 
 public class OrNode extends RuleNode {
 
+	boolean sign = true;
 	private int ant,cq;
 	
 
@@ -28,8 +29,6 @@ public class OrNode extends RuleNode {
 	 */
 	public OrNode(Term syn) {
 		super(syn);
-		ant = getDownNodeSet("ant").size();
-		cq = getDownNodeSet("cq").size();
 	}
 
 	
@@ -40,8 +39,6 @@ public class OrNode extends RuleNode {
 	 */
 	public OrNode(Semantic sym, Term syn) {
 		super(sym, syn);
-		ant = getDownNodeSet("ant").size();
-		cq = getDownNodeSet("cq").size();
 	}
 	
 	/**
@@ -51,14 +48,14 @@ public class OrNode extends RuleNode {
 	public void applyRuleHandler(Report report, Node node) {
 		
 		if(report.isPositive()) {
-			
+			sign = true;
 			FlagNodeSet justification = contextRuisSet.getByContext(report.getContextName()).getPositiveNodes();
 			NodeSet temp = new NodeSet();
 			temp.addNode(this);
 			FlagNode fn = new FlagNode(this, temp, 1);
 			justification.insert(fn);
 
-			Report reply = new Report(report.getSubstitutions(), justification, true, report.getContextName());
+			Report reply = new Report(report.getSubstitutions(), justification, sign, report.getContextName());
 			
 			for (Channel outChannel : outgoingChannels)
 				outChannel.addReport(reply);
@@ -83,6 +80,10 @@ public class OrNode extends RuleNode {
 	protected RuisHandler createRuisHandler(String contextName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean getReply() {
+		return sign;
 	}
 
 }
