@@ -89,6 +89,7 @@ import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Variable;
@@ -110,12 +111,14 @@ import sneps.network.paths.RangeRestrictPath;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snepslog.AP;
+import sneps.snip.Report;
 
 public class FXController implements Initializable {
 	Network network = new Network();
 	private String currentSelectedRelation;
 	private double curX, curY, wireXStart, wireXEnd, wireYStart, wireYEnd;
 	private ArrayList<Wire> wires = new ArrayList<Wire>();
+	private Hashtable<String, Wire> wiresTable = new Hashtable<String, Wire>();
 	private LinkedList<CableTypeConstraint> cables = new LinkedList<CableTypeConstraint>();
 	private LinkedList<SubDomainConstraint> sdcs = new LinkedList<SubDomainConstraint>();
 	private ArrayList<CFSignature> cfSignsArray = new ArrayList<CFSignature>();
@@ -136,8 +139,6 @@ public class FXController implements Initializable {
 	private ArrayList<VarNodeShape> listOfVarNodesDrawn = new ArrayList<VarNodeShape>();
 	private ArrayList<MolNodeShape> listOfMolNodesDrawn = new ArrayList<MolNodeShape>();
 	private LinkedList<RCFP> rrcflist = new LinkedList<RCFP>();
-	private int ocp;
-	private int ncp;
 	private int bpcounter = 0;
 	
 	@FXML
@@ -146,8 +147,8 @@ public class FXController implements Initializable {
 	private Label nodeDetails, relationDetails, ppath, qpath, ppath1, qpath1;
 	@FXML
 	private TextField newRN, newRL, baseNodeIdentPop,
-	caseFrameSTN, baseNodeID, overrideAdjust,
-	overrideLimit, newNetName, cableMinNodes, cableMaxNodes, 
+	caseFrameSTN, baseNodeID, overrideLimit, newNetName, cableMinNodes, 
+	cableMaxNodes, 
 	signPriority, contextName, semanticName, searchNodes;
 	@FXML
 	private ListView<String> relationSetList, relationSetList1, relationSetList2, cfRS, caseFramesList,
@@ -159,17 +160,17 @@ public class FXController implements Initializable {
 	@FXML
 	private Group dragBaseNode, dragVarNode, wireModeBtn, dragMolNode;
 	@FXML
-	private AnchorPane drawArea, mainAnchor, baseNodepopBox, varNodepopBox, drawMolCF,
+	private AnchorPane drawArea, baseNodepopBox, varNodepopBox, drawMolCF,
 	relationCFDrawSelect, consoleOutput;
 	@FXML
 	private ScrollPane drawScroll, consoleScroll;
 	@FXML
 	private MenuButton caseFrameChoice, netChoice1, netChoice2, netChoice3,
 	baseNodeSemType, newRT, rrcfSem, resultSemType, cableSem, baseNodeSemTyPop,
-	newRA, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations,
-	chooseContext, chooseContext1;
+	newRA, overrideAdjust, pathNodes1, pathNodes2, selectedPath, pathCF, definePathRelations,
+	chooseContext, chooseContext1, parentSemChoice;
 	@FXML
-	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN, assertBTN;
+	private Button drawModeBtn, deleteModeBtn, moveModeBtn, createPathBTN, assertBTN, deduceBTN;
 	@FXML
 	private Rectangle wireBtnRect;
 	@FXML
@@ -195,8 +196,10 @@ public class FXController implements Initializable {
 				}
 				if(!(n.getTerm() instanceof Variable) && n.getSemantic().getSemanticType().equalsIgnoreCase("proposition")) {
 					assertBTN.setDisable(false);
+					deduceBTN.setDisable(false);
 				}else {
 					assertBTN.setDisable(true);
+					deduceBTN.setDisable(true);
 				}
 			}
 			
@@ -242,19 +245,6 @@ public class FXController implements Initializable {
 			//e.printStackTrace();
 		}
 		
-		displayNetTab.setOnSelectionChanged(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event e) {
-				try {
-					generateNetwork();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			
-		});
 		pathsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
@@ -265,6 +255,7 @@ public class FXController implements Initializable {
 	public void consoleHandler() {
 		consoleScroll.setFitToHeight(true);
 		consoleScroll.setFitToWidth(true);
+		console.setText(":");
 		console.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 			@Override
@@ -273,55 +264,11 @@ public class FXController implements Initializable {
 				ArrayList<String> resLines = new ArrayList<String>();
 				if(event.getCode() == KeyCode.ENTER) {
 					for(String line : console.getText().split("\n")) {
-						lines.add(line);
+						String tempLine = line.substring(1, line.length());
+						lines.add(tempLine);
 					}
 					
 					String cmd = lines.get(lines.size() - 1);
-					if(cmd.equalsIgnoreCase("vis")) {
-						testVisualize();
-					}else if(cmd.equalsIgnoreCase("test")) {
-						// TEST
-					    int a[] = {0,1};
-					    int b[] = {1,2};
-					    int c[] = {2,3};
-					    PropositionSet set1 = null;
-						try {
-							set1 = new PropositionSet(a);
-						} catch (NotAPropositionNodeException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (NodeNotFoundInNetworkException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					    PropositionSet set2 = null;
-						try {
-							set2 = new PropositionSet(b);
-						} catch (NotAPropositionNodeException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (NodeNotFoundInNetworkException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					    PropositionSet set3 = null;
-						try {
-							set3 = new PropositionSet(c);
-						} catch (NotAPropositionNodeException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (NodeNotFoundInNetworkException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					    ArrayList<PropositionSet> props = new ArrayList<PropositionSet>();
-					    props.add(set1);
-					    props.add(set2);
-					    props.add(set3);
-					    
-					    Main.userAction(props);
-					    //End Test
-					}
 					
 					String res = AP.executeSnepslogCommand(cmd);
 					for(String rl : res.split("\n")) {
@@ -330,9 +277,9 @@ public class FXController implements Initializable {
 					for(int i = 0; i<resLines.size(); i++) {
 						console.setText(console.getText() + "\n" + " -" + resLines.get(i));
 					}
-					//console.setText(console.getText() + "\n" + " -" + res);
+					console.setText(console.getText() + "\n" + ":");
 					console.positionCaret(console.getLength());
-					ocp = console.getCaretPosition();
+					event.consume();
 					ScrollDown();
 					updateNodesList();
 					updateCaseFramesList();
@@ -345,11 +292,11 @@ public class FXController implements Initializable {
 				}
 				
 				if(event.getCode() == KeyCode.BACK_SPACE) {
-					ncp = console.getCaretPosition();
-					if(ncp > ocp+1) {
+					if(!(console.getText().substring(console.getText().length()-1, console.getText().length()).equalsIgnoreCase(":"))) {
 						console.deletePreviousChar();
 					}
 					event.consume();
+					
 				}
 				
 				if(event.getCode() == KeyCode.DELETE) {
@@ -2207,11 +2154,39 @@ public class FXController implements Initializable {
 		}
 	}
 	
+	//Parent Semantics
+	public void parentSemantics() {
+		MenuItem individual = new MenuItem(Semantic.individual.getSemanticType());
+		MenuItem infimum = new MenuItem(Semantic.infimum.getSemanticType());
+		individual.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				parentSemChoice.setText(individual.getText());				
+			}
+			
+		});
+		
+		infimum.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				parentSemChoice.setText(infimum.getText());				
+			}
+			
+		});
+		
+		parentSemChoice.getItems().add(individual);
+		parentSemChoice.getItems().add(infimum);
+		
+	}
+	
 	//Create new semantic type
 	public void createSemanticType() {
 		String semName = semanticName.getText();
 		SemanticHierarchy.createSemanticType(semName);
 		updateSemanticLists();
+		popUpNotification("Create Semantic Type", "Semantic Created Successfully", "Semantic: " + semName + " Created Successfully", 2);
 	}
 	
 	//Adjusts
@@ -2249,9 +2224,46 @@ public class FXController implements Initializable {
 			
 		});
 		
+		MenuItem none1 = new MenuItem("None");
+		none1.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				overrideAdjust.setText("None");
+				//System.out.println("None");
+			}
+			
+		});
+		
+		MenuItem expand1 = new MenuItem("Expand");
+		expand1.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				overrideAdjust.setText("Expand");
+				//System.out.println("Expand");
+			}
+			
+		});
+		
+		MenuItem reduce1 = new MenuItem("Reduce");
+		reduce1.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				overrideAdjust.setText("Reduce");
+				//System.out.println("Reduce");
+			}
+			
+		});
+		
+		
 		newRA.getItems().add(none);
 		newRA.getItems().add(expand);
 		newRA.getItems().add(reduce);
+		overrideAdjust.getItems().add(none1);
+		overrideAdjust.getItems().add(expand1);
+		overrideAdjust.getItems().add(reduce1);
 	}
 	
 	//Define relation menu-based
@@ -2496,8 +2508,12 @@ public class FXController implements Initializable {
 	    		try {
 					Network.undefineCaseFrame(cf.getId());
 				} catch (CaseFrameCannotBeRemovedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Delete Case Frame");
+					alert.setHeaderText("Error Deleting Case Frame");
+					alert.setResizable(false);
+					alert.setContentText("Case frame can not be removed, remove the nodes implementing this case frame first");
+					alert.showAndWait();
 				}
 				updateCaseFramesList();
 		    } else if (response == cancel) {
@@ -2626,6 +2642,7 @@ public class FXController implements Initializable {
 		Wire w = new Wire(r, node);
 		wiresList.getItems().add(r.getName() + " " + nodeName);
 		wires.add(w);
+		wiresTable.put(r.getName() + " " + nodeName, w);
 		Alert a = new Alert(AlertType.INFORMATION);
 		a.setTitle("Wire Created!");
 		a.setHeaderText("Wire has been created successfully");
@@ -2633,6 +2650,15 @@ public class FXController implements Initializable {
 		a.setContentText("Wire name is: " + r.getName() + " " + nodeName);
 		a.showAndWait();
 		
+	}
+	
+	//Delete a wire()
+	public void deleteWire() {
+		String wireName = wiresList.getSelectionModel().getSelectedItem();
+		Wire w = wiresTable.get(wireName);
+		wires.remove(w);
+		wiresList.getItems().remove(wireName);
+		wiresTable.remove(wireName, w);
 	}
 	
 	//Builds a variable node in the network
@@ -2650,8 +2676,6 @@ public class FXController implements Initializable {
 	
 	//Builds the molecular node in the network
 	public void buildMolecularNode() {
-		//CaseFrame cf = (CaseFrame) curCF;
-		//System.out.println(cf.getRelations());
 		try {
 			Node n = Network.buildMolecularNode(wires, curRRCF);
 			String name = n.getIdentifier();
@@ -2665,7 +2689,12 @@ public class FXController implements Initializable {
 			a.setContentText("Node name is: " + name);
 			a.showAndWait();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Alert a = new Alert(AlertType.ERROR);
+			a.setTitle("Node NOT Created!");
+			a.setHeaderText("Molecular node was not created successfully");
+			a.setResizable(false);
+			a.setContentText("Cannot build the node .. the relation node pairs are not valid");
+			a.showAndWait();
 		}
 	}
 	
@@ -2714,7 +2743,7 @@ public class FXController implements Initializable {
 			String adjust = overrideAdjust.getText();
 			String limitS = overrideLimit.getText();
 			
-			if((adjust.length() == 0) && (limitS.length() == 0)) {
+			if(limitS.length() == 0) {
 				Relation r = null;
 				try {
 					r = Network.getRelation(selectedRelation);
@@ -2959,13 +2988,25 @@ public class FXController implements Initializable {
 		}
 		try {
 			Controller.createContext(name, hyps);
-		} catch (DuplicateContextNameException | ContradictionFoundException e) {
-			// TODO Auto-generated catch block
+			popUpNotification("Create Context", "Context Created Successfully", "Context: " + name + " Created Successfully!", 2);
+		} catch (DuplicateContextNameException e) {
+			popUpNotification("Create Context", "Context Name Already Exists", "Context: " + name + " Already Exists!", 2);
 			e.printStackTrace();
 		} catch (NotAPropositionNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContradictionFoundException e) {
+			Main.userAction(e.getContradictoryHyps());
+		} catch (DuplicatePropositionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInPropSetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3433,7 +3474,10 @@ public class FXController implements Initializable {
 		try {
 			Controller.setCurrentContext(cname);
 			popUpNotification("Context", "Current context is set", "Context: " + cname + " is the current context", 2);
-		} catch (ContradictionFoundException | ContextNameDoesntExistException e) {
+		} catch (ContradictionFoundException e) {
+			Main.userAction(e.getContradictoryHyps());
+			e.printStackTrace();
+		} catch (ContextNameDoesntExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -3475,6 +3519,7 @@ public class FXController implements Initializable {
 		}
 		try {
 			Controller.addPropsToContext(name, hyps);
+			popUpNotification("Add Propositions To Context", "Propositions were successfully added to context", "Propositions were successfully added to context: " + name, 2);
 		} catch (NotAPropositionNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3486,6 +3531,12 @@ public class FXController implements Initializable {
 			e.printStackTrace();
 		} catch (ContradictionFoundException e) {
 			Main.userAction(e.getContradictoryHyps());
+			e.printStackTrace();
+		} catch (DuplicatePropositionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NodeNotFoundInPropSetException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		updateListOfContexts();
@@ -3517,7 +3568,7 @@ public class FXController implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ContradictionFoundException e) {
-			// TODO Auto-generated catch block
+			Main.userAction(e.getContradictoryHyps());
 			e.printStackTrace();
 		}
 	}
@@ -3527,21 +3578,29 @@ public class FXController implements Initializable {
 
 			@Override
 			public void handle(KeyEvent arg0) {
-				Hashtable<String, Node> nodes = Network.getNodes();
-				ArrayList<String> sorted = new ArrayList<String>();
-				nodesList.getItems().clear();
-				for (Entry<String, Node> entry : nodes.entrySet()) {
+				if(arg0.getCode() != KeyCode.CAPS) {
+					Hashtable<String, Node> nodes = Network.getNodes();
+					ArrayList<String> sorted = new ArrayList<String>();
+					ArrayList<String> keys = new ArrayList<String>();
+					nodesList.getItems().clear();
+					for (Entry<String, Node> entry : nodes.entrySet()) {
+						String key = entry.getKey();
+						keys.add(key);
+					}
 					String nodename = searchNodes.getText();
-				    String key = entry.getKey();
-				    String tempKey = key.toLowerCase();
-				    if(tempKey.contains(nodename.toLowerCase())) {
-				    	sorted.add(key);
-				    }
-				}
-				
-				Collections.sort(sorted);
-				for(String x : sorted) {
-					nodesList.getItems().add(x);
+					for(int i = 0; i<keys.size(); i++) {
+						String nodeKey = keys.get(i);
+						if(nodeKey.length() >= nodename.length()) {
+							if(nodeKey.substring(0, nodename.length()).equalsIgnoreCase(nodename)){
+								sorted.add(nodeKey);
+							}
+						}
+					}
+					
+					Collections.sort(sorted);
+					for(String x : sorted) {
+						nodesList.getItems().add(x);
+					}
 				}
 			}
 			
@@ -3579,9 +3638,7 @@ public class FXController implements Initializable {
 		}
 		try {
 			Controller.removeHypsFromContext(props, chooseContext1.getText());
-		} catch (NodeNotFoundInPropSetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			popUpNotification("Remove Proposition From Context", "Proposition Removed Successfully", "Proposition: " + propname + " has been removed from context: " + chooseContext1.getText(), 2);
 		} catch (NotAPropositionNodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3594,6 +3651,30 @@ public class FXController implements Initializable {
 		}
 		propNodesListOfSelCont.getItems().remove(propname);
 	}
+
+	public void deduce() {
+		String identifier = nodesList.getSelectionModel().getSelectedItem();
+		PropositionNode n = null;
+		String res = "";
+		try {
+			n = (PropositionNode) Network.getNode(identifier);
+		} catch (NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		n.deduce(n);
+		ReportSet rs = n.getKnownInstances();
+		for(Report r : rs) {
+			res = res + r.toString() + "\n";
+		}
+		Alert a = new Alert(AlertType.INFORMATION);
+		a.setTitle("Deduce");
+		a.setHeaderText("Deduce Result");
+		a.setResizable(true);
+		a.setContentText(res);
+		a.showAndWait();
+	}
+	
 //..........END Of Menu Methods........................................	
 
 	
@@ -3701,6 +3782,7 @@ public class FXController implements Initializable {
 			updateRelationSetList();
 			updateSemanticLists();
 			updateListOfContexts();
+			parentSemantics();
 			Alert a = new Alert(AlertType.INFORMATION);
 			a.setTitle("Load Network");
 			a.setHeaderText("Network loaded successfully");
@@ -3952,6 +4034,12 @@ public class FXController implements Initializable {
 
 	
 	public void displayNetwork() {
+		try {
+			generateNetwork();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String url = this.getClass().getResource("displayData.html").toExternalForm();
 		webView.getEngine().load(url);
 	}

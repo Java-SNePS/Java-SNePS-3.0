@@ -8,6 +8,7 @@ import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 
@@ -25,9 +26,8 @@ public class Controller {
     private static ContextSet contextSet = new ContextSet(currContext);
     private static ArrayList<BitSet> minimalNoGoods = new ArrayList<>();
     private static String conflictingContext = null;
-    private static int conflictingHyp;
+    private static PropositionSet conflictingHyps;
     private static boolean automaticBR = false;
-
 
     public static boolean isAutomaticBR() {
         return automaticBR;
@@ -44,7 +44,7 @@ public class Controller {
      * @return the newly Created Context object
      * @throws DuplicateContextNameException If a context with the same name exists in SNeBR's ContextSet
      */
-    public static Context createContext(String contextName) throws DuplicateContextNameException, ContradictionFoundException {
+    public static Context createContext(String contextName) throws DuplicateContextNameException{
         if (contextSet.getContext(contextName) != null)
             throw new DuplicateContextNameException(contextName);
 
@@ -61,8 +61,18 @@ public class Controller {
         return new Context();
     }
 
+
     /**
-     * Clears the knowledge base
+     * Creates a new dummy Context
+     *
+     * @return new Context object
+     */
+    public static Context createDummyContext(String contextName, PropositionSet hyps) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        return new Context(contextName, hyps);
+    }
+
+    /**
+     * Clears the global data strctures of SNeBR
      */
     public static void clearSNeBR() {
         contextSet.clear();
@@ -94,14 +104,15 @@ public class Controller {
      * @return the created Context
      * @throws DuplicateContextNameException if a Context with this name exists in SNeBr's ContextSet
      */
-    public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException, ContradictionFoundException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public static Context createContext(String contextName, PropositionSet hyps) throws DuplicateContextNameException, ContradictionFoundException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         if (contextSet.getContext(contextName) != null) {
             throw new DuplicateContextNameException(contextName);
         }
 
-        // TODO: 01/04/18 check for contradiction in the hyps
-        Context newContext = new Context(contextName, hyps);
-        return contextSet.add(newContext);
+        Context newContext = new Context(contextName);
+        contextSet.add(newContext);
+
+        return addPropsToContext(contextName, hyps);
     }
 
     /**
@@ -124,10 +135,13 @@ public class Controller {
 
         Context temp = new Context(contextName, new PropositionSet(PropositionSet.getPropsSafely(oldContext.getHypothesisSet())));
 
-        ArrayList<PropositionSet> contradictions = checkForContradiction((PropositionNode)Network.getNodeById(hyp), temp);
+        ArrayList<NodeSet> contradictions = checkForContradiction((PropositionNode) Network.getNodeById(hyp), temp, false);
 
-        if (contradictions != null)
+        if (contradictions != null) {
+            conflictingContext = contextName;
+            conflictingHyps = new PropositionSet(new int[] {hyp});
             throw new ContradictionFoundException(contradictions);
+        }
 
         PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
 
@@ -146,19 +160,37 @@ public class Controller {
      * @throws NodeNotFoundInNetworkException
      * @throws CustomException
      */
-    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException {
+    public static Context addPropsToContext(String contextName, PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context oldContext = contextSet.getContext(contextName);
 
         if (oldContext == null)
             throw new ContextNameDoesntExistException(contextName);
 
         oldContext.removeName(contextName);
-        PropositionSet hypSet = oldContext.getHypothesisSet();
+        Context temp = new Context(contextName, new PropositionSet(PropositionSet.getPropsSafely(oldContext.getHypothesisSet())));
+        ArrayList<NodeSet> contradictions;
+        int[] hypsArr = PropositionSet.getPropsSafely(hyps);
+        for (int i = 0; i < hypsArr.length; i++) {
+            checkForContradiction((PropositionNode) Network.getNodeById(hypsArr[i]), temp, true);
+            temp = new Context(contextName, temp.getHypothesisSet().add(hypsArr[i]));
+        }
 
-        Context newContext = new Context(contextName, hypSet.union(hyps));
+        temp = new Context(contextName, temp.getHypothesisSet().remove(hypsArr[hypsArr.length - 1]));
+        contradictions = checkForContradiction((PropositionNode) Network.getNodeById(hypsArr[hypsArr.length - 1]), temp, false);
 
-        return contextSet.add(newContext);
+        if (contradictions != null) {
+            conflictingContext = contextName;
+            conflictingHyps = hyps;
+            throw new ContradictionFoundException(contradictions);
+        }
 
+        temp = new Context(contextName, oldContext.getHypothesisSet().union(hyps));
+        contextSet.add(temp);
+        return temp;
+    }
+
+    public static ArrayList<BitSet> getMinimalNoGoods() {
+        return minimalNoGoods;
     }
 
     /**
@@ -187,7 +219,7 @@ public class Controller {
      * @throws NodeNotFoundInNetworkException
      * @throws CustomException
      */
-    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContradictionFoundException {
+    public static Context addPropsToCurrentContext(PropositionSet hyps) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         return addPropsToContext(currContext, hyps);
     }
 
@@ -216,10 +248,19 @@ public class Controller {
         return contextSet.getContext(currContext);
     }
 
+    /**
+     * Return a string representation of a context
+     * @param contextName
+     * @return A string representing the context.
+     */
     public static String contextToString(String contextName) {
         return "Context: " + contextName + "\n" + contextSet.getContext(contextName).getHypothesisSet().toString();
     }
 
+    /**
+     * Returns all the propositions that are asserted in the context, either directly (hyps) or indirectly (derived).
+     * @return A PropositionSet containing the asserted propositions.
+     */
     public static PropositionSet allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         PropositionSet p = new PropositionSet();
         boolean first = true;
@@ -233,6 +274,10 @@ public class Controller {
         return p;
     }
 
+    /**
+     * Creates all possible combinations of the supports of two contradictory propositions.
+     * @return An ArrayList of type PropositionSet containing all the combinations.
+     */
     public static ArrayList<PropositionSet> combine(Collection<PropositionSet> negatingPropSupports, Collection<PropositionSet> negatedPropSupports) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         ArrayList<PropositionSet> output = new ArrayList<>();
 
@@ -246,17 +291,29 @@ public class Controller {
 
     }
 
-    public static ArrayList<PropositionSet> generatePropositionSetsFromBitSets(ArrayList<BitSet> conflictingHypsCollection) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
-        ArrayList<PropositionSet> propsList = new ArrayList<>();
+    /**
+     * Given an ArrayList of BitSets of propositions it returns an ArrayList of NodeSets of PropositionNodes.
+     * @return An ArrayList of type NodeSet containing the PropositionNodes of each corresponding BitSet.
+     */
+    public static ArrayList<NodeSet> generateNodeSetsFromBitSets(ArrayList<BitSet> conflictingHypsCollection) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+        ArrayList<NodeSet> nodeSetList = new ArrayList<>();
         for (BitSet b : conflictingHypsCollection) {
-            PropositionSet propSet = new PropositionSet();
+            NodeSet propSet = new NodeSet();
             for (int i = b.nextSetBit(0); i != -1; i = b.nextSetBit(i + 1))
-                propSet = propSet.add(i);
-            propsList.add(propSet);
+                propSet.addNode(Network.getNodeById(i));
+            nodeSetList.add(propSet);
         }
-        return propsList;
+        return nodeSetList;
     }
 
+    /**
+     * Checks if a negation exists given min, max, and arg up or down cables of some node.
+     * This is a helper method for getConflictingHypsCollectionForNegating and getConflictingHypsCollectionForNegated.
+     * @param min min cable.
+     * @param max max cable.
+     * @param arg arg cable.
+     * @return <code>true</code> if negation exists, <code>false</code> otherwise.
+     */
     public static boolean negationExists(Cable min, Cable max, Cable arg) {
         if (
                 min != null && max != null && arg != null &&
@@ -269,6 +326,12 @@ public class Controller {
             return false;
     }
 
+    /**
+     * Given a BitSet representation of some context's hyps this method returns all the minimalNoGoods
+     * that are subsets of this context.
+     * @param contextBitset The context's hyps BitSet representation.
+     * @return
+     */
     public static ArrayList<BitSet> getConflictingHypsFromMinimalNoGoods(BitSet contextBitset) {
         ArrayList<BitSet> conflictingHypsInContext = new ArrayList<>();
         for (BitSet bitSet : minimalNoGoods) {
@@ -282,8 +345,16 @@ public class Controller {
         return null;
     }
 
-    public static Collection<BitSet> generateBitsets(Collection<PropositionSet> propositionSetCollection) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-        Collection<BitSet> bitSets = new ArrayList<>();
+    /**
+     * Genrate an ArrayList of BitSets from an ArrayList of PropositionSets.
+     * This is a helper method for getConflictingHypsCollectionForNegating and getConflictingHypsCollectionForNegated.
+     * @param propositionSetCollection ArrayList of PropositionSets.
+     * @return ArrayList of BitSets, where each BitSet corresponds to a PropositionSet in propositionSetCollection.
+     * @throws NotAPropositionNodeException
+     * @throws NodeNotFoundInNetworkException
+     */
+    public static ArrayList<BitSet> generateBitSetsFromPropositionSets(Collection<PropositionSet> propositionSetCollection) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        ArrayList<BitSet> bitSets = new ArrayList<>();
         for (PropositionSet propSet : propositionSetCollection) {
             int[] props = PropositionSet.getPropsSafely(propSet);
             BitSet temp = new BitSet();
@@ -295,7 +366,18 @@ public class Controller {
 
     }
 
-    public static ArrayList<PropositionSet> getConflictingHypsCollectionForNegating(PropositionNode negatingNode, DownCable arg, BitSet tempContextBitset) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
+    /**
+     * Given a negating node, it's arg downcable, and a BitSet representation of some context's hyps;
+     * it first updates the minimalNoGoods with the supports of the negating proposition node and the supports of the negated proposition node.
+     * @param arg Downcable having the negated node.
+     * @param tempContextBitset a BitSet representation of some context's hyps with a newly asserted hyp added to it to test for contradiction.
+     * @return An ArrayList of NodeSets, each having a combination of the supports, asserted in some context, of the two conflicting propsositions.
+     * If not a single such combination exists <code>null</code> is returned.
+     * @throws NotAPropositionNodeException
+     * @throws NodeNotFoundInNetworkException
+     * @throws DuplicatePropositionException
+     */
+    public static ArrayList<NodeSet> getConflictingHypsCollectionForNegating(PropositionNode negatingNode, DownCable arg, BitSet tempContextBitset) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
         Collection<PropositionSet> negatingPropSupports = negatingNode.getAssumptionBasedSupport().values();
         Collection<PropositionSet> combinedContradictorySupports = new ArrayList<>();
 
@@ -304,22 +386,27 @@ public class Controller {
             combinedContradictorySupports.addAll(combine(negatingPropSupports, negatedNodeSupports));
         }
 
-
         /*                    add to minimalNoGoods  */
-        Collection<BitSet> bitSetCollection = generateBitsets(combinedContradictorySupports);
+        Collection<BitSet> combinedContradictorySupportsBitSetCollection = generateBitSetsFromPropositionSets(combinedContradictorySupports);
 
-        for (BitSet bitSet : bitSetCollection) {
+//        to avoid ConcurrentModificationException
+        ArrayList<BitSet> minimalNoGoodsClone = (ArrayList<BitSet>) minimalNoGoods.clone();
+
+        for (BitSet bitSet : combinedContradictorySupportsBitSetCollection) {
             boolean intersects = false;
-            for (BitSet bitSet1 : minimalNoGoods) {
+            for (BitSet bitSet1 : minimalNoGoodsClone) {
                 BitSet temp = (BitSet) bitSet.clone();
                 temp.and(bitSet1);
                 if (temp.equals(bitSet)) {
-                    intersects = true;
                     int index = minimalNoGoods.indexOf(bitSet1);
                     if (intersects)
-                        minimalNoGoods.add(index, temp);
-                    else
                         minimalNoGoods.remove(index);
+                    else {
+                        minimalNoGoods.remove(index);
+                        minimalNoGoods.add(index, temp);
+                        intersects = true;
+                    }
+
                 }
             }
             if (!intersects)
@@ -328,13 +415,13 @@ public class Controller {
 
         ArrayList<BitSet> conlifctingHypsInContextCollection = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
         if (conlifctingHypsInContextCollection != null)
-            return generatePropositionSetsFromBitSets(conlifctingHypsInContextCollection);
+            return generateNodeSetsFromBitSets(conlifctingHypsInContextCollection);
         else
             return null;
 
     }
 
-    public static ArrayList<PropositionSet> getConflictingHypsCollectionForNegated(PropositionNode negatedNode, UpCable arg, BitSet tempContextBitset) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
+    public static ArrayList<NodeSet> getConflictingHypsCollectionForNegated(PropositionNode negatedNode, UpCable arg, BitSet tempContextBitset) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
         PropositionNode negatingNode = (PropositionNode) arg.getNodeSet().getNode(0);
         Collection<PropositionSet> negatedPropSupports = negatedNode.getAssumptionBasedSupport().values();
         Collection<PropositionSet> negatingPropSupports = negatingNode.getAssumptionBasedSupport().values();
@@ -342,20 +429,26 @@ public class Controller {
         Collection<PropositionSet> combinedContradictorySupports = combine(negatingPropSupports, negatedPropSupports);
 
         /*                    add to minimalNoGoods  */
-        Collection<BitSet> bitSetCollection = generateBitsets(combinedContradictorySupports);
+        Collection<BitSet> combinedContradictorySupportsBitSetCollection = generateBitSetsFromPropositionSets(combinedContradictorySupports);
 
-        for (BitSet bitSet : bitSetCollection) {
+//        to avoid ConcurrentModificationException
+        ArrayList<BitSet> minimalNoGoodsClone = (ArrayList<BitSet>) minimalNoGoods.clone();
+
+        for (BitSet bitSet : combinedContradictorySupportsBitSetCollection) {
             boolean intersects = false;
-            for (BitSet bitSet1 : minimalNoGoods) {
+            for (BitSet bitSet1 : minimalNoGoodsClone) {
                 BitSet temp = (BitSet) bitSet.clone();
                 temp.and(bitSet1);
                 if (temp.equals(bitSet)) {
-                    intersects = true;
                     int index = minimalNoGoods.indexOf(bitSet1);
                     if (intersects)
-                        minimalNoGoods.add(index, temp);
-                    else
                         minimalNoGoods.remove(index);
+                    else {
+                        minimalNoGoods.remove(index);
+                        minimalNoGoods.add(index, temp);
+                        intersects = true;
+                    }
+
                 }
             }
             if (!intersects)
@@ -364,16 +457,24 @@ public class Controller {
 
         ArrayList<BitSet> conlifctingHypsInContextCollection = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
         if (conlifctingHypsInContextCollection != null)
-            return generatePropositionSetsFromBitSets(conlifctingHypsInContextCollection);
+            return generateNodeSetsFromBitSets(conlifctingHypsInContextCollection);
         else
             return null;
     }
 
-    public static ArrayList<PropositionSet> checkForContradiction(PropositionNode node, Context c) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+    /**
+     * Checks if some node's addition to a context c introduces a contradiction.
+     * @param node
+     * @param c
+     * @param skipCache This is a boolean flag to allow skipping the cache checking stage. It is useful for testing purposes only, for now.
+     * @return
+     * @throws NodeNotFoundInNetworkException
+     * @throws DuplicatePropositionException
+     * @throws NotAPropositionNodeException
+     */
+    public static ArrayList<NodeSet> checkForContradiction(PropositionNode node, Context c, boolean skipCache) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 
-        /*       First check in minimalNoGoods */
-
-//     add  prop to a clone of the context's bitset
+        //     add  prop supports to a clone     of the context's bitset
         BitSet tempContextBitset = (BitSet) c.getHypsBitset().clone();
 
         Collection<PropositionSet> propsCollection = node.getAssumptionBasedSupport().values();
@@ -384,14 +485,18 @@ public class Controller {
                 tempContextBitset.set(props[i]);
         }
 
-        ArrayList<BitSet> conflictingHypsInContext = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
+        if (!skipCache) {
 
-        if (conflictingHypsInContext != null)
-            return generatePropositionSetsFromBitSets(conflictingHypsInContext);
+            /*       First check in minimalNoGoods */
 
+            ArrayList<BitSet> conflictingHypsInContext = getConflictingHypsFromMinimalNoGoods(tempContextBitset);
+
+            if (conflictingHypsInContext != null)
+                return generateNodeSetsFromBitSets(conflictingHypsInContext);
+        }
 //        else check in down cables and up cables
 
-        /*          check in downcable          */
+        /*          check in downcables          */
         if (node.getTerm() instanceof Molecular) {
             Hashtable<String, DownCable> downCables = ((Molecular) node.getTerm()).getDownCableSet().getDownCables();
             DownCable min = downCables.get("min");
@@ -399,12 +504,13 @@ public class Controller {
             DownCable arg = downCables.get("arg");
 
             if (negationExists(min, max, arg)) {
-                ArrayList<PropositionSet> conflictingHypsInContextFromDownCables = getConflictingHypsCollectionForNegating(node, arg, tempContextBitset);
+                ArrayList<NodeSet> conflictingHypsInContextFromDownCables = getConflictingHypsCollectionForNegating(node, arg, tempContextBitset);
                 if (conflictingHypsInContextFromDownCables != null)
                     return conflictingHypsInContextFromDownCables;
             }
         }
 
+        /*          check in upcables            */
         UpCableSet up = node.getUpCableSet();
 
         if (up.getUpCables().size() > 0) {
@@ -412,7 +518,7 @@ public class Controller {
             UpCable max = up.getUpCable("max");
             UpCable arg = up.getUpCable("arg");
             if (negationExists(min, max, arg)) {
-                ArrayList<PropositionSet> conflictingHypsInContextFromUpCables = getConflictingHypsCollectionForNegated(node, arg, tempContextBitset);
+                ArrayList<NodeSet> conflictingHypsInContextFromUpCables = getConflictingHypsCollectionForNegated(node, arg, tempContextBitset);
                 if (conflictingHypsInContextFromUpCables != null)
                     return conflictingHypsInContextFromUpCables;
             }
@@ -422,20 +528,47 @@ public class Controller {
         return null;
     }
 
+    /**
+     * Handles the last found contradiction in the system.
+     * @param hypsToBeRemoved A PropositionSet having all the hyps to be removed
+     * from the contraictory context to resolve the contradiction.
+     * @param ignore Boolean flag to ignore the contradiciton and adds the contradictory proposition anyway.
+     * @throws NodeNotFoundInNetworkException
+     * @throws NotAPropositionNodeException
+     * @throws ContextNameDoesntExistException
+     * @throws NodeNotFoundInPropSetException
+     * @throws DuplicatePropositionException
+     */
     public static void handleContradiction(PropositionSet hypsToBeRemoved, boolean ignore) throws NodeNotFoundInNetworkException, NotAPropositionNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException {
         if (ignore) {
-            Context inconsistentContext = new Context(conflictingContext, contextSet.getContext(conflictingContext).getHypothesisSet().add(conflictingHyp));
+            Context inconsistentContext = new Context(conflictingContext, contextSet.getContext(conflictingContext).getHypothesisSet().union(conflictingHyps));
             contextSet.add(inconsistentContext);
             return;
         }
+        else {
 
-        if (hypsToBeRemoved != null) {
-            removeHypsFromContext(hypsToBeRemoved, conflictingContext);
+            if (hypsToBeRemoved != null) {
+                removeHypsFromContext(hypsToBeRemoved, conflictingContext);
+                PropositionSet modifiedHyps = conflictingHyps.removeProps(hypsToBeRemoved);
+                Context resolvedContext = new Context(conflictingContext, contextSet.getContext(conflictingContext).getHypothesisSet().union(modifiedHyps));
+                contextSet.add(resolvedContext);
+            }
+            conflictingContext = null;
+            conflictingHyps = null;
         }
 
     }
 
-    public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    /**
+     * removes a set of hyps from a context.
+     * @param hyps
+     * @param contextName
+     * @return
+     * @throws ContextNameDoesntExistException
+     * @throws NotAPropositionNodeException
+     * @throws NodeNotFoundInNetworkException
+     */
+    public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         Context c = contextSet.getContext(contextName);
         if (c == null) throw new ContextNameDoesntExistException(contextName);
         PropositionSet propSet = c.getHypothesisSet().removeProps(hyps);
@@ -443,7 +576,26 @@ public class Controller {
         return contextSet.add(c);
     }
 
+    /**
+     * removes a proposition fromm all contexts. This means removing all its supports from all contexts.
+     * @param node
+     * @throws NodeNotFoundInPropSetException
+     * @throws NotAPropositionNodeException
+     * @throws NodeNotFoundInNetworkException
+     */
+    public static void removePropositionFromAllContexts(PropositionNode node) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        int hyp = node.getId();
+        for (String contextName: contextSet.getNames()) {
+            Context c = new Context(contextName, contextSet.getContext(contextName).getHypothesisSet().remove(hyp));
+            contextSet.add(c);
+        }
+    }
 
+
+    /**
+     * Returns all the names of contexts available in the system.
+     * @return
+     */
     public static Set<String> getAllNamesOfContexts() {
         return contextSet.getNames();
     }

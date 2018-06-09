@@ -14,6 +14,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout.Alignment;
 
@@ -184,7 +185,9 @@ public class Main extends Application {
         stage.setWidth(primaryScreenBounds.getWidth());
         stage.setHeight(primaryScreenBounds.getHeight());
         
+		
 		wv.getEngine().load(url);
+		
 		wv.prefWidthProperty().bind(stage.widthProperty());
 		wv.prefHeightProperty().bind(stage.heightProperty());
 	    Group root = new Group(wv);
@@ -192,16 +195,16 @@ public class Main extends Application {
 	    stage.setTitle("Node Set"); 
 	    stage.setScene(scene); 
 	    stage.show(); 
-	    
+	 
 	}
 	
-	public static void resolveConflicts(ArrayList<PropositionSet> propSet) {
+	public static void resolveConflicts(ArrayList<NodeSet> propSet) {
 		ArrayList<Integer> tempHyps = new ArrayList<Integer>();
 		int x = 0;
 		int y = 0;
 		windows = propSet.size();
 		for(int i = 0; i<propSet.size(); i++) {
-			PropositionSet props = propSet.get(i);
+			NodeSet props = propSet.get(i);
 			Stage stage = new Stage();
 			Scene scene = new Scene(new VBox()); 
 			String styles = null;
@@ -214,21 +217,9 @@ public class Main extends Application {
 			AnchorPane pane3 = new AnchorPane();
 			ListView<String> list = new ListView<String>();
 			pane3.getChildren().add(list);
-			int ids[] = null;
-			try {
-				ids = PropositionSet.getPropsSafely(props);
-			} catch (NotAPropositionNodeException e) {
-				e.printStackTrace();
-			} catch (NodeNotFoundInNetworkException e) {
-				e.printStackTrace();
-			}
-			for(int id : ids) {
-				Node n = null;
-				try {
-					n = Network.getNodeById(id);
-				} catch (NodeNotFoundInNetworkException e) {
-					e.printStackTrace();
-				}
+			
+			for(int s = 0; s<props.size(); s++) {
+				Node n = props.getNode(s);
 				list.getItems().add(n.getIdentifier());
 			}
 			
@@ -250,43 +241,11 @@ public class Main extends Application {
 					tempHyps.add(x.getId());
 					stage.close();
 					windows--;
-				}
-				
-			});
-			
-			AnchorPane pane2 = new AnchorPane();
-			Label lbl = new Label("Please delete a node to resolve contradiction");
-			lbl.setStyle("-fx-font-size: 24px;");
-			lbl.getStyleClass().add("title");
-			
-			pane2.getChildren().add(lbl);
-			
-			btn.prefWidthProperty().bind(stage.widthProperty());
-			lbl.prefWidthProperty().bind(stage.widthProperty());
-			list.prefWidthProperty().bind(stage.widthProperty());
-			
-			((VBox)scene.getRoot()).getChildren().add(lbl);
-			((VBox)scene.getRoot()).getChildren().add(list);
-			((VBox)scene.getRoot()).getChildren().add(btn);
-			
-		    stage.setTitle("Resolve Contradiction");
-		    stage.setScene(scene); 
-		    stage.setWidth(600);
-		    stage.setHeight(360);
-			stage.setResizable(false);
-			stage.setX(x);
-			stage.setY(y);
-			x += 100;
-			y += 100;
-			stage.show();
-			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
-				@Override
-				public void handle(WindowEvent event) {
 					if(windows == 0) {
 						int[] hyps = new int[tempHyps.size()];
 						for(int i = 0; i<hyps.length; i++) {
 							hyps[i] = tempHyps.get(i);
+							System.out.println(tempHyps.get(i));
 						}
 						PropositionSet propNodes = null;
 						try {
@@ -318,10 +277,36 @@ public class Main extends Application {
 				}
 				
 			});
+			
+			AnchorPane pane2 = new AnchorPane();
+			Label lbl = new Label("Please delete a node to resolve contradiction");
+			lbl.setStyle("-fx-font-size: 24px;");
+			lbl.getStyleClass().add("title");
+			
+			pane2.getChildren().add(lbl);
+			
+			btn.prefWidthProperty().bind(stage.widthProperty());
+			lbl.prefWidthProperty().bind(stage.widthProperty());
+			list.prefWidthProperty().bind(stage.widthProperty());
+			
+			((VBox)scene.getRoot()).getChildren().add(lbl);
+			((VBox)scene.getRoot()).getChildren().add(list);
+			((VBox)scene.getRoot()).getChildren().add(btn);
+			
+		    stage.setTitle("Resolve Contradiction");
+		    stage.setScene(scene); 
+		    stage.setWidth(600);
+		    stage.setHeight(360);
+			stage.setResizable(false);
+			stage.setX(x);
+			stage.setY(y);
+			x += 100;
+			y += 100;
+			stage.show();
 		}
 	}
 	
-	public static void userAction(ArrayList<PropositionSet> propSet) {
+	public static void userAction(ArrayList<NodeSet> propSet) {
 		ButtonType ignore = new ButtonType("Ignore");
 		ButtonType resolve = new ButtonType("Resolve Conflict");
 		ButtonType ca = new ButtonType("Cancel Assertion");
@@ -335,9 +320,8 @@ public class Main extends Application {
 		    if (response == resolve) {
 		    	resolveConflicts(propSet);
 		    }else if (response == ignore) {
-		    	PropositionSet propNodes = null;
 		    	try {
-					Controller.handleContradiction(propNodes, true);
+					Controller.handleContradiction(null, true);
 				} catch (NodeNotFoundInNetworkException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -355,7 +339,24 @@ public class Main extends Application {
 					e.printStackTrace();
 				}
 		    }else if(response == ca) {
-		    	//cancel assertion
+		    	try {
+					Controller.handleContradiction(null, false);
+				} catch (NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NotAPropositionNodeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NodeNotFoundInPropSetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DuplicatePropositionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ContextNameDoesntExistException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }
 		});
 	}

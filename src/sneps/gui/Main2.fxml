@@ -23,16 +23,16 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@application2.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sneps.gui.FXController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@application2.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sneps.gui.FXController">
    <children>
    
-      <TabPane fx:id="mainTabPane" layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab text="Home">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TabPane fx:id="secondTabPane" layoutX="47.0" layoutY="42.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TabPane layoutX="47.0" layoutY="42.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
                             <Tab text="Nodes">
                                  <content>
@@ -109,12 +109,13 @@
                                                       </AnchorPane>
                                                       <AnchorPane layoutX="1105.0" AnchorPane.rightAnchor="10.0">
                                                          <children>
-                                                            <ListView fx:id="wiresList" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" />
+                                                            <ListView fx:id="wiresList" layoutY="48.0" prefHeight="166.0" prefWidth="200.0" />
                                                             <Label prefHeight="34.0" prefWidth="200.0" styleClass="title" text="List of created wires">
                                                                <font>
                                                                   <Font size="22.15" />
                                                                </font>
                                                             </Label>
+                                                            <Button layoutX="19.0" layoutY="222.0" mnemonicParsing="false" onAction="#deleteWire" styleClass="tab" text="Delete Wire" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </children>
@@ -136,6 +137,7 @@
                                                 </Label>
                                                 <Button layoutX="14.0" layoutY="91.0" mnemonicParsing="false" onAction="#deleteNode" styleClass="tab" text="Delete Node" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="55.0" />
                                                 <Button fx:id="assertBTN" disable="true" layoutX="20.0" layoutY="65.0" mnemonicParsing="false" onAction="#assertNodeToCurrentContext" styleClass="tab" text="Assert node to current context" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="95.0" />
+                                                <Button fx:id="deduceBTN" disable="true" layoutX="20.0" layoutY="65.0" mnemonicParsing="false" onAction="#deduce" styleClass="tab" text="Deduce" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="135.0" />
                                              </children>
                                           </AnchorPane>
                                        </children>
@@ -259,7 +261,6 @@
                                                                            </font>
                                                                         </Label>
                                                                         <Button layoutX="127.0" layoutY="254.0" mnemonicParsing="false" onAction="#addOverriddenRelationToCaseFrame" styleClass="tab" text="Add to case frame relation set" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                                                        <TextField fx:id="overrideAdjust" layoutX="72.0" layoutY="54.0" promptText="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
                                                                         <TextField fx:id="overrideLimit" layoutX="72.0" layoutY="212.0" promptText="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
                                                                         <Label layoutX="14.0" layoutY="54.0" text="Adjust:" AnchorPane.leftAnchor="10.0">
                                                                            <font>
@@ -271,9 +272,11 @@
                                                                               <Font size="16.0" />
                                                                            </font>
                                                                         </Label>
+                                                                        <SplitMenuButton fx:id="overrideAdjust" alignment="CENTER" layoutY="54.0" mnemonicParsing="false" text="Optional" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="10.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                   <Button layoutX="913.0" layoutY="370.0" mnemonicParsing="false" onAction="#submitRRCF" styleClass="tab" text="Submit Case Frame" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                                                  <SplitMenuButton fx:id="overrideAdjust" alignment="CENTER" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Optional" />
                                                                </children>
                                                             </AnchorPane>
                                                             <AnchorPane layoutX="14.0" layoutY="390.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="26.0">
@@ -433,18 +436,28 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Create a new semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                                             <font>
-                                                <Font size="22.15" />
-                                             </font>
-                                          </Label>
-                                          <Label styleClass="miniTitle" text="Semantic Type:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="55.0">
-                                             <font>
-                                                <Font size="16.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="semanticName" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="55.0" />
-                                          <Button layoutX="14.0" layoutY="94.0" mnemonicParsing="false" onAction="#createSemanticType" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                          <AnchorPane layoutX="10.0" layoutY="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="260.0" styleClass="title" text="Create a new semantic type" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                   <font>
+                                                      <Font size="22.15" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutY="50.0" text="Semantic Type:" AnchorPane.leftAnchor="0.0">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="semanticName" layoutX="115.0" layoutY="50.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="0.0" />
+                                                <Label layoutX="10.0" layoutY="90.0" text="Select a Parent:" AnchorPane.leftAnchor="0.0">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button layoutY="130.0" mnemonicParsing="false" onAction="#createSemanticType" styleClass="tab" text="Create semantic type" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                <SplitMenuButton fx:id="parentSemChoice" alignment="CENTER" layoutX="115.0" layoutY="89.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="189.0" text="Select A Parent" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -683,7 +696,7 @@
                                     </AnchorPane>
                                  </content>
                               </Tab>
-                              <Tab text="Context">
+                              <Tab text="Contexts">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
