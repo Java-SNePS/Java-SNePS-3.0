@@ -10,10 +10,12 @@
  */
 package sneps.network.cables;
 
+import java.io.Serializable;
+
 import sneps.network.classes.Relation;
 import sneps.setClasses.NodeSet;
 
-public abstract class Cable {
+public abstract class Cable implements Serializable{
 	
 	/**
 	 * The relation that labels the arcs included this cable.

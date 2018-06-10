@@ -4,9 +4,10 @@ import java.util.Iterator;
 
 import sneps.snip.channels.Channel;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
-public class ChannelSet implements Iterable<Channel> {
+public class ChannelSet implements Iterable<Channel>, Serializable {
 	private HashSet<Channel> channels;
 
 	public ChannelSet() {

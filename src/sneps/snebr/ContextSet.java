@@ -1,9 +1,12 @@
 package sneps.snebr;
 
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Set;
 
-public class ContextSet {
+public class ContextSet implements Serializable{
 
     private Hashtable<String, Context> contexts;
 
@@ -22,6 +25,14 @@ public class ContextSet {
     public ContextSet(String name) {
         this();
         this.contexts.put(name, new Context(name));
+    }
+
+    public void clear() {
+        contexts.clear();
+    }
+
+    public Set<String> getNames() {
+        return contexts.keySet();
     }
 
     /**
@@ -80,6 +91,10 @@ public class ContextSet {
                 return c;
         }
         return context;
+    }
+
+    public Collection<Context> getContexts() {
+        return this.contexts.values();
     }
 
 }

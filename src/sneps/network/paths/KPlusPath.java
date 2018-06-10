@@ -11,6 +11,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -18,7 +19,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.Node;
 
-public class KPlusPath extends Path {
+public class KPlusPath extends Path implements Serializable{
 	
 	/**
 	 * a path that is to be followed one or more times until no more 

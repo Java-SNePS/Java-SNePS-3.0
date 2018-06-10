@@ -1,11 +1,12 @@
 package sneps.setClasses;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Vector;
 
 import sneps.network.Node;
 
-public class NodeSet implements Iterable<Node> {
+public class NodeSet implements Iterable<Node>, Serializable {
 	private Vector<Node> nodes;
 
 	public NodeSet() {
@@ -100,9 +101,20 @@ public class NodeSet implements Iterable<Node> {
 		return nodes.iterator();
 	}
 
-	/*@Override
+	/**
+	 * This method overrides the default toString method inherited from the
+	 * Object class.
+	 */
+	@Override
 	public String toString() {
-		
-	}*/
+		String s = "{";
+		for (int i = 0; i < this.nodes.size(); i++) {
+			s += this.nodes.get(i).toString();
+			if (i < this.nodes.size() - 1)
+				s += " ";
+		}
+		s += "}";
+		return s;
+	}
 	
 }

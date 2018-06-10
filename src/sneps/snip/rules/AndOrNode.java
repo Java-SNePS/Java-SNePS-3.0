@@ -30,11 +30,10 @@ import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 
 public class AndOrNode extends RuleNode {
-
 	boolean sign = false;
-	
 	private int min, max, args;
 	private int received=0;
+
 	public int getAndOrMin() {
 		return min;
 	}
@@ -168,11 +167,6 @@ public class AndOrNode extends RuleNode {
 			}
 		}
 		
-		
-		
-		
-		
-
 
 		Report forwardReport = new Report(sub, supports, sign, contextID);
 		
@@ -182,7 +176,6 @@ public class AndOrNode extends RuleNode {
 		}
 		
 	}
-	
 	
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("Xant");

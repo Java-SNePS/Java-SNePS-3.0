@@ -1,5 +1,6 @@
 package sneps.network.classes.term;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 
 import sneps.network.Node;
@@ -10,7 +11,7 @@ import sneps.network.classes.Relation;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.VarNodeSet;
 
-public class Open extends Molecular {
+public class Open extends Molecular implements Serializable{
 	protected VarNodeSet variables;
 
 	/**

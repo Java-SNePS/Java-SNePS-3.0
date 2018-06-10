@@ -8,15 +8,26 @@ import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.setClasses.PropositionSet;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.BitSet;
+
 import java.util.Collection;
 import java.util.HashSet;
 
 
-public class Context {
+
+public class Context implements Serializable{
     private PropositionSet hyps;
 
     private HashSet<String> names;
+
+    protected BitSet getHypsBitset() {
+        return hypsBitset;
+    }
+
+    private BitSet hypsBitset;
+
 
     /**
      * Constructs a new empty Context
@@ -24,6 +35,7 @@ public class Context {
     protected Context() {
         names = new HashSet<String>();
         this.hyps = new PropositionSet();
+        this.hypsBitset = new BitSet();
     }
 
     /**
@@ -44,6 +56,7 @@ public class Context {
     protected Context(Context c) {
         this.hyps = c.getHypothesisSet();
         this.names = c.getNames();
+        this.hypsBitset = c.getHypsBitset();
     }
 
     /**
@@ -57,6 +70,8 @@ public class Context {
     protected Context(Context c, int hyp) throws NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
         this.names = c.getNames();
         this.hyps = c.getHypothesisSet().add(hyp);
+        this.hypsBitset = (BitSet) c.getHypsBitset().clone();
+        this.hypsBitset.set(hyp);
     }
 
     /**
@@ -76,9 +91,13 @@ public class Context {
      * @param contextName name of the new Context
      * @param hyps        the hyps the Context's hyps should be set to
      */
-    protected Context(String contextName, PropositionSet hyps) {
+    protected Context(String contextName, PropositionSet hyps) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         this(contextName);
         this.hyps = hyps;
+        this.hypsBitset = new BitSet();
+        int [] arr = PropositionSet.getPropsSafely(this.hyps);
+        for (int i = 0; i < arr.length; i++)
+            this.hypsBitset.set(arr[i]);
     }
 
     /**
@@ -107,23 +126,16 @@ public class Context {
      * Checks if a propositions is asserted in this context
      * @param p the proposition to be checked for assertion.
      * @return <code>true</code> if the proposition exists, otherwise <code>false</code>
-     * @throws NotAPropositionNodeException If the node p is not a proposition.
+     * @throws NotAPropositionNodeException   If the node p is not a proposition.
      * @throws NodeNotFoundInNetworkException If the node p doesn't exist in the network.
      */
     public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int hyp = p.getId();
-
-        if (Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) < 0) {
-            return true;
-        } else if (isSupported(p)) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) > 0
+                || isSupported(p);
     }
 
-    private boolean isSupported(PropositionNode node) {
+    public boolean isSupported(PropositionNode node) {
         Collection<PropositionSet> assumptionSet = node.getBasicSupport()
                 .getAssumptionBasedSupport()
                 .values();
@@ -135,30 +147,16 @@ public class Context {
         return false;
     }
 
-    public PropositionSet allAsserted() {
+    public PropositionSet allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
         Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
         PropositionSet asserted = new PropositionSet();
         int[] hyps;
-        try {
-            hyps = PropositionSet.getPropsSafely(this.hyps);
-        } catch (NotAPropositionNodeException e) {
-            return null;
-        } catch (NodeNotFoundInNetworkException e1) {
-            return null;
-        }
+        hyps = PropositionSet.getPropsSafely(this.hyps);
         for (PropositionNode node : allPropositionNodes) {
-            try {
-                if (Arrays.binarySearch(hyps, node.getId()) < 0) {
-                    asserted.add(node.getId());
-                } else if (isSupported(node)) {
-                    asserted.add(node.getId());
-                }
-            } catch (NodeNotFoundInNetworkException e1) {
-                return null;
-            } catch (NotAPropositionNodeException e) {
-                return null;
-            } catch (DuplicatePropositionException e) {
-                System.err.println(e.getMessage());
+            if (Arrays.binarySearch(hyps, node.getId()) > 0) {
+                asserted = asserted.add(node.getId());
+            } else if (isSupported(node)) {
+                asserted = asserted.add(node.getId());
             }
         }
 
@@ -194,5 +192,6 @@ public class Context {
     protected boolean removeName(String name) {
         return this.names.remove(name);
     }
+
 
 }

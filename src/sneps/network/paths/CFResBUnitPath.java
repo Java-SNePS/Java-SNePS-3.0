@@ -14,9 +14,9 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-import sneps.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.PathTrace;
@@ -24,9 +24,10 @@ import sneps.network.classes.Relation;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.Node;
+import sneps.setClasses.NodeSet;
 import sneps.network.classes.term.Molecular;
 
-public class CFResBUnitPath extends Path{
+public class CFResBUnitPath extends Path implements Serializable{
 
 	/**
 	 * The relation that labels the arc of this case frame restricted

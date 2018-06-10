@@ -106,15 +106,6 @@ public class ThreshNode extends RuleNode {
 		for (FlagNode fn : tRui.getFlagNodeSet()) {
 			nodesSentReports.add(fn.getNode().getId());
 		}
-
-		
-
-
-		
-		
-		
-		
-		
 		
 		
 		Substitutions sub = tRui.getSubstitutions();
@@ -191,6 +182,7 @@ public class ThreshNode extends RuleNode {
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		return this.addContextRUIS(contxt, index);
 	}
+
 
 	@Override
 	public NodeSet getDownAntNodeSet() {

@@ -1,11 +1,7 @@
 package sneps.network;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
@@ -13,10 +9,8 @@ import sneps.setClasses.ChannelSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.PropositionSet;
 import sneps.setClasses.ReportSet;
-import sneps.snebr.Context;
-import sneps.snebr.Controller;
-import sneps.exceptions.CustomException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import java.util.Hashtable;
 
@@ -32,7 +26,7 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class PropositionNode extends Node {
+public class PropositionNode extends Node implements Serializable{
 	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;
@@ -47,7 +41,7 @@ public class PropositionNode extends Node {
 	}
 
 	public PropositionNode(Term trm) {
-		super(trm);
+		super(Semantic.proposition, trm);
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -239,6 +233,16 @@ public class PropositionNode extends Node {
 	}
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return basicSupport.getAssumptionBasedSupport();
+	}
+	public Hashtable<String, PropositionSet> getJustificationSupport() {
+		return basicSupport.getJustificationSupport();
+	}
+	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
+		basicSupport.addJustificationBasedSupport(propSet);
+	}
+	public boolean removeNodeFromSupports(PropositionNode propNode) {
+		return basicSupport.removeNodeFromSupports(propNode);
+		
 	}
 
 	public ReportSet getNewInstances() {

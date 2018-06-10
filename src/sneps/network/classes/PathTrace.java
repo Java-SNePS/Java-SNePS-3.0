@@ -1,5 +1,6 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.network.Node;
@@ -10,7 +11,7 @@ import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.setClasses.NodeSet;
 
-public class PathTrace {
+public class PathTrace implements Serializable{
 
 	/**
 	 *  The path followed to reach the node that have this

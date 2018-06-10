@@ -25,7 +25,6 @@ public class WhenDoNode extends RuleNode {
 		
 	}
 
-
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		// TODO Auto-generated method stub

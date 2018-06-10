@@ -1,6 +1,7 @@
 
 package sneps.network;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -29,9 +30,12 @@ import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
-public abstract class RuleNode extends PropositionNode {
+public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
 	private NodeSet consequents;
+	/**
+	 * a NodeSet containing all the pattern antecedents attached to this Node
+	 */
 	protected NodeSet antNodesWithVars;
 	protected NodeSet antNodesWithoutVars;
 	protected Set<Integer> antNodesWithVarsIDs;
@@ -41,6 +45,19 @@ public abstract class RuleNode extends PropositionNode {
 	protected ContextRuisSet contextRuisSet;
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
+	public RuleNode(){
+		super();
+		consequents = new NodeSet();
+		antNodesWithoutVars = new NodeSet();
+		antNodesWithoutVarsIDs = new HashSet<Integer>();
+		antNodesWithVars = new NodeSet();
+		antNodesWithVarsIDs = new HashSet<Integer>();
+		shareVars = false;
+		sharedVars = new VarNodeSet();
+		contextRuisSet = new ContextRuisSet();
+		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
+	}
+	
 	public RuleNode(Semantic sym){
 		super(sym);
 		consequents = new NodeSet();
@@ -53,8 +70,9 @@ public abstract class RuleNode extends PropositionNode {
 		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
-	public RuleNode(Term trm){
-		super(trm);
+	
+	public RuleNode(Term syn) {
+		super(syn);
 		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
@@ -65,6 +83,7 @@ public abstract class RuleNode extends PropositionNode {
 		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
+
 	public RuleNode(Semantic sym, Term syn) {
 		super(sym, syn);
 		consequents = new NodeSet();
@@ -140,7 +159,7 @@ public abstract class RuleNode extends PropositionNode {
 		VariableNode n = (VariableNode) nodes.getNode(0);
 		boolean res = true;
 		for (int i = 1; i < nodes.size(); i++) {
-			if (!n.hasSameFreeVariableAs((VariableNode) nodes.getNode(i))) {
+			if (!n.hasSameFreeVariablesAs((VariableNode) nodes.getNode(i))) {
 				res = false;
 				break;
 			}

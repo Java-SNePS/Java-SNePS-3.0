@@ -1,24 +1,57 @@
 package sneps.network;
 
+import java.io.Serializable;
+
 import sneps.network.classes.Semantic;
+import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
+import sneps.setClasses.VariableSet;
 
-public class VariableNode extends Node {
+public class VariableNode extends Node implements Serializable{
+	private VariableSet freeVariables;
 
-	public VariableNode(Variable trm) {
+	private boolean snepslogFlag;
+
+	public VariableNode() {
+		snepslogFlag = false;
+	}
+
+	public VariableNode(Term trm) {
 		super(trm);
+		snepslogFlag = false;
 	}
 
-	public VariableNode(Semantic semantic, Variable v) {
-		super(semantic, v);
+	public VariableNode(Semantic sem) {
+		super(sem);
+		snepslogFlag = false;
 	}
 
-	public boolean hasSameFreeVariableAs(VariableNode node) {
-		if(!((Variable)this.getTerm())
-				.equals(((Variable)node.getTerm())))
+	public VariableNode(Semantic sem, Term trm) {
+		super(sem, trm);
+		snepslogFlag = false;
+	}
+
+	public boolean hasSameFreeVariablesAs(VariableNode node) {
+		int i = 0;
+		for (Variable var : freeVariables) {
+			if (!var.equals(node.getFreeVariables().getVariable(i))) {
 				return false;
-		
+			} else {
+				i++;
+			}
+		}
 		return true;
 	}
 
+	public boolean isSnepslogFlag() {
+		return snepslogFlag;
+	}
+
+	public void setSnepslogFlag(boolean snepslogFlag) {
+		this.snepslogFlag = snepslogFlag;
+	}
+
+	public VariableSet getFreeVariables() {
+		return freeVariables;
+	}
 }
