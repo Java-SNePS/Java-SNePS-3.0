@@ -32,5 +32,10 @@ public class ReportSet implements Iterable<Report>, Serializable {
 	}
 
 	
+	public boolean isEmpty() {
+		return reports.isEmpty();
+	}
+
+	
 
 }

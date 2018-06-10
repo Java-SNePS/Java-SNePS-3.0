@@ -1,5 +1,6 @@
 package sneps.snip.classes;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -13,6 +14,7 @@ import sneps.network.VariableNode;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
+import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
@@ -30,13 +32,13 @@ public class PTree extends RuisHandler {
 	 * Constructor for the PTree
 	 * @param context
 	 */
-	public PTree(String context) {
-		super(context);
+	public PTree() {
+		super();
 		patternVariables = new Hashtable<Integer, VarNodeSet>();
 		variablePatterns = new Hashtable<VariableNode, Set<Integer>>();
-		//vars = new VariableSet();
 		notProccessed = new VarNodeSet();
 		subTrees = new HashSet<PSubTree>();
+		subTreesMap = new Hashtable<Integer, PSubTree>();
 	}
 
 	/**
@@ -86,9 +88,15 @@ public class PTree extends RuisHandler {
 		Set<Integer> pats = patternVariables.keySet();
 		for(int curPat : pats){
 			VarNodeSet vars = patternVariables.get(curPat);
-			if(!(vars.isEmpty()) || !(vars == null)){
+			if(!(vars.isEmpty()) && !(vars == null)){
 				for(VariableNode curVar : vars){
 					Set<Integer> pat = variablePatterns.get(curVar);
+					if(pat == null){
+						pat = new HashSet<Integer>();
+						pat.add(curPat);
+						variablePatterns.put(curVar, pat);
+						continue;
+					}
 					if(!pat.contains(curPat)){
 						pat.add(curPat);
 						variablePatterns.put(curVar, pat);
@@ -161,34 +169,44 @@ public class PTree extends RuisHandler {
 				processSubTree(subHead);
 	}
 	/**
-	 * Creates a PSubTree
+	 * Creates a PSubTree and inserts it into subTrees and subTreesMap
 	 * @param subHead
 	 */
 	private void processSubTree(PTreeNode subHead) {
-		PSubTree subTree = new PSubTree(subHead);
-		subTrees.add(subTree);
-		for (int id : subHead.getPats()) {
-			subTreesMap.put(id, subTree);
+		if(subHead != null){
+			PSubTree subTree = new PSubTree(subHead);
+			subTrees.add(subTree);
+			for (int id : subHead.getPats()) {
+				if(subTree != null)
+					subTreesMap.put(id, subTree);
+			}
 		}
 	}
 
 	@Override
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		int pattern = rui.getFlagNodeSet().iterator().next().getNode().getId();
-		PSubTree subTree = subTreesMap.get(pattern);
-		RuleUseInfoSet returned = subTree.insert(rui);
 		Stack<RuleUseInfoSet> stack = new Stack<RuleUseInfoSet>();
-		for (PSubTree sub : subTrees) {
-			if (sub == subTree)
-				continue;
-			RuleUseInfoSet tSet = sub.getRootRUIS();
-			if (tSet == null)
-				continue;
-			stack.push(tSet);
+		FlagNodeSet fns = rui.getFlagNodeSet();
+		for(FlagNode node : fns){
+			int pattern = node.getNode().getId();
+
+			PSubTree subTree = subTreesMap.get(pattern);
+			RuleUseInfoSet returned = new RuleUseInfoSet();
+			if(subTree != null)
+				returned = subTree.insert(rui);
+			for (PSubTree sub : subTrees) {
+				if (sub == subTree)
+					continue;
+				RuleUseInfoSet tSet = sub.getRootRUIS();
+				if (tSet == null)
+					tSet = new RuleUseInfoSet();
+				stack.push(tSet);
+			}
+			stack.push(returned);
 		}
-		stack.push(returned);
 		return multiply(stack);
 	}
+
 	private RuleUseInfoSet multiply(Stack<RuleUseInfoSet> infoSets) {
 		RuleUseInfoSet first = infoSets.pop();
 		while (!infoSets.isEmpty()) {
@@ -258,20 +276,19 @@ public class PTree extends RuisHandler {
 	public class PSubTree {
 		private PTreeNode root;
 
-		/*public PSubTree(){
-			root = null;
-		}*/
 		public PSubTree(PTreeNode rot){
 			root = rot;
 		}
 
 		public RuleUseInfoSet insert(RuleUseInfo rui) {
-			int pattern = rui.getFlagNodeSet()
-					.iterator().next()
-					.getNode().getId();
-			PTreeNode leaf = getLeafPattern(pattern, root);
+			FlagNodeSet fns = rui.getFlagNodeSet();
 			RuleUseInfoSet res = new RuleUseInfoSet();
-			leaf.insertIntoTree(rui, res);
+			for(FlagNode node : fns){
+				int pattern = node.getNode().getId();
+			
+				PTreeNode leaf = getLeafPattern(pattern, root);
+				res = leaf.insertIntoTree(rui, res);
+			}
 			return res;
 		}
 
@@ -286,7 +303,10 @@ public class PTree extends RuisHandler {
 		}
 
 		public RuleUseInfoSet getRootRUIS() {
-			return root.getRUIS(new Integer[]{0});
+			RuleUseInfoSet ruis = root.getRUIS();
+			if(ruis == null)
+				return new RuleUseInfoSet();
+			return ruis;
 		}
 
 		public PTreeNode getRoot(){
@@ -313,21 +333,22 @@ public class PTree extends RuisHandler {
 			pats = p;				vars = v;
 		}
 
-		public void insertIntoTree(RuleUseInfo rui, RuleUseInfoSet ruiSet) {
+		public RuleUseInfoSet insertIntoTree(RuleUseInfo rui, RuleUseInfoSet ruiSet) {
 			Integer[] key = insertRUI(rui);
 			if (sibling == null) {
 				ruiSet.add(rui);
-				return;
+				return ruiSet;
 			}
 			RuleUseInfoSet siblingSet = sibling.getRUIS(key);
 			if (siblingSet == null)
-				return;
+				return ruiSet;
 			for (RuleUseInfo tRui : siblingSet) {
 				RuleUseInfo combinedRui = rui.combine(tRui);
 				if (combinedRui == null)
 					continue;
 				parent.insertIntoTree(combinedRui, ruiSet);
 			}
+			return ruiSet;
 		}
 
 		public void insertLeftAndRight(PTreeNode leftNode, PTreeNode rightNode,
@@ -364,6 +385,14 @@ public class PTree extends RuisHandler {
 			}
 			ruis.add(rui);
 			return vs;
+		}
+
+		public RuleUseInfoSet getRUIS(){
+			RuleUseInfoSet ruiSet = new RuleUseInfoSet();
+			Collection<RuleUseInfoSet> mappedRuis = ruisMap.values();
+			for(RuleUseInfoSet singleSet : mappedRuis)
+				ruiSet.addAll(singleSet);
+			return ruiSet;
 		}
 
 		public RuleUseInfoSet getRUIS(Integer[] index) {

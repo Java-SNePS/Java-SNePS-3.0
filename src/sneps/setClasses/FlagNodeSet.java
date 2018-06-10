@@ -8,6 +8,10 @@ import sneps.snip.classes.FlagNode;
 public class FlagNodeSet implements Iterable<FlagNode> {
 	private HashSet<FlagNode> flagNodes;
 
+	public FlagNodeSet(){
+		flagNodes = new HashSet<FlagNode>();
+	}
+
 	@Override
 	public Iterator<FlagNode> iterator() {
 		return flagNodes.iterator();
@@ -72,6 +76,8 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 	 * @return true or false
 	 */
 	public boolean contains(FlagNode fn){
+		if(flagNodes.isEmpty())
+			return false;
 		return flagNodes.contains(fn);
 	}
 

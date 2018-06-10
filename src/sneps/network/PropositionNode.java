@@ -38,6 +38,7 @@ public class PropositionNode extends Node implements Serializable{
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
+		newInstances = new ReportSet();
 	}
 
 	public PropositionNode(Term trm) {
@@ -45,6 +46,7 @@ public class PropositionNode extends Node implements Serializable{
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
+		newInstances = new ReportSet();
 		setTerm(trm);
 	}
 	public PropositionNode(Term trm, Semantic sem) {
@@ -54,9 +56,17 @@ public class PropositionNode extends Node implements Serializable{
 	}
 	public PropositionNode(Semantic sym, Term trm){
 		super(sym, trm);
+		outgoingChannels = new ChannelSet();
+		incomingChannels = new ChannelSet();
+		knownInstances = new ReportSet();
+		newInstances = new ReportSet();
 	}
 	public PropositionNode(Semantic sym){
 		super(sym);
+		outgoingChannels = new ChannelSet();
+		incomingChannels = new ChannelSet();
+		knownInstances = new ReportSet();
+		newInstances = new ReportSet();
 	}
 
  	public void processSingleChannelReports(Channel currentChannel) {

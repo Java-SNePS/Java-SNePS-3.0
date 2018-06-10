@@ -140,6 +140,21 @@ public class AndEntailment extends RuleNode {
 	}
 
 	/**
+	 * Creates an appropriate PTree as a RuisHandler, builds it and inserts it into ContextRuisSet by Context
+	 * @param context
+	 * @return
+	 */
+	@Override
+	public RuisHandler createRuisHandler(String context) {
+		PTree tree = new PTree();
+		NodeSet ants = antNodesWithoutVars;
+		ants.addAll(antNodesWithVars);
+		tree.buildTree(ants);
+		this.addContextRUIS(context, tree);
+		return tree;
+	}
+
+	/**
 	 * Inserts given RuleUseInfo into the appropriate PTree and updates the corresponding PTree
 	 * @param rui
 	 * @param contxt
@@ -180,20 +195,6 @@ public class AndEntailment extends RuleNode {
 		}
 	}
 
-	/**
-	 * Creates an appropriate PTree as a RuisHandler, builds it and inserts it into ContextRuisSet by Context
-	 * @param context
-	 * @return
-	 */
-	@Override
-	public RuisHandler createRuisHandler(String context) {
-		Context contxt = (Context) Controller.getContextByName(context);
-		PTree tree = new PTree(context);
-		NodeSet ants = antNodesWithoutVars;
-		ants.addAll(antNodesWithVars);
-		tree.buildTree(ants);
-		return this.addContextRUIS(contxt, tree);
-	}
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");//ants for & name convention

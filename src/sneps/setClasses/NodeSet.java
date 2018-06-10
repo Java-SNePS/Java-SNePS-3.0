@@ -13,7 +13,6 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		nodes = new Vector<Node>();
 	}
 
-
 	public Node getNode(int index) {
 		return this.nodes.get(index);
 	}

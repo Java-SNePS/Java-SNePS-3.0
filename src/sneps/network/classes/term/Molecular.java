@@ -8,7 +8,7 @@ import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.cables.UpCable;
 import sneps.network.classes.Relation;
-import sneps.network.classes.setClasses.NodeSet;
+import sneps.setClasses.NodeSet;
 
 public class Molecular extends Term implements Serializable{
 	protected DownCableSet downCableSet;

@@ -95,7 +95,7 @@ public class SIndex extends RuisHandler {
 		RuisHandler tempRui = null;
 		switch (ruiType) {
 		case PTREE:
-			tempRui = new PTree(getContext());
+			tempRui = new PTree();
 			((PTree) tempRui).buildTree(nodesWithVars);
 			break;
 		case SINGLETONRUIS:

@@ -2,7 +2,6 @@ package sneps.network;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -44,7 +44,6 @@ import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
-
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.setClasses.NodeSet;
@@ -82,7 +81,7 @@ public class Network implements Serializable {
 	 * an array list that stores all the nodes defined in the network. Each node is
 	 * stored in the array list at the position corresponding to its ID.
 	 */
-	private static ArrayList<Node> nodesIndex = new ArrayList<Node>();
+	private static Hashtable<Integer, Node> nodesIndex = new Hashtable<Integer, Node>();
 
 	/**
 	 * A has hash table that contains all the molecular nodes defined in the network
@@ -169,7 +168,11 @@ public class Network implements Serializable {
 	 * @return the array list that stores the nodes defined in the network.
 	 */
 	public static ArrayList<Node> getNodesWithIDs() {
-		return nodesIndex;
+		Collection<Node> collection = nodesIndex.values();
+		ArrayList<Node> res = new ArrayList<Node>();
+		for(Node node: collection)
+			res.add(node);
+		return res;
 	}
 
 	/**
@@ -462,7 +465,7 @@ public class Network implements Serializable {
 		// removing the node from the hash table
 		nodes.remove(node.getIdentifier());
 		// nullify entry of the removed node in the array list
-		nodesIndex.set(node.getId(), null);
+		nodesIndex.put(node.getId(), null);
 		// removing child nodes that are dominated by the removed node and has
 		// no other parents
 		if (node.getTerm().getClass().getSuperclass().getSimpleName().equals("Molecular")) {
@@ -503,7 +506,7 @@ public class Network implements Serializable {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(v);
 		nodes.put(node.getIdentifier(), node);
-		nodesIndex.add(node.getId(), node);
+		nodesIndex.put(node.getId(), node);
 		return node;
 	}
 
@@ -529,7 +532,7 @@ public class Network implements Serializable {
 			Variable v = new Variable(identifier);
 			VariableNode node = new VariableNode(v);
 			nodes.put(node.getIdentifier(), node);
-			nodesIndex.add(node.getId(), node);
+			nodesIndex.put(node.getId(), node);
 			return node;
 		}
 	}
@@ -552,7 +555,7 @@ public class Network implements Serializable {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
-		nodesIndex.add(node.getId(), node);
+		nodesIndex.put(node.getId(), node);
 		return node;
 	}
 
@@ -601,7 +604,7 @@ public class Network implements Serializable {
 			nodes.put(identifier, propNode);
 			propositionNodes.put(identifier, propNode);
 			try {
-				nodesIndex.add(propNode.getId(), propNode);
+				nodesIndex.put(propNode.getId(), propNode);
 				propNode.setBasicSupport();
 			} catch (IndexOutOfBoundsException e) {
 				// System.out.println("wohoo");
@@ -616,7 +619,7 @@ public class Network implements Serializable {
 			 */
 			node = new Node(semantic, b);
 			nodes.put(identifier, node);
-			nodesIndex.add(node.getId(), node);
+			nodesIndex.put(node.getId(), node);
 		}
 		if (isMolName(identifier) > -1)
 			userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
@@ -679,7 +682,7 @@ public class Network implements Serializable {
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
 			propositionNodes.put(propNode.getIdentifier(), propNode);
-			nodesIndex.add(propNode.getId(), propNode);
+			nodesIndex.put(propNode.getId(), propNode);
 			Molecular molecular = (Molecular) propNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
 			propNode.setBasicSupport();
@@ -695,7 +698,7 @@ public class Network implements Serializable {
 				mNode = createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(mNode.getIdentifier(), mNode);
-			nodesIndex.add(mNode.getId(), mNode);
+			nodesIndex.put(mNode.getId(), mNode);
 
 			Molecular molecular = (Molecular) mNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
@@ -741,7 +744,7 @@ public class Network implements Serializable {
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
 			propositionNodes.put(propNode.getIdentifier(), propNode);
-			nodesIndex.add(propNode.getId(), propNode);
+			nodesIndex.put(propNode.getId(), propNode);
 			Molecular molecular = (Molecular) propNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
 			propNode.setBasicSupport();
@@ -758,7 +761,7 @@ public class Network implements Serializable {
 				mNode = createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(mNode.getIdentifier(), mNode);
-			nodesIndex.add(mNode.getId(), mNode);
+			nodesIndex.put(mNode.getId(), mNode);
 
 			Molecular molecular = (Molecular) mNode.getTerm();
 
@@ -1348,7 +1351,7 @@ public class Network implements Serializable {
 			}
 		}
 		// System.out.println("Not Satisfied");
-		return caseframe.getSemanticClass();
+		return caseframe.getSemanticClass().getSemanticType();
 	}
 
 	/**
@@ -1845,8 +1848,8 @@ public class Network implements Serializable {
 					Node n = nodesIndex.get(i);
 					int oldID = n.getId();
 					n.setId(oldID - empty);
-					nodesIndex.set(n.getId(), n);
-					nodesIndex.set(oldID, null);
+					nodesIndex.put(n.getId(), n);
+					nodesIndex.put(oldID, null);
 					// System.out.println("old id: " + oldID + " new id: " + (oldID - empty) + "
 					// empty: " + empty);
 				}
@@ -2041,44 +2044,7 @@ public class Network implements Serializable {
 		udvs.writeObject(userDefinedVarSuffix);
 		udvs.close();
 	}
-	
-	public static void saveNetworks() throws IOException {
-		ObjectOutputStream networks = new ObjectOutputStream(new FileOutputStream(new File("Networks")));
-		networks.writeObject(savedNetworks);
-		networks.close();
-	}
-	
-	public static void loadNetworks() throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInputStream ns= new ObjectInputStream(new FileInputStream(new File("Networks")));
-		ArrayList<String> temp = (ArrayList<String>) ns.readObject();
-		Network.savedNetworks = temp;
-		ns.close();
-	}
-	
-	public static ArrayList<String> getSavedNetworks() {
-		return savedNetworks;
-	}
 
-	public static boolean addToSavedNetworks(String n) {
-		boolean r;
-		if(savedNetworks.contains(n)) {
-			r = false;
-		}else {
-			savedNetworks.add(n);
-			r = true;
-		}
-		return r;
-	}
-	
-	public static void deleteFromSavedNetworks(String f) {
-		savedNetworks.remove(f);
-		try {
-			saveNetworks();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	public static void load(String relationsData, String caseFramesData, 
 			String nodesData, String molData, String mcd, 
@@ -2133,7 +2099,8 @@ public class Network implements Serializable {
 
 		ObjectInputStream niis= new ObjectInputStream(new FileInputStream(new File(nodesIndexData)));
 		ArrayList<Node> tempni = (ArrayList<Node>) niis.readObject();
-		Network.nodesIndex = tempni;
+		for(Node node: tempni)
+			Network.nodesIndex.put(node.getId(), node);
 		niis.close();
 
 		ObjectInputStream udmsis= new ObjectInputStream(new FileInputStream(new File(userDefinedMolSuffixData)));

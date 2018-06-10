@@ -181,9 +181,8 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	@Override
 	public RuisHandler createRuisHandler(String contextName) {
-		Context contxt = (Context) Controller.getContextByName(contextName);
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
-		return this.addContextRUIS(contxt, index);
+		return this.addContextRUIS(contextName, index);
 	}
 	@Override
 	public NodeSet getDownAntNodeSet(){
@@ -193,5 +192,7 @@ public class NumericalEntailment extends RuleNode {
 	public int getI() {
 		return i;
 	}
-
+	public void setI(int newI){
+		i = newI;
+	}
 }

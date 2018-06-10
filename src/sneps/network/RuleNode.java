@@ -209,7 +209,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	}
 
 	public NodeSet getDownNodeSet(String name) {
-		return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
+		if(term != null && term instanceof Molecular)
+			return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
+		return null;
 	}
 
 	public abstract NodeSet getDownAntNodeSet();
@@ -218,12 +220,11 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
 
-	public RuisHandler getContextRuiHandler(Context cntxt) {
-		return contextRuisSet.getByContext((String) cntxt.getName());
+	public RuisHandler getContextRuiHandler(String cntxt) {
+		return contextRuisSet.getByContext(cntxt);
 	}
 
 	public RuisHandler addContextRUIS(String contextName) {
-		Context contxt = (Context) Controller.getContextByName(contextName);
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
 			if (shareVars)
@@ -232,7 +233,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 				si = new SIndex(contextName, sharedVars, getSIndexContextType());
 			return this.addContextRUIS(si);
 		} else {
-			return this.addContextRUIS(contxt,createRuisHandler(contextName));
+			return this.addContextRUIS(contextName,createRuisHandler(contextName));
 		}
 	}
 
@@ -245,8 +246,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return antNodesWithoutVars.size() + antNodesWithVars.size();
 	}
 
-	public RuisHandler addContextRUIS(Context cntxt, RuisHandler cRuis) {
-		return contextRuisSet.addHandlerSet((String) cntxt.getName(), cRuis);
+	public RuisHandler addContextRUIS(String cntxt, RuisHandler cRuis) {
+		return this.contextRuisSet.addHandlerSet(cntxt, cRuis);
 	}
 
 	protected abstract RuisHandler createRuisHandler(String contextName);

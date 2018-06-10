@@ -1,29 +1,25 @@
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 
 import junit.framework.TestCase;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sneps.exceptions.DuplicateContextNameException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
-import sneps.network.RuleNode;
 import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Term;
-import sneps.network.classes.term.Variable;
-import sneps.setClasses.ContextRuisSet;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.PropositionSet;
@@ -39,6 +35,8 @@ import sneps.snip.rules.AndEntailment;
 
 
 public class AndEntailmentTests extends TestCase{
+	private static Context context;
+	private static String contextName = "TempContext";
 	private static AndEntailment and;
 	private static Node fido;
 	private static Node var;
@@ -46,32 +44,51 @@ public class AndEntailmentTests extends TestCase{
 	private static RuleUseInfo rui;
 	private static Report report;
 
-	@BeforeClass
- 	public static void setUpBeforeClass() throws Exception {
-		var = new VariableNode(new Variable("X"));
-		fido = Network.buildBaseNode("Fido", new Semantic("Member"));
-		dog = Network.buildBaseNode("Dog", new Semantic("Class"));
-		and.addAntecedent(var);
-		and.addAntecedent(dog);
-		and.addAntecedent(fido);
+ 	public void setUp(){
+ 		try {
+			context = Controller.createContext(contextName);
+		} catch (DuplicateContextNameException e1) {
+			assertNotNull(e1.getMessage(), e1);
+		}
+ 		try {
+			var = Network.buildVariableNode("X");
+			fido = Network.buildBaseNode("Fido", new Semantic("Member"));
+			dog = Network.buildBaseNode("Dog", new Semantic("Class"));
+		} catch (IllegalIdentifierException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+			assertNotNull(e.getMessage(), e);
+			var = new VariableNode();
+			fido = new Node(new Base("Fido"));
+			dog = new Node(new Base("Dog"));
+		}
 
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
 		PropositionSet support = new PropositionSet();
 
-		support.add(dog.getId());
+		try {
+			support.add(dog.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException
+				| NodeNotFoundInNetworkException e) {
+			assertNotNull(e.getMessage(), e);
+		}
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.insert(fn);
 
 		support.clearSet();
-		support.add(fido.getId());
+		try {
+			support.add(fido.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException
+				| NodeNotFoundInNetworkException e) {
+			assertNotNull(e.getMessage(), e);
+		}
 		fn = new FlagNode(fido, support, 1);
 		fns.insert(fn);
 
 		rui = new RuleUseInfo(sub, 1, 0, fns);
 
 		NodeSet c1 = new NodeSet();
-		Relation rel = new Relation("Class", "type");
+		Relation rel = new Relation("&ant", "type");
 		c1.addNode(dog);
 		LinkedList<DownCable> dc = new LinkedList<DownCable>();
 		LinkedList<Relation> rels = new LinkedList<Relation>();
@@ -79,7 +96,7 @@ public class AndEntailmentTests extends TestCase{
 		dc.add(new DownCable(rel, c1));
 
 		c1 = new NodeSet();
-		rel = new Relation("Member", "type");
+		rel = new Relation("&ant", "type");
 		c1.addNode(fido);
 		dc = new LinkedList<DownCable>();
 		rels = new LinkedList<Relation>();
@@ -87,7 +104,7 @@ public class AndEntailmentTests extends TestCase{
 		dc.add(new DownCable(rel, c1));
 
 		c1 = new NodeSet();
-		rel = new Relation("Var", "type");
+		rel = new Relation("&ant", "type");
 		c1.addNode(var);
 		dc = new LinkedList<DownCable>();
 		rels = new LinkedList<Relation>();
@@ -95,12 +112,35 @@ public class AndEntailmentTests extends TestCase{
 
 		dc.add(new DownCable(rel, c1));
 		DownCableSet dcs = new DownCableSet(dc, new CaseFrame("string", rels));
-		support.add(dog.getId());
-		support.add(fido.getId());
-		support.add(var.getId());
-		report = new Report(sub, support, true, "default");
+		try {
+			support.add(dog.getId());
+			support.add(fido.getId());
+			support.add(var.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException
+				| NodeNotFoundInNetworkException e) {
+			assertNotNull(e.getMessage(), e);
+		}
+		report = new Report(sub, support, true, contextName);
 
-		and = new AndEntailment(new Open("Wat", dcs));
+		and = new AndEntailment(new Open("Open", dcs));
+		and.addAntecedent(var);
+		and.addAntecedent(dog);
+		and.addAntecedent(fido);
+	}
+
+
+	@Test
+	public void testCreateRuisHandler() {
+		RuisHandler createdHandler = and.createRuisHandler(contextName);
+		RuisHandler retrievedHandler = and.getContextRuiHandler(contextName);
+		assertNotNull(
+				"AndEntailment: CreateRuisHandler creates a null RuisHandler",
+				createdHandler);
+		assertTrue(
+				"AndEntailment: CreateRuisHandler doesn't creates a PTree as a Handler",
+				createdHandler instanceof PTree);
+		assertEquals("AndEntailment: GetRuisHandler retrieves a different RuisHandler from CreateRuisHandler  a RuisHandler", 
+				createdHandler, retrievedHandler);
 	}
 
 	@Test
@@ -113,8 +153,8 @@ public class AndEntailmentTests extends TestCase{
 			assertNotNull("AndEntailment: ApplyRuleHandler doesn't broadcast report",
 					and.getNewInstances());
 		else
-			assertNull("AndEntailment: ApplyRuleHandler broacdcasts final report without waiting for enough positive antecedents reports",
-					and.getNewInstances());
+			assertTrue("AndEntailment: ApplyRuleHandler broacdcasts final report without waiting for enough positive antecedents reports",
+					and.getNewInstances().isEmpty());
 
 
 		and.setKnownInstances(and.getNewInstances());
@@ -130,125 +170,43 @@ public class AndEntailmentTests extends TestCase{
 
 		FlagNode fn = new FlagNode(dog, support, 1);
 		fns.insert(fn);
-		report = new Report(sub, support, false, "default");
+		report = new Report(sub, support, false, contextName);
 
 		and.applyRuleHandler(report, dog);
-		if(and.getAntSize() <= 1)
-			assertNull(
+		if(and.getAntSize() >= 1)
+			assertTrue(
 					"AndEntailment: ApplyRuleHandler broadcasts negative report",
-					((PropositionNode)and).getNewInstances());
+					and.getNewInstances().isEmpty());
 	}
-
+	
 	@Test
 	public void testGetDownAntNodeSet() {
 		NodeSet downAntNodeSet = and.getDownAntNodeSet();
-		assertNotNull("AndEntailment: getDownAntNodeSet retuns null", downAntNodeSet);
-		assertTrue("AndEntailment: getDownAntNodeSet retuns an empty NodeSet", !downAntNodeSet.isEmpty());
-	}
-
-	@Test
-	public void testCreateRuisHandler() {
-		Context contxt = (Context) Controller.getContextByName("default");
-		and.createRuisHandler("default");
-		RuisHandler handler = and.getContextRuiHandler(contxt);
-		assertNotNull(
-				"AndEntailment: CreateRuisHandler creats a null RuisHandler",
-				handler);
-		assertTrue(
-				"AndEntailment: CreateRuisHandler doesn't create a PTree as a Handler",
-				handler instanceof PTree);
-	}
-
-	@Test
-	public void testAndEntailmentTerm() {
-		Class<AndEntailment> aClass = AndEntailment.class;
-		boolean thrown = false;
-		try {
-			aClass.getConstructor(new Class[] {
-					Term.class });
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertFalse(
-				"Missing constructor with Term parameter in AndEntailment class.",
-				thrown);
-
-		assertEquals(
-				"AndEntailment class should extend RuleNode",
-				RuleNode.class,
-				AndEntailment.class.getSuperclass());
-
-		AndEntailment e = and;
-		Field f;
-		try {
-			f = e.getClass().getDeclaredField("contextRuisSet");
-
-			f.setAccessible(true);
-			f.set(e, new ContextRuisSet());
-
-			assertNotNull(
-					"The constructor of AndEntailment class should initialize inherited variables correctly by calling super.",
-					f);
-		} catch(Exception x){
-			assertNull(x.getMessage(), x);
-		}
-	}
-
-	@Test
-	public void testAndEntailmentSemanticTerm() {
-		Class<AndEntailment> aClass = AndEntailment.class;
-		boolean thrown = false;
-		try {
-			aClass.getConstructor(new Class[] {
-					Semantic.class, Term.class });
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertFalse(
-				"Missing constructor with Semantic and Term parameters in AndEntailment class.",
-				thrown);
-
-		assertEquals(
-				"AndEntailment class should extend RuleNode",
-				RuleNode.class,
-				AndEntailment.class.getSuperclass());
-
-		AndEntailment e = and;
-		Field f;
-		try {
-			f = e.getClass().getDeclaredField("contextRuisSet");
-
-			f.setAccessible(true);
-			f.set(e, new ContextRuisSet());
-
-			assertNotNull(
-					"The constructor of AndEntailment class should initialize inherited variables correctly by calling super.",
-					f);
-		} catch(Exception x){
-			assertNull(x.getMessage(), x);
-		}
+		assertNotNull("AndEntailment: getDownAntNodeSet retuns null", 
+				downAntNodeSet);
+		assertFalse("AndEntailment: getDownAntNodeSet retuns an empty NodeSet", 
+				downAntNodeSet.isEmpty());
 	}
 
 	@Test
 	public void testAddNotSentRui() {
-		and.addNotSentRui(rui, "default", dog);
-		Context contxt = (Context) Controller.getContextByName("default");
+		and.addNotSentRui(rui, contextName, dog);
 		assertNotNull("AndEntailment: addNotSentRui doesn't add a RuiHandler in contextRuisHandlers", 
-				and.getContextRuiHandler(contxt));
+				and.getContextRuiHandler(contextName));
 
-		NodeSet positives = and.getContextRuiHandler(contxt).getPositiveNodes();
+		NodeSet positives = and.getContextRuiHandler(contextName).getPositiveNodes();
 		assertTrue("AndEntailment: addNotSentRui doesn't add signature to positiveNodes set", 
 				positives.contains(dog));
-		assertTrue("AndEntailment: addNotSentRui adds wrong signatures to positiveNodes set", 
-				!positives.contains(fido));
+		assertFalse("AndEntailment: addNotSentRui adds wrong signatures to positiveNodes set", 
+				positives.contains(fido));
 
 		assertTrue("AndEntailment: addNotSentRui doesn't add a PTree in contextRuisHandlers", 
-				and.getContextRuiHandler(contxt)instanceof PTree);
+				and.getContextRuiHandler(contextName)instanceof PTree);
 
 	}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	//@AfterClass
+	public void tearDown(){
 		Network.clearNetwork();
 		and.clear();
 		fido = null;
