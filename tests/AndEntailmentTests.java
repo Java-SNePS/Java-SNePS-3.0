@@ -47,7 +47,7 @@ public class AndEntailmentTests extends TestCase{
 	private static Report report;
 
 	@BeforeClass
- 	public void setUp() throws Exception {
+ 	public static void setUpBeforeClass() throws Exception {
 		var = new VariableNode(new Variable("X"));
 		fido = Network.buildBaseNode("Fido", new Semantic("Member"));
 		dog = Network.buildBaseNode("Dog", new Semantic("Class"));
@@ -248,7 +248,7 @@ public class AndEntailmentTests extends TestCase{
 	}
 
 	@AfterClass
-	public void tearDown() throws Exception {
+	public static void tearDownAfterClass() throws Exception {
 		Network.clearNetwork();
 		and.clear();
 		fido = null;
