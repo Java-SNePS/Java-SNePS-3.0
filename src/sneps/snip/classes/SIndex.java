@@ -13,7 +13,7 @@ import sneps.snip.matching.Substitutions;
 
 public class SIndex extends RuisHandler {
 	
-	private Hashtable<Integer, RuisHandler> map;
+	
 	private byte ruiType;
 	public static final byte RUIS = 0, SINGLETONRUIS = 1, PTREE = 2;
 	private VarNodeSet sharedVars;
@@ -33,7 +33,6 @@ public class SIndex extends RuisHandler {
 		super(context);
 		this.sharedVars=SharedVars;
 		this.ruiType=ruisType;
-		map = new Hashtable<Integer, RuisHandler>();
 	}
 
 	/**
@@ -53,16 +52,17 @@ public class SIndex extends RuisHandler {
 		int[] vars = new int[sharedVars.size()];
 		int index = 0;
 		for (VariableNode varId : sharedVars) {
-			vars[index++] = sharedVars.getVarNode(index++).getId();
+			vars[index] = sharedVars.getVarNode(index).getId();
+			index++;
 		}
 		
 		int x = getIndex(vars);
 
 		
-		RuisHandler trui= map.get(x);
+		RuisHandler trui= SIndexHelper.map.get(x);
 		if (trui == null) {
 			trui = getNewRUIS();
-			map.put(x, trui);
+			SIndexHelper.map.put(x, trui);
 
 		}
 		
@@ -116,9 +116,9 @@ public class SIndex extends RuisHandler {
 	 * @return int
 	 */
 	
-	public int getSize() {
+	/*public int getSize() {
 		return map.size();
-	}
+	}*/
 
 
 }

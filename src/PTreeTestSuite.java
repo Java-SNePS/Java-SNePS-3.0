@@ -4,7 +4,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses({ PSubTreeTests.class, PTreeNodeTests.class, PTreeTests.class })
+//@SuiteClasses({ PSubTreeTests.class, PTreeNodeTests.class, PTreeTests.class })
 public class PTreeTestSuite {
 
 }
