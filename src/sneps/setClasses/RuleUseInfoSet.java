@@ -23,8 +23,8 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		return ruis.iterator();
 	}
 
-	public void add(RuleUseInfo rui) {
-		ruis.add(rui);
+	public boolean add(RuleUseInfo rui) {
+		return ruis.add(rui);
 	}
 
 	public RuleUseInfoSet combine(RuleUseInfoSet second) {
@@ -44,8 +44,13 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		return this;
 	}
 
-	public void addAll(RuleUseInfoSet rootRUIS) {
-		ruis.addAll(ruis);
+	public boolean addAll(RuleUseInfoSet rootRUIS) {
+		boolean flag = true;
+		for(RuleUseInfo rui : rootRUIS){
+			if(!ruis.add(rui))
+				flag = false;
+		}
+		return flag;
 	}
 
 	public boolean contains(RuleUseInfo rui){

@@ -178,7 +178,7 @@ public class AndEntailment extends RuleNode {
 		if (addedConstant == null && antNodesWithoutVars.size() != 0)
 			return;
 
-		if (antNodesWithoutVars.size() != addedConstant.getPosCount())
+		if( (addedConstant != null) &&(antNodesWithoutVars.size() != addedConstant.getPosCount()))
 			return;
 
 		RuleUseInfoSet ruis = ((PTree)contextRuisSet.getByContext(contextID)).getAllRootRuis();

@@ -13,8 +13,6 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.PropositionSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
-import sneps.snebr.Context;
-import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;

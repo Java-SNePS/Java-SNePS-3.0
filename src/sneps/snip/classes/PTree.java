@@ -18,6 +18,7 @@ import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
+
 /**
  * @author Amgad Ashraf
  */
