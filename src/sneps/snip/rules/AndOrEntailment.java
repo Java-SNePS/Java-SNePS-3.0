@@ -10,13 +10,12 @@ import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
 import sneps.network.VariableNode;
 import sneps.network.classes.Semantic;
-import sneps.network.PropositionNode;
-import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Term;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.PropositionSet;
 import sneps.setClasses.VarNodeSet;
+import sneps.network.classes.term.Open;
+import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snebr.Support;
@@ -30,56 +29,85 @@ import sneps.snip.matching.Substitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 
-public class ThreshNode extends RuleNode {
-
+public class AndOrEntailment extends RuleNode {
 	boolean sign = false;
-	
 	private int min, max, args;
-	
-	public int getThreshMin() {
+	private int received=0;
+	private static int pos=0;
+	private static int neg=0;
+
+	public int getAndOrMin() {
 		return min;
 	}
 
-	public int getThreshMax() {
+	public int getAndOrMax() {
 		return max;
 	}
 
-	public int getThreshArgs() {
+	public int getAndOrArgs() {
 		return args;
 	}
-	
-	public void setThreshMin(int min) {
+
+	public void setAndOrMin(int min) {
 		this.min = min;
 	}
 
-	public void setThreshMax(int max) {
+	public void setAndOrMax(int max) {
 		this.max = max;
 	}
 
-	public void setThreshArgs(int args) {
+	public void setAndOrArgs(int args) {
 		this.args = args;
 	}
 
-
 	/**
-	 * Constructor for the Thresh Entailment
+	 * Constructor for the AndOr Entailment
 	 * @param syn
 	 */
-	public ThreshNode(Term syn) {
+	
+	public AndOrEntailment(Term syn) {
 		super(syn);
 	}
 
 	/**
-	 * Constructor for the Thresh Entailment
+	 * Constructor for the AndOr Entailment
 	 * @param sym
 	 * @param syn
 	 */
-	public ThreshNode(Semantic sym, Term syn) {
+	
+	public AndOrEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 	}
 	
 	public void applyRuleHandler(Report report, Node signature) {
-		super.applyRuleHandler(report, signature);
+		String contextID = report.getContextName();
+		RuleUseInfo rui;
+		if (report.isPositive()) {
+			pos++;
+		} else {
+			neg++;
+		}
+		
+		int rem = args-(pos+neg);
+		if(rem<min && (min-pos)>rem) {
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					pos, neg, fns);
+			applyRuleOnRui(rui, contextID);
+		}
+		
+		
+		
+		if(pos+neg==args) {
+		PropositionSet propSet = report.getSupports();
+		FlagNodeSet fns = new FlagNodeSet();
+		fns.insert(new FlagNode(signature, propSet, 1));
+		rui = new RuleUseInfo(report.getSubstitutions(),
+				pos, neg, fns);
+		applyRuleOnRui(rui, contextID);
+		}
 	}
 	
 	
@@ -91,21 +119,25 @@ public class ThreshNode extends RuleNode {
 	 */
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
-		if (tRui.getPosCount() == min
-				&& tRui.getNegCount() == args - max - 1)
-			sign = true;
-		else if (tRui.getPosCount() != min - 1 || tRui.getNegCount() != args - max)
-			sign = false;
-		
-		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
-		if(tRui.getPosCount()>min && tRui.getPosCount()<max && max-tRui.getPosCount()>rem) {
+		if(tRui.getPosCount()>=min&&tRui.getPosCount()<=max) {
+			sign=true;
+		}else if(tRui.getPosCount()>max||tRui.getPosCount()<min) {
 			sign=false;
 		}
+		
+		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
+		if(rem<min && (min-tRui.getPosCount())>rem) {
+			sign=false;
+		}
+		
 		
 		Set<Integer> nodesSentReports = new HashSet<Integer>();
 		for (FlagNode fn : tRui.getFlagNodeSet()) {
 			nodesSentReports.add(fn.getNode().getId());
 		}
+		
+
+
 		
 		
 		Substitutions sub = tRui.getSubstitutions();
@@ -163,7 +195,7 @@ public class ThreshNode extends RuleNode {
 			}
 		}
 		
-		
+
 		Report forwardReport = new Report(sub, supports, sign, contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
@@ -173,6 +205,11 @@ public class ThreshNode extends RuleNode {
 		
 	}
 	
+
+	public NodeSet getDownAntNodeSet() {
+		return this.getDownNodeSet("Xant");
+	}
+
 	/**
 	 * Create the SIndex within the context
 	 * @param ContextName
@@ -182,10 +219,23 @@ public class ThreshNode extends RuleNode {
 		return this.addContextRUIS(contextName, index);
 	}
 
-
-	@Override
-	public NodeSet getDownAntNodeSet() {
-		return this.getDownNodeSet("Tant");
+	public static int getPos() {
+		return pos;
 	}
 
+	public static int getNeg() {
+		return neg;
+	}
+	
+	public boolean isSign() {
+		return sign;
+	}
+	
+	public void clrAll() {
+		min=0;
+		max=0;
+		pos=0;
+		neg=0;
+	}
+	
 }

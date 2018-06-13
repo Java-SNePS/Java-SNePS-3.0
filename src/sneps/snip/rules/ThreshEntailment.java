@@ -10,12 +10,13 @@ import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
 import sneps.network.VariableNode;
 import sneps.network.classes.Semantic;
+import sneps.network.PropositionNode;
+import sneps.network.classes.term.Open;
+import sneps.network.classes.term.Term;
 import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.PropositionSet;
 import sneps.setClasses.VarNodeSet;
-import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snebr.Support;
@@ -29,58 +30,93 @@ import sneps.snip.matching.Substitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 
-public class AndOrNode extends RuleNode {
-	boolean sign = false;
-	private int min, max, args;
-	private int received=0;
+public class ThreshEntailment extends RuleNode {
 
-	public int getAndOrMin() {
+	private static boolean sign = false;
+	
+	private int min, max, args;
+	private int pos=0;
+	private int neg=0;
+	public int getThreshMin() {
 		return min;
 	}
 
-	public int getAndOrMax() {
+	public int getThreshMax() {
 		return max;
 	}
 
-	public int getAndOrArgs() {
+	public int getThreshArgs() {
 		return args;
 	}
-
-	public void setAndOrMin(int min) {
+	
+	public void setThreshMin(int min) {
 		this.min = min;
 	}
 
-	public void setAndOrMax(int max) {
+	public void setThreshMax(int max) {
 		this.max = max;
 	}
 
-	public void setAndOrArgs(int args) {
+	public void setThreshArgs(int args) {
 		this.args = args;
 	}
 
+
 	/**
-	 * Constructor for the AndOr Entailment
+	 * Constructor for the Thresh Entailment
 	 * @param syn
 	 */
-	
-	public AndOrNode(Term syn) {
+	public ThreshEntailment(Term syn) {
 		super(syn);
 	}
 
 	/**
-	 * Constructor for the AndOr Entailment
+	 * Constructor for the Thresh Entailment
 	 * @param sym
 	 * @param syn
 	 */
-	
-	public AndOrNode(Semantic sym, Term syn) {
+	public ThreshEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 	}
 	
 	public void applyRuleHandler(Report report, Node signature) {
-		super.applyRuleHandler(report, signature);
-		received++;
+		
+		String contextID = report.getContextName();
+		RuleUseInfo rui;
+		
+		if(report.isPositive()) {
+			pos++;
+		}
+		if(report.isNegative()) {
+			neg++;
+		}
+		
+		int rem = args-(pos+neg);
+		if(pos>min && pos<max && max-pos>rem) {
+			
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					pos, neg, fns);
+			applyRuleOnRui(rui, contextID);
+			
+		}
+		
+		if(neg+pos==args) {
+			
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					pos, neg, fns);
+			applyRuleOnRui(rui, contextID);
+			
+		}
+		
 	}
+	
+	
 	
 	
 	/**
@@ -91,25 +127,20 @@ public class AndOrNode extends RuleNode {
 	 */
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
-		if (tRui.getNegCount() == args - min)
+		if (tRui.getPosCount() < min || tRui.getPosCount()>max)
 			sign = true;
-		else if (tRui.getPosCount() != max)
-			return;
-		
+		else if (tRui.getPosCount()>= min && tRui.getPosCount() <= max)
+			sign = false;
 		
 		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
-		if(rem<min && (min-tRui.getPosCount())>rem) {
+		if(tRui.getPosCount()>min && tRui.getPosCount()<max && max-tRui.getPosCount()>rem) {
 			sign=false;
 		}
-		
 		
 		Set<Integer> nodesSentReports = new HashSet<Integer>();
 		for (FlagNode fn : tRui.getFlagNodeSet()) {
 			nodesSentReports.add(fn.getNode().getId());
 		}
-		
-
-
 		
 		
 		Substitutions sub = tRui.getSubstitutions();
@@ -167,7 +198,7 @@ public class AndOrNode extends RuleNode {
 			}
 		}
 		
-
+		
 		Report forwardReport = new Report(sub, supports, sign, contextID);
 		
 		for (Channel outChannel : outgoingChannels) {
@@ -177,10 +208,6 @@ public class AndOrNode extends RuleNode {
 		
 	}
 	
-	public NodeSet getDownAntNodeSet() {
-		return this.getDownNodeSet("Xant");
-	}
-
 	/**
 	 * Create the SIndex within the context
 	 * @param ContextName
@@ -189,5 +216,31 @@ public class AndOrNode extends RuleNode {
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		return this.addContextRUIS(contextName, index);
 	}
+
+
+	@Override
+	public NodeSet getDownAntNodeSet() {
+		return this.getDownNodeSet("Tant");
+	}
 	
+	public boolean getSign() {
+		return sign;
+	}
+	
+
+	public int getPos() {
+		return pos;
+	}
+	
+	public int getNeg() {
+		return neg;
+	}
+
+	public void clrAll() {
+		min=0;
+		max=0;
+		pos=0;
+		neg=0;
+		
+	}
 }

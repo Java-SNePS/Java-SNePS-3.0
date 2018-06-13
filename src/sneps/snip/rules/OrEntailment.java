@@ -20,9 +20,9 @@ import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
-public class OrNode extends RuleNode {
+public class OrEntailment extends RuleNode {
 
-	boolean sign = true;
+	boolean sign = false;
 	private int ant,cq;
 	
 
@@ -30,7 +30,7 @@ public class OrNode extends RuleNode {
 	 *Constructor for the Or Entailment
 	 * @param syn
 	 */
-	public OrNode(Term syn) {
+	public OrEntailment(Term syn) {
 		super(syn);
 	}
 
@@ -40,7 +40,7 @@ public class OrNode extends RuleNode {
 	 * @param sym
 	 * @param syn
 	 */
-	public OrNode(Semantic sym, Term syn) {
+	public OrEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 	}
 	

@@ -52,11 +52,11 @@ import sneps.setClasses.VariableSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.rules.AndEntailment;
-import sneps.snip.rules.AndOrNode;
+import sneps.snip.rules.AndOrEntailment;
 import sneps.snip.rules.DoIfNode;
 import sneps.snip.rules.NumericalEntailment;
-import sneps.snip.rules.OrNode;
-import sneps.snip.rules.ThreshNode;
+import sneps.snip.rules.OrEntailment;
+import sneps.snip.rules.ThreshEntailment;
 import sneps.snip.rules.WhenDoNode;
 
 public class Network implements Serializable {
@@ -1106,11 +1106,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = new OrNode(open);
+				propNode = new OrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = new AndOrNode(open);
+				propNode = new AndOrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = new ThreshNode(open);
+				propNode = new ThreshEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
 				propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
@@ -1146,11 +1146,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = new OrNode(open);
+				propNode = new OrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = new AndOrNode(open);
+				propNode = new AndOrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = new ThreshNode(open);
+				propNode = new ThreshEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
 				propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
@@ -1205,11 +1205,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = new OrNode(c);
+				propNode = new OrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = new AndOrNode(c);
+				propNode = new AndOrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = new ThreshNode(c);
+				propNode = new ThreshEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
 				propNode = new NumericalEntailment(c);
 			} else
@@ -1241,11 +1241,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = new OrNode(c);
+				propNode = new OrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = new AndOrNode(c);
+				propNode = new AndOrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = new ThreshNode(c);
+				propNode = new ThreshEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
 				propNode = new NumericalEntailment(c);
 			} else
