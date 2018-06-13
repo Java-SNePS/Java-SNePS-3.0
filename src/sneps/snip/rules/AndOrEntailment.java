@@ -29,7 +29,7 @@ import sneps.snip.matching.Substitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 
-public class AndOrNode extends RuleNode {
+public class AndOrEntailment extends RuleNode {
 	boolean sign = false;
 	private int min, max, args;
 	private int received=0;
@@ -63,7 +63,7 @@ public class AndOrNode extends RuleNode {
 	 * @param syn
 	 */
 	
-	public AndOrNode(Term syn) {
+	public AndOrEntailment(Term syn) {
 		super(syn);
 	}
 
@@ -73,7 +73,7 @@ public class AndOrNode extends RuleNode {
 	 * @param syn
 	 */
 	
-	public AndOrNode(Semantic sym, Term syn) {
+	public AndOrEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 	}
 	

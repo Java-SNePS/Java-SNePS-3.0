@@ -30,7 +30,7 @@ import sneps.snip.matching.Substitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 
-public class ThreshNode extends RuleNode {
+public class ThreshEntailment extends RuleNode {
 
 	boolean sign = false;
 	
@@ -65,7 +65,7 @@ public class ThreshNode extends RuleNode {
 	 * Constructor for the Thresh Entailment
 	 * @param syn
 	 */
-	public ThreshNode(Term syn) {
+	public ThreshEntailment(Term syn) {
 		super(syn);
 	}
 
@@ -74,7 +74,7 @@ public class ThreshNode extends RuleNode {
 	 * @param sym
 	 * @param syn
 	 */
-	public ThreshNode(Semantic sym, Term syn) {
+	public ThreshEntailment(Semantic sym, Term syn) {
 		super(sym, syn);
 	}
 	
