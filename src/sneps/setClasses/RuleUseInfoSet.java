@@ -6,6 +6,13 @@ import java.util.Iterator;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
+/**
+ * @className RuleUseInfoSet.java
+ * 
+ * @author Amgad Ashraf
+ * 
+ * @version 3.00 31/5/2018
+ */
 public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo> {
 	private HashSet<RuleUseInfo> ruis;
 

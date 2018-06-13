@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
-import sneps.network.classes.term.Variable;
 
 public class LinearSubstitutions implements Substitutions {
 	private Vector<Binding> sub;

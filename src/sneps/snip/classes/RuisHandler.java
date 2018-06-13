@@ -3,6 +3,16 @@ package sneps.snip.classes;
 import sneps.setClasses.NodeSet;
 import sneps.setClasses.RuleUseInfoSet;
 
+/**
+ * @className RuisHandler.java
+ * 
+ * @ClassDescription To deal with the large number of RUIs generated as more nodes are built in the network, RuisHandler classes are built to store and combine RUIs.
+ * A RuisHandler is stored in a rule Node and a single rule Node can store multiple instances of a single RuisHandler class.
+ * 
+ * @author Amgad Ashraf
+ * 
+ * @version 3.00 31/5/2018
+ */
 public abstract class RuisHandler {
 	protected String context;
 	private NodeSet positiveNodes;

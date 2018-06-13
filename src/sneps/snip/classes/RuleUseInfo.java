@@ -6,6 +6,15 @@ import sneps.setClasses.FlagNodeSet;
 import sneps.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
+/**
+ * @className RuleUseInfo.java
+ * 
+ * @ClassDescription The RuleUseInfo is a data structure used to save instances of antecedents of rule nodes.
+ * 
+ * @author Amgad Ashraf
+ *
+ * @version 3.00 31/5/2018
+ */
 public class RuleUseInfo {
 	private Substitutions sub;
 	private int pos;

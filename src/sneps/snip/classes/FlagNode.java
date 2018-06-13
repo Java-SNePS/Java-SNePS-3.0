@@ -59,7 +59,6 @@ public class FlagNode {
 	 *            flag node
 	 * @return true or false
 	 */
-
 	public boolean isEqual(FlagNode fn) {
 		return fn.node == node && fn.supports == supports && fn.flag == flag;
 	}

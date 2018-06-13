@@ -20,7 +20,13 @@ import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
 
 /**
+ * @className PTree.java
+ * 
+ * @ClassDescription A PTree is a binary tree structure. Every AndEntailment rule node stores combinations of antecedent RUIs inside a PTree because of its optimized structure.
+ * A PTree class follows an algorithm for construction and insertion, having leaf nodes representing RUIs of rule antecedents and root nodes representing combined RUIs of the rule itself.
+ * 
  * @author Amgad Ashraf
+ * @version 3.00 31/5/2018
  */
 public class PTree extends RuisHandler {
 	private Hashtable<Integer, VarNodeSet> patternVariables;//PatternId, VariableNodes
@@ -274,6 +280,15 @@ public class PTree extends RuisHandler {
 		return res;
 	}
 
+	/**
+	 * @className PSubTree
+	 * 
+	 * @ClassDescription The PSubTree is used to handle the case where antecedent patterns have disjoint variables, by keeping track of multiple PSubTrees for every disjoint variable inside the same PTree.
+	 * 
+	 * @author Amgad Ashraf
+	 * 
+	 * @version 3.00 31/5/2018
+	 */
 	public class PSubTree {
 		private PTreeNode root;
 
@@ -315,6 +330,15 @@ public class PTree extends RuisHandler {
 		}
 	}
 
+	/**
+	 * @className 
+	 * 
+	 * @ClassDescription The PTreeNode is the lowest level in the PTree, where RUIs are stored and combined. 
+	 * 
+	 * @author Amgad Ashraf
+	 * 
+	 * @version 3.00 31/5/2018
+	 */
 	public class PTreeNode {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;

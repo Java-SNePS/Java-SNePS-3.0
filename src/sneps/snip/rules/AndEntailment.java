@@ -13,8 +13,6 @@ import sneps.setClasses.NodeSet;
 import sneps.setClasses.PropositionSet;
 import sneps.setClasses.RuleUseInfoSet;
 import sneps.setClasses.VarNodeSet;
-import sneps.snebr.Context;
-import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
@@ -23,8 +21,17 @@ import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
+
 /**
+ * @className AndEntailment.java
+ * 
+ * @ClassDescription The AndEntailment is an inference rule that asserts the conjunction of all the nodes in its antecedent position to imply the conjunction of all the nodes in its consequent position.
+ * When the rule node receives a request from a node in its consequent position, it sends requests to all its nodes in its antecedent position.
+ * Generally, when a rule node has enough reports, it creates a reply report and broadcasts it to all consequent nodes.
+ * In the case of the AndEntailment rule, the reply report is created and sent when all antecedent nodes sent their respective reports.
+ * 
  * @author Amgad Ashraf
+ * @version 3.00 31/5/2018
  */
 public class AndEntailment extends RuleNode {
 	private static final long serialVersionUID = -8545987005610860977L;
@@ -195,6 +202,11 @@ public class AndEntailment extends RuleNode {
 		}
 	}
 
+	/**
+	 * Naming convention used to retrieve Nodes in Down Antecedent position is "&ant";
+	 * "&" for AndEntailment, "ant" for Antecedent
+	 * @return
+	 */
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("&ant");//ants for & name convention

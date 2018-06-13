@@ -6,7 +6,15 @@ import java.util.Vector;
 
 import sneps.network.classes.term.Variable;
 
+/**
+ * @className VariableSet.java
+ * 
+ * @author Amgad Ashraf
+ * 
+ * @version 3.00 31/5/2018
+ */
 public class VariableSet implements Iterable<Variable>, Serializable {
+	private static final long serialVersionUID = -3194598945795286218L;
 	protected Vector<Variable> variables;
 
 	public VariableSet() {

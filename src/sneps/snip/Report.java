@@ -3,6 +3,13 @@ package sneps.snip;
 import sneps.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
+/**
+ * @className Report.java
+ * 
+ * @author Amgad Ashraf
+ * 
+ * @version 3.00 31/5/2018
+ */
 public class Report {
 	private Substitutions substitution;
 	private PropositionSet supports;

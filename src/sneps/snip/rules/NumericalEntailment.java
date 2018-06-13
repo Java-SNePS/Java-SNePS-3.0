@@ -23,7 +23,15 @@ import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 /**
+ * @className NumericalEntailment.java
+ * 
+ * @ClassDescription The Numerical-Entailment is a rule node that asserts the conjunction of at least i nodes in its antecedent position to imply the conjunction of all the nodes in its consequent position.
+ * When the rule node receives a request from a node in its consequent position, it sends requests to all its nodes in antecedent positions.
+ * Generally, when a rule node has enough reports, it creates a reply report and broadcasts it to all requesting consequent nodes.
+ * In the case of the Numerical-Entailment rule, the reply report is created and sent when a minimum of i antecedent nodes sent their respective positive reports.
+ * 
  * @author Amgad Ashraf
+ * @version 3.00 31/5/2018
  */
 public class NumericalEntailment extends RuleNode {
 	private static final long serialVersionUID = 3546852401118194013L;
@@ -182,14 +190,28 @@ public class NumericalEntailment extends RuleNode {
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		return this.addContextRUIS(contextName, index);
 	}
+
+	/**
+	 * Naming convention used to retrieve Nodes in Down Antecedent position is "iant";
+	 * "i" for NumericalEntailment, "ant" for Antecedent
+	 * @return
+	 */
 	@Override
 	public NodeSet getDownAntNodeSet(){
 		return this.getDownNodeSet("iant");
 	}
 
+	/**
+	 * Getter for i
+	 * @return
+	 */
 	public int getI() {
 		return i;
 	}
+	/**
+	 * Setter for i
+	 * @param newI
+	 */
 	public void setI(int newI){
 		i = newI;
 	}

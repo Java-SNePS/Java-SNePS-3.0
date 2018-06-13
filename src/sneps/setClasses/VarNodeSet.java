@@ -5,6 +5,13 @@ import java.util.Vector;
 
 import sneps.network.VariableNode;
 
+/**
+ * @className VarNodeSet.java
+ * 
+ * @author Amgad Ashraf
+ * 
+ * @version 3.00 31/5/2018
+ */
 public class VarNodeSet implements Iterable<VariableNode> {
 	protected Vector<VariableNode> variables;
 
