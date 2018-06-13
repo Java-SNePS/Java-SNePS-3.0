@@ -467,7 +467,7 @@ public class Controller {
      */
     public static ArrayList<NodeSet> checkForContradiction(PropositionNode node, Context c, boolean skipCache) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 
-        //     add  prop supports to a clone     of the context's bitset
+        //     add  prop supports to a clone of the context's bitset
         BitSet tempContextBitset = (BitSet) c.getHypsBitset().clone();
 
         Collection<PropositionSet> propsCollection = node.getAssumptionBasedSupport().values();
