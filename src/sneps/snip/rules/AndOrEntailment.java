@@ -79,6 +79,12 @@ public class AndOrEntailment extends RuleNode {
 		super(sym, syn);
 	}
 	
+	/**
+	 * When a report is received, it checks whether it is true or false
+	 * Then the positive or negative will be updated accordingly
+	 * When there is enough args received to create a RUI, for the rule to check,
+	 * A RUI will be created and apply the rule on this RUI
+	 */
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
 		RuleUseInfo rui;
@@ -219,6 +225,10 @@ public class AndOrEntailment extends RuleNode {
 		return this.addContextRUIS(contextName, index);
 	}
 
+	/**
+	 * Getters of positive, negative, sign
+	 * used in testing
+	 */
 	public static int getPos() {
 		return pos;
 	}
@@ -231,6 +241,10 @@ public class AndOrEntailment extends RuleNode {
 		return sign;
 	}
 	
+	/**
+	 * Clear all the values
+	 * Used in testing
+	 */
 	public void clrAll() {
 		min=0;
 		max=0;
