@@ -32,10 +32,11 @@ import sneps.snip.classes.RuisHandler;
 
 public class ThreshEntailment extends RuleNode {
 
-	boolean sign = false;
+	private static boolean sign = false;
 	
 	private int min, max, args;
-	
+	private int pos=0;
+	private int neg=0;
 	public int getThreshMin() {
 		return min;
 	}
@@ -79,8 +80,43 @@ public class ThreshEntailment extends RuleNode {
 	}
 	
 	public void applyRuleHandler(Report report, Node signature) {
-		super.applyRuleHandler(report, signature);
+		
+		String contextID = report.getContextName();
+		RuleUseInfo rui;
+		
+		if(report.isPositive()) {
+			pos++;
+		}
+		if(report.isNegative()) {
+			neg++;
+		}
+		
+		int rem = args-(pos+neg);
+		if(pos>min && pos<max && max-pos>rem) {
+			
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					pos, neg, fns);
+			applyRuleOnRui(rui, contextID);
+			
+		}
+		
+		if(neg+pos==args) {
+			
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					pos, neg, fns);
+			applyRuleOnRui(rui, contextID);
+			
+		}
+		
 	}
+	
+	
 	
 	
 	/**
@@ -91,10 +127,9 @@ public class ThreshEntailment extends RuleNode {
 	 */
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
-		if (tRui.getPosCount() == min
-				&& tRui.getNegCount() == args - max - 1)
+		if (tRui.getPosCount() < min || tRui.getPosCount()>max)
 			sign = true;
-		else if (tRui.getPosCount() != min - 1 || tRui.getNegCount() != args - max)
+		else if (tRui.getPosCount()>= min && tRui.getPosCount() <= max)
 			sign = false;
 		
 		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
@@ -187,5 +222,25 @@ public class ThreshEntailment extends RuleNode {
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("Tant");
 	}
+	
+	public boolean getSign() {
+		return sign;
+	}
+	
 
+	public int getPos() {
+		return pos;
+	}
+	
+	public int getNeg() {
+		return neg;
+	}
+
+	public void clrAll() {
+		min=0;
+		max=0;
+		pos=0;
+		neg=0;
+		
+	}
 }

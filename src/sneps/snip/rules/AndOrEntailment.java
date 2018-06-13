@@ -33,6 +33,8 @@ public class AndOrEntailment extends RuleNode {
 	boolean sign = false;
 	private int min, max, args;
 	private int received=0;
+	private static int pos=0;
+	private static int neg=0;
 
 	public int getAndOrMin() {
 		return min;
@@ -78,8 +80,34 @@ public class AndOrEntailment extends RuleNode {
 	}
 	
 	public void applyRuleHandler(Report report, Node signature) {
-		super.applyRuleHandler(report, signature);
-		received++;
+		String contextID = report.getContextName();
+		RuleUseInfo rui;
+		if (report.isPositive()) {
+			pos++;
+		} else {
+			neg++;
+		}
+		
+		int rem = args-(pos+neg);
+		if(rem<min && (min-pos)>rem) {
+			PropositionSet propSet = report.getSupports();
+			FlagNodeSet fns = new FlagNodeSet();
+			fns.insert(new FlagNode(signature, propSet, 1));
+			rui = new RuleUseInfo(report.getSubstitutions(),
+					pos, neg, fns);
+			applyRuleOnRui(rui, contextID);
+		}
+		
+		
+		
+		if(pos+neg==args) {
+		PropositionSet propSet = report.getSupports();
+		FlagNodeSet fns = new FlagNodeSet();
+		fns.insert(new FlagNode(signature, propSet, 1));
+		rui = new RuleUseInfo(report.getSubstitutions(),
+				pos, neg, fns);
+		applyRuleOnRui(rui, contextID);
+		}
 	}
 	
 	
@@ -91,11 +119,11 @@ public class AndOrEntailment extends RuleNode {
 	 */
 	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
 		
-		if (tRui.getNegCount() == args - min)
-			sign = true;
-		else if (tRui.getPosCount() != max)
-			return;
-		
+		if(tRui.getPosCount()>=min&&tRui.getPosCount()<=max) {
+			sign=true;
+		}else if(tRui.getPosCount()>max||tRui.getPosCount()<min) {
+			sign=false;
+		}
 		
 		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
 		if(rem<min && (min-tRui.getPosCount())>rem) {
@@ -177,6 +205,7 @@ public class AndOrEntailment extends RuleNode {
 		
 	}
 	
+
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("Xant");
 	}
@@ -188,6 +217,25 @@ public class AndOrEntailment extends RuleNode {
 	protected RuisHandler createRuisHandler(String contextName) {
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		return this.addContextRUIS(contextName, index);
+	}
+
+	public static int getPos() {
+		return pos;
+	}
+
+	public static int getNeg() {
+		return neg;
+	}
+	
+	public boolean isSign() {
+		return sign;
+	}
+	
+	public void clrAll() {
+		min=0;
+		max=0;
+		pos=0;
+		neg=0;
 	}
 	
 }

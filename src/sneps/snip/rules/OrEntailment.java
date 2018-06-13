@@ -22,7 +22,7 @@ import sneps.snip.classes.RuleUseInfo;
 
 public class OrEntailment extends RuleNode {
 
-	boolean sign = true;
+	boolean sign = false;
 	private int ant,cq;
 	
 
