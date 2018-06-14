@@ -13,6 +13,13 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 public class Controller {
@@ -539,8 +546,6 @@ public class Controller {
         return null;
     }
 
-
-
     /**
      * Handles the last found contradiction in the system.
      * @param hypsToBeRemoved A PropositionSet having all the hyps to be removed
@@ -628,7 +633,6 @@ public class Controller {
         }
     }
 
-
     /**
      * Returns all the names of contexts available in the system.
      * @return
@@ -645,5 +649,19 @@ public class Controller {
      */
     public static Context getContextByName(String contextName) {
         return contextSet.getContext(contextName);
+    }
+    
+    public static void save(String f) throws FileNotFoundException, IOException {
+    	ObjectOutputStream cos = new ObjectOutputStream(new FileOutputStream(new File(f)));
+		cos.writeObject(contextSet);
+		cos.close();
+    }
+    
+    public static void load(String f) throws IOException, ClassNotFoundException {
+    	ObjectInputStream cis= new ObjectInputStream(new FileInputStream(new File(f)));
+    	ContextSet tempSet = (ContextSet) cis.readObject();
+		Controller.contextSet = tempSet;
+		cis.close();
+		tempSet = null;
     }
 }

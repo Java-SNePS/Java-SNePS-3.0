@@ -1,11 +1,12 @@
 package sneps.snebr;
 
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Set;
 
-public class ContextSet {
+public class ContextSet implements Serializable{
 
     private Hashtable<String, Context> contexts;
 

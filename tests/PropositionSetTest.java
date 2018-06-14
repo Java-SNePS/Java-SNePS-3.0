@@ -12,7 +12,6 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Controller;
 
-
 public class PropositionSetTest {
 
  private static final Semantic semantic = new Semantic("Proposition");

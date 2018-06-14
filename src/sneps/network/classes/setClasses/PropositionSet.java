@@ -8,9 +8,10 @@ import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class PropositionSet {
+public class PropositionSet implements Serializable{
     @Override
     public String toString() {
         return "PropositionSet [props=" + Arrays.toString(props) + "]";

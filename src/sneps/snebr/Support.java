@@ -1,21 +1,9 @@
 package sneps.snebr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
-import sneps.exceptions.CustomException;
 import sneps.exceptions.IllegalIdentifierException;
 import java.util.Stack;
 
@@ -27,7 +15,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.PropositionSet;
 
-public class Support {
+public class Support implements Serializable{
 	private int id;
 	private Hashtable<String, PropositionSet> justificationSupport;
 	private Hashtable<String, PropositionSet> assumptionBasedSupport;
