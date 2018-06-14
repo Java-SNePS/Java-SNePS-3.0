@@ -8,6 +8,7 @@ import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
+import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
@@ -400,6 +401,9 @@ public class Controller {
                         intersects = true;
                     }
 
+                } else if (temp.equals(bitSet1)) {
+                    intersects = true;
+                    break;
                 }
             }
             if (!intersects)
@@ -443,6 +447,10 @@ public class Controller {
                     }
 
                 }
+                else if (temp.equals(bitSet1)) {
+                    intersects = true;
+                    break;
+                }
             }
             if (!intersects)
                 minimalNoGoods.add(bitSet);
@@ -466,6 +474,16 @@ public class Controller {
      * @throws NotAPropositionNodeException
      */
     public static ArrayList<NodeSet> checkForContradiction(PropositionNode node, Context c, boolean skipCache) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
+
+        if (c.getNames().contains(conflictingContext)) {
+            checkForContradictionCore(node, c, true);
+            return checkForContradictionCore(node, c, false);
+        }
+
+        return checkForContradictionCore(node, c, skipCache);
+    }
+
+    public static ArrayList<NodeSet> checkForContradictionCore(PropositionNode node, Context c, boolean skipCache) throws NodeNotFoundInNetworkException, DuplicatePropositionException, NotAPropositionNodeException {
 
         //     add  prop supports to a clone of the context's bitset
         BitSet tempContextBitset = (BitSet) c.getHypsBitset().clone();
@@ -521,6 +539,8 @@ public class Controller {
         return null;
     }
 
+
+
     /**
      * Handles the last found contradiction in the system.
      * @param hypsToBeRemoved A PropositionSet having all the hyps to be removed
@@ -561,12 +581,26 @@ public class Controller {
      * @throws NotAPropositionNodeException
      * @throws NodeNotFoundInNetworkException
      */
-    public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public static Context removeHypsFromContext(PropositionSet hyps, String contextName) throws ContextNameDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
         Context c = contextSet.getContext(contextName);
         if (c == null) throw new ContextNameDoesntExistException(contextName);
         PropositionSet propSet = c.getHypothesisSet().removeProps(hyps);
         c = new Context(contextName, propSet);
         return contextSet.add(c);
+    /*
+        c =  contextSet.add(c);
+        Network.defineDefaults();
+        if (conflictingContext != null && contextName == conflictingContext) {
+            PropositionNode tempProp = (PropositionNode)Network.buildBaseNode("n"+ -5000, Semantic.proposition);
+            if (Controller.checkForContradictionCore(tempProp, c, false) == null)
+                conflictingContext = null;
+
+            Network.removeNode(tempProp);
+
+        }
+        return c;
+    */
+
     }
 
     /**
@@ -581,6 +615,16 @@ public class Controller {
         for (String contextName: contextSet.getNames()) {
             Context c = new Context(contextName, contextSet.getContext(contextName).getHypothesisSet().remove(hyp));
             contextSet.add(c);
+            /*c = contextSet.add(c);
+            Network.defineDefaults();
+            if (conflictingContext != null && contextName == conflictingContext) {
+                PropositionNode tempProp = (PropositionNode)Network.buildBaseNode("n"+ -5000, Semantic.proposition);
+                if (Controller.checkForContradictionCore(tempProp, c, false) == null)
+                    conflictingContext = null;
+
+            Network.removeNode(tempProp);
+
+            } */
         }
     }
 
