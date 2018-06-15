@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneps.exceptions.CustomException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -31,7 +32,7 @@ public class NetworkTest {
     }
 
     @Test
-    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
         Network.buildBaseNode("n0", semantic);
         Node n0 =  Network.getNode("n0");
         //Hashtable<String, PropositionNode>  propositionNodes = Network.getPropositionNodes();

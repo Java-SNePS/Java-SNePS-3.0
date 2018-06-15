@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import sneps.exceptions.CannotInsertJustificationSupportException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -334,7 +335,7 @@ public class Support implements Serializable{
 		}
 	}
 	public static void main(String[] args)
-			throws NotAPropositionNodeException, NodeNotFoundInPropSetException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException {
+			throws NotAPropositionNodeException, NodeNotFoundInPropSetException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException, IllegalIdentifierException {
 		
 		Network net;
 		Semantic sem;

@@ -2,6 +2,7 @@ package tests;
 //Asssert, set of set of set, Cycles{Assumption, Tree}, Removing hwa el by update the structure
 import static org.junit.Assert.*;
 
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import org.junit.runners.MethodSorters;
 
 import sneps.exceptions.CannotInsertJustificationSupportException;
 import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -48,7 +50,7 @@ public class SupportTest {
 	
 	 @Before
 	 
-	    public void setUp() throws NodeNotFoundInNetworkException, NotAPropositionNodeException{
+	    public void setUp() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException{
 		 	//Defining Semantic Type as PropositionNode
 	    	sem = new Semantic(semanticType);
 	    	net = new Network();
@@ -684,7 +686,7 @@ public class SupportTest {
 	 @Rule
 	 public ExpectedException thrown = ExpectedException.none();
 	 @Test
-	    public void LAddDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException{
+	    public void LAddDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, IllegalIdentifierException{
 		//Clear all Nodes to implement the new Support Structure Above
 		 setUp();
 		//1st: Direct Support
@@ -747,7 +749,7 @@ public class SupportTest {
 	    }
 
 	 @Test
-	    public void MAddInDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, InterruptedException{
+	    public void MAddInDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, InterruptedException, IllegalIdentifierException{
 		//Clear all Nodes to implement the new Support Structure Above
 		 setUp();
 		

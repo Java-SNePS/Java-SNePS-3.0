@@ -192,4 +192,9 @@ public class Context implements Serializable{
         return this.names.remove(name);
     }
 
+	public void removeNodeFromContext(PropositionNode propNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
