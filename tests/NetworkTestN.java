@@ -31,7 +31,7 @@ public class NetworkTestN {
     }
 
     @Test
-    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
         Network.buildBaseNode("n0", semantic);
         Node n0 =  Network.getNode("n0");
         //Hashtable<String, PropositionNode>  propositionNodes = Network.getPropositionNodes();
