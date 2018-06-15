@@ -159,7 +159,7 @@ public class Support implements Serializable{
 	 * has an assumption-BasedSupport{"e", "f", "g"}, then the output cross product assumptionSupport will 
 	 * be{"a", "b", "e", "f", "g"}and{"c", "d", "e", "f", "g"}.
 	 * Moreover,  this method takes care of both direct cycles by throwing 
-	 * an exception“CannotInsertJustificationSupportException”,  and  in-direct  cycles  by  neglecting the path
+	 * an exception"CannotInsertJustificationSupportException",  and  in-direct  cycles  by  neglecting the path
 	 *  having cycles when computing assumptionBasedSupport. 
      *
      * @param a propSet representing the newly support of a node.
@@ -273,7 +273,7 @@ public class Support implements Serializable{
 
 	/**
 	 * Removes thepropNode from any set, either justificationBasedSupport or assumptionBasedSup-port,
-	 * containing this node as one of it’s elements.  
+	 * containing this node as one of it's elements.  
 	 * Also sets the attribute hasChildren  to  false,  if  the  justificationBasedSupport  becomes  empty  after 
 	 * the  removal. 
 	 * Moreover, this method calls the method reStructureJustifications(), discussed above.
