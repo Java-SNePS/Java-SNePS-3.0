@@ -18,6 +18,7 @@ import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
@@ -48,7 +49,7 @@ public class SupportTest {
 	
 	 @Before
 	 
-	    public void setUp() throws NodeNotFoundInNetworkException, NotAPropositionNodeException{
+	    public void setUp() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException{
 		 	//Defining Semantic Type as PropositionNode
 	    	sem = new Semantic(semanticType);
 	    	net = new Network();
@@ -684,7 +685,7 @@ public class SupportTest {
 	 @Rule
 	 public ExpectedException thrown = ExpectedException.none();
 	 @Test
-	    public void LAddDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException{
+	    public void LAddDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, IllegalIdentifierException{
 		//Clear all Nodes to implement the new Support Structure Above
 		 setUp();
 		//1st: Direct Support
@@ -747,7 +748,7 @@ public class SupportTest {
 	    }
 
 	 @Test
-	    public void MAddInDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, InterruptedException{
+	    public void MAddInDirectCyclicJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, InterruptedException, IllegalIdentifierException{
 		//Clear all Nodes to implement the new Support Structure Above
 		 setUp();
 		
