@@ -29,7 +29,7 @@ public class SupportTest {
 	
 	Network net;
 	Semantic sem;
-	final static String semanticType = "PropositionNode";
+	final static String semanticType = "Proposition";
 	
 	PropositionNode n0;
 	PropositionNode n1;

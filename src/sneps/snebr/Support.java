@@ -339,7 +339,7 @@ public class Support implements Serializable{
 		
 		Network net;
 		Semantic sem;
-		String semanticType = "PropositionNode";
+		String semanticType = "Proposition";
 		
 		PropositionNode n0;
 		PropositionNode n1;
