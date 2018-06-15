@@ -9,6 +9,7 @@ import sneps.exceptions.CustomException;
 import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.IllegalIdentifierException;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
