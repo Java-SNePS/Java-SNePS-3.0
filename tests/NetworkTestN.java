@@ -1,5 +1,6 @@
 package tests;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class NetworkTestN {
     }
 
     @Test
-    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException{
         Network.buildBaseNode("n0", semantic);
         Node n0 =  Network.getNode("n0");
         //Hashtable<String, PropositionNode>  propositionNodes = Network.getPropositionNodes();
