@@ -147,6 +147,23 @@ public class Support implements Serializable{
 		TreeComputed = flag;
 	}
 
+	/**
+	 * Accepts  a  PropositionSet which represent a direct support of this proposition node, and adds the
+	 * propSet to the hash table of justificationSupport.  
+	 * Moreover, this method computes the assumptionBased support. 
+	 * When adding a new set to the justification basedsupport,  
+	 * each node of this set has an assumptionBasedSupport set. 
+	 * Simply,  this method computes the assumptionBasedSupport as the cross product of the propSetnodes
+	 * assumption supports.For example if the propSet is equal to{“x”, “y”},
+	 * the node “x” has an assumption-BasedSupports{“a”,  “b”}and{“c”,  “d”}and the node “y”
+	 * has an assumption-BasedSupport{“e”, “f”, “g”}, then the output cross product assumptionSupport will 
+	 * be{“a”, “b”, “e”, “f”, “g”}and{“c”, “d”, “e”, “f”, “g”}.
+	 * Moreover,  this method takes care of both direct cycles by throwing 
+	 * an exception“CannotInsertJustificationSupportException”,  and  in-direct  cycles  by  neglecting the path
+	 *  having cycles when computing assumptionBasedSupport. 
+     *
+     * @param a propSet representing the newly support of a node.
+     */
 	public void addJustificationBasedSupport(PropositionSet propSet)
 			throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException {
 		
@@ -187,7 +204,10 @@ public class Support implements Serializable{
 		}
 	}
 
-
+	/**
+	 * This is a recursive method for computing the assumption support of a node.
+	 * It is a private method since only the method "addJustificationBasedSupport" can use it
+     */
 	private void computeAssumptionRec(int[] nodes, PropositionSet setSofar, int idx)
 			throws NodeNotFoundInNetworkException, NotAPropositionNodeException {
 		if (idx == nodes.length) {
@@ -209,6 +229,13 @@ public class Support implements Serializable{
 		}
 	}
 
+	/**
+	 * Returns  the  set  (mySupportsTree)  of  this  propositionnode only if treeComputed is true.
+	 * Otherwise, it computes the supportsTree from the  assumptionBasedSupport  structure.   
+	 * And  sets treeComputed to true.
+     *
+     * @return ArrayList<ArrayList<ArrayList<Integer>>> representing the supports hierarchy of this node.
+     */
 	
 	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		if(isTreeComputed())
@@ -236,10 +263,25 @@ public class Support implements Serializable{
 		return mySupportsTree;
 	}
 	
+	/**
+	 * Returns the set (assumptionBasedSupport) of this proposition node.
+	 * @return Hashtable<String, PropositionSet> representing the assumptions of this node.
+	 */
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return assumptionBasedSupport;
 	}
 
+	/**
+	 * Removes thepropNode from any set, either justificationBasedSupport or assumptionBasedSup-port,
+	 * containing this node as one of it’s elements.  
+	 * Also sets the attribute hasChildren  to  false,  if  the  justificationBasedSupport  becomes  empty  after 
+	 * the  removal. 
+	 * Moreover, this method calls the method reStructureJustifications(), discussed above.
+	 * restrucureJustification only makes sure that all justifications are valid "are hyps or have valid supports".
+	 * @param propNode
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 */
 	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		PropositionSet removeSet = new PropositionSet(propNode.getId());
 		ArrayList<String> willBeRemoved = new ArrayList<String>();
@@ -301,14 +343,33 @@ public class Support implements Serializable{
 		
 	}
 
+	/**
+	 * 
+	 * @return int representing the id of this proposition node
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * This method returns the parent supports of a node.
+	 * By parent support i mean " All the nodes that this proposition node supports"
+	 * for example if we have the following set of hyps {A, B, A^B --> C, C --> D}
+	 * The set of parent supports of D are <C, A^B>
+	 * @return ArrayList<Integer> array list of integers for representing the nodes ids.
+	 */
 	public ArrayList<Integer> getParentSupports() {
 		return parentNodes;
 	}
 	
+	/**
+	 * This method recursively adds a node id to parentSupport structure in the supports hierarchy.
+	 * This method is only used by addJustificationSupport() Method.
+	 * @param id representing the node id that is a parent for all below support structure nodes.
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws DuplicatePropositionException
+	 */
 	public void addParentNode(int id) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		if(this.getId() != id){
 		parentNodes.add(id);
@@ -323,9 +384,23 @@ public class Support implements Serializable{
 		}
 	}
 	
+	/**
+	 * Tells whether this proposition node is a hypothesis and user asserted, or this proposition node is a derived node.
+	 * @return boolean
+	 */
 	private boolean isHyp() {
 		return isHyp;
 	}
+	
+	/*
+	 * Sets the attribute isHyp to the method parameter isHyp. 
+	 * In-addition, if the method parameter isHyp is equal to true, 
+	 * the assumptionBased-Support of this node must will have only an element which is this node id.
+	 * Any  hypothesis  or  user  asserted  node  does  not  need  an  supports,  
+	 * because  a  hypothesis node is believed by the system without any supports.  
+	 * Therefore this node will contain itself only as the assumptionBasedSupport, 
+	 * and will have empty set ofJustificationSupport.
+	 */
 	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		this.isHyp = isHyp;
 		if(isHyp){
@@ -334,6 +409,17 @@ public class Support implements Serializable{
 		assumptionBasedSupport.put(Integer.toString(id), intialSet);
 		}
 	}
+	/**
+	 * Main method contains the run time testing approach for the supports class.
+	 * Check SupportTest class to see the unit testing for the supports class.
+	 * @param args
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInPropSetException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws DuplicatePropositionException
+	 * @throws CannotInsertJustificationSupportException
+	 * @throws IllegalIdentifierException
+	 */
 	public static void main(String[] args)
 			throws NotAPropositionNodeException, NodeNotFoundInPropSetException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException, IllegalIdentifierException {
 		
