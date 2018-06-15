@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-public class NetworkTest {
+public class NetworkTestN {
      Semantic semantic;
     final static String semanticType = "PropositionNode";
     
