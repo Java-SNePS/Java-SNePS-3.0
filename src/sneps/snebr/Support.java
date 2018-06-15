@@ -154,10 +154,10 @@ public class Support implements Serializable{
 	 * When adding a new set to the justification basedsupport,  
 	 * each node of this set has an assumptionBasedSupport set. 
 	 * Simply,  this method computes the assumptionBasedSupport as the cross product of the propSetnodes
-	 * assumption supports.For example if the propSet is equal to{“x”, “y”},
-	 * the node “x” has an assumption-BasedSupports{“a”,  “b”}and{“c”,  “d”}and the node “y”
-	 * has an assumption-BasedSupport{“e”, “f”, “g”}, then the output cross product assumptionSupport will 
-	 * be{“a”, “b”, “e”, “f”, “g”}and{“c”, “d”, “e”, “f”, “g”}.
+	 * assumption supports.For example if the propSet is equal to {"x", "y"},
+	 * the node "x" has an assumption-BasedSupports{"a",  "b"}and{"c",  "d"}and the node "y"
+	 * has an assumption-BasedSupport{"e", "f", "g"}, then the output cross product assumptionSupport will 
+	 * be{"a", "b", "e", "f", "g"}and{"c", "d", "e", "f", "g"}.
 	 * Moreover,  this method takes care of both direct cycles by throwing 
 	 * an exception“CannotInsertJustificationSupportException”,  and  in-direct  cycles  by  neglecting the path
 	 *  having cycles when computing assumptionBasedSupport. 
