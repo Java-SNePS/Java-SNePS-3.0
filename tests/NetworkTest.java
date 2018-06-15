@@ -2,10 +2,7 @@ package tests;
 
 import org.junit.*;
 
-import sneps.exceptions.CustomException;
-import sneps.exceptions.NodeCannotBeRemovedException;
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
+import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
@@ -17,7 +14,8 @@ import static org.junit.Assert.*;
 
 public class NetworkTest {
      static Semantic semantic;
-    final static String semanticType = "PropositionNode";
+    final static String semanticType = "Proposition";
+
     
 
     @BeforeClass
@@ -31,8 +29,8 @@ public class NetworkTest {
         Controller.clearSNeBR();
     }
 
-    @Test
-    public void buildBaseNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+     @Test   
+     public void buildBaseNode() throws IllegalIdentifierException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int sizeOfNodes = Network.getNodes().size();
         int sizeOfProps = Network.getPropositionNodes().size();
         Network.buildBaseNode("n0", semantic);
@@ -45,9 +43,8 @@ public class NetworkTest {
     }
 
     @After
-    public void removeNodes() throws NodeNotFoundInNetworkException, NodeCannotBeRemovedException {
+    public void removeNodes() throws NodeNotFoundInNetworkException, NodeCannotBeRemovedException, NodeNotFoundInPropSetException, NotAPropositionNodeException {
         Network.removeNode(Network.getNode("n0"));
     }
 
 }
-

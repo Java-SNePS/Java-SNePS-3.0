@@ -1,0 +1,79 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root{
+	-fx-background-color: #ffffff;
+}
+
+
+.title{
+	-fx-text-fill: #424242;
+	-fx-border-color: #424242;
+	-fx-alignment: center;
+}
+
+.miniTitle{
+	-fx-text-fill: #000000;
+}
+
+.console {
+    text-area-background: #111111;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
+.console .content {
+    -fx-background-color: text-area-background;
+}
+
+.tab-label{
+	-fx-text-fill: white;
+}
+
+.tab-pane{
+	-fx-background: #ffffff;
+}
+
+.tab{
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
+}
+
+.tab:hover{
+    -fx-background-color: #424242;
+    -fx-text-fill: white;
+}
+
+.tab:selected{
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}
+
+.customBtn{
+	-fx-background-color: #c10000;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+}
+
+.customBtnSelected{
+	-fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-alignment: center;
+}
+
+.customBtn:hover{
+	-fx-background-color: #ff0000;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+}
+
+.text-field {
+    -fx-background-color: #a9a9a9;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-prompt-text-fill: #ff0000;
+}
+
+.text-field:focused {
+    -fx-background-color: #a9a9a9 , white , white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+}

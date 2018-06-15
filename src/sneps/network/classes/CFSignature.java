@@ -1,8 +1,9 @@
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class CFSignature {
+public class CFSignature implements Serializable{
 
 	/**
 	 * a string specifying the name of the resulting semantic class that will replace the

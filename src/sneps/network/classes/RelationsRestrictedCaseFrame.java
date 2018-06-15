@@ -12,19 +12,19 @@
  */
 package sneps.network.classes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-import sneps.exceptions.CaseFrameAlreadyExistException;
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
 
-public class RelationsRestrictedCaseFrame extends CaseFrame {
+public class RelationsRestrictedCaseFrame extends CaseFrame implements Serializable{
 	public static CaseFrame andRule, orRule, andOrRule, threshRule, numericalRule, act, act1, act2, act3, act4, act5,
 			act6, act7, act8, act9, preconditionAct, whenDo, wheneverDo, doIf, actEffect, planAct, planGoal, withSome,
-			withAll;
+			withAll, withSomeNoElse, withAllNoElse;
 
 	// /**
 	// * The name of the semantic class that represents the default semantic type
@@ -274,7 +274,7 @@ public class RelationsRestrictedCaseFrame extends CaseFrame {
 		return id;
 	}
 
-	public static void createDefaultCaseFrames() throws CaseFrameAlreadyExistException {
+	public static void createDefaultCaseFrames() {
 		if (RCFP.andAnt == null)
 			RCFP.createDefaultProperties();
 		LinkedList<RCFP> and = new LinkedList<RCFP>();
@@ -346,20 +346,34 @@ public class RelationsRestrictedCaseFrame extends CaseFrame {
 		planGoal = Network.defineCaseFrameWithConstraints("Proposition", plangoal);
 
 		LinkedList<RCFP> withsome = new LinkedList<RCFP>();
-		withsome.add(RCFP.withsome);
+		withsome.add(RCFP.action);
 		withsome.add(RCFP.vars);
 		withsome.add(RCFP.suchthat);
 		withsome.add(RCFP.doo);
 		withsome.add(RCFP.elsee);
-		withSome = Network.defineCaseFrameWithConstraints("ControlAction", withsome);
+		withSome = Network.defineCaseFrameWithConstraints("Act", withsome);
 
 		LinkedList<RCFP> withall = new LinkedList<RCFP>();
-		withall.add(RCFP.withall);
+		withall.add(RCFP.action);
 		withall.add(RCFP.vars);
 		withall.add(RCFP.suchthat);
 		withall.add(RCFP.doo);
 		withall.add(RCFP.elsee);
-		withAll = Network.defineCaseFrameWithConstraints("ControlAction", withall);
+		withAll = Network.defineCaseFrameWithConstraints("Act", withall);
+
+		LinkedList<RCFP> withsomenoelse = new LinkedList<RCFP>();
+		withsomenoelse.add(RCFP.action);
+		withsomenoelse.add(RCFP.vars);
+		withsomenoelse.add(RCFP.suchthat);
+		withsomenoelse.add(RCFP.doo);
+		withSomeNoElse = Network.defineCaseFrameWithConstraints("Act", withsomenoelse);
+
+		LinkedList<RCFP> withallnoelse = new LinkedList<RCFP>();
+		withallnoelse.add(RCFP.action);
+		withallnoelse.add(RCFP.vars);
+		withallnoelse.add(RCFP.suchthat);
+		withallnoelse.add(RCFP.doo);
+		withAllNoElse = Network.defineCaseFrameWithConstraints("Act", withallnoelse);
 
 		LinkedList<RCFP> actCF1 = new LinkedList<RCFP>();
 		actCF1.add(RCFP.action);

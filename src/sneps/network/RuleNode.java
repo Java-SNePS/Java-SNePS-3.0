@@ -1,5 +1,6 @@
 package sneps.network;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -25,7 +26,7 @@ import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
-public abstract class RuleNode extends PropositionNode {
+public abstract class RuleNode extends PropositionNode implements Serializable{
 
 	/**
 	 * a NodeSet containing all the pattern antecedents attached to this Node
@@ -69,8 +70,8 @@ public abstract class RuleNode extends PropositionNode {
 	
 	public RuleNode(){}
 	
-	public RuleNode(Term syn, Semantic sym) {
-		//super(syn, sym);
+	public RuleNode(Term syn) {
+		super(syn);
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();

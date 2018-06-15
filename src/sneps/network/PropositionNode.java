@@ -1,5 +1,6 @@
 package sneps.network;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import sneps.exceptions.CannotInsertJustificationSupportException;
@@ -8,6 +9,7 @@ import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -28,7 +30,7 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class PropositionNode extends Node {
+public class PropositionNode extends Node implements Serializable{
 	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;
@@ -43,7 +45,7 @@ public class PropositionNode extends Node {
 	}
 
 	public PropositionNode(Term trm) {
-		super(trm);
+		super(Semantic.proposition, trm);
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();

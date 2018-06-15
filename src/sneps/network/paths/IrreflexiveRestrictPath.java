@@ -11,6 +11,7 @@
  */
 package sneps.network.paths;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sneps.snebr.Context;
@@ -18,7 +19,7 @@ import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
 import sneps.network.Node;
 
-public class IrreflexiveRestrictPath extends Path {
+public class IrreflexiveRestrictPath extends Path implements Serializable{
 	
 	/**
 	 * The path defined in the current irreflexive restrict path.

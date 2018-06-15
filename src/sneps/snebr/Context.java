@@ -8,15 +8,23 @@ import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
 
 
-public class Context {
+public class Context implements Serializable{
     private PropositionSet hyps;
 
     private HashSet<String> names;
+
+    protected BitSet getHypsBitset() {
+        return hypsBitset;
+    }
+
+    private BitSet hypsBitset;
 
     /**
      * Constructs a new empty Context
@@ -24,6 +32,7 @@ public class Context {
     protected Context() {
         names = new HashSet<String>();
         this.hyps = new PropositionSet();
+        this.hypsBitset = new BitSet();
     }
 
     /**
@@ -37,13 +46,14 @@ public class Context {
     }
 
     /**
-     * Constructs a new Context from another Context
+         * Constructs a new Context from another Context
      *
      * @param c the context that the new Context is constructed from
      */
     protected Context(Context c) {
         this.hyps = c.getHypothesisSet();
         this.names = c.getNames();
+        this.hypsBitset = c.getHypsBitset();
     }
 
     /**
@@ -57,6 +67,8 @@ public class Context {
     protected Context(Context c, int hyp) throws NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
         this.names = c.getNames();
         this.hyps = c.getHypothesisSet().add(hyp);
+        this.hypsBitset = (BitSet) c.getHypsBitset().clone();
+        this.hypsBitset.set(hyp);
     }
 
     /**
@@ -76,9 +88,13 @@ public class Context {
      * @param contextName name of the new Context
      * @param hyps        the hyps the Context's hyps should be set to
      */
-    protected Context(String contextName, PropositionSet hyps) {
+    protected Context(String contextName, PropositionSet hyps) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         this(contextName);
         this.hyps = hyps;
+        this.hypsBitset = new BitSet();
+        int [] arr = PropositionSet.getPropsSafely(this.hyps);
+        for (int i = 0; i < arr.length; i++)
+            this.hypsBitset.set(arr[i]);
     }
 
     /**
@@ -130,51 +146,20 @@ public class Context {
         return false;
     }
 
-    public PropositionSet allAsserted() {
+    public PropositionSet allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
         Collection<PropositionNode> allPropositionNodes = Network.getPropositionNodes().values();
         PropositionSet asserted = new PropositionSet();
         int[] hyps;
-        try {
-            hyps = PropositionSet.getPropsSafely(this.hyps);
-        } catch (NotAPropositionNodeException e) {
-            return null;
-        } catch (NodeNotFoundInNetworkException e1) {
-            return null;
-        }
+        hyps = PropositionSet.getPropsSafely(this.hyps);
         for (PropositionNode node : allPropositionNodes) {
-            try {
-                if (Arrays.binarySearch(hyps, node.getId()) > 0) {
-                    asserted = asserted.add(node.getId());
-                } else if (isSupported(node)) {
-                    asserted = asserted.add(node.getId());
-                }
-            } catch (NodeNotFoundInNetworkException e1) {
-                return null;
-            } catch (NotAPropositionNodeException e) {
-                return null;
-            } catch (DuplicatePropositionException e) {
-                System.err.println(e.getMessage());
+            if (Arrays.binarySearch(hyps, node.getId()) > 0) {
+                asserted = asserted.add(node.getId());
+            } else if (isSupported(node)) {
+                asserted = asserted.add(node.getId());
             }
         }
 
         return asserted;
-    }
-    
-    /**
-     * When Removing a node from context, Therefore we must remove it from this Context's nodes Supports also
-     * @param PropositionNode, The node to be removed from all Context's Supports
-     * @throws NodeNotFoundInNetworkException 
-     * @throws NotAPropositionNodeException 
-     */
-    public void removeNodeFromContext(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
-    	
-    	//Remove this node from Context!! Omar Part
-    	//.........................................
-    	
-    	//Remove this node from All Context's nodes Supports!! Amr Part
-    	int[] contextSet = PropositionSet.getPropsSafely(hyps /*TODO change hyps to be the new set without the propNode*/); //The set of hyps after Omar removes from it the propNode!!
-    	for(int i = 0; i< contextSet.length; i++)
-    		((PropositionNode)Network.getNodeById(contextSet[i])).removeNodeFromSupports(propNode);
     }
 
     /**
