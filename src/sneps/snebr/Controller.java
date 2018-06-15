@@ -5,6 +5,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Controller {
@@ -32,16 +33,6 @@ public class Controller {
      */
     public static Context createContext() {
         return new Context();
-    }
-
-
-    /**
-     * Clears the knowledge base
-     */
-    public static void clearSNeBR() {
-        contextSet.clear();
-        currContext = "default";
-        contextSet.add(new Context(currContext));
     }
 
     /**
@@ -193,10 +184,6 @@ public class Controller {
         // TODO: 13/03/18
     }
 
-    public static Set<String> getAllNamesOfContexts() {
-        return contextSet.getNames();
-    }
-
     /**
      * Returns a Context given its name
      * @param contextName the name of the Context to be returned
@@ -204,6 +191,21 @@ public class Controller {
      */
     public static Context getContextByName(String contextName) {
         return contextSet.getContext(contextName);
+    }
+    
+    /**
+     * Loops overall contexts to remove a specific node from it and it's supports
+     * @param PropositionNode to be removed
+     * @throws NodeNotFoundInNetworkException 
+     * @throws NotAPropositionNodeException 
+     */
+    public static void removeNodeFromAllContexts(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    	Set<String> names = contextSet.getNames();
+    	Iterator<String> it = names.iterator();
+    	while(it.hasNext()){
+    		Context con = getContextByName(it.next());
+    		con.removeNodeFromContext(propNode);
+    	}
     }
 
 }
