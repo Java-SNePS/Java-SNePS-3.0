@@ -109,7 +109,7 @@ public class SupportTest {
 	 /*
 	  * Checking The Assumptions of a Node when it is initially Created.
 	  * The Hyp Node once created must contain itself as Assumption Support.
-	  * Expected The Hashtable “assumptions” is equal to the set{{2}}.
+	  * Expected The Hashtable "assumptions" is equal to the set{{2}}.
 	  */
 	 @Test
 	 
@@ -126,11 +126,11 @@ public class SupportTest {
 	 
 	 /*
 	  *When the node is initially created. The Supports Tree must only contain this node id only.
-	  *Expected "mySupportsTree” structure is equal to the{{<0>}}
+	  *Expected "mySupportsTree" structure is equal to the{{<0>}}
 	  */
 	 @Test
 	    public void BInitialSupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		 //Checking the supports tree structure of node “0”.
+		 //Checking the supports tree structure of node "0".
 		 	ArrayList<ArrayList<ArrayList<Integer>>> mySupportsTree = new ArrayList<ArrayList<ArrayList<Integer>>>();
 		 	ArrayList<ArrayList<Integer>> branch = new ArrayList<ArrayList<Integer>>();
 		 	ArrayList<Integer> intialTree = new ArrayList<Integer>();
@@ -282,7 +282,7 @@ public class SupportTest {
 	  *              	  10 | 11 | 12	  * 
 	  * 
 	  * 
-	  * Expected to Have the following set as the Support Tree Structure “mySupportsTree” 
+	  * Expected to Have the following set as the Support Tree Structure "mySupportsTree" 
 	  * {{<2,0>,<4,1,0>,<5,1,0>,<9,3,0>,<10,8,3,0>,<11,8,3,0>,<12,8,3,0>},{<2,0>,<6,1,0>,<7,1,0>,<9,3,0>,<10,8,3,0>,<11,8,3,0>,<12,8,3,0>},{<13,0>,<14,0>}}.
 	  */
 	 @Test
