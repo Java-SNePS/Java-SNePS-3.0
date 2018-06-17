@@ -196,7 +196,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException {
+    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException {
         setupContradiction3();
         Controller.getMinimalNoGoods().add(genBitSetFromArray(new int[] {70, 71}));
         int id = negatingProp.getId();
@@ -304,7 +304,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addConflictingHypsWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NotAPropositionNodeException {
+    public void addConflictingHypsWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NotAPropositionNodeException, CannotInsertJustificationSupportException {
         boolean caught = false;
         try {
             PropositionSet propSet = setupContradiction4();
@@ -337,7 +337,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void resolveConflictingContextWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, ContextNameDoesntExistException {
+    public void resolveConflictingContextWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CannotInsertJustificationSupportException {
         boolean caught = false;
         PropositionSet propSet = setupContradiction4();
         try {
@@ -489,7 +489,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException, ContradictionFoundException, DuplicatePropositionException {
+    public void isAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CustomException, ContradictionFoundException, DuplicatePropositionException, CannotInsertJustificationSupportException {
         PropositionSet p = new PropositionSet(new int[]{12, 58});
         Controller.addPropsToCurrentContext(p);
         ((PropositionNode) Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(p);
@@ -500,7 +500,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException, DuplicatePropositionException {
+    public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException, DuplicatePropositionException, CannotInsertJustificationSupportException {
         ((PropositionNode) Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(new PropositionSet(new int[]{4, 5, 7}));
         PropositionSet p = new PropositionSet(new int[]{4, 5, 7});
         Controller.addPropsToCurrentContext(p);
@@ -509,7 +509,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, DuplicatePropositionException, ContradictionFoundException {
+    public void allAsserted() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, DuplicatePropositionException, ContradictionFoundException, CannotInsertJustificationSupportException {
         PropositionSet p = new PropositionSet(new int[]{12, 58, 10});
         PropositionSet support = new PropositionSet(new int[]{12, 58});
         PropositionSet p1 = new PropositionSet(new int[]{12, 58, 32});
@@ -676,7 +676,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void getConflictingHypsCollectionForNegatingTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException {
+    public void getConflictingHypsCollectionForNegatingTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, CannotInsertJustificationSupportException {
 
         setupContradiction();
         BitSet temp = genBitSetFromArray(new int[]{40, 43, 46, 48, 49, 81, 85, 89});
@@ -699,7 +699,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void getConflictingHypsCollectionForNegatedTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotBuildNodeException, EquivalentNodeException, IllegalIdentifierException {
+    public void getConflictingHypsCollectionForNegatedTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotBuildNodeException, EquivalentNodeException, IllegalIdentifierException, CannotInsertJustificationSupportException {
 
         setupContradiction();
 
@@ -722,7 +722,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void checkForContradictionTest() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException {
+    public void checkForContradictionTest() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException {
         setupContradiction();
         Context c = Controller.createDummyContext("contradictoryContext", new PropositionSet(new int[]{81, 85, 89}));
 
@@ -834,7 +834,7 @@ public class ControllerTest {
         return true;
     }
 
-    public void setupContradiction() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException {
+    public void setupContradiction() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, DuplicatePropositionException, CannotInsertJustificationSupportException {
         negated = (PropositionNode) Network.getNodeById(80);
         negated.addJustificationBasedSupport(new PropositionSet(new int[]{60, 64, 75, 78}));
         negated.addJustificationBasedSupport(new PropositionSet(new int[]{81, 85, 89}));
@@ -889,7 +889,7 @@ public class ControllerTest {
         minimalNoGoods.add(genBitSetFromArray(new int[]{60, negatingProp.getId(), 62}));
     }
 
-    public PropositionSet setupContradiction4() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException {
+    public PropositionSet setupContradiction4() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotInsertJustificationSupportException {
 
         ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
         minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
@@ -936,7 +936,7 @@ public class ControllerTest {
         return output;
     }
 
-    public PropositionNode createContradictoryNode(PropositionNode negatedNode, ArrayList<PropositionSet> negatingSupports) throws NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException {
+    public PropositionNode createContradictoryNode(PropositionNode negatedNode, ArrayList<PropositionSet> negatingSupports) throws NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, CannotInsertJustificationSupportException {
 
 
         Node zero = Network.buildBaseNode("0", Semantic.infimum);
