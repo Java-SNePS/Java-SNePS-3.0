@@ -2831,15 +2831,21 @@ public class FXController implements Initializable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		    	
+
 		    	try {
 					Network.removeNode(n);
 					updateNodesList();
 				} catch (NodeCannotBeRemovedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (NotAPropositionNodeException e) {
+					e.printStackTrace();
+				} catch (NodeNotFoundInNetworkException e) {
+					e.printStackTrace();
+				} catch (NodeNotFoundInPropSetException e) {
+					e.printStackTrace();
 				}
-		    } else if (response == cancel) {
+			} else if (response == cancel) {
 		        
 		    }
 		});

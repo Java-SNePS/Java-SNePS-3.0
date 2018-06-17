@@ -1,6 +1,5 @@
 package sneps.snebr;
 
-import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;

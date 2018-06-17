@@ -1,5 +1,6 @@
 package tests;
 
+import javafx.util.Pair;
 import org.junit.*;
 
 import static org.junit.Assert.*;
@@ -19,6 +20,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snebr.Support;
 
 import java.util.*;
 
@@ -26,24 +28,29 @@ public class ControllerTest {
 
     private static final String testContextName = "Test context";
     private static final String testContext2 = "Test context2";
-    private PropositionNode negated, negating, negatedHyp, negatingHyp;
+    private PropositionNode negated, negating, negatedProp, negatingProp;
+    private ArrayList<Pair> negatingProps = new ArrayList<>();
 
     @BeforeClass
     public static void setUp() throws IllegalIdentifierException, DuplicateContextNameException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
-        Network.defineDefaults();
-        for (int i = 0; i < 8889; i++)
-            Network.buildBaseNode("n" + i, Semantic.proposition);
-
+        Controller.clearSNeBR();
+        Network.clearNetwork();
     }
 
     @Before
-    public void beforeEach() throws DuplicateContextNameException, ContradictionFoundException {
+    public void beforeEach() throws DuplicateContextNameException, ContradictionFoundException, NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException {
+        Network.defineDefaults();
+        for (int i = 0; i < 8889; i++)
+            Network.buildBaseNode("n" + i, Semantic.proposition);
         Controller.createContext(testContextName);
     }
 
     @After
     public void afterEach() {
         Controller.clearSNeBR();
+        negated = negating = negatedProp = negatingProp = null;
+        negatingProps = new ArrayList<>();
+        Network.clearNetwork();
     }
 
 
@@ -114,37 +121,6 @@ public class ControllerTest {
 
     }
 
-    public void setupContradiction2() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException {
-
-        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
-
-        minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
-
-        minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89}));
-    }
-
-    public void setupContradiction3() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException {
-
-        negatedHyp = (PropositionNode) Network.getNodeById(60);
-
-        Node zero = Network.buildBaseNode("0", Semantic.infimum);
-
-        ArrayList<Wire> wires = new ArrayList<>();
-        wires.add(new Wire(Relation.arg, Network.getNodeById(60)));
-        wires.add(new Wire(Relation.max, zero));
-        wires.add(new Wire(Relation.min, zero));
-
-        negatingHyp = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
-
-        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
-
-        minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
-
-        minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 90}));
-        minimalNoGoods.add(genBitSetFromArray(new int[]{60, negatingHyp.getId(), 62}));
-    }
-
-
     @Test
     public void addConflictingHypToContextUtilizingCache() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException {
         setupContradiction2();
@@ -190,7 +166,7 @@ public class ControllerTest {
     @Test
     public void addConflictingHypToContextWithoutUtilizingCache() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException {
         setupContradiction3();
-        int id = negatingHyp.getId();
+        int id = negatingProp.getId();
         try {
             Controller.addPropToContext(testContextName, 60);
         } catch (ContextNameDoesntExistException e) {
@@ -220,7 +196,77 @@ public class ControllerTest {
     }
 
     @Test
-    public void addHypsToContext() throws NotAPropositionNodeException, CustomException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
+    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException {
+        setupContradiction3();
+        Controller.getMinimalNoGoods().add(genBitSetFromArray(new int[] {70, 71}));
+        int id = negatingProp.getId();
+        try {
+            Controller.addPropToContext(testContextName, 60);
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        } catch (ContradictionFoundException e) {
+            fail();
+        }
+
+        boolean caught = false;
+
+        try {
+            Controller.addPropToContext(testContextName, id);
+        } catch (ContradictionFoundException e) {
+            ArrayList<NodeSet> contradictoryHyps = e.getContradictoryHyps();
+            assertTrue(e.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{60, id})));
+            assertTrue(Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{60, id})));
+            assertEquals(4, Controller.getMinimalNoGoods().size());
+            Controller.handleContradiction(null, true);
+            try {
+                Controller.addPropToContext(testContextName, 70);
+            } catch (ContradictionFoundException e1) {
+                assertTrue(e1.getContradictoryHyps().equals(contradictoryHyps));
+                Controller.handleContradiction(null, true);
+                try {
+                    Controller.addPropToContext(testContextName, 71);
+                } catch (ContradictionFoundException e2) {
+                    contradictoryHyps = e2.getContradictoryHyps();
+                    assertTrue(e2.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{60, id})));
+                    assertTrue(e2.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{70, 71})));
+                    PropositionNode negatingNode = createContradictoryNode((PropositionNode) Network.getNodeById(80), null);
+                    Controller.handleContradiction(null, true);
+                    try {
+                        Controller.addPropToContext(testContextName,80);
+                    } catch (ContradictionFoundException e3) {
+                        assertTrue(e3.getContradictoryHyps().equals(contradictoryHyps));
+                        Controller.handleContradiction(null, true);
+                        try {
+                            Controller.addPropToContext(testContextName, negatingNode.getId());
+                        } catch (ContradictionFoundException e4) {
+                            assertTrue(e4.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{60, id})));
+                            assertTrue(Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{60, id})));
+                            assertTrue(e4.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{70, 71})));
+                            assertTrue(Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{70, 71})));
+                            assertTrue(e4.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{80, negatingNode.getId()})));
+                            assertTrue(Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{80, negatingNode.getId()})));
+                            assertEquals(5, Controller.getMinimalNoGoods().size());
+                            assertEquals(3, e4.getContradictoryHyps().size());
+                            caught = true;
+
+                        }
+                    }
+                }
+
+            }
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (DuplicatePropositionException e) {
+            fail();
+        }
+        if (!caught)
+            fail();
+    }
+
+    @Test
+    public void addHypsToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, ContradictionFoundException, DuplicatePropositionException, NodeNotFoundInPropSetException {
         Context cxt = Controller.getContextByName(testContextName);
         int length = PropositionSet.getPropsSafely(cxt.getHypothesisSet()).length;
         Context c = Controller.addPropsToContext(testContextName, new PropositionSet(new int[]{3, 4, 5, 6}));
@@ -228,6 +274,110 @@ public class ControllerTest {
         int[] props = PropositionSet.getPropsSafely(c.getHypothesisSet());
         assertEquals(props.length, length + 4);
         assertArrayEquals(props, new int[]{3, 4, 5, 6});
+    }
+
+    @Test
+    public void addConflictingHypsToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException {
+        setupContradiction3();
+        boolean caught = false;
+        int negatingId = negatingProp.getId();
+        try {
+            Controller.addPropsToContext(testContextName, new PropositionSet(new int[] {60, negatingId, 62, 45, 56}));
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (NotAPropositionNodeException e) {
+            e.printStackTrace();
+        } catch (NodeNotFoundInNetworkException e) {
+            fail();
+        } catch (ContradictionFoundException e) {
+            caught = true;
+            assertTrue(e.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{60, negatingId})));
+            assertTrue( Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{60, negatingId})));
+            assertEquals(Controller.getMinimalNoGoods().size(), 3);
+        } catch (DuplicatePropositionException e) {
+            fail();
+        } catch (NodeNotFoundInPropSetException e) {
+            fail();
+        }
+        if (!caught)
+            fail();
+    }
+
+    @Test
+    public void addConflictingHypsWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NotAPropositionNodeException {
+        boolean caught = false;
+        try {
+            PropositionSet propSet = setupContradiction4();
+            assertEquals(15, Controller.getMinimalNoGoods().size());
+            Controller.addPropsToContext(testContextName, propSet);
+        } catch (ContextNameDoesntExistException e) {
+            fail();
+        } catch (ContradictionFoundException e) {
+
+//            System.out.println(e.getContradictoryHyps());
+            for (Pair p: negatingProps) {
+                assertTrue(e.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{(Integer) p.getKey(), (Integer)p.getValue()})));
+                assertTrue(Controller.getMinimalNoGoods().contains(genBitSetFromArray(new int[]{(int) p.getKey(), (int) p.getValue()})));
+            }
+
+            assertTrue(e.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int []{81,85,89,46,48,49})));
+            assertEquals(12, e.getContradictoryHyps().size());
+            assertEquals(15, Controller.getMinimalNoGoods().size());
+
+//            e.getContradictoryHyps().contains()
+            caught = true;
+
+        } catch (NodeNotFoundInPropSetException e) {
+            fail();
+        }
+
+        if (!caught)
+            fail();
+
+    }
+
+    @Test
+    public void resolveConflictingContextWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, ContextNameDoesntExistException {
+        boolean caught = false;
+        PropositionSet propSet = setupContradiction4();
+        try {
+            Controller.addPropsToContext(testContextName, propSet);
+        } catch (ContextNameDoesntExistException e) {
+           fail();
+        } catch (ContradictionFoundException e) {
+            caught = true;
+        }
+
+       if (!caught)
+           fail();
+
+        System.out.println(negatingProps);
+
+        PropositionSet remove = new PropositionSet();
+
+        for (int i = 50; i <= 60; i++) {
+            if (i % 2 == 0)
+                remove = remove.add(i);
+            else
+                remove = remove.add((Integer) negatingProps.get(i - 50).getValue());
+        }
+
+        remove = remove.add(81);
+        Controller.handleContradiction(remove, false);
+
+        PropositionSet expected = new PropositionSet(new int [] {8800,8802});
+        for (int i = 50; i <= 60; i++) {
+            if (i % 2 != 0)
+                expected = expected.add(i);
+            else
+                expected = expected.add((Integer) negatingProps.get(i - 50).getValue());
+        }
+
+        Controller.getContextByName(testContextName).getHypothesisSet().equals(
+                expected.union(
+                        new PropositionSet(new int[] {85,89,46,48,49})
+                )
+        );
     }
 
 
@@ -250,6 +400,7 @@ public class ControllerTest {
 
         assertTrue(found);
     }
+
 
 
     @Test
@@ -702,11 +853,108 @@ public class ControllerTest {
         ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
 
         minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
-
         minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 90}));
         minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 95}));
         minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 95, 99}));
         minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 97, 102}));
+    }
+
+    public void setupContradiction2() {
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
+
+        minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89}));
+    }
+
+    public void setupContradiction3() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException {
+
+        negatedProp = (PropositionNode) Network.getNodeById(60);
+
+        Node zero = Network.buildBaseNode("0", Semantic.infimum);
+
+        ArrayList<Wire> wires = new ArrayList<>();
+        wires.add(new Wire(Relation.arg, negatedProp));
+        wires.add(new Wire(Relation.max, zero));
+        wires.add(new Wire(Relation.min, zero));
+
+        negatingProp = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+
+        minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
+
+        minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 90}));
+        minimalNoGoods.add(genBitSetFromArray(new int[]{60, negatingProp.getId(), 62}));
+    }
+
+    public PropositionSet setupContradiction4() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException {
+
+        ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
+        minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
+        minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89, 90}));
+        PropositionSet output = new PropositionSet();
+
+        output = output.add(8800);
+        output = output.add(8802);
+
+        for (int i = 50; i <= 60; i++) {
+
+            output = output.add(i);
+
+            PropositionNode negatingProp = createContradictoryNode((PropositionNode) Network.getNodeById(i),null);
+            negatingProps.add(new Pair(i, negatingProp.getId()));
+
+            if (i == 50)
+                minimalNoGoods.add(genBitSetFromArray(new int[]{i, negatingProp.getId()}));
+            else
+                minimalNoGoods.add(genBitSetFromArray(new int[]{i, negatingProp.getId(), (int) ((Math.random() * 30.0) + 61)}));
+
+            output = output.add(negatingProp.getId());
+        }
+
+        PropositionNode negatedProp = (PropositionNode) Network.getNodeById(80);
+        negatedProp.addJustificationBasedSupport(new PropositionSet(new int[]{50, 95, 105}));
+        negatedProp.addJustificationBasedSupport(new PropositionSet(new int[]{81, 85, 89}));
+
+        ArrayList<PropositionSet> negatingSupports = new ArrayList<>();
+        negatingSupports.add(new PropositionSet(new int[]{60, (Integer)negatingProps.get(0).getValue(), 95, 105}));
+        negatingSupports.add(new PropositionSet(new int[]{46, 48, 49}));
+
+        output = output.union(new PropositionSet(new int[]{81,85,89,46,48,49}));
+
+        PropositionNode negatingProp = createContradictoryNode(negatedProp,negatingSupports);
+
+        Controller.checkForContradiction(negatingProp,Controller.getContextByName(testContextName), false);
+
+//        output = output.add(negatedProp.getId());
+//        output = output.add(negatingProp.getId());
+
+//        negatingProps.add(new Pair(negatedProp.getId(), negatingProp.getId()));
+
+        return output;
+    }
+
+    public PropositionNode createContradictoryNode(PropositionNode negatedNode, ArrayList<PropositionSet> negatingSupports) throws NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException {
+
+
+        Node zero = Network.buildBaseNode("0", Semantic.infimum);
+
+        ArrayList<Wire> wires = new ArrayList<>();
+        wires.add(new Wire(Relation.arg, negatedNode));
+        wires.add(new Wire(Relation.max, zero));
+        wires.add(new Wire(Relation.min, zero));
+
+        PropositionNode negatingProp = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+
+        if (negatingSupports != null) {
+            for (PropositionSet support: negatingSupports)
+                negatingProp.addJustificationBasedSupport(support);
+        }
+
+        return negatingProp;
+
     }
 
 }
