@@ -15,13 +15,11 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
-import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.setClasses.NodeSet;
+import sneps.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
-
 import java.util.*;
 
 public class ControllerTest {
