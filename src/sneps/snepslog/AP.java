@@ -662,7 +662,7 @@ public class AP {
 	 */
 	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
 			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, NodeNotFoundInPropSetException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);

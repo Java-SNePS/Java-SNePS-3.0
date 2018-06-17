@@ -1,6 +1,5 @@
 package sneps.snebr;
 
-import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -191,10 +190,5 @@ public class Context implements Serializable{
     protected boolean removeName(String name) {
         return this.names.remove(name);
     }
-
-	public void removeNodeFromContext(PropositionNode propNode) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
