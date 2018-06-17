@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import sneps.exceptions.*;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -453,7 +454,7 @@ public class Network implements Serializable {
 	 * @throws NodeCannotBeRemovedException
 	 *             if the node cannot be removed because it is not isolated.
 	 */
-	public static void removeNode(Node node) throws NodeCannotBeRemovedException {
+	public static void removeNode(Node node) throws NodeCannotBeRemovedException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
 			throw new NodeCannotBeRemovedException(
@@ -465,7 +466,13 @@ public class Network implements Serializable {
 		// removing the node from the hash table
 		nodes.remove(node.getIdentifier());
 		// nullify entry of the removed node in the array list
+
 		nodesIndex.put(node.getId(), null);
+
+
+		// remove node from all contexts
+		Controller.removePropositionFromAllContexts((PropositionNode) node);
+
 		// removing child nodes that are dominated by the removed node and has
 		// no other parents
 		if (node.getTerm().getClass().getSuperclass().getSimpleName().equals("Molecular")) {

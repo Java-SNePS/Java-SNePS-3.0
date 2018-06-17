@@ -14,7 +14,7 @@ public class ContradictionFoundException extends Exception{
         this.contradictoryHyps = contradictoryHyps;
     }
 
-	public ArrayList<NodeSet> getContradictoryHyps() {
-		return contradictoryHyps;
-	}
+    public ArrayList<NodeSet> getContradictoryHyps() {
+        return contradictoryHyps;
+    }
 }

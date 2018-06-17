@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/junit.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jacocoant.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/hamcrest.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/java-cup-11b-runtime.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/java-cup-11b.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
