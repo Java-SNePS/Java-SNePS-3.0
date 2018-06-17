@@ -5,7 +5,7 @@ import java.util.Enumeration;
 
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
-import sneps.setClasses.NodeSet;
+import sneps.network.classes.setClasses.NodeSet;
 
 public abstract class Term implements Serializable {
 	/**

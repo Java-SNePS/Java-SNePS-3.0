@@ -1,4 +1,4 @@
-package sneps.setClasses;
+package sneps.network.classes.setClasses;
 
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;

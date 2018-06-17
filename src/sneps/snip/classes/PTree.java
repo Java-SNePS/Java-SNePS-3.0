@@ -11,13 +11,13 @@ import java.util.Stack;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
+import sneps.network.classes.setClasses.FlagNodeSet;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.RuleUseInfoSet;
+import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
-import sneps.setClasses.FlagNodeSet;
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.RuleUseInfoSet;
-import sneps.setClasses.VarNodeSet;
 
 /**
  * @className PTree.java

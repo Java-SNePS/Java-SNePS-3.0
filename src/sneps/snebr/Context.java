@@ -6,12 +6,11 @@ import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.PropositionSet;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.BitSet;
-
 import java.util.Collection;
 import java.util.HashSet;
 

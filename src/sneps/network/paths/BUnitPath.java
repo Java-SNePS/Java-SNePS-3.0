@@ -17,10 +17,10 @@ import java.util.LinkedList;
 import sneps.snebr.Context;
 import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.Node;
-import sneps.setClasses.NodeSet;
 
 public class BUnitPath extends Path implements Serializable{
 

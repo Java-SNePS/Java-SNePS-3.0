@@ -16,7 +16,7 @@ import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.Semantic;
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.PropositionSet;
 
 public class Support implements Serializable{
 	private int id;

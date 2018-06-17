@@ -1,6 +1,6 @@
 package sneps.snip;
 
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
 /**

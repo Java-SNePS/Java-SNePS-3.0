@@ -1,7 +1,7 @@
 package sneps.snip.channels;
 
 import sneps.network.Node;
-import sneps.setClasses.ReportSet;
+import sneps.network.classes.setClasses.ReportSet;
 import sneps.snip.Filter;
 import sneps.snip.Report;
 import sneps.snip.Runner;

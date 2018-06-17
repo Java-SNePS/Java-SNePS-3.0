@@ -1,7 +1,7 @@
 package sneps.snip.classes;
 
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.RuleUseInfoSet;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.RuleUseInfoSet;
 
 /**
  * @className RuisHandler.java

@@ -8,8 +8,8 @@ import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.Relation;
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.VarNodeSet;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.VarNodeSet;
 
 public class Open extends Molecular implements Serializable{
 	protected VarNodeSet variables;

@@ -1,7 +1,7 @@
 package sneps.snip.classes;
 
 import sneps.network.Node;
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.PropositionSet;
 
 public class FlagNode {
 	private Node node;

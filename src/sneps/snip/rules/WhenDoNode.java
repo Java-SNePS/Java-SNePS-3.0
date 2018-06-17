@@ -2,8 +2,8 @@ package sneps.snip.rules;
 
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Term;
-import sneps.setClasses.NodeSet;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 

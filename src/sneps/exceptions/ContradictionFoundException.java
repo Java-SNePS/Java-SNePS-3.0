@@ -1,7 +1,7 @@
 package sneps.exceptions;
 
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
 
 import java.util.ArrayList;
 

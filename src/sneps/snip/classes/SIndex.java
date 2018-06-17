@@ -4,9 +4,9 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import sneps.network.VariableNode;
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.RuleUseInfoSet;
-import sneps.setClasses.VarNodeSet;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.RuleUseInfoSet;
+import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.matching.Substitutions;

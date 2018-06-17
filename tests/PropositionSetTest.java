@@ -9,7 +9,7 @@ import org.junit.Test;
 import sneps.exceptions.*;
 import sneps.network.Network;
 import sneps.network.classes.Semantic;
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Controller;
 
 public class PropositionSetTest {

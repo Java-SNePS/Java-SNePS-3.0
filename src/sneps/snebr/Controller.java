@@ -8,9 +8,9 @@ import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.PropositionSet;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 
 import java.io.File;

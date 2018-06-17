@@ -13,7 +13,7 @@ package sneps.network.cables;
 import java.io.Serializable;
 
 import sneps.network.classes.Relation;
-import sneps.setClasses.NodeSet;
+import sneps.network.classes.setClasses.NodeSet;
 
 public class DownCable extends Cable implements Serializable{
 

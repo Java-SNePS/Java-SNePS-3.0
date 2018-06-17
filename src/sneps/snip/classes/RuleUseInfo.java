@@ -2,8 +2,8 @@ package sneps.snip.classes;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
-import sneps.setClasses.FlagNodeSet;
-import sneps.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.FlagNodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
 /**

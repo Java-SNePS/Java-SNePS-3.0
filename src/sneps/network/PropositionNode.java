@@ -2,16 +2,18 @@ package sneps.network;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
 import sneps.network.classes.Semantic;
+import sneps.network.classes.setClasses.ChannelSet;
+import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
+import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
-import sneps.setClasses.ChannelSet;
-import sneps.setClasses.NodeSet;
-import sneps.setClasses.PropositionSet;
-import sneps.setClasses.ReportSet;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
+
 import java.util.Hashtable;
 
 import sneps.snebr.Support;
