@@ -90,6 +90,7 @@ public class SnepslogTest {
 		for (int i = 0; i < PropositionSet.getPropsSafely(ps).length; i++) {
 			Node n = Network.getNodeById(PropositionSet.getPropsSafely(ps)[i]);
 			if (n.getTerm() instanceof Molecular) {
+				
 				Molecular m = (Molecular) n.getTerm();
 				LinkedList<Relation> rels = m.getDownCableSet().getCaseFrame().getRelations();
 				if (rels.size() == 2 && rels.get(0).getName().equals("r") && rels.get(1).getName().equals("a1")) {
