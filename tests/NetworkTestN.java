@@ -25,7 +25,7 @@ import java.util.LinkedList;
 
 public class NetworkTestN {
      Semantic semantic;
-    final static String semanticType = "PropositionNode";
+    final static String semanticType = "Proposition";
     
 
     @Before
