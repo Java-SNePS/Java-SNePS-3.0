@@ -40,8 +40,10 @@ public class ControllerTest {
     @Before
     public void beforeEach() throws DuplicateContextNameException, ContradictionFoundException, NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException {
         Network.defineDefaults();
-        for (int i = 0; i < 8889; i++)
+        for (int i = 0; i < 8889; i++) {
             Network.buildBaseNode("n" + i, Semantic.proposition);
+            ((PropositionNode)(Network.getNodeById(i))).setHyp(true);
+        }
         Controller.createContext(testContextName);
     }
 
@@ -776,6 +778,7 @@ public class ControllerTest {
         wires.add(new Wire(Relation.min, zero));
 
         PropositionNode negating2 = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+        negating2.setHyp(true);
 
         c = Controller.createDummyContext("contradictoryContext", new PropositionSet(new int[]{81, 7000}));
 
@@ -880,6 +883,7 @@ public class ControllerTest {
         wires.add(new Wire(Relation.min, zero));
 
         negatingProp = (PropositionNode) Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andOrRule);
+        negatingProp.setHyp(true);
 
         ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
 
@@ -951,6 +955,8 @@ public class ControllerTest {
         if (negatingSupports != null) {
             for (PropositionSet support: negatingSupports)
                 negatingProp.addJustificationBasedSupport(support);
+        } else {
+            negatingProp.setHyp(true);
         }
 
         return negatingProp;

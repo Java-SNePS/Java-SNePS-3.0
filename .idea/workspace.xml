@@ -8,110 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="218d1e56-d90c-4598-b089-518f7e6dde1a" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/Networks" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/build.fxbuild" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/java-cup-11b-runtime.jar" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/java-cup-11b.jar" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkcaseFrames" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkcontexts" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkmc" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkmolNodes" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkni" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networknodes" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkpc" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkpn" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkrelations" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networksemList" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkudms" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkudps" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkudvs" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/networkvc" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/CannotFindCaseFrameException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/CaseFrameAlreadyExistException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/ContextNameDoesntExist.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/DuplicateNodeException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/IllegalAtomicSymbolException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/InvalidArgumentsException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/InvalidWffNameException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/ModeOneOnlyException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/ModeThreeOnlyException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/NodeNotFoundException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/exceptions/SemanticAlreadySetException.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/AH.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/BaseNodeShape.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/Main2.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/MolNodeShape.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/VarNodeShape.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/WireRelation.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/application2.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/gui/viz.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/AP.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/Lexer" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/Lexer.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/cup/MainCup.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/jlex/Main.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/parser.cup" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/parser.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/sneps/snepslog/sym.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/test.snepslog" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/SnepslogTest.java" />
-      <change beforePath="$PROJECT_DIR$/.classpath" afterPath="$PROJECT_DIR$/.classpath" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change beforePath="$PROJECT_DIR$/build.xml" afterPath="$PROJECT_DIR$/build.xml" />
-      <change beforePath="$PROJECT_DIR$/lib/hamcrest.jar" afterPath="$PROJECT_DIR$/lib/hamcrest.jar" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/exceptions/ContradictionFoundException.java" afterPath="$PROJECT_DIR$/src/sneps/exceptions/ContradictionFoundException.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/gui/FXController.java" afterPath="$PROJECT_DIR$/src/sneps/gui/FXController.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/gui/Main.fxml" afterPath="$PROJECT_DIR$/src/sneps/gui/Main.fxml" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/gui/Main.java" afterPath="$PROJECT_DIR$/src/sneps/gui/Main.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/gui/application.css" afterPath="$PROJECT_DIR$/src/sneps/gui/application.css" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/ActNode.java" afterPath="$PROJECT_DIR$/src/sneps/network/ActNode.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/Network.java" afterPath="$PROJECT_DIR$/src/sneps/network/Network.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/PropositionNode.java" afterPath="$PROJECT_DIR$/src/sneps/network/PropositionNode.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/RuleNode.java" afterPath="$PROJECT_DIR$/src/sneps/network/RuleNode.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/VariableNode.java" afterPath="$PROJECT_DIR$/src/sneps/network/VariableNode.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/cables/Cable.java" afterPath="$PROJECT_DIR$/src/sneps/network/cables/Cable.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/cables/DownCable.java" afterPath="$PROJECT_DIR$/src/sneps/network/cables/DownCable.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/cables/DownCableSet.java" afterPath="$PROJECT_DIR$/src/sneps/network/cables/DownCableSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/cables/UpCable.java" afterPath="$PROJECT_DIR$/src/sneps/network/cables/UpCable.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/CFSignature.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/CFSignature.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/CableTypeConstraint.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/CableTypeConstraint.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/PathTrace.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/PathTrace.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/RCFP.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/RCFP.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/Relation.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/Relation.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/RelationsRestrictedCaseFrame.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/RelationsRestrictedCaseFrame.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/SemanticHierarchy.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/SemanticHierarchy.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/SubDomainConstraint.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/SubDomainConstraint.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/ChannelSet.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/ChannelSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/NodeSet.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/NodeSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/PropositionSet.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/PropositionSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/ReportSet.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/ReportSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/VariableSet.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/setClasses/VariableSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/term/Closed.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/term/Closed.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/classes/term/Open.java" afterPath="$PROJECT_DIR$/src/sneps/network/classes/term/Open.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/AndPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/AndPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/BUnitPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/BUnitPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/BangPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/BangPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/CFResBUnitPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/CFResBUnitPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/CFResFUnitPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/CFResFUnitPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/ComposePath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/ComposePath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/ConversePath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/ConversePath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/DomainRestrictPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/DomainRestrictPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/EmptyPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/EmptyPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/FUnitPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/FUnitPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/IrreflexiveRestrictPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/IrreflexiveRestrictPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/KPlusPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/KPlusPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/KStarPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/KStarPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/OrPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/OrPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/Path.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/Path.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/network/paths/RangeRestrictPath.java" afterPath="$PROJECT_DIR$/src/sneps/network/paths/RangeRestrictPath.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/snebr/Context.java" afterPath="$PROJECT_DIR$/src/sneps/snebr/Context.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/snebr/ContextSet.java" afterPath="$PROJECT_DIR$/src/sneps/snebr/ContextSet.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/snebr/Controller.java" afterPath="$PROJECT_DIR$/src/sneps/snebr/Controller.java" />
-      <change beforePath="$PROJECT_DIR$/src/sneps/snebr/Support.java" afterPath="$PROJECT_DIR$/src/sneps/snebr/Support.java" />
-      <change beforePath="$PROJECT_DIR$/tests/ContextSetTest.java" afterPath="$PROJECT_DIR$/tests/ContextSetTest.java" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/tests/ControllerTest.java" afterPath="$PROJECT_DIR$/tests/ControllerTest.java" />
-      <change beforePath="$PROJECT_DIR$/tests/NetworkTest.java" afterPath="$PROJECT_DIR$/tests/NetworkTest.java" />
-      <change beforePath="$PROJECT_DIR$/tests/PropositionSetTest.java" afterPath="$PROJECT_DIR$/tests/PropositionSetTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -134,108 +32,54 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ControllerTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="NetworkTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/NetworkTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="32" column="17" lean-forward="false" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PropositionSetTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/PropositionSetTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2034">
+              <caret line="123" column="47" lean-forward="false" selection-start-line="123" selection-start-column="47" selection-end-line="123" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PropositionSet.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/sneps/network/classes/setClasses/PropositionSet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="738">
+              <caret line="54" column="34" lean-forward="false" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Network.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/sneps/network/Network.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="307">
+              <caret line="284" column="76" lean-forward="false" selection-start-line="284" selection-start-column="71" selection-end-line="284" selection-end-column="76" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ControllerTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/ControllerTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1323">
-              <caret line="474" column="19" lean-forward="false" selection-start-line="474" selection-start-column="19" selection-end-line="474" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Controller.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Controller.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="781">
-              <caret line="667" column="0" lean-forward="false" selection-start-line="667" selection-start-column="0" selection-end-line="667" selection-end-column="0" />
+            <state relative-caret-position="518">
+              <caret line="957" column="16" lean-forward="true" selection-start-line="957" selection-start-column="16" selection-end-line="957" selection-end-column="16" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1144#1145#0" expanded="true" />
-                <element signature="e#1178#1179#0" expanded="true" />
-                <element signature="e#1240#1241#0" expanded="true" />
-                <element signature="e#1292#1293#0" expanded="true" />
-                <element signature="e#2057#2058#0" expanded="true" />
-                <element signature="e#2093#2094#0" expanded="true" />
-                <element signature="e#7898#7899#0" expanded="true" />
-                <element signature="e#7935#7936#0" expanded="true" />
-                <element signature="e#8721#8722#0" expanded="true" />
-                <element signature="e#8755#8756#0" expanded="true" />
-                <element signature="e#10264#10265#0" expanded="true" />
-                <element signature="e#10321#10322#0" expanded="true" />
-                <element signature="e#28544#28545#0" expanded="true" />
-                <element signature="e#28588#28589#0" expanded="true" />
-                <element signature="e#28812#28813#0" expanded="true" />
-                <element signature="e#28869#28870#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="parser.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/parser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-72173">
-              <caret line="54" column="12" lean-forward="false" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AP.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/AP.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="895">
-              <caret line="693" column="16" lean-forward="false" selection-start-line="693" selection-start-column="16" selection-end-line="693" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FXController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/sneps/gui/FXController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="125" column="4" lean-forward="true" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
-              <folding>
-                <element signature="e#121365#121366#0" expanded="true" />
-                <element signature="e#121402#121403#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Lexer.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/Lexer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2">
-              <caret line="1199" column="62" lean-forward="true" selection-start-line="1199" selection-start-column="62" selection-end-line="1199" selection-end-column="62" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Context.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Context.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#601#602#0" expanded="true" />
-                <element signature="e#634#635#0" expanded="true" />
-                <element signature="e#3235#3236#0" expanded="true" />
-                <element signature="e#3262#3263#0" expanded="true" />
-                <element signature="e#3456#3457#0" expanded="true" />
-                <element signature="e#3484#3485#0" expanded="true" />
-                <element signature="e#3515#3516#0" expanded="true" />
-                <element signature="e#3542#3543#0" expanded="true" />
-                <element signature="e#5623#5624#0" expanded="true" />
-                <element signature="e#5666#5667#0" expanded="true" />
-                <element signature="e#5984#5985#0" expanded="true" />
-                <element signature="e#6031#6032#0" expanded="true" />
-                <element signature="e#6316#6317#0" expanded="true" />
-                <element signature="e#6362#6363#0" expanded="true" />
+                <element signature="e#38025#38026#0" expanded="true" />
+                <element signature="e#38120#38121#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -253,11 +97,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>setupContradiction</find>
-      <find>new N</find>
-      <find>negatingHyp</find>
-      <find>set</find>
-      <find>setupContradiction4</find>
       <find>setupCon</find>
       <find>addConf</find>
       <find>addHyps</find>
@@ -283,6 +122,11 @@
       <find>remo</find>
       <find>remove</find>
       <find>tempSet</find>
+      <find>new Prop</find>
+      <find>buildba</find>
+      <find>buildmo</find>
+      <find>buildMo</find>
+      <find>createContradictoryNode</find>
     </findStrings>
     <replaceStrings>
       <replace>hyps</replace>
@@ -330,11 +174,11 @@
         <option value="$PROJECT_DIR$/src/sneps/exceptions/ContradictionFoundException.java" />
         <option value="$PROJECT_DIR$/src/sneps/network/classes/setClasses/PropositionSet.java" />
         <option value="$PROJECT_DIR$/tests/PropositionSetTest.java" />
-        <option value="$PROJECT_DIR$/tests/ControllerTest.java" />
         <option value="$PROJECT_DIR$/src/sneps/snebr/Controller.java" />
         <option value="$PROJECT_DIR$/src/sneps/snebr/Context.java" />
         <option value="$PROJECT_DIR$/src/sneps/snepslog/AP.java" />
         <option value="$PROJECT_DIR$/src/sneps/gui/FXController.java" />
+        <option value="$PROJECT_DIR$/tests/ControllerTest.java" />
       </list>
     </option>
   </component>
@@ -427,6 +271,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -438,47 +284,13 @@
             <path>
               <item name="Java-SNePS-3.0" type="b2602c69:ProjectViewProjectNode" />
               <item name="Java-SNePS-3.0" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Java-SNePS-3.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java-SNePS-3.0" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Java-SNePS-3.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java-SNePS-3.0" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="sneps" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Java-SNePS-3.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java-SNePS-3.0" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="sneps" type="462c0819:PsiDirectoryNode" />
-              <item name="gui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Java-SNePS-3.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java-SNePS-3.0" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="sneps" type="462c0819:PsiDirectoryNode" />
-              <item name="snebr" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Java-SNePS-3.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Java-SNePS-3.0" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="sneps" type="462c0819:PsiDirectoryNode" />
-              <item name="snepslog" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="AndroidView" />
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -784,18 +596,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.14 at 12h 42m 37s.xml">
-      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.14 at 12h 43m 19s.xml">
-      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.14 at 12h 43m 47s.xml">
-      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.14 at 12h 44m 02s.xml">
-      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.14 at 12h 45m 07s.xml">
       <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
     </history-entry>
@@ -814,25 +614,37 @@
     <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.14 at 13h 16m 20s.xml">
       <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.17 at 23h 31m 29s.xml">
+      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.17 at 23h 31m 59s.xml">
+      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.17 at 23h 32m 20s.xml">
+      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="tests_in_Java-SNePS-3_0 - 2018.06.18 at 13h 19m 03s.xml">
+      <configuration name="tests in Java-SNePS-3.0" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="497" y="24" width="1857" height="1092" extended-state="6" />
+    <frame x="497" y="24" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29947644" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29947644" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23141362" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23141362" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20732984" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19679381" sideWeight="0.4945504" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19900498" sideWeight="0.4945504" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -898,7 +710,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#38025#38026#0" expanded="true" />
+            <element signature="e#38120#38121#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -935,19 +750,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sneps/network/Network.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8928">
-          <caret line="563" column="54" lean-forward="false" selection-start-line="563" selection-start-column="44" selection-end-line="563" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/ControllerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1323">
-          <caret line="474" column="19" lean-forward="false" selection-start-line="474" selection-start-column="19" selection-end-line="474" selection-end-column="19" />
-          <folding />
+        <state relative-caret-position="307">
+          <caret line="201" column="24" lean-forward="false" selection-start-line="201" selection-start-column="24" selection-end-line="201" selection-end-column="24" />
+          <folding>
+            <element signature="e#38025#38026#0" expanded="true" />
+            <element signature="e#38120#38121#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -956,6 +766,165 @@
         <state relative-caret-position="-9663">
           <caret line="39" column="13" lean-forward="false" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Context.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#601#602#0" expanded="true" />
+            <element signature="e#634#635#0" expanded="true" />
+            <element signature="e#3235#3236#0" expanded="true" />
+            <element signature="e#3262#3263#0" expanded="true" />
+            <element signature="e#3456#3457#0" expanded="true" />
+            <element signature="e#3484#3485#0" expanded="true" />
+            <element signature="e#3515#3516#0" expanded="true" />
+            <element signature="e#3542#3543#0" expanded="true" />
+            <element signature="e#5623#5624#0" expanded="true" />
+            <element signature="e#5666#5667#0" expanded="true" />
+            <element signature="e#5984#5985#0" expanded="true" />
+            <element signature="e#6031#6032#0" expanded="true" />
+            <element signature="e#6316#6317#0" expanded="true" />
+            <element signature="e#6362#6363#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="1" lean-forward="false" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1144#1145#0" expanded="true" />
+            <element signature="e#1178#1179#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
+            <element signature="e#1292#1293#0" expanded="true" />
+            <element signature="e#2057#2058#0" expanded="true" />
+            <element signature="e#2093#2094#0" expanded="true" />
+            <element signature="e#7898#7899#0" expanded="true" />
+            <element signature="e#7935#7936#0" expanded="true" />
+            <element signature="e#8721#8722#0" expanded="true" />
+            <element signature="e#8755#8756#0" expanded="true" />
+            <element signature="e#10264#10265#0" expanded="true" />
+            <element signature="e#10321#10322#0" expanded="true" />
+            <element signature="e#28544#28545#0" expanded="true" />
+            <element signature="e#28588#28589#0" expanded="true" />
+            <element signature="e#28812#28813#0" expanded="true" />
+            <element signature="e#28869#28870#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/parser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-72173">
+          <caret line="54" column="12" lean-forward="false" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/AP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="895">
+          <caret line="693" column="16" lean-forward="false" selection-start-line="693" selection-start-column="16" selection-end-line="693" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/gui/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-900">
+          <caret line="56" column="13" lean-forward="false" selection-start-line="56" selection-start-column="13" selection-end-line="56" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/gui/FXController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="125" column="4" lean-forward="true" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/Lexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2">
+          <caret line="1199" column="62" lean-forward="true" selection-start-line="1199" selection-start-column="62" selection-end-line="1199" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/Network.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1575">
+          <caret line="282" column="0" lean-forward="false" selection-start-line="282" selection-start-column="0" selection-end-line="282" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.classpath">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Support.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="25" column="53" lean-forward="false" selection-start-line="25" selection-start-column="53" selection-end-line="25" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/classes/Semantic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="7" column="36" lean-forward="false" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ControllerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#38025#38026#0" expanded="true" />
+            <element signature="e#38120#38121#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8676">
+          <caret line="482" column="0" lean-forward="false" selection-start-line="482" selection-start-column="0" selection-end-line="482" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1144#1145#0" expanded="true" />
+            <element signature="e#1178#1179#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
+            <element signature="e#1292#1293#0" expanded="true" />
+            <element signature="e#2057#2058#0" expanded="true" />
+            <element signature="e#2093#2094#0" expanded="true" />
+            <element signature="e#7898#7899#0" expanded="true" />
+            <element signature="e#7935#7936#0" expanded="true" />
+            <element signature="e#8721#8722#0" expanded="true" />
+            <element signature="e#8755#8756#0" expanded="true" />
+            <element signature="e#10264#10265#0" expanded="true" />
+            <element signature="e#10321#10322#0" expanded="true" />
+            <element signature="e#28544#28545#0" expanded="true" />
+            <element signature="e#28588#28589#0" expanded="true" />
+            <element signature="e#28812#28813#0" expanded="true" />
+            <element signature="e#28869#28870#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/junit.jar!/org/junit/internal/runners/model/ReflectiveCallable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1013,7 +982,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-72173">
           <caret line="54" column="12" lean-forward="false" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1021,7 +989,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="895">
           <caret line="693" column="16" lean-forward="false" selection-start-line="693" selection-start-column="16" selection-end-line="693" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1029,7 +996,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-900">
           <caret line="56" column="13" lean-forward="false" selection-start-line="56" selection-start-column="13" selection-end-line="56" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1037,10 +1003,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="125" column="4" lean-forward="true" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
-          <folding>
-            <element signature="e#121365#121366#0" expanded="true" />
-            <element signature="e#121402#121403#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1048,7 +1010,251 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2">
           <caret line="1199" column="62" lean-forward="true" selection-start-line="1199" selection-start-column="62" selection-end-line="1199" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ControllerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-256">
+          <caret line="197" column="9" lean-forward="true" selection-start-line="197" selection-start-column="9" selection-end-line="197" selection-end-column="9" />
+          <folding>
+            <element signature="e#38025#38026#0" expanded="true" />
+            <element signature="e#38120#38121#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/NetworkTestN.java" />
+    <entry file="file://$PROJECT_DIR$/tests/SnepslogTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="559">
+          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/classes/term/Base.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="29" lean-forward="false" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/classes/term/Term.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-198">
+          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/PropositionNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="30" column="40" lean-forward="true" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/Network.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="602" column="52" lean-forward="true" selection-start-line="602" selection-start-column="52" selection-end-line="602" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ControllerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#38025#38026#0" expanded="true" />
+            <element signature="e#38120#38121#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8676">
+          <caret line="482" column="0" lean-forward="false" selection-start-line="482" selection-start-column="0" selection-end-line="482" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1144#1145#0" expanded="true" />
+            <element signature="e#1178#1179#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
+            <element signature="e#1292#1293#0" expanded="true" />
+            <element signature="e#2057#2058#0" expanded="true" />
+            <element signature="e#2093#2094#0" expanded="true" />
+            <element signature="e#7898#7899#0" expanded="true" />
+            <element signature="e#7935#7936#0" expanded="true" />
+            <element signature="e#8721#8722#0" expanded="true" />
+            <element signature="e#8755#8756#0" expanded="true" />
+            <element signature="e#10264#10265#0" expanded="true" />
+            <element signature="e#10321#10322#0" expanded="true" />
+            <element signature="e#28544#28545#0" expanded="true" />
+            <element signature="e#28588#28589#0" expanded="true" />
+            <element signature="e#28812#28813#0" expanded="true" />
+            <element signature="e#28869#28870#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/junit.jar!/org/junit/internal/runners/model/ReflectiveCallable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Context.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#601#602#0" expanded="true" />
+            <element signature="e#634#635#0" expanded="true" />
+            <element signature="e#3235#3236#0" expanded="true" />
+            <element signature="e#3262#3263#0" expanded="true" />
+            <element signature="e#3456#3457#0" expanded="true" />
+            <element signature="e#3484#3485#0" expanded="true" />
+            <element signature="e#3515#3516#0" expanded="true" />
+            <element signature="e#3542#3543#0" expanded="true" />
+            <element signature="e#5623#5624#0" expanded="true" />
+            <element signature="e#5666#5667#0" expanded="true" />
+            <element signature="e#5984#5985#0" expanded="true" />
+            <element signature="e#6031#6032#0" expanded="true" />
+            <element signature="e#6316#6317#0" expanded="true" />
+            <element signature="e#6362#6363#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snebr/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="781">
+          <caret line="667" column="0" lean-forward="false" selection-start-line="667" selection-start-column="0" selection-end-line="667" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1144#1145#0" expanded="true" />
+            <element signature="e#1178#1179#0" expanded="true" />
+            <element signature="e#1240#1241#0" expanded="true" />
+            <element signature="e#1292#1293#0" expanded="true" />
+            <element signature="e#2057#2058#0" expanded="true" />
+            <element signature="e#2093#2094#0" expanded="true" />
+            <element signature="e#7898#7899#0" expanded="true" />
+            <element signature="e#7935#7936#0" expanded="true" />
+            <element signature="e#8721#8722#0" expanded="true" />
+            <element signature="e#8755#8756#0" expanded="true" />
+            <element signature="e#10264#10265#0" expanded="true" />
+            <element signature="e#10321#10322#0" expanded="true" />
+            <element signature="e#28544#28545#0" expanded="true" />
+            <element signature="e#28588#28589#0" expanded="true" />
+            <element signature="e#28812#28813#0" expanded="true" />
+            <element signature="e#28869#28870#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/parser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-72173">
+          <caret line="54" column="12" lean-forward="false" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/AP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="895">
+          <caret line="693" column="16" lean-forward="false" selection-start-line="693" selection-start-column="16" selection-end-line="693" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/gui/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-900">
+          <caret line="56" column="13" lean-forward="false" selection-start-line="56" selection-start-column="13" selection-end-line="56" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/gui/FXController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="125" column="4" lean-forward="true" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/snepslog/Lexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2">
+          <caret line="1199" column="62" lean-forward="true" selection-start-line="1199" selection-start-column="62" selection-end-line="1199" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/SnepslogTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="559">
+          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/SampleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/NetworkTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="32" column="17" lean-forward="false" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/PropositionSetTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2034">
+          <caret line="123" column="47" lean-forward="false" selection-start-line="123" selection-start-column="47" selection-end-line="123" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/Network.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="284" column="76" lean-forward="false" selection-start-line="284" selection-start-column="71" selection-end-line="284" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sneps/network/classes/setClasses/PropositionSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="738">
+          <caret line="54" column="34" lean-forward="false" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/ControllerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="518">
+          <caret line="957" column="16" lean-forward="true" selection-start-line="957" selection-start-column="16" selection-end-line="957" selection-end-column="16" />
+          <folding>
+            <element signature="e#38025#38026#0" expanded="true" />
+            <element signature="e#38120#38121#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
