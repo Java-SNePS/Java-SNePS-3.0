@@ -196,7 +196,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException {
+    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException {
         setupContradiction3();
         Controller.getMinimalNoGoods().add(genBitSetFromArray(new int[] {70, 71}));
         int id = negatingProp.getId();
@@ -231,7 +231,12 @@ public class ControllerTest {
                     contradictoryHyps = e2.getContradictoryHyps();
                     assertTrue(e2.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{60, id})));
                     assertTrue(e2.getContradictoryHyps().contains(genNodeSetFromArrayOfIds(new int[]{70, 71})));
-                    PropositionNode negatingNode = createContradictoryNode((PropositionNode) Network.getNodeById(80), null);
+                    PropositionNode negatingNode = null;
+					try {
+						negatingNode = createContradictoryNode((PropositionNode) Network.getNodeById(80), null);
+					} catch (CannotInsertJustificationSupportException e5) {
+						
+					}
                     Controller.handleContradiction(null, true);
                     try {
                         Controller.addPropToContext(testContextName,80);
