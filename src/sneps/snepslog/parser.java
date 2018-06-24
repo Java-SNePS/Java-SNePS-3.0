@@ -1955,22 +1955,22 @@ class CUP$parser$actions {
 		int optsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int optsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ArrayList<Node> opts = (ArrayList<Node>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 
-					try{
-						if(opts!=null){
-							Controller.createContext(id, AP.arrayListToPropositionSet(opts));
-						}else{
-							Controller.createContext(id);
-						}
-						RESULT = "";
-					}  catch (ContradictionFoundException e) {
-						Main.userAction(e.getContradictoryHyps());
-						RESULT = "The GUI is used to handle the contradiction!";
-					} catch (Exception e) {
-						RESULT = e.getMessage();
-					} catch (ContextNameDoesntExistException e) {
-                      e.printStackTrace();
-                    }
+
+              try{
+                if(opts!=null){
+                  Controller.createContext(id, AP.arrayListToPropositionSet(opts));
+                }else{
+                  Controller.createContext(id);
+                }
+                RESULT = "";
+              }  catch (ContradictionFoundException e) {
+                Main.userAction(e.getContradictoryHyps());
+                RESULT = "The GUI is used to handle the contradiction!";
+              } catch (Exception e) {
+                RESULT = e.getMessage();
+              } catch (ContextNameDoesntExistException e) {
+                RESULT = e.getMessage();
+              }
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
