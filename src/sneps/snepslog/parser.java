@@ -1969,9 +1969,9 @@ class CUP$parser$actions {
 					} catch (Exception e) {
 						RESULT = e.getMessage();
 					} catch (ContextNameDoesntExistException e) {
-						RESULT = e.getMessage();
-					}
-				
+                      e.printStackTrace();
+                    }
+
               CUP$parser$result = parser.getSymbolFactory().newSymbol("snepslogCommand",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
