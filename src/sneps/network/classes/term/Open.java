@@ -3,14 +3,16 @@ package sneps.network.classes.term;
 import java.io.Serializable;
 import java.util.Enumeration;
 
+import sneps.network.Node;
+import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.Relation;
 import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.VariableSet;
+import sneps.network.classes.setClasses.VarNodeSet;
 
 public class Open extends Molecular implements Serializable{
-	protected VariableSet variables;
+	protected VarNodeSet variables;
 
 	/**
 	 * The constructor of this class.
@@ -23,10 +25,10 @@ public class Open extends Molecular implements Serializable{
 	 */
 	public Open(String identifier, DownCableSet dCableSet) {
 		super(identifier, dCableSet);
-		this.variables = new VariableSet();
+		this.variables = new VarNodeSet();
 		this.updateFreeVariables();
 	}
-	public VariableSet getFreeVariables() {
+	public VarNodeSet getFreeVariables() {
 		return variables;
 	}
 
@@ -45,22 +47,30 @@ public class Open extends Molecular implements Serializable{
 				// if node is variable node
 				String nodeType = ns.getNode(j).getSyntacticType();
 				if (nodeType.equals("Variable") && !r.isQuantifier())
-					this.variables.addVariable((Variable)ns.getNode(j).getTerm());
+					this.variables.addVarNode((VariableNode)ns.getNode(j));
 				// if node is pattern node (means it dominates free variables)
 				if (nodeType.equals("Open")){
 					Open open = (Open) ns.getNode(j).getTerm();
-					VariableSet patternFVars = new VariableSet();
+					VarNodeSet patternFVars = new VarNodeSet();
 					patternFVars.addAll(open.getFreeVariables());
 					// looping over free variables of the pattern node
 					for (int k = 0; k < patternFVars.size(); k++){
-						Variable variable = patternFVars.getVariable(k);
+						VariableNode variableNode = patternFVars.getVarNode(k);
 						// looping over the down cables
 						Enumeration<DownCable> dCs = dCableSet.getDownCables().elements();
 						while(dCs.hasMoreElements()){
 							DownCable d = dCs.nextElement();
-							// TODO implement contains and remove in VariableSet
-							/*if (d.getNodeSet().contains(variable))
-								patternFVars.remove(variable);*/
+							VarNodeSet vars = new VarNodeSet();
+							NodeSet nodes = d.getNodeSet();
+							for(Node node : nodes){
+								Term term = node.getTerm();
+								if(term instanceof Variable)
+									vars.addVarNode((VariableNode) node);
+								if(term instanceof Open)
+									vars.addAll(((Open)term).getFreeVariables());
+							}
+							if (vars.contains(variableNode))
+								patternFVars.remove(variableNode);
 						}
 					}
 					this.variables.addAll(patternFVars);

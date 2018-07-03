@@ -1,3 +1,4 @@
+
 package sneps.exceptions;
 
 public class ContextNameDoesntExistException extends Throwable {

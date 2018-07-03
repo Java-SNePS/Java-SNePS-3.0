@@ -1,5 +1,6 @@
 package sneps.snebr;
 
+import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 
+
 public class Context implements Serializable{
     private PropositionSet hyps;
 
@@ -24,6 +26,7 @@ public class Context implements Serializable{
     }
 
     private BitSet hypsBitset;
+
 
     /**
      * Constructs a new empty Context
@@ -45,7 +48,7 @@ public class Context implements Serializable{
     }
 
     /**
-         * Constructs a new Context from another Context
+     * Constructs a new Context from another Context
      *
      * @param c the context that the new Context is constructed from
      */
@@ -120,7 +123,6 @@ public class Context implements Serializable{
 
     /**
      * Checks if a propositions is asserted in this context
-     *
      * @param p the proposition to be checked for assertion.
      * @return <code>true</code> if the proposition exists, otherwise <code>false</code>
      * @throws NotAPropositionNodeException   If the node p is not a proposition.
@@ -128,7 +130,6 @@ public class Context implements Serializable{
      */
     public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
         int hyp = p.getId();
-
         return Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) > 0
                 || isSupported(p);
     }
@@ -190,5 +191,6 @@ public class Context implements Serializable{
     protected boolean removeName(String name) {
         return this.names.remove(name);
     }
+
 
 }

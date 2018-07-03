@@ -2,7 +2,6 @@ package sneps.network;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -30,6 +30,7 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Closed;
@@ -47,25 +48,24 @@ import sneps.exceptions.NodeCannotBeRemovedException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.exceptions.RelationDoesntExistException;
-import sneps.gui.Main;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.rules.AndEntailment;
-import sneps.snip.rules.AndOrNode;
+import sneps.snip.rules.AndOrEntailment;
 import sneps.snip.rules.DoIfNode;
 import sneps.snip.rules.NumericalEntailment;
-import sneps.snip.rules.OrNode;
-import sneps.snip.rules.ThreshNode;
+import sneps.snip.rules.OrEntailment;
+import sneps.snip.rules.ThreshEntailment;
 import sneps.snip.rules.WhenDoNode;
 
 public class Network implements Serializable {
 
-	private static ArrayList<String> savedNetworks = new ArrayList<String>();
+	private static final long serialVersionUID = 6986057986870352526L;
 
-	/*
-	 * A hash table that stores all the nodes defined(available) in the network.
+	/* A hash table that stores all the nodes defined(available) in the network.
+	 * private static ArrayList<String> savedNetworks = new ArrayList<String>();
 	 * Each entry is a 2-tuple having the name of the node as the key and the
 	 * corresponding node object as the value.
 	 */
@@ -82,7 +82,7 @@ public class Network implements Serializable {
 	 * an array list that stores all the nodes defined in the network. Each node is
 	 * stored in the array list at the position corresponding to its ID.
 	 */
-	private static ArrayList<Node> nodesIndex = new ArrayList<Node>();
+	private static Hashtable<Integer, Node> nodesIndex = new Hashtable<Integer, Node>();
 
 	/**
 	 * A has hash table that contains all the molecular nodes defined in the network
@@ -169,7 +169,11 @@ public class Network implements Serializable {
 	 * @return the array list that stores the nodes defined in the network.
 	 */
 	public static ArrayList<Node> getNodesWithIDs() {
-		return nodesIndex;
+		Collection<Node> collection = nodesIndex.values();
+		ArrayList<Node> res = new ArrayList<Node>();
+		for(Node node: collection)
+			res.add(node);
+		return res;
 	}
 
 	/**
@@ -386,7 +390,6 @@ public class Network implements Serializable {
 		CaseFrame caseFrame = new CaseFrame(semanticType, relationSet);
 		if (caseFrames.containsKey(caseFrame.getId())) {
 			return caseFrames.get(caseFrame.getId());
-
 		} else {
 			caseFrames.put(caseFrame.getId(), caseFrame);
 			// this to avoid non perfect hashing
@@ -463,10 +466,13 @@ public class Network implements Serializable {
 		// removing the node from the hash table
 		nodes.remove(node.getIdentifier());
 		// nullify entry of the removed node in the array list
-		nodesIndex.set(node.getId(), null);
+
+		nodesIndex.put(node.getId(), null);
+
 
 		// remove node from all contexts
 		Controller.removePropositionFromAllContexts((PropositionNode) node);
+
 		// removing child nodes that are dominated by the removed node and has
 		// no other parents
 		if (node.getTerm().getClass().getSuperclass().getSimpleName().equals("Molecular")) {
@@ -507,7 +513,7 @@ public class Network implements Serializable {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(v);
 		nodes.put(node.getIdentifier(), node);
-		nodesIndex.add(node.getId(), node);
+		nodesIndex.put(node.getId(), node);
 		return node;
 	}
 
@@ -533,7 +539,7 @@ public class Network implements Serializable {
 			Variable v = new Variable(identifier);
 			VariableNode node = new VariableNode(v);
 			nodes.put(node.getIdentifier(), node);
-			nodesIndex.add(node.getId(), node);
+			nodesIndex.put(node.getId(), node);
 			return node;
 		}
 	}
@@ -556,7 +562,7 @@ public class Network implements Serializable {
 		Variable v = new Variable(getNextVarName());
 		VariableNode node = new VariableNode(semantic, v);
 		nodes.put(node.getIdentifier(), node);
-		nodesIndex.add(node.getId(), node);
+		nodesIndex.put(node.getId(), node);
 		return node;
 	}
 
@@ -586,6 +592,7 @@ public class Network implements Serializable {
 		}
 
 		if (nodes.containsKey(identifier)) {
+
 			if (nodes.get(identifier).getTerm() instanceof Base) {
 				return nodes.get(identifier);
 			}
@@ -604,7 +611,7 @@ public class Network implements Serializable {
 			nodes.put(identifier, propNode);
 			propositionNodes.put(identifier, propNode);
 			try {
-				nodesIndex.add(propNode.getId(), propNode);
+				nodesIndex.put(propNode.getId(), propNode);
 				propNode.setBasicSupport();
 			} catch (IndexOutOfBoundsException e) {
 				// System.out.println("wohoo");
@@ -619,7 +626,7 @@ public class Network implements Serializable {
 			 */
 			node = new Node(semantic, b);
 			nodes.put(identifier, node);
-			nodesIndex.add(node.getId(), node);
+			nodesIndex.put(node.getId(), node);
 		}
 		if (isMolName(identifier) > -1)
 			userDefinedMolSuffix.add(new Integer(isMolName(identifier)));
@@ -682,11 +689,12 @@ public class Network implements Serializable {
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
 			propositionNodes.put(propNode.getIdentifier(), propNode);
-			nodesIndex.add(propNode.getId(), propNode);
+			nodesIndex.put(propNode.getId(), propNode);
 			Molecular molecular = (Molecular) propNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
 			propNode.setBasicSupport();
 			return propNode;
+
 		} else {
 			Node mNode;
 			if (isToBePattern(array)) {
@@ -697,7 +705,8 @@ public class Network implements Serializable {
 				mNode = createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(mNode.getIdentifier(), mNode);
-			nodesIndex.add(mNode.getId(), mNode);
+			nodesIndex.put(mNode.getId(), mNode);
+
 			Molecular molecular = (Molecular) mNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 			return mNode;
@@ -742,11 +751,12 @@ public class Network implements Serializable {
 			}
 			nodes.put(propNode.getIdentifier(), propNode);
 			propositionNodes.put(propNode.getIdentifier(), propNode);
-			nodesIndex.add(propNode.getId(), propNode);
+			nodesIndex.put(propNode.getId(), propNode);
 			Molecular molecular = (Molecular) propNode.getTerm();
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(propNode);
 			propNode.setBasicSupport();
 			return propNode;
+
 		} else {
 			Node mNode;
 			if (isToBePattern(array)) {
@@ -754,11 +764,14 @@ public class Network implements Serializable {
 				mNode = createPatNode(relNodeSet, caseFrame);
 			} else {
 				// System.out.println("building closed");
+
 				mNode = createClosedNode(relNodeSet, caseFrame);
 			}
 			nodes.put(mNode.getIdentifier(), mNode);
-			nodesIndex.add(mNode.getId(), mNode);
+			nodesIndex.put(mNode.getId(), mNode);
+
 			Molecular molecular = (Molecular) mNode.getTerm();
+
 			molecularNodes.get(molecular.getDownCableSet().getCaseFrame().getId()).addNode(mNode);
 			return mNode;
 		}
@@ -774,11 +787,13 @@ public class Network implements Serializable {
 	 * @return true if the down cable set exists, and false otherwise
 	 */
 	private static Object[] downCableSetExists(Object[][] array) {
+
 		int size = 0;
 
 		Object[] result = new Object[2];
 		boolean newBoundVarsExist = false;
 		boolean networkBoundVarsExist = false;
+
 		boolean[] newFlags = new boolean[array.length];
 
 		for (int i = 0; i < array.length; i++) {
@@ -786,6 +801,7 @@ public class Network implements Serializable {
 				size++;
 			}
 			Relation r = (Relation) array[i][0];
+
 
 			if (r.isQuantifier()) {
 				newBoundVarsExist = true;
@@ -812,14 +828,13 @@ public class Network implements Serializable {
 			NodeSet ns1 = new NodeSet();
 			if ((r.isQuantifier())) {
 				continue;
-
 			}
 
 			temp[counter][0] = new FUnitPath((Relation) array[i][0]);
 			ns1.addNode((Node) array[i][1]);
 			temp[counter][1] = ns1;
-			counter++;
 
+			counter++;
 		}
 
 		LinkedList<Object[]> ns = find(temp, Controller.createContext());
@@ -855,6 +870,7 @@ public class Network implements Serializable {
 				else
 					c += cb.getNodeSet().size();
 
+
 				if (cb.getRelation().isQuantifier()) {
 					networkBoundVarsExist = true;
 				}
@@ -866,6 +882,7 @@ public class Network implements Serializable {
 			if (c != array.length) {
 				ns.remove(i);
 				i--;
+
 			}
 
 		}
@@ -931,6 +948,7 @@ public class Network implements Serializable {
 		}
 		return true;
 	}
+
 
 	private static Object[][] turnWiresIntoArray(ArrayList<Wire> wires) {
 		Object[][] result = new Object[wires.size()][2];
@@ -1039,15 +1057,15 @@ public class Network implements Serializable {
 				return true;
 			if (node.getTerm().getClass().getSimpleName().equals("Open")) {
 				Open open = (Open) node.getTerm();
-				VariableSet varNodes = open.getFreeVariables();
+				VarNodeSet varNodes = open.getFreeVariables();
 				for (int j = 0; j < varNodes.size(); j++) {
-					Variable v = varNodes.getVariable(j);
+					VariableNode v = varNodes.getVarNode(j);
 					boolean flag = false;
 					for (int k = 0; k < array.length; k++) {
 						if (array[k][1].getClass().getSimpleName().equals("NodeSet"))
 							continue;
 						Node n = (Node) array[k][1];
-						if (n.getTerm().equals(v))
+						if (n.equals(v))
 							flag = true;
 					}
 					if (!flag)
@@ -1075,8 +1093,10 @@ public class Network implements Serializable {
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
 	 */
+
 	@SuppressWarnings("rawtypes")
 	private static Node createPatNode(Object[][] relNodeSet, CaseFrame caseFrame) {
+
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0], (NodeSet) relNodeSet[i][1]));
@@ -1084,7 +1104,7 @@ public class Network implements Serializable {
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String patName = getNextPatName();
 		Open open = new Open(patName, dCableSet);
-		String temp = caseFrame.getSemanticClass();
+		String temp = caseFrame.getSemanticClass().getSemanticType();
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// pattern node otherwise
@@ -1093,11 +1113,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = new OrNode(open);
+				propNode = new OrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = new AndOrNode(open);
+				propNode = new AndOrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = new ThreshNode(open);
+				propNode = new ThreshEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
 				propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
@@ -1133,11 +1153,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = new AndEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.orRule)
-				propNode = new OrNode(open);
+				propNode = new OrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule)
-				propNode = new AndOrNode(open);
+				propNode = new AndOrEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.threshRule)
-				propNode = new ThreshNode(open);
+				propNode = new ThreshEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule)
 				propNode = new NumericalEntailment(open);
 			else if (caseFrame == RelationsRestrictedCaseFrame.doIf)
@@ -1173,6 +1193,7 @@ public class Network implements Serializable {
 	 *             if the semantic class specified by the case frame was not
 	 *             successfully created and thus the node was not built.
 	 */
+
 	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet, CaseFrame caseFrame) {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
@@ -1182,7 +1203,7 @@ public class Network implements Serializable {
 		DownCableSet dCableSet = new DownCableSet(dCables, caseFrame);
 		String closedName = getNexMolName();
 		Closed c = new Closed(closedName, dCableSet);
-		String temp = caseFrame.getSemanticClass();
+		String temp = caseFrame.getSemanticClass().getSemanticType();
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
@@ -1191,11 +1212,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = new OrNode(c);
+				propNode = new OrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = new AndOrNode(c);
+				propNode = new AndOrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = new ThreshNode(c);
+				propNode = new ThreshEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
 				propNode = new NumericalEntailment(c);
 			} else
@@ -1227,11 +1248,11 @@ public class Network implements Serializable {
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = new AndEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.orRule) {
-				propNode = new OrNode(c);
+				propNode = new OrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.andOrRule) {
-				propNode = new AndOrNode(c);
+				propNode = new AndOrEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.threshRule) {
-				propNode = new ThreshNode(c);
+				propNode = new ThreshEntailment(c);
 			} else if (caseFrame == RelationsRestrictedCaseFrame.numericalRule) {
 				propNode = new NumericalEntailment(c);
 			} else
@@ -1337,7 +1358,7 @@ public class Network implements Serializable {
 			}
 		}
 		// System.out.println("Not Satisfied");
-		return caseframe.getSemanticClass();
+		return caseframe.getSemanticClass().getSemanticType();
 	}
 
 	/**
@@ -1424,7 +1445,7 @@ public class Network implements Serializable {
 	}
 
 	/*
-	 * /** This method builds an instance of the semantic class with the given name.
+	/** This method builds an instance of the semantic class with the given name.
 	 *
 	 * @param name the name of the semantic class.
 	 *
@@ -1551,7 +1572,7 @@ public class Network implements Serializable {
 	 * @return a String representing the generated closed node name in the form of
 	 *         "Mi" and i is an integer suffix.
 	 */
-	private static String getNexMolName() {
+	public static String getNexMolName() {
 		molCounter++;
 		String molName = "M";
 		for (int i = 0; i < userDefinedMolSuffix.size(); i++) {
@@ -1602,9 +1623,9 @@ public class Network implements Serializable {
 		return varName;
 	}
 
+
 	// Methods that update the lists
 	// of user-defined suffix
-
 	/**
 	 * This method checks if a user-defined name of a base node has the same form as
 	 * the closed nodes' identifiers "Mi"
@@ -1785,7 +1806,6 @@ public class Network implements Serializable {
 	// }
 	// return result;
 	// }
-
 	/**
 	 * This method gets the intersecting relations between two different case
 	 * frames. It is invoked and used by the method that checks the case frame
@@ -1835,8 +1855,8 @@ public class Network implements Serializable {
 					Node n = nodesIndex.get(i);
 					int oldID = n.getId();
 					n.setId(oldID - empty);
-					nodesIndex.set(n.getId(), n);
-					nodesIndex.set(oldID, null);
+					nodesIndex.put(n.getId(), n);
+					nodesIndex.put(oldID, null);
 					// System.out.println("old id: " + oldID + " new id: " + (oldID - empty) + "
 					// empty: " + empty);
 				}
@@ -1847,6 +1867,7 @@ public class Network implements Serializable {
 			nodesIndex.remove(i);
 			i--;
 		}
+
 		// System.out.println("");
 		// System.out.println("previous count of nodes before deletion: " +
 		// Node.getCount());
@@ -1953,6 +1974,15 @@ public class Network implements Serializable {
 		return result;
 	}
 
+	public VariableSet getVariables(){
+		VariableSet vars = new VariableSet();
+		for(int i =0; i<nodes.size(); i++)
+			if(nodes.get(i) instanceof VariableNode)
+				vars.addVariable((Variable)nodes.get(i).getTerm());
+
+		return vars;
+	}
+
 	public static NodeSet match(Node x) {
 		return new NodeSet();
 	}
@@ -1965,17 +1995,22 @@ public class Network implements Serializable {
 		//SNeBR.getContextSet().add(SNeBR.getCurrentContext());
 		//ControlActionNode.initControlActions();
 	}
+
 	
-	public static void save(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException {
+	public static void save(String relationsData, String caseFramesData, 
+			String nodesData, String molData, String mcd, 
+			String pcd, String vcd, String pNData, String nodesIndexData, 
+			String userDefinedMolSuffixData, String userDefinedPatSuffixData, 
+			String userDefinedVarSuffixData) throws IOException {
 		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
 		ros.writeObject(relations);
 		ros.close();
-		
+
 		ObjectOutputStream cFos = new ObjectOutputStream(new FileOutputStream(new File(caseFramesData)));
 		cFos.writeObject(caseFrames);
 		cFos.close();
-		
-		
+
+
 		ObjectOutputStream nodesOS = new ObjectOutputStream(new FileOutputStream(new File(nodesData)));
 		nodesOS.writeObject(nodes);
 		nodesOS.close();
@@ -2016,65 +2051,32 @@ public class Network implements Serializable {
 		udvs.writeObject(userDefinedVarSuffix);
 		udvs.close();
 	}
-	
-	public static void saveNetworks() throws IOException {
-		ObjectOutputStream networks = new ObjectOutputStream(new FileOutputStream(new File("Networks")));
-		networks.writeObject(savedNetworks);
-		networks.close();
-	}
-	
-	public static void loadNetworks() throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInputStream ns= new ObjectInputStream(new FileInputStream(new File("Networks")));
-		ArrayList<String> temp = (ArrayList<String>) ns.readObject();
-		Network.savedNetworks = temp;
-		ns.close();
-	}
-	
-	public static ArrayList<String> getSavedNetworks() {
-		return savedNetworks;
-	}
 
-	public static boolean addToSavedNetworks(String n) {
-		boolean r;
-		if(savedNetworks.contains(n)) {
-			r = false;
-		}else {
-			savedNetworks.add(n);
-			r = true;
-		}
-		return r;
-	}
-	
-	public static void deleteFromSavedNetworks(String f) {
-		savedNetworks.remove(f);
-		try {
-			saveNetworks();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
-	public static void load(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException, ClassNotFoundException {
+	public static void load(String relationsData, String caseFramesData, 
+			String nodesData, String molData, String mcd, 
+			String pcd, String vcd, String pNData, String nodesIndexData, 
+			String userDefinedMolSuffixData, String userDefinedPatSuffixData, 
+			String userDefinedVarSuffixData) throws IOException, ClassNotFoundException {
 		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
 		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
 		Network.relations = tempRelations;
 		ris.close();
 		tempRelations = null;
-		
+
 		ObjectInputStream cFis= new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
 		Hashtable<String, CaseFrame> tempcF = (Hashtable<String, CaseFrame>) cFis.readObject();
 		Network.caseFrames = tempcF;
 		cFis.close();
 		tempcF = null;
-		
-		
+
+
 		ObjectInputStream nodesis= new ObjectInputStream(new FileInputStream(new File(nodesData)));
 		Hashtable<String, Node> tempNodes = (Hashtable<String, Node>) nodesis.readObject();
 		Network.nodes = tempNodes;
 		nodesis.close();
 		tempNodes = null;
-		
+
 
 		ObjectInputStream molNodesis= new ObjectInputStream(new FileInputStream(new File(molData)));
 		Hashtable<String, NodeSet> tempMolNodes = (Hashtable<String, NodeSet>) molNodesis.readObject();
@@ -2104,7 +2106,8 @@ public class Network implements Serializable {
 
 		ObjectInputStream niis= new ObjectInputStream(new FileInputStream(new File(nodesIndexData)));
 		ArrayList<Node> tempni = (ArrayList<Node>) niis.readObject();
-		Network.nodesIndex = tempni;
+		for(Node node: tempni)
+			Network.nodesIndex.put(node.getId(), node);
 		niis.close();
 
 		ObjectInputStream udmsis= new ObjectInputStream(new FileInputStream(new File(userDefinedMolSuffixData)));

@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Set;
+
 import sneps.exceptions.IllegalIdentifierException;
+
 import java.util.Stack;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -36,6 +39,11 @@ public class Support implements Serializable{
 		TreeComputed = true;
 	}
 
+	public static Set<Support> combine(Set<Support> res,
+			Set<Support> toBeCombined) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	@Override
 	public String toString() {
 		return "Support [justificationSupport=" + justificationSupport.values() + ", assumptionBasedSupport="
@@ -321,4 +329,6 @@ public class Support implements Serializable{
 
 	}
 
+
 }
+
