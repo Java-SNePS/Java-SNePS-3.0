@@ -7,6 +7,12 @@ import sneps.network.classes.term.Term;
 
 public class ActNode extends Node implements Serializable{
 
+	public ActNode() {}
+	
+	public ActNode(Term syn) {
+		super(syn);
+	}
+
 	public ActNode(Semantic sem, Term term) {
 		super(sem, term);
 	}

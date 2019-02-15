@@ -1,6 +1,0 @@
-dog(Fido).
-wff1??
-and{wff1,animal(Fido)}.
-list-asserted-wffs
-list-contexts
-list-terms

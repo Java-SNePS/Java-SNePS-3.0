@@ -7,20 +7,26 @@ import java.util.LinkedList;
 public class CaseFrame implements Serializable { 
 	
 	
-	private String semanticClass; 
+	private Semantic semanticClass; 
 	
 	private LinkedList<Relation> relations; 
 	
 	private String id;
 	
 	
-	
 	public CaseFrame(String semanticClass, LinkedList<Relation> relations){
-			
-		   this.semanticClass = semanticClass;
+		
+		   this.semanticClass = new Semantic(semanticClass);
 		   this.relations = relations;
 		   this.id = createId(relations);
 	} 
+	
+	public CaseFrame(Semantic semanticClass, LinkedList<Relation> relations){
+		
+		   this.semanticClass = semanticClass;
+		   this.relations = relations;
+		   this.id = createId(relations);
+	}
 	
 	/**
 	 * A method that is invoked by the constructor to create the ID of the newly
@@ -49,7 +55,7 @@ public class CaseFrame implements Serializable {
 		return id;
 	}
 
-	public String getSemanticClass() {
+	public Semantic getSemanticClass() {
 		return semanticClass;
 	}
 

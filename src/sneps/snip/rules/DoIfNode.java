@@ -4,6 +4,7 @@ import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.term.Term;
+import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
 public class DoIfNode extends RuleNode {
@@ -13,11 +14,16 @@ public class DoIfNode extends RuleNode {
 		super(syn);
 	}
 
-//	@Override
-//	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	public DoIfNode(Semantic sem, Term syn) {
+		super(sem, syn);
+	}
+
+
+	@Override
+	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public NodeSet getDownAntNodeSet() {
@@ -25,16 +31,10 @@ public class DoIfNode extends RuleNode {
 		return null;
 	}
 
-//	@Override
-//	protected RuisHandler createRuisHandler(String contextName) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
-	protected void sendRui(RuleUseInfo tRui, String contextID) {
+	protected RuisHandler createRuisHandler(String contextName) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

@@ -11,11 +11,11 @@
 package sneps.network.cables;
 
 import sneps.network.classes.Relation;
+import sneps.network.classes.setClasses.NodeSet;
 
 import java.io.Serializable;
 
 import sneps.network.Node;
-import sneps.network.classes.setClasses.NodeSet;
 
 public class UpCable extends Cable implements Serializable{
 
