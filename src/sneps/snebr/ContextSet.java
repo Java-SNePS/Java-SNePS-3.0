@@ -50,9 +50,7 @@ public class ContextSet implements Serializable{
      * @return A context that is mapped to the passed name.
      */
     public Context getContext(String name) {
-    	if(name != null)
-    		return contexts.get(name);
-    	return null;
+        return contexts.get(name);
     }
 
     /**

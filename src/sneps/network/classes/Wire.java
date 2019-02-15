@@ -100,4 +100,5 @@ public class Wire implements Serializable {
 	public Relation getWireRelation() {
 		return wireRelation;
 	}
+
 }

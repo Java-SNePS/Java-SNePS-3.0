@@ -1,4 +1,3 @@
-
 package sneps.network;
 
 import java.io.Serializable;
@@ -10,14 +9,12 @@ import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.ContextRuisSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
-import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
-import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
-import sneps.network.classes.term.Variable;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
@@ -26,83 +23,61 @@ import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
 import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.classes.FlagNode;
-import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode implements Serializable{
-	private static final long serialVersionUID = 3891988384679269734L;
-	private NodeSet consequents;
+
 	/**
 	 * a NodeSet containing all the pattern antecedents attached to this Node
 	 */
 	protected NodeSet antNodesWithVars;
-	protected NodeSet antNodesWithoutVars;
-	protected Set<Integer> antNodesWithVarsIDs;
-	protected Set<Integer> antNodesWithoutVarsIDs;
-	protected boolean shareVars;
-	protected VarNodeSet sharedVars;
-	protected ContextRuisSet contextRuisSet;
-	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
-	public RuleNode(){
-		super();
-		consequents = new NodeSet();
-		antNodesWithoutVars = new NodeSet();
-		antNodesWithoutVarsIDs = new HashSet<Integer>();
-		antNodesWithVars = new NodeSet();
-		antNodesWithVarsIDs = new HashSet<Integer>();
-		shareVars = false;
-		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
-	}
+	/**
+	 * a NodeSet containing all the non pattern antecedents attached to this
+	 * Node
+	 */
+	protected NodeSet antNodesWithoutVars;
+
+	/**
+	 * an integer set containing all the ids of the pattern antecedents attached
+	 * to this Node
+	 */
+	protected Set<Integer> antNodesWithVarsIDs;
+
+	/**
+	 * an integer set containing all the ids of the non pattern antecedents
+	 * attached to this Node
+	 */
+	protected Set<Integer> antNodesWithoutVarsIDs;
+
+	/**
+	 * set to true if all the antecedents with Variables share the same
+	 * variables, false otherwise.
+	 */
+	protected boolean shareVars;
+
+	/**
+	 * Set of ids of the variables shared by all patterns
+	 */
+	protected Set<Integer> sharedVars;
 	
-	public RuleNode(Semantic sym){
-		super(sym);
-		consequents = new NodeSet();
-		antNodesWithoutVars = new NodeSet();
-		antNodesWithoutVarsIDs = new HashSet<Integer>();
-		antNodesWithVars = new NodeSet();
-		antNodesWithVarsIDs = new HashSet<Integer>();
-		shareVars = false;
-		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
-	}
+
+	protected ContextRuisSet contextRuisSet;
+
+	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
+
+	
+	public RuleNode(){}
 	
 	public RuleNode(Term syn) {
 		super(syn);
-		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
-		shareVars = false;
-		sharedVars = new VarNodeSet();
 		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
-	}
-
-	public RuleNode(Semantic sym, Term syn) {
-		super(sym, syn);
-		consequents = new NodeSet();
-		antNodesWithoutVars = new NodeSet();
-		antNodesWithoutVarsIDs = new HashSet<Integer>();
-		antNodesWithVars = new NodeSet();
-		antNodesWithVarsIDs = new HashSet<Integer>();
-		shareVars = false;
-		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
-	}
-
-	protected void sendReportToConsequents(Report reply) {
-		if(!knownInstances.contains(reply))
-			newInstances.addReport(reply);
-		for (Channel outChannel : outgoingChannels)
-			if(outChannel instanceof RuleToConsequentChannel)
-				outChannel.addReport(reply);
+		contextConstantRUI = new Hashtable<Integer, RuleUseInfo>();
 	}
 
 	protected void processNodes(NodeSet antNodes) {
@@ -113,40 +88,44 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		for (Node n : antNodesWithoutVars) {
 			antNodesWithoutVarsIDs.add(n.getId());
 		}
+		//this.antNodesWithoutVars.size();
+		//this.antNodesWithVars.size();
 		this.shareVars = this.allShareVars(antNodesWithVars);
-		sharedVars = getSharedVarsNodes(antNodesWithVars);
+		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
 
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
+		// Context context = SNeBR.getContextByID(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
-			PropositionSet propSet = report.getSupports();
+			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
 			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(signature, propSet, 1));
-			rui = new RuleUseInfo(report.getSubstitutions(),
-					1, 0, fns);
+			fns.putIn(fn);
+			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 		} else {
-			PropositionSet propSet = report.getSupports();
+			FlagNode fn = new FlagNode(signature, report.getSupports(), 2);
 			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(signature, propSet, 2));
+			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
-		RuisHandler crtemp = contextRuisSet.getByContext(contextID);
-		if(crtemp == null){
+		RuleUseInfoSet crtemp = null;
+		if (this.getContextRUISSet().hasContext(contextID)) {
+			crtemp = this.getContextRUISSet().getContextRUIS(contextID);
+		} else {
 			crtemp = addContextRUIS(contextID);
 		}
-
-		RuleUseInfoSet res = crtemp.insertRUI(rui);
+		RuleUseInfoSet res = crtemp.add(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
 		for (RuleUseInfo tRui : res) {
-			applyRuleOnRui(tRui, contextID);
+			sendRui(tRui, contextID);
 		}
 	}
 
-	abstract protected void applyRuleOnRui(RuleUseInfo tRui, String contextID);
+	abstract protected void sendRui(RuleUseInfo tRui, String contextID);
 
+	
 	public void clear() {
 		contextRuisSet.clear();
 		contextConstantRUI.clear();
@@ -167,51 +146,30 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return res;
 	}
 
-	public NodeSet getConsequents() {
-		return consequents;
-	}
-
-	public void addAntecedent(Node ant){
-		if(ant instanceof VariableNode || ant.getTerm() instanceof Open)
-			antNodesWithVars.addNode(ant);
-		else
-			antNodesWithoutVars.addNode(ant);
-	}
-
-	public ContextRuisSet getContextRuisSet() {
-		return contextRuisSet;
-	}
-
-	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {
-		VarNodeSet res = new VarNodeSet();
-		VarNodeSet temp = new VarNodeSet();
-		if (nodes.isEmpty())
-			return res;
-
-		for(Node curNode : nodes){
-			if(curNode instanceof VariableNode){
-				if(temp.contains((VariableNode)curNode))
-					res.addVarNode((VariableNode)curNode);
-				else
-					temp.addVarNode((VariableNode) curNode);
-			}
-			
-			if(curNode.getTerm() instanceof Open){
-				VarNodeSet free = ((Open)curNode.getTerm()).getFreeVariables();
-				for(VariableNode var : free)
-					if(temp.contains(var))
-						res.addVarNode(var);
-					else
-						temp.addVarNode(var);
-			}
+	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
+		/*if (nodes.isEmpty())
+			return new HashSet<VariableNode>();
+		VariableNode n = (VariableNode) nodes.getNode(0);
+		Set<VariableNode> res = ImmutableSet.copyOf(n.getFreeVariables());
+		for (int i = 1; i < nodes.size(); i++) {
+			n = (VariableNode) nodes.getNode(i);
+			Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
+			res = Sets.intersection(res, temp);
 		}
+		return res;*/
+		return null;
+	}
+
+	public Set<Integer> getSharedVarsInts(NodeSet nodes) {
+		Set<VariableNode> vars = getSharedVarsNodes(nodes);
+		Set<Integer> res = new HashSet<Integer>();
+		for (VariableNode var : vars)
+			res.add(var.getId());
 		return res;
 	}
 
 	public NodeSet getDownNodeSet(String name) {
-		if(term != null && term instanceof Molecular)
-			return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
-		return null;
+		return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
 	}
 
 	public abstract NodeSet getDownAntNodeSet();
@@ -220,20 +178,20 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
 
-	public RuisHandler getContextRuiHandler(String cntxt) {
-		return contextRuisSet.getByContext(cntxt);
+	public ContextRuisSet getContextRUISSet() {
+		return contextRuisSet;
 	}
 
-	public RuisHandler addContextRUIS(String contextName) {
+	public RuleUseInfoSet addContextRUIS(String contextName) {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
 			if (shareVars)
-				si = new SIndex(contextName, sharedVars, SIndex.SINGLETONRUIS);
+				si = new SIndex(contextName, sharedVars, SIndex.SINGLETONRUIS, getPatternNodes());
 			else
-				si = new SIndex(contextName, sharedVars, getSIndexContextType());
+				si = new SIndex(contextName, sharedVars, getSIndexContextType(), getParentNodes());
 			return this.addContextRUIS(si);
 		} else {
-			return this.addContextRUIS(contextName,createRuisHandler(contextName));
+			return this.addContextRUIS(createContextRUISNonShared(contextName));
 		}
 	}
 
@@ -242,15 +200,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return null;
 	}
 
-	public int getAntSize(){
-		return antNodesWithoutVars.size() + antNodesWithVars.size();
+	public RuleUseInfoSet addContextRUIS(RuleUseInfoSet cRuis) {
+		contextRuisSet.putIn(cRuis);
+		return cRuis;
 	}
-
-	public RuisHandler addContextRUIS(String cntxt, RuisHandler cRuis) {
-		return this.contextRuisSet.addHandlerSet(cntxt, cRuis);
-	}
-
-	protected abstract RuisHandler createRuisHandler(String contextName);
 
 	protected RuleUseInfoSet createContextRUISNonShared(String contextName) {
 		return new RuleUseInfoSet(contextName, false);
@@ -274,9 +227,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		}
 	}
 
-	public RuleUseInfo addConstantRuiToContext(String context, RuleUseInfo rui) {
-		Context contxt = (Context) Controller.getContextByName(context);
-		RuleUseInfo tRui = contextConstantRUI.get(contxt);
+	
+	public RuleUseInfo addConstantRuiToContext(int context, RuleUseInfo rui) {
+		RuleUseInfo tRui = contextConstantRUI.get(context);
 		if (tRui != null)
 			tRui = rui.combine(tRui);
 		else
@@ -284,30 +237,30 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		if (tRui == null)
 			throw new NullPointerException(
 					"The existed RUI could not be merged " + "with the given rui so check your code again");
-		contextConstantRUI.put(contxt, tRui);
+		contextConstantRUI.put(context, tRui);
 		return tRui;
 	}
 
 	public RuleUseInfo getConstantRui(Context con) {
-		RuleUseInfo tRui = contextConstantRUI.get(con);
+		RuleUseInfo tRui = contextConstantRUI.get(con.getName());
 		return tRui;
 	}
 
-	public RuleUseInfo getConstantRUI(String context) {
+	public RuleUseInfo getConstantRUI(int context) {
 		return contextConstantRUI.get(context);
 	}
-
+	
 	public static boolean isConstantNode(Node n) {
-		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);
+		return !(n instanceof VariableNode) || n instanceof RuleNode || ((VariableNode) n).getFreeVariables().isEmpty();
 	}
 
 	@Override
 	public void processRequests() {
 		for (Channel currentChannel : outgoingChannels) {
 			if (currentChannel instanceof RuleToConsequentChannel) {
-				VarNodeSet variablesList = ((Open)this.term).getFreeVariables();
+				VariableSet variablesList = ((Open)this.term).getFreeVariables();
 				if (variablesList.isEmpty()) {
-					//Proposition semanticType = (Proposition) this.getSemantic();//TODO change according to snebr
+					//Proposition semanticType = (Proposition) this.getSemantic();TODO change according to snebr
 					if (this.semanticType.isAsserted(Controller.getContextByName(currentChannel.getContextName()))) {
 						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
 						NodeSet toBeSentTo = new NodeSet();
