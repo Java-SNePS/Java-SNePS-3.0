@@ -1,73 +1,46 @@
 package sneps.network.classes.setClasses;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashSet;
+import java.util.Iterator;
 
-import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleUseInfoSet;
 
-public class ContextRuisSet{
-	private Hashtable<String, RuisHandler> ruisHandlers;
+public class ContextRuisSet implements Iterable<RuleUseInfoSet> {
+	private HashSet<RuleUseInfoSet> RuleUseInfoSets;
 
 	public ContextRuisSet() {
-		ruisHandlers = new Hashtable<String, RuisHandler>();
+		RuleUseInfoSets = new HashSet<RuleUseInfoSet>();
 	}
 
-	/**
-	 * Adds the given RuisHandler by contextName into this.ruisHandlers
-	 * @param contextName
-	 * @param handler
-	 * @return
-	 */
-	public RuisHandler addHandlerSet(String contextName, RuisHandler handler){
-		return ruisHandlers.put(contextName, handler);
-	}
-	
-	/**
-	 * Checks whether this.ruisHandlers has an entry for the given contextName
-	 * @param contextID
-	 * @return
-	 */
-	public boolean hasContext(String contextName) {
-		RuisHandler set = ruisHandlers.get(contextName);
-		if(set == null)
-			return false;
-		return true;
+	@Override
+	public Iterator<RuleUseInfoSet> iterator() {
+		return RuleUseInfoSets.iterator();
 	}
 
-	/**
-	 * Gets the stored entry for the given contextName 
-	 * @param contextID
-	 * @return
-	 */
-	public RuisHandler getByContext(String contextName) {
-		return ruisHandlers.get(contextName);
-	}
-	
-	/**
-	 * Checks whether this.ruisHandlers contains the given handler
-	 * @param handler
-	 * @return
-	 */
-	public boolean contains(RuisHandler handler){
-		return ruisHandlers.contains(handler);
-	}
-	public boolean containsKey(String handlerKey){
-		return ruisHandlers.containsKey(handlerKey);
-	}
-	public RuisHandler getHandler(RuisHandler handler){
-		return ruisHandlers.get(handler);
-	}
-	public Enumeration<String> getKeys(){
-		return ruisHandlers.keys();
-	}
-	public int size(){
-		return ruisHandlers.size();
-	}
-	public void remove(String contextName, RuisHandler handler){
-		ruisHandlers.remove(handler, handler);
+	public void addChannel(RuleUseInfoSet newChannel) {
+		RuleUseInfoSets.add(newChannel);
 	}
 
 	public void clear() {
-		ruisHandlers.clear();
+		// TODO Auto-generated method stub
+		
 	}
+
+	public void putIn(sneps.network.classes.setClasses.RuleUseInfoSet cRuis) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean hasContext(String contextID) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public sneps.network.classes.setClasses.RuleUseInfoSet getContextRUIS(String contextID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
 }

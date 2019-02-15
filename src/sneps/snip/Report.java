@@ -1,22 +1,17 @@
 package sneps.snip;
 
-import sneps.network.classes.setClasses.PropositionSet;
+import java.util.Set;
+
+import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
-/**
- * @className Report.java
- * 
- * @author Amgad Ashraf
- * 
- * @version 3.00 31/5/2018
- */
 public class Report {
 	private Substitutions substitution;
-	private PropositionSet supports;
+	private Set<Support> supports;
 	private boolean sign;
 	private String contextName;
 
-	public Report(Substitutions substitution, PropositionSet set, boolean sign, String contextID) {
+	public Report(Substitutions substitution, Set<Support> set, boolean sign, String contextID) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
@@ -27,7 +22,7 @@ public class Report {
 		return substitution;
 	}
 
-	public PropositionSet getSupports() {
+	public Set<Support> getSupports() {
 		return supports;
 	}
 
@@ -51,7 +46,7 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports.toString();
+		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
 	}
 
 	public String getContextName() {

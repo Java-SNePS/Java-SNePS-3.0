@@ -90,7 +90,6 @@ public class SnepslogTest {
 		for (int i = 0; i < PropositionSet.getPropsSafely(ps).length; i++) {
 			Node n = Network.getNodeById(PropositionSet.getPropsSafely(ps)[i]);
 			if (n.getTerm() instanceof Molecular) {
-
 				Molecular m = (Molecular) n.getTerm();
 				LinkedList<Relation> rels = m.getDownCableSet().getCaseFrame().getRelations();
 				if (rels.size() == 2 && rels.get(0).getName().equals("r") && rels.get(1).getName().equals("a1")) {
@@ -596,7 +595,7 @@ public class SnepslogTest {
 			fail("failure to build this SNeRETerm!}");
 		}
 	}
-
+	
 	@Test
 	public void testRemoveFromContext() throws NodeNotFoundInNetworkException, NotAPropositionNodeException {
 		AP.executeSnepslogCommand("dog(Fido).");
@@ -607,7 +606,7 @@ public class SnepslogTest {
 			assertTrue(!Controller.getContextByName("default").isAsserted(pNode));
 		}
 	}
-
+	
 	@Test
 	public void testBrMode() throws NodeNotFoundInNetworkException, NotAPropositionNodeException {
 		AP.executeSnepslogCommand("br-mode auto");
@@ -615,5 +614,5 @@ public class SnepslogTest {
 		AP.executeSnepslogCommand("br-mode manual");
 		assertTrue(!Controller.isAutomaticBR());
 	}
-
+	
 }

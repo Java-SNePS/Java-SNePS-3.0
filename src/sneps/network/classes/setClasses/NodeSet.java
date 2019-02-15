@@ -13,15 +13,9 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		nodes = new Vector<Node>();
 	}
 
+
 	public Node getNode(int index) {
 		return this.nodes.get(index);
-	}
-
-	public Node getById(int id){
-		for(Node node: nodes)
-			if(node.getId()==id)
-				return node;
-		return null;
 	}
 
 	public void addNode(Node node) {
