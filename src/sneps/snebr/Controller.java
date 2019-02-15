@@ -606,9 +606,7 @@ public class Controller {
             PropositionNode tempProp = (PropositionNode)Network.buildBaseNode("n"+ -5000, Semantic.proposition);
             if (Controller.checkForContradictionCore(tempProp, c, false) == null)
                 conflictingContext = null;
-
             Network.removeNode(tempProp);
-
         }
         return c;
     */
@@ -633,9 +631,7 @@ public class Controller {
                 PropositionNode tempProp = (PropositionNode)Network.buildBaseNode("n"+ -5000, Semantic.proposition);
                 if (Controller.checkForContradictionCore(tempProp, c, false) == null)
                     conflictingContext = null;
-
             Network.removeNode(tempProp);
-
             } */
         }
     }
@@ -657,6 +653,9 @@ public class Controller {
     public static Context getContextByName(String contextName) {
         return contextSet.getContext(contextName);
     }
+    
+   
+
     
     public static void save(String f) throws FileNotFoundException, IOException {
     	ObjectOutputStream cos = new ObjectOutputStream(new FileOutputStream(new File(f)));

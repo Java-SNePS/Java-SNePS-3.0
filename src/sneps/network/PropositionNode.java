@@ -3,7 +3,9 @@ package sneps.network;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import sneps.exceptions.CannotInsertJustificationSupportException;
 import sneps.exceptions.CustomException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -92,7 +94,6 @@ public class PropositionNode extends Node implements Serializable{
 		/*
 		PropositionSet propSet = new PropositionSet();
 		propSet.addProposition((PropositionNode) this);
-
 		Context desiredContext = SNeBR.getContextByID(currentChannel.getContextID());
 		if (propSet.assertedInContext(desiredContext)) {
 			// TODO change the subs to hashsubs
@@ -107,7 +108,6 @@ public class PropositionNode extends Node implements Serializable{
 			for (Report currentReport : knownInstances) {
 				sentAtLeastOne = sendReport(currentReport, currentChannel);
 			}
-
 			// TODO Akram: passed the filter subs to isWhQuest, is that correct
 			// ?
 			// System.out.println("#$#$#$#$# 0");
@@ -222,16 +222,39 @@ public class PropositionNode extends Node implements Serializable{
 		return basicSupport.getAssumptionBasedSupport();
 		
 	}
-	public Hashtable<String, PropositionSet> getJustificationSupport() {
+	public Hashtable<String, PropositionSet> getJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getJustificationSupport();
 	}
-	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
+	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
-	public boolean removeNodeFromSupports(PropositionNode propNode) {
-		return basicSupport.removeNodeFromSupports(propNode);
+	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		basicSupport.removeNodeFromSupports(propNode);
 		
 	}
+	public void addParentNode(int id) throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		 basicSupport.addParentNode(id);
+		
+	}
+	
+	public ArrayList<Integer> getParentSupports() {
+		return basicSupport.getParentSupports();
+	}
+	
+	
+	public boolean HasChildren() {
+		return basicSupport.HasChildren();
+	}
+	
+	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		return basicSupport.getMySupportsTree();
+	}
 
+	public boolean reStructureJustifications() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		return basicSupport.reStructureJustifications();
+	}
 
+	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+		basicSupport.setHyp(isHyp);
+	}
 }
