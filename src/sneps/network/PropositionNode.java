@@ -30,7 +30,7 @@ import sneps.snip.matching.Substitutions;
 
 public class PropositionNode extends Node implements Serializable{
 	private Support basicSupport;
-	
+
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
 	protected ReportSet knownInstances;
@@ -246,19 +246,39 @@ public class PropositionNode extends Node implements Serializable{
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return basicSupport.getAssumptionBasedSupport();
 	}
-	public Hashtable<String, PropositionSet> getJustificationSupport() {
+	public Hashtable<String, PropositionSet> getJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getJustificationSupport();
 	}
-	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
+	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
-	public boolean removeNodeFromSupports(PropositionNode propNode) {
-		return basicSupport.removeNodeFromSupports(propNode);
-		
+	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		basicSupport.removeNodeFromSupports(propNode);
+
+	}
+	public void addParentNode(int id) throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		 basicSupport.addParentNode(id);
+
 	}
 
-	public ReportSet getNewInstances() {
-		return newInstances;
+	public ArrayList<Integer> getParentSupports() {
+		return basicSupport.getParentSupports();
 	}
 
+
+	public boolean HasChildren() {
+		return basicSupport.HasChildren();
+	}
+
+	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		return basicSupport.getMySupportsTree();
+	}
+
+	public boolean reStructureJustifications() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		return basicSupport.reStructureJustifications();
+	}
+
+	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+		basicSupport.setHyp(isHyp);
+	}
 }

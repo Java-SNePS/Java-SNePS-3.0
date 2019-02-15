@@ -144,6 +144,8 @@ public class Controller {
             throw new ContradictionFoundException(contradictions);
         }
 
+        PropositionNode node = (PropositionNode) Network.getNodeById(hyp);
+        node.setHyp(true);
         PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
 
         Context newContext = new Context(contextName, hypSet);
@@ -185,6 +187,11 @@ public class Controller {
             throw new ContradictionFoundException(contradictions);
         }
 
+        hypsArr = PropositionSet.getPropsSafely(hyps);
+        for (int i = 0; i < hypsArr.length; i++) {
+        	PropositionNode node = (PropositionNode) Network.getNodeById(hypsArr[i]);
+        	 node.setHyp(true);
+		}
         temp = new Context(contextName, oldContext.getHypothesisSet().union(hyps));
         contextSet.add(temp);
         return temp;
@@ -650,6 +657,9 @@ public class Controller {
     public static Context getContextByName(String contextName) {
         return contextSet.getContext(contextName);
     }
+    
+   
+
     
     public static void save(String f) throws FileNotFoundException, IOException {
     	ObjectOutputStream cos = new ObjectOutputStream(new FileOutputStream(new File(f)));
