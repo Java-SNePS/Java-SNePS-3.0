@@ -61,7 +61,7 @@ public class Runner {
 	public static void addToLowQueue(Node node) {
 		lowQueue.add(node);
 	}
-	
+
 	public static void addToActStack(ActNode node) {
 		actQueue.addLast(node);
 	}

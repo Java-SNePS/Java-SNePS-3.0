@@ -3,7 +3,6 @@ package sneps.snip;
 import sneps.network.Node;
 import sneps.snip.matching.Substitutions;
 
-
 public class Pair {
 	Node node;
 	Substitutions filterSubs, switchSubs;
@@ -17,6 +16,7 @@ public class Pair {
 	public Node getNode() {
 		return node;
 	}
+
 	public Substitutions getFilter() {
 		return filterSubs;
 	}

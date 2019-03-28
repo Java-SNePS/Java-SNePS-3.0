@@ -2145,4 +2145,9 @@ public class Network implements Serializable {
 		userDefinedVarSuffix.clear();
 	}
 
+	public static PropositionNode buildTemporaryNode(String identifier) {
+		// TODO build temporary node for the deduce method
+		return null;
+	}
+
 }

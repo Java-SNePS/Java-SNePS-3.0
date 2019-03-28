@@ -2,6 +2,7 @@ package sneps.network;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import sneps.exceptions.CannotInsertJustificationSupportException;
 import sneps.exceptions.CustomException;
@@ -17,7 +18,11 @@ import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;
@@ -30,9 +35,9 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class PropositionNode extends Node implements Serializable{
+public class PropositionNode extends Node implements Serializable {
 	private Support basicSupport;
-	
+
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
 	protected ReportSet knownInstances;
@@ -51,9 +56,8 @@ public class PropositionNode extends Node implements Serializable{
 		knownInstances = new ReportSet();
 		setTerm(trm);
 	}
-	
 
-	public void processSingleChannelReports(Channel currentChannel) {
+	public void processSingleReportsChannel(Channel currentChannel) {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),
@@ -70,7 +74,89 @@ public class PropositionNode extends Node implements Serializable{
 
 	public void processReports() {
 		for (Channel inChannel : incomingChannels)
-			processSingleChannelReports(inChannel);
+			processSingleReportsChannel(inChannel);
+	}
+
+	/***
+	 * Request handling in Non-Rule proposition nodes.
+	 * 
+	 * @param currentChannel
+	 */
+	public void processSingleRequestsChannel(Channel currentChannel) {
+		// TODO check correctness
+		/*
+		PropositionSet propSet = new PropositionSet();
+		// TODO addProposition with input a Node
+		propSet.addProposition((PropositionNode) this);
+		Context desiredContext = Controller.getContextID(currentChannel.getContextID());
+		// TODO assertedInContext
+		if (propSet.assertedInContext(desiredContext)) {
+			// TODO change the subs to hashsubs
+			// #Sends an instance of this report#
+			// System.out.println("#$#$#$#$# -1 " + desiredContext.getId());
+			Set<Support> support = new HashSet<Support>();
+			// TODO Blank Support constructor with input a Node
+			support.add(new Support((PropositionNode) this));
+			Report reply = new Report(new LinearSubstitutions(), support, true, currentChannel.getContextID());
+			knownInstances.addReport(reply);
+			broadcastReport(reply);
+		} else {
+			// #Sends any previously known instances#
+			boolean sentAtLeastOne = false;
+			for (Report currentReport : knownInstances) {
+				sentAtLeastOne = sendReport(currentReport, currentChannel);
+			}
+			// TODO Akram: passed the filter subs to isWhQuest, is that correct?
+			// System.out.println("#$#$#$#$# 0");
+			if (!sentAtLeastOne || isWhQuestion(currentChannel.getFilter().getSubstitution())) {
+				if (!alreadyWorking(currentChannel)) {
+					NodeSet dominatingRules = getDominatingRules();
+					sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(),
+							currentChannel.getContextID(), ChannelTypes.RuleCons);
+					// System.out.println("#$#$#$#$# 1");
+					if (!(currentChannel instanceof MatchChannel)) {
+						try {
+							List<Object[]> matchesReturned = Matcher.Match(this);
+							if (matchesReturned != null) {
+								ArrayList<Pair> matches = new ArrayList<Pair>();
+								for (Object[] match : matchesReturned) {
+									Pair newPair = new Pair((Substitutions) match[1], (Substitutions) match[2],
+											(Node) match[0]);
+									matches.add(newPair);
+								}
+								sendRequests(matches, currentChannel.getContextID(), ChannelTypes.MATCHED);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		*/
+	}
+
+	public void processRequests() {
+		for (Channel outChannel : outgoingChannels)
+			processSingleRequestsChannel(outChannel);
+	}
+
+	/***
+	 * Requests received added to the low priority queue to be served accordingly
+	 * through the runner.
+	 */
+	public void receiveRequest(Channel channel) {
+		outgoingChannels.addChannel(channel);
+		Runner.addToLowQueue(this);
+	}
+
+	/***
+	 * Reports received added to the high priority queue to be served accordingly through
+	 * the runner.
+	 */
+	public void receiveReports(Channel channel) {
+		outgoingChannels.addChannel(channel);
+		Runner.addToHighQueue(this);
 	}
 
 	public void broadcastReport(Report report) {
@@ -87,60 +173,6 @@ public class PropositionNode extends Node implements Serializable{
 			return true;
 		}
 		return false;
-	}
-
-	public void processSingleRequest(Channel currentChannel) {
-		//TODO check correctness
-		/*
-		PropositionSet propSet = new PropositionSet();
-		propSet.addProposition((PropositionNode) this);
-		Context desiredContext = SNeBR.getContextByID(currentChannel.getContextID());
-		if (propSet.assertedInContext(desiredContext)) {
-			// TODO change the subs to hashsubs
-			// System.out.println("#$#$#$#$# -1 " + desiredContext.getId());
-			Set<Support> support = new HashSet<Support>();
-			support.add(new Support((PropositionNode) this));
-			Report reply = new Report(new LinearSubstitutions(), support, true, currentChannel.getContextID());
-			knownInstances.add(reply);
-			broadcastReport(reply);
-		} else {
-			boolean sentAtLeastOne = false;
-			for (Report currentReport : knownInstances) {
-				sentAtLeastOne = sendReport(currentReport, currentChannel);
-			}
-			// TODO Akram: passed the filter subs to isWhQuest, is that correct
-			// ?
-			// System.out.println("#$#$#$#$# 0");
-			if (!sentAtLeastOne || isWhQuestion(currentChannel.getFilter().getSubstitution())) {
-				if (!alreadyWorking(currentChannel)) {
-					NodeSet dominatingRules = getDominatingRules();
-					sendRequests(dominatingRules, currentChannel.getFilter().getSubstitution(),
-							currentChannel.getContextID(), ChannelTypes.RuleCons);
-					// System.out.println("#$#$#$#$# 1");
-					if (!(currentChannel instanceof MatchChannel)) {
-						try {
-							List<Object[]> matchesReturned = Matcher.Match(this);
-							if(matchesReturned != null) {
-								ArrayList<Pair> matches = new ArrayList<Pair>();
-								for(Object[] match : matchesReturned) {
-									Pair newPair = new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
-									matches.add(newPair);
-								}
-								sendRequests(matches, currentChannel.getContextID(), ChannelTypes.MATCHED);
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-*/
-	}
-
-	public void processRequests() {
-		for (Channel outChannel : outgoingChannels)
-			processSingleRequest(outChannel);
 	}
 
 	public void sendRequests(ArrayList<Pair> list, String conetxtID, ChannelTypes channelType) {
@@ -179,74 +211,80 @@ public class PropositionNode extends Node implements Serializable{
 		}
 	}
 
-	public void receiveRequest(Channel channel) {
-		outgoingChannels.addChannel(channel);
-		Runner.addToLowQueue(this);
-	}
-
-	public void receiveReports(Channel channel) {
-		//TODO
-	}
-
 	public boolean alreadyWorking(Channel channel) {
 		return false;
 	}
 
-
-
 	public Support getBasicSupport() {
 		return basicSupport;
 	}
+
 	public void setBasicSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		this.basicSupport = new Support(this.getId());
 	}
+
 	public ChannelSet getOutgoingChannels() {
 		return outgoingChannels;
 	}
+
 	public void setOutgoingChannels(ChannelSet outgoingChannels) {
 		this.outgoingChannels = outgoingChannels;
 	}
+
 	public ChannelSet getIncomingChannels() {
 		return incomingChannels;
 	}
+
 	public void setIncomingChannels(ChannelSet incomingChannels) {
 		this.incomingChannels = incomingChannels;
 	}
+
 	public ReportSet getKnownInstances() {
 		return knownInstances;
 	}
+
 	public void setKnownInstances(ReportSet knownInstances) {
 		this.knownInstances = knownInstances;
 	}
+
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return basicSupport.getAssumptionBasedSupport();
-		
+
 	}
-	public Hashtable<String, PropositionSet> getJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+
+	public Hashtable<String, PropositionSet> getJustificationSupport()
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getJustificationSupport();
 	}
-	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
+
+	public void addJustificationBasedSupport(PropositionSet propSet)
+			throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException,
+			DuplicatePropositionException, CannotInsertJustificationSupportException {
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
-	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+
+	public void removeNodeFromSupports(PropositionNode propNode)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		basicSupport.removeNodeFromSupports(propNode);
-		
+
 	}
-	public void addParentNode(int id) throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		 basicSupport.addParentNode(id);
-		
+
+	public void addParentNode(int id)
+			throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		basicSupport.addParentNode(id);
+
 	}
-	
+
 	public ArrayList<Integer> getParentSupports() {
 		return basicSupport.getParentSupports();
 	}
-	
-	
+
 	public boolean HasChildren() {
 		return basicSupport.HasChildren();
 	}
-	
-	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+
+	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree()
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getMySupportsTree();
 	}
 
@@ -254,7 +292,7 @@ public class PropositionNode extends Node implements Serializable{
 		return basicSupport.reStructureJustifications();
 	}
 
-	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		basicSupport.setHyp(isHyp);
 	}
 }

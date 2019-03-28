@@ -46,7 +46,8 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
+		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: "
+				+ supports;
 	}
 
 	public String getContextName() {

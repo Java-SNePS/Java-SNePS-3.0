@@ -1,6 +1,8 @@
 package sneps.network;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
@@ -9,7 +11,10 @@ import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
+import sneps.snip.Pair;
+import sneps.snip.Runner;
 import sneps.snip.channels.Channel;
+import sneps.snip.channels.ChannelTypes;
 import sneps.snip.matching.Substitutions;
 
 public class Node implements Serializable {
@@ -25,7 +30,7 @@ public class Node implements Serializable {
 	public Node(Term trm) {
 		term = trm;
 		id = count++;
-		if(this.getTerm() instanceof Molecular) {
+		if (this.getTerm() instanceof Molecular) {
 			this.updateUpCables();
 		}
 	}
@@ -39,7 +44,7 @@ public class Node implements Serializable {
 		semanticType = sem;
 		term = trm;
 		id = count++;
-		if(this.getTerm() instanceof Molecular) {
+		if (this.getTerm() instanceof Molecular) {
 			this.updateUpCables();
 		}
 	}
@@ -127,8 +132,7 @@ public class Node implements Serializable {
 	 * This method overrides the default equals method inherited from the Object
 	 * class.
 	 *
-	 * @param obj
-	 *            an Object that is to be compared to the current node to check
+	 * @param obj an Object that is to be compared to the current node to check
 	 *            whether they are equal.
 	 *
 	 * @return true if the given object is an instance of the Node class and has the
@@ -144,7 +148,7 @@ public class Node implements Serializable {
 	}
 
 	public void receiveRequest(Channel newChannel) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub - install channel
 
 	}
 
@@ -207,19 +211,32 @@ public class Node implements Serializable {
 		return null;
 	}
 
-	public void deduce(Node node) {
-		/*
-		 * Runner.initiate(); NodeSet dominatingRules = getDominatingRules();
-		 * sendRequests(dominatingRules, channel.getFilter().getSubstitution(),
-		 * channel.getContextID(), ChannelTypes.RuleCons); //
-		 * System.out.println("#$#$#$#$# 1"); try { List<Object[]> matchesReturned =
-		 * Matcher.Match(this); if(matchesReturned != null) { ArrayList<Pair> matches =
-		 * new ArrayList<Pair>(); for(Object[] match : matchesReturned) { Pair newPair =
-		 * new Pair((Substitutions)match[1], (Substitutions)match[2], (Node)match[0]);
-		 * matches.add(newPair); } sendRequests(matches, channel.getContextID(),
-		 * ChannelTypes.MATCHED); } } catch (Exception e) { e.printStackTrace(); }
-		 * Runner.run(); // what to return here ?
+	public void deduce() {
+		Runner.initiate();
+		Node toBeDeduced = this;
+		/**
+		 * Retrieving all Dominating rules for Node <toBeDeduced> and sending requests to each.
 		 */
+		NodeSet dominatingRules = getDominatingRules();
+		sendRequests(dominatingRules, channel.getFilter().getSubstitution(), channel.getContextID(),
+				ChannelTypes.RuleCons);
+		try {
+			/**
+			 * Retrieving all matching nodes for Node <toBeDeduced> and sending requests to each.
+			 */
+			List<Object[]> matchesReturned = Matcher.Match(toBeDeduced);
+			if (matchesReturned != null) {
+				ArrayList<Pair> matches = new ArrayList<Pair>();
+				for (Object[] match : matchesReturned) {
+					Pair newPair = new Pair((Substitutions) match[1], (Substitutions) match[2], (Node) match[0]);
+					matches.add(newPair);
+				}
+				sendRequests(matches, channel.getContextID(), ChannelTypes.MATCHED);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Runner.run(); // what to return here ?
 	}
 
 	public void setTerm(Term term) {

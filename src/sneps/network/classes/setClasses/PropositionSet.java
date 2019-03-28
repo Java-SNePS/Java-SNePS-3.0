@@ -7,6 +7,7 @@ import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
+import sneps.snebr.Context;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -291,6 +292,16 @@ public class PropositionSet implements Serializable{
         return new PropositionSet(props2);
 
     }
+
+	public void addProposition(PropositionNode propositionNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean assertedInContext(Context desiredContext) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 
 }

@@ -11,7 +11,7 @@ import sneps.snip.matching.Substitutions;
 public abstract class Channel {
 
 	private Filter filter;
-	private Switch switch_;
+	private Switch switcher;
 	private String contextName;
 	private Node requester;
 	private Node reporter;
@@ -20,16 +20,14 @@ public abstract class Channel {
 
 	public Channel() {
 		filter = new Filter();
-		switch_ = new Switch();
+		switcher = new Switch();
 		reportsBuffer = new ReportSet();
 	}
 
-	public Channel(Substitutions switchSubstitution, 
-			Substitutions filterSubstitutions, 
-			String contextID, Node requester,
-			Node reporter, boolean v) {
+	public Channel(Substitutions switcherSubstitution, Substitutions filterSubstitutions, String contextID,
+			Node requester, Node reporter, boolean v) {
 		this.filter = new Filter(filterSubstitutions);
-		this.switch_ = new Switch(switchSubstitution);
+		this.switcher = new Switch(switcherSubstitution);
 		this.contextName = contextID;
 		this.requester = requester;
 		this.reporter = reporter;
@@ -38,13 +36,12 @@ public abstract class Channel {
 		reportsBuffer = new ReportSet();
 	}
 
-	
-
 	public boolean addReport(Report report) {
-		System.out.println("Can pass " + filter.canPass(report));
-		if (filter.canPass(report) && contextName == report.getContextName()) {
-			System.out.println("\n\nThe Switch data:\n" + switch_);
-			switch_.switchReport(report);
+		boolean passTest = filter.canPass(report);
+		System.out.println("Can pass " + passTest);
+		if (passTest && contextName.equals(report.getContextName())) {
+			System.out.println("\n\nThe switcher data:\n" + switcher);
+			switcher.switchReport(report);
 			reportsBuffer.addReport(report);
 			Runner.addToHighQueue(requester);
 			return true;
@@ -52,31 +49,38 @@ public abstract class Channel {
 		return false;
 	}
 
-
 	public String getContextName() {
 		return contextName;
 	}
+
 	public boolean isValveOpen() {
 		return valve;
 	}
+
 	public Filter getFilter() {
 		return filter;
 	}
+
 	public Switch getSwitch() {
-		return switch_;
+		return switcher;
 	}
+
 	public Node getRequester() {
 		return requester;
 	}
+
 	public Node getReporter() {
 		return reporter;
 	}
+
 	public ReportSet getReportsBuffer() {
 		return reportsBuffer;
 	}
+
 	public void setValve(boolean valve) {
 		this.valve = valve;
 	}
+
 	public void clearReportsBuffer() {
 		reportsBuffer.clear();
 	}

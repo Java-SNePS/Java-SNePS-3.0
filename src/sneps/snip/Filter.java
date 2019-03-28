@@ -22,7 +22,7 @@ public class Filter {
 	@Override
 	public boolean equals(Object filter) {
 		Filter typeCastedObject = (Filter) filter;
-		if(typeCastedObject == null)
+		if (typeCastedObject == null)
 			return false;
 		return this.substitution.isEqual(typeCastedObject.getSubstitution());
 	}
@@ -30,7 +30,8 @@ public class Filter {
 	public boolean canPass(Report report) {
 		for (int i = 0; i < this.substitution.cardinality(); i++) {
 			Binding currentFilterBinding = substitution.getBinding(i);
-			Binding currentReportBinding = report.getSubstitutions().getBindingByVariable(currentFilterBinding.getVariable());
+			Binding currentReportBinding = report.getSubstitutions()
+					.getBindingByVariable(currentFilterBinding.getVariable());
 			System.out.println("Bindings " + currentFilterBinding + " " + report.getSubstitutions());
 			if (currentReportBinding != null && currentFilterBinding.getNode() != currentReportBinding.getNode())
 				return false;

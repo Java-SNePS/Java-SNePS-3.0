@@ -26,7 +26,7 @@ import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
-public abstract class RuleNode extends PropositionNode implements Serializable{
+public abstract class RuleNode extends PropositionNode implements Serializable {
 
 	/**
 	 * a NodeSet containing all the pattern antecedents attached to this Node
@@ -34,26 +34,25 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	protected NodeSet antNodesWithVars;
 
 	/**
-	 * a NodeSet containing all the non pattern antecedents attached to this
-	 * Node
+	 * a NodeSet containing all the non pattern antecedents attached to this Node
 	 */
 	protected NodeSet antNodesWithoutVars;
 
 	/**
-	 * an integer set containing all the ids of the pattern antecedents attached
-	 * to this Node
+	 * an integer set containing all the ids of the pattern antecedents attached to
+	 * this Node
 	 */
 	protected Set<Integer> antNodesWithVarsIDs;
 
 	/**
-	 * an integer set containing all the ids of the non pattern antecedents
-	 * attached to this Node
+	 * an integer set containing all the ids of the non pattern antecedents attached
+	 * to this Node
 	 */
 	protected Set<Integer> antNodesWithoutVarsIDs;
 
 	/**
-	 * set to true if all the antecedents with Variables share the same
-	 * variables, false otherwise.
+	 * set to true if all the antecedents with Variables share the same variables,
+	 * false otherwise.
 	 */
 	protected boolean shareVars;
 
@@ -61,15 +60,14 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * Set of ids of the variables shared by all patterns
 	 */
 	protected Set<Integer> sharedVars;
-	
 
 	protected ContextRuisSet contextRuisSet;
 
 	private Hashtable<Integer, RuleUseInfo> contextConstantRUI;
 
-	
-	public RuleNode(){}
-	
+	public RuleNode() {
+	}
+
 	public RuleNode(Term syn) {
 		super(syn);
 		antNodesWithoutVars = new NodeSet();
@@ -88,8 +86,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		for (Node n : antNodesWithoutVars) {
 			antNodesWithoutVarsIDs.add(n.getId());
 		}
-		//this.antNodesWithoutVars.size();
-		//this.antNodesWithVars.size();
+		// this.antNodesWithoutVars.size();
+		// this.antNodesWithVars.size();
 		this.shareVars = this.allShareVars(antNodesWithVars);
 		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
@@ -125,7 +123,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 
 	abstract protected void sendRui(RuleUseInfo tRui, String contextID);
 
-	
 	public void clear() {
 		contextRuisSet.clear();
 		contextConstantRUI.clear();
@@ -147,16 +144,14 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	}
 
 	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
-		/*if (nodes.isEmpty())
-			return new HashSet<VariableNode>();
-		VariableNode n = (VariableNode) nodes.getNode(0);
-		Set<VariableNode> res = ImmutableSet.copyOf(n.getFreeVariables());
-		for (int i = 1; i < nodes.size(); i++) {
-			n = (VariableNode) nodes.getNode(i);
-			Set<VariableNode> temp = ImmutableSet.copyOf(n.getFreeVariables());
-			res = Sets.intersection(res, temp);
-		}
-		return res;*/
+		/*
+		 * if (nodes.isEmpty()) return new HashSet<VariableNode>(); VariableNode n =
+		 * (VariableNode) nodes.getNode(0); Set<VariableNode> res =
+		 * ImmutableSet.copyOf(n.getFreeVariables()); for (int i = 1; i < nodes.size();
+		 * i++) { n = (VariableNode) nodes.getNode(i); Set<VariableNode> temp =
+		 * ImmutableSet.copyOf(n.getFreeVariables()); res = Sets.intersection(res,
+		 * temp); } return res;
+		 */
 		return null;
 	}
 
@@ -169,7 +164,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	}
 
 	public NodeSet getDownNodeSet(String name) {
-		return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
+		return ((Molecular) term).getDownCableSet().getDownCable(name).getNodeSet();
 	}
 
 	public abstract NodeSet getDownAntNodeSet();
@@ -227,7 +222,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		}
 	}
 
-	
 	public RuleUseInfo addConstantRuiToContext(int context, RuleUseInfo rui) {
 		RuleUseInfo tRui = contextConstantRUI.get(context);
 		if (tRui != null)
@@ -249,7 +243,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public RuleUseInfo getConstantRUI(int context) {
 		return contextConstantRUI.get(context);
 	}
-	
+
 	public static boolean isConstantNode(Node n) {
 		return !(n instanceof VariableNode) || n instanceof RuleNode || ((VariableNode) n).getFreeVariables().isEmpty();
 	}
@@ -258,9 +252,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public void processRequests() {
 		for (Channel currentChannel : outgoingChannels) {
 			if (currentChannel instanceof RuleToConsequentChannel) {
-				VariableSet variablesList = ((Open)this.term).getFreeVariables();
+				VariableSet variablesList = ((Open) this.term).getFreeVariables();
 				if (variablesList.isEmpty()) {
-					//Proposition semanticType = (Proposition) this.getSemantic();TODO change according to snebr
+					// Proposition semanticType = (Proposition) this.getSemantic();TODO change
+					// according to snebr
 					if (this.semanticType.isAsserted(Controller.getContextByName(currentChannel.getContextName()))) {
 						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
 						NodeSet toBeSentTo = new NodeSet();
@@ -277,18 +272,14 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 						sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitution(),
 								currentChannel.getContextName(), ChannelTypes.RuleAnt);
 					}
-				} else if (true)
-
-				{
+				} else if (true) {
 					// TODO Akram: there are free variables but each is bound
-				} else if (true)
-
-				{
+				} else if (true) {
 					// TODO Akram: there are free variable
 				}
 
 			} else {
-				super.processSingleRequest(currentChannel);
+				super.processSingleRequestsChannel(currentChannel);
 			}
 		}
 	}

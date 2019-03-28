@@ -3665,10 +3665,10 @@ public class FXController implements Initializable {
 		try {
 			n = (PropositionNode) Network.getNode(identifier);
 		} catch (NodeNotFoundInNetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e);
+			n = Network.buildTemporaryNode(identifier);
 		}
-		n.deduce(n);
+		n.deduce();
 		ReportSet rs = n.getKnownInstances();
 		for(Report r : rs) {
 			res = res + r.toString() + "\n";

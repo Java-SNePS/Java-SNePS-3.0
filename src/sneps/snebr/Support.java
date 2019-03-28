@@ -52,6 +52,10 @@ public class Support implements Serializable{
 		hasChildren = false;
 	}
 
+	public Support(PropositionNode propositionNode) {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
      * toString method. retrieving the assumptions and justification supports in a string.
      */
