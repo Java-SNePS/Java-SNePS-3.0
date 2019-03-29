@@ -8,7 +8,7 @@ import sneps.network.Network;
 public class RCFP implements Serializable{
 	public static RCFP andAnt, ant, cq, arg, min, max, i, threshMax, thresh, action, obj, precondition, act, doo, iff,
 			when, whenever, plan, goal, effect, vars, suchthat, elsee, obj1, obj2, obj3, obj4, obj5,
-			obj6, obj7, obj8, obj9, obj10;
+			obj6, obj7, obj8, obj9, obj10, grade, prop;
 
 	/**
 	 * The relation included in this 3-tuple (Relation, adjust and limit).
@@ -121,7 +121,9 @@ public class RCFP implements Serializable{
 		suchthat = Network.defineRelationPropertiesForCF(Relation.suchthat, "none", 1);
 		vars = Network.defineRelationPropertiesForCF(Relation.vars, "none", 1);
 		elsee = Network.defineRelationPropertiesForCF(Relation.elsee, "none", 1);
-
+		
+		grade = Network.defineRelationPropertiesForCF(Relation.grade, "none", 1);
+		prop = Network.defineRelationPropertiesForCF(Relation.prop, "none", 1);
 	}
 
 }

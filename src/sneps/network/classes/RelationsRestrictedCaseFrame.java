@@ -24,7 +24,7 @@ import sneps.network.Network;
 public class RelationsRestrictedCaseFrame extends CaseFrame implements Serializable{
 	public static CaseFrame andRule, orRule, andOrRule, threshRule, numericalRule, act, act1, act2, act3, act4, act5,
 			act6, act7, act8, act9, preconditionAct, whenDo, wheneverDo, doIf, actEffect, planAct, planGoal, withSome,
-			withAll, withSomeNoElse, withAllNoElse;
+			withAll, withSomeNoElse, withAllNoElse, gradedProp;
 
 	// /**
 	// * The name of the semantic class that represents the default semantic type
@@ -464,5 +464,10 @@ public class RelationsRestrictedCaseFrame extends CaseFrame implements Serializa
 		actCF9.add(RCFP.obj9);
 		actCF9.add(RCFP.obj10);
 		act9 = Network.defineCaseFrameWithConstraints("Act", actCF9);
+		
+		LinkedList<RCFP> gradedprop = new LinkedList<RCFP>();
+		gradedprop.add(RCFP.prop);
+		gradedprop.add(RCFP.grade);
+		gradedProp = Network.defineCaseFrameWithConstraints("Proposition", gradedprop);
 	}
 }
