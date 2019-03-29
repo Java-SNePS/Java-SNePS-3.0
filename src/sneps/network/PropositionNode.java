@@ -211,6 +211,35 @@ public class PropositionNode extends Node implements Serializable {
 		}
 	}
 
+	public void deduce() {
+		Runner.initiate();
+		PropositionNode toBeDeduced = this;
+		String currentContextName = Controller.getCurrentContextName();
+		/**
+		 * Retrieving all Dominating rules for Node <toBeDeduced> and sending requests to each.
+		 */
+		NodeSet dominatingRules = getDominatingRules();
+		toBeDeduced.sendRequests(dominatingRules, new LinearSubstitutions(), currentContextName,
+				ChannelTypes.RuleCons);
+		try {
+			/**
+			 * Retrieving all matching nodes for Node <toBeDeduced> and sending requests to each.
+			 */
+			List<Object[]> matchesReturned = Matcher.match(toBeDeduced);
+			if (matchesReturned != null) {
+				ArrayList<Pair> matches = new ArrayList<Pair>();
+				for (Object[] match : matchesReturned) {
+					Pair newPair = new Pair((Substitutions) match[1], (Substitutions) match[2], (Node) match[0]);
+					matches.add(newPair);
+				}
+				toBeDeduced.sendRequests(matches, currentContextName, ChannelTypes.MATCHED);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Runner.run(); // what to return here ?
+	}
+	
 	public boolean alreadyWorking(Channel channel) {
 		return false;
 	}

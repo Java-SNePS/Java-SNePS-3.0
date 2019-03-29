@@ -11,10 +11,15 @@ import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snip.Pair;
 import sneps.snip.Runner;
+import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
+import sneps.snip.channels.MatchChannel;
+import sneps.snip.channels.RuleToConsequentChannel;
+import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
 public class Node implements Serializable {
@@ -210,34 +215,8 @@ public class Node implements Serializable {
 	Context fake() {
 		return null;
 	}
+	
 
-	public void deduce() {
-		Runner.initiate();
-		Node toBeDeduced = this;
-		/**
-		 * Retrieving all Dominating rules for Node <toBeDeduced> and sending requests to each.
-		 */
-		NodeSet dominatingRules = getDominatingRules();
-		sendRequests(dominatingRules, channel.getFilter().getSubstitution(), channel.getContextID(),
-				ChannelTypes.RuleCons);
-		try {
-			/**
-			 * Retrieving all matching nodes for Node <toBeDeduced> and sending requests to each.
-			 */
-			List<Object[]> matchesReturned = Matcher.Match(toBeDeduced);
-			if (matchesReturned != null) {
-				ArrayList<Pair> matches = new ArrayList<Pair>();
-				for (Object[] match : matchesReturned) {
-					Pair newPair = new Pair((Substitutions) match[1], (Substitutions) match[2], (Node) match[0]);
-					matches.add(newPair);
-				}
-				sendRequests(matches, channel.getContextID(), ChannelTypes.MATCHED);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Runner.run(); // what to return here ?
-	}
 
 	public void setTerm(Term term) {
 		this.term = term;
