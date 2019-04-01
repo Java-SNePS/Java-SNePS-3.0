@@ -8,6 +8,7 @@ import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -42,29 +43,9 @@ public class PropositionNode extends Node implements Serializable{
 		knownInstances = new ReportSet();
 		newInstances = new ReportSet();
 	}
-
+	
 	public PropositionNode(Term trm) {
 		super(Semantic.proposition, trm);
-		outgoingChannels = new ChannelSet();
-		incomingChannels = new ChannelSet();
-		knownInstances = new ReportSet();
-		newInstances = new ReportSet();
-		setTerm(trm);
-	}
-	public PropositionNode(Term trm, Semantic sem) {
-		this();
-		setTerm(trm);
-		setSemanticType(sem);
-	}
-	public PropositionNode(Semantic sym, Term trm){
-		super(sym, trm);
-		outgoingChannels = new ChannelSet();
-		incomingChannels = new ChannelSet();
-		knownInstances = new ReportSet();
-		newInstances = new ReportSet();
-	}
-	public PropositionNode(Semantic sym){
-		super(sym);
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();

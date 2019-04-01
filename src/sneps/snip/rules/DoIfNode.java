@@ -3,6 +3,7 @@ package sneps.snip.rules;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
@@ -10,12 +11,8 @@ import sneps.snip.classes.RuleUseInfo;
 public class DoIfNode extends RuleNode {
 	private static final long serialVersionUID = -262476672166406490L;
 
-	public DoIfNode(Term syn) {
+	public DoIfNode(Molecular syn) {
 		super(syn);
-	}
-
-	public DoIfNode(Semantic sem, Term syn) {
-		super(sem, syn);
 	}
 
 

@@ -1,4 +1,3 @@
-
 package sneps.network;
 
 import java.io.Serializable;
@@ -32,6 +31,7 @@ import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
+	
 	private NodeSet consequents;
 	/**
 	 * a NodeSet containing all the pattern antecedents attached to this Node
@@ -45,34 +45,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	protected ContextRuisSet contextRuisSet;
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
-	public RuleNode(){
-		super();
-		consequents = new NodeSet();
-		antNodesWithoutVars = new NodeSet();
-		antNodesWithoutVarsIDs = new HashSet<Integer>();
-		antNodesWithVars = new NodeSet();
-		antNodesWithVarsIDs = new HashSet<Integer>();
-		shareVars = false;
-		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
-	}
-	
-	public RuleNode(Semantic sym){
-		super(sym);
-		consequents = new NodeSet();
-		antNodesWithoutVars = new NodeSet();
-		antNodesWithoutVarsIDs = new HashSet<Integer>();
-		antNodesWithVars = new NodeSet();
-		antNodesWithVarsIDs = new HashSet<Integer>();
-		shareVars = false;
-		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
-	}
-	
-	public RuleNode(Term syn) {
-		super(syn);
+	public RuleNode() {
 		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
@@ -84,8 +57,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 
-	public RuleNode(Semantic sym, Term syn) {
-		super(sym, syn);
+	public RuleNode(Molecular syn) {
+		super(syn);
 		consequents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();

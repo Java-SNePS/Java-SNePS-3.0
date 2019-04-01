@@ -14,6 +14,7 @@ import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
@@ -65,18 +66,8 @@ public class AndOrEntailment extends RuleNode {
 	 * @param syn
 	 */
 	
-	public AndOrEntailment(Term syn) {
+	public AndOrEntailment(Molecular syn) {
 		super(syn);
-	}
-
-	/**
-	 * Constructor for the AndOr Entailment
-	 * @param sym
-	 * @param syn
-	 */
-	
-	public AndOrEntailment(Semantic sym, Term syn) {
-		super(sym, syn);
 	}
 	
 	/**

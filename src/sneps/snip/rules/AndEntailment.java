@@ -11,6 +11,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snip.Report;
@@ -40,16 +41,8 @@ public class AndEntailment extends RuleNode {
 	 * Constructor for the AndEntailment rule node
 	 * @param syn
 	 */
-	public AndEntailment(Term syn) {
+	public AndEntailment(Molecular syn) {
 		super(syn);
-	}
-	/**
-	 * Constructor for the AndEntailment rule node
-	 * @param sym
-	 * @param syn
-	 */
-	public AndEntailment(Semantic sym, Term syn) {
-		super(sym, syn);
 	}
 
 	/**

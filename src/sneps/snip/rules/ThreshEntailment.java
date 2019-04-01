@@ -15,6 +15,7 @@ import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
@@ -66,19 +67,9 @@ public class ThreshEntailment extends RuleNode {
 	 * Constructor for the Thresh Entailment
 	 * @param syn
 	 */
-	public ThreshEntailment(Term syn) {
+	public ThreshEntailment(Molecular syn) {
 		super(syn);
 	}
-
-	/**
-	 * Constructor for the Thresh Entailment
-	 * @param sym
-	 * @param syn
-	 */
-	public ThreshEntailment(Semantic sym, Term syn) {
-		super(sym, syn);
-	}
-	
 	
 	/**
 	 * When a report is received, it checks whether it is true or false

@@ -11,6 +11,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snip.Report;
@@ -37,11 +38,8 @@ public class NumericalEntailment extends RuleNode {
 	private static final long serialVersionUID = 3546852401118194013L;
 	private int i;
 
-	public NumericalEntailment(Term syn) {
+	public NumericalEntailment(Molecular syn) {
 		super(syn);
-	}
-	public NumericalEntailment(Semantic sym, Term syn) {
-		super(sym, syn);
 	}
 
 	/**

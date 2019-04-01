@@ -12,6 +12,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Support;
 import sneps.snip.Report;
@@ -30,18 +31,8 @@ public class OrEntailment extends RuleNode {
 	 *Constructor for the Or Entailment
 	 * @param syn
 	 */
-	public OrEntailment(Term syn) {
+	public OrEntailment(Molecular syn) {
 		super(syn);
-	}
-
-	
-	/**
-	 * Constructor for the Or Entailment
-	 * @param sym
-	 * @param syn
-	 */
-	public OrEntailment(Semantic sym, Term syn) {
-		super(sym, syn);
 	}
 	
 	/**
