@@ -53,10 +53,6 @@ public class RuleUseInfo {
 	 */
 	public FlagNodeSet getNegSubs() {
 		FlagNodeSet res = new FlagNodeSet();
-		// for (int i = 0; i < fns.cardinality(); i++) {
-		// if (fns.getFlagNode(i).getFlag() == 2)
-		// res.putIn(fns.getFlagNode(i));
-		// }
 		for (FlagNode fn : fns) {
 			if (fn.getFlag() == 2)
 				res.insert(fn);
@@ -71,10 +67,6 @@ public class RuleUseInfo {
 	 */
 	public FlagNodeSet getPosSubs() {
 		FlagNodeSet res = new FlagNodeSet();
-		// for (int i = 0; i < fns.cardinality(); i++) {
-		// if (fns.getFlagNode(i).getFlag() == 1)
-		// res.putIn(fns.getFlagNode(i));
-		// }
 		for (FlagNode fn : fns) {
 			if (fn.getFlag() == 1)
 				res.insert(fn);
@@ -99,11 +91,11 @@ public class RuleUseInfo {
 	 * @return true or false
 	 */
 	public boolean isVarsCompatible(RuleUseInfo r) {
-		return sub.isCompatible(r.sub);
+		return sub.isCompatible(r.getSubstitutions());
 	}
 
 	/**
-	 * Check if this and r are joint
+	 * Check if this flagged node set and r's flagged node set are joint
 	 * 
 	 * @param r
 	 *            rule use info
@@ -131,7 +123,7 @@ public class RuleUseInfo {
 	}
 
 	/**
-	 * Check if this and r are disjoint
+	 * Check if this flagged node set and r's flagged node set are disjoint
 	 * 
 	 * @param r
 	 *            rule use info
@@ -151,8 +143,8 @@ public class RuleUseInfo {
 	public RuleUseInfo combine(RuleUseInfo rui) {
 		//System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
-			return new RuleUseInfo(this.getSubstitutions().union(rui.getSubstitutions()), this.pos
-					+ rui.pos, this.neg + rui.neg, this.fns.union(rui.fns));
+			return new RuleUseInfo(this.getSubstitutions().union(rui.getSubstitutions()), 
+					this.pos + rui.getPosCount(), this.neg + rui.getNegCount(), this.fns.union(rui.getFlagNodeSet()));
 		}
 		return null;
 	}

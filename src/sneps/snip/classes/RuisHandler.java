@@ -20,6 +20,7 @@ public abstract class RuisHandler {
 	public RuisHandler(){
 		positiveNodes = new NodeSet();
 	}
+	
 	public RuisHandler(String contextID) {
 		this();
 		this.context = contextID;
@@ -30,6 +31,7 @@ public abstract class RuisHandler {
 	}
 
 	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
+	
 	public NodeSet getPositiveNodes() {
 		return positiveNodes;
 	}

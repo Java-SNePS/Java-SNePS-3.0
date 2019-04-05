@@ -66,9 +66,11 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		for (FlagNode fn : flagNodes) {
 			res.insert(fn);
 		}
+		
 		for (FlagNode fn : f) {
 			res.insert(fn);
 		}
+		
 		return res;
 	}
 

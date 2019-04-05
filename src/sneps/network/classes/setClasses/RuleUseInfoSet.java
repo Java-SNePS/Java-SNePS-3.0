@@ -37,8 +37,8 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 	public RuleUseInfoSet combine(RuleUseInfoSet second) {
 		RuleUseInfoSet res = new RuleUseInfoSet(this.context, false);
 		for(RuleUseInfo rui1 : this){
-			for(RuleUseInfo rui2: second){
-				if(rui1.isDisjoint(rui2))
+			for(RuleUseInfo rui2 : second){
+				//if(rui1.isDisjoint(rui2))
 					res.add(rui1.combine(rui2));
 			}
 		}

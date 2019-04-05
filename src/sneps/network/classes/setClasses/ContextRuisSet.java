@@ -51,20 +51,21 @@ public class ContextRuisSet{
 	public boolean contains(RuisHandler handler){
 		return ruisHandlers.contains(handler);
 	}
+	
 	public boolean containsKey(String handlerKey){
 		return ruisHandlers.containsKey(handlerKey);
 	}
-	public RuisHandler getHandler(RuisHandler handler){
-		return ruisHandlers.get(handler);
-	}
+	
 	public Enumeration<String> getKeys(){
 		return ruisHandlers.keys();
 	}
+	
 	public int size(){
 		return ruisHandlers.size();
 	}
+	
 	public void remove(String contextName, RuisHandler handler){
-		ruisHandlers.remove(handler, handler);
+		ruisHandlers.remove(contextName, handler);
 	}
 
 	public void clear() {

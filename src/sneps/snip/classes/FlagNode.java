@@ -15,7 +15,7 @@ public class FlagNode {
 	 *            node
 	 * @param set
 	 *            support
-	 * @param f
+	 * @param f,
 	 *            true or false
 	 */
 	public FlagNode(Node n, PropositionSet set, int f) {
