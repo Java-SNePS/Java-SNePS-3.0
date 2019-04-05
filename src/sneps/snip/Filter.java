@@ -5,18 +5,18 @@ import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
 public class Filter {
-	private Substitutions substitution;
+	private Substitutions substitutions;
 
 	public Filter() {
-		this.substitution = new LinearSubstitutions();
+		this.substitutions = new LinearSubstitutions();
 	}
 
 	public Filter(Substitutions substitution) {
-		this.substitution = substitution;
+		this.substitutions = substitution;
 	}
 
-	public Substitutions getSubstitution() {
-		return substitution;
+	public Substitutions getSubstitutions() {
+		return substitutions;
 	}
 
 	@Override
@@ -24,12 +24,12 @@ public class Filter {
 		Filter typeCastedObject = (Filter) filter;
 		if (typeCastedObject == null)
 			return false;
-		return this.substitution.isEqual(typeCastedObject.getSubstitution());
+		return this.substitutions.isEqual(typeCastedObject.getSubstitutions());
 	}
 
 	public boolean canPass(Report report) {
-		for (int i = 0; i < this.substitution.cardinality(); i++) {
-			Binding currentFilterBinding = substitution.getBinding(i);
+		for (int i = 0; i < this.substitutions.cardinality(); i++) {
+			Binding currentFilterBinding = substitutions.getBinding(i);
 			Binding currentReportBinding = report.getSubstitutions()
 					.getBindingByVariable(currentFilterBinding.getVariable());
 			System.out.println("Bindings " + currentFilterBinding + " " + report.getSubstitutions());

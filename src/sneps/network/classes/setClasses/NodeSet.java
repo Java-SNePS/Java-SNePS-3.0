@@ -13,14 +13,13 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		nodes = new Vector<Node>();
 	}
 
-
 	public Node getNode(int index) {
 		return this.nodes.get(index);
 	}
 
 	public void addNode(Node node) {
-		if (!this.nodes.contains(node))
-			this.nodes.add(node);
+		if (!nodes.contains(node))
+			nodes.add(node);
 	}
 
 	public int size() {
@@ -40,11 +39,11 @@ public class NodeSet implements Iterable<Node>, Serializable {
 	public void clear() {
 		this.nodes.clear();
 	}
-	
+
 	public boolean isEmpty() {
 		return this.nodes.isEmpty();
 	}
-	
+
 	public boolean contains(Node node) {
 		return this.nodes.contains(node);
 	}
@@ -95,8 +94,8 @@ public class NodeSet implements Iterable<Node>, Serializable {
 	}
 
 	/**
-	 * This method overrides the default toString method inherited from the
-	 * Object class.
+	 * This method overrides the default toString method inherited from the Object
+	 * class.
 	 */
 	@Override
 	public String toString() {
@@ -109,5 +108,5 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		s += "}";
 		return s;
 	}
-	
+
 }

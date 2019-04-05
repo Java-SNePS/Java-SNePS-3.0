@@ -2,6 +2,7 @@ package sneps.network;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import sneps.network.cables.UpCable;
@@ -9,7 +10,9 @@ import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
+import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.VariableSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Pair;
@@ -197,26 +200,21 @@ public class Node implements Serializable {
 	}
 
 	public boolean isWhQuestion(Substitutions sub) {
-		/*
-		 * if (!this.getIdentifier().equalsIgnoreCase("patternnode")) return false;
-		 * 
-		 * PatternNode node = (PatternNode) this; LinkedList<VariableNode> variables =
-		 * node.getFreeVariables();
-		 * 
-		 * for (int i = 0; i < variables.size(); i++) { Node termNode =
-		 * sub.term(variables.get(i)); if (termNode == null ||
-		 * (!termNode.getIdentifier().equalsIgnoreCase("basenode"))) return true;
-		 * 
-		 * }
-		 */
+//		if (!this.getIdentifier().equalsIgnoreCase("patternnode"))
+//			return false;
+//		VariableNode node = (VariableNode) this;
+//		VariableSet variables = node.getFreeVariables();
+//		for (Variable currentVariable: variables) {
+//			Node termNode = sub.term(currentVariable);
+//			if (termNode == null || (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
+//				return true;
+//		}
 		return false;
 	}
 
 	Context fake() {
 		return null;
 	}
-	
-
 
 	public void setTerm(Term term) {
 		this.term = term;

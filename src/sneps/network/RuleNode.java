@@ -5,10 +5,14 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.ContextRuisSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VariableSet;
@@ -17,14 +21,17 @@ import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
+import sneps.snip.channels.MatchChannel;
 import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
+import sneps.snip.matching.LinearSubstitutions;
 
 public abstract class RuleNode extends PropositionNode implements Serializable {
 
@@ -250,36 +257,63 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 
 	@Override
 	public void processRequests() {
-		for (Channel currentChannel : outgoingChannels) {
-			if (currentChannel instanceof RuleToConsequentChannel) {
-				VariableSet variablesList = ((Open) this.term).getFreeVariables();
-				if (variablesList.isEmpty()) {
-					// Proposition semanticType = (Proposition) this.getSemantic();TODO change
-					// according to snebr
-					if (this.semanticType.isAsserted(Controller.getContextByName(currentChannel.getContextName()))) {
-						NodeSet antecedentNodeSet = this.getDownAntNodeSet();
-						NodeSet toBeSentTo = new NodeSet();
-						for (Node currentNode : antecedentNodeSet) {
-							if (currentNode == currentChannel.getRequester()) {
-								continue;
-							}
-							// TODO Akram: if not yet been requested for this
-							// instance
-							if (true) {
-								toBeSentTo.addNode(currentNode);
-							}
-						}
-						sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitution(),
-								currentChannel.getContextName(), ChannelTypes.RuleAnt);
-					}
-				} else if (true) {
-					// TODO Akram: there are free variables but each is bound
-				} else if (true) {
-					// TODO Akram: there are free variable
-				}
+		for (Channel outChannel : outgoingChannels)
+			try {
+				processSingleRequestsChannel(outChannel);
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+				e.printStackTrace();
+			} catch (DuplicatePropositionException e) {
+				e.printStackTrace();
+			}
+	}
 
+	/***
+	 * Request handling in Rule proposition nodes.
+	 * 
+	 * @param currentChannel
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws NotAPropositionNodeException
+	 * @throws DuplicatePropositionException
+	 */
+	public void processSingleRequestsChannel(Channel currentChannel)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
+		if (currentChannel instanceof RuleToConsequentChannel) {
+			VariableSet variablesList = ((Open) this.term).getFreeVariables();
+			if (variablesList.isEmpty()) {
+				// Proposition semanticType = (Proposition) this.getSemantic();
+				// TODO change according to snebr
+				String currentContextName = currentChannel.getContextName();
+				Context currentContext = Controller.getContextByName(currentContextName);
+				if (assertedInContext(currentContext)) { // this.semanticType.isAsserted(currentContext)
+					NodeSet antecedentNodeSet = getDownAntNodeSet();
+					NodeSet toBeSentTo = new NodeSet();
+					for (Node currentNode : antecedentNodeSet) {
+						if (currentNode == currentChannel.getRequester())
+							continue;
+
+						// TODO Akram: if not yet been requested for this
+						// instance
+						// TODO Youssef: added requestServing to monitor requests status over each
+						// channel established
+						if (!currentChannel.isRequestProcessed()) {
+							toBeSentTo.addNode(currentNode);
+						}
+					}
+					sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
+							currentChannel.getContextName(), ChannelTypes.RuleAnt);
+				}
+			} else if (variablesList.areVariablesBound()) {
+				// TODO Akram: there are free variables but each is bound
 			} else {
+				// TODO Akram: there is a free variable not bound
+			}
+
+		} else {
+			try {
 				super.processSingleRequestsChannel(currentChannel);
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | DuplicatePropositionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

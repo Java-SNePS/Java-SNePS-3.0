@@ -17,8 +17,8 @@ public class VariableSet implements Iterable<Variable>, Serializable {
 	public Iterator<Variable> iterator() {
 		return variables.iterator();
 	}
-	
-	public Variable getVariable(int index){
+
+	public Variable getVariable(int index) {
 		return variables.get(index);
 	}
 
@@ -29,16 +29,25 @@ public class VariableSet implements Iterable<Variable>, Serializable {
 	public void addAll(VariableSet allVariables) {
 		for (int i = 0; i < variables.size(); i++) {
 			this.addVariable(allVariables.getVariable(i));
-		}		
+		}
 	}
 
 	public int size() {
 		return variables.size();
 	}
 
-
 	public boolean isEmpty() {
 		return variables.isEmpty();
 	}
 
+	/***
+	 * Method to iterate over all variables in the Vector<Variable> to check for
+	 * their bound status
+	 * 
+	 * @return boolean expressing no none-bound free variables
+	 */
+	public boolean areVariablesBound() {
+		// TODO Youssef
+		return false;
+	}
 }

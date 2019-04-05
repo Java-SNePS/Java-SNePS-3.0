@@ -17,6 +17,8 @@ public abstract class Channel {
 	private Node reporter;
 	private boolean valve;
 	private ReportSet reportsBuffer;
+	private boolean requestProcessed = false;
+	private boolean reportProcessed = false;
 
 	public Channel() {
 		filter = new Filter();
@@ -75,6 +77,22 @@ public abstract class Channel {
 
 	public ReportSet getReportsBuffer() {
 		return reportsBuffer;
+	}
+
+	public boolean isRequestProcessed() {
+		return requestProcessed;
+	}
+
+	public void setRequestProcessed(boolean requestProcessed) {
+		this.requestProcessed = requestProcessed;
+	}
+
+	public boolean isReportProcessed() {
+		return reportProcessed;
+	}
+
+	public void setReportProcessed(boolean reportProcessed) {
+		this.reportProcessed = reportProcessed;
 	}
 
 	public void setValve(boolean valve) {
