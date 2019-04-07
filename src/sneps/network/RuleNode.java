@@ -16,6 +16,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VariableSet;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
@@ -32,6 +33,7 @@ import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 import sneps.snip.matching.LinearSubstitutions;
+import sneps.snip.matching.Substitutions;
 
 public abstract class RuleNode extends PropositionNode implements Serializable {
 
@@ -278,44 +280,56 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	public void processSingleRequestsChannel(Channel currentChannel)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		if (currentChannel instanceof RuleToConsequentChannel) {
+			boolean closedTypeTerm = term instanceof Closed;
 			VariableSet variablesList = ((Open) this.term).getFreeVariables();
-			if (variablesList.isEmpty()) {
-				// Proposition semanticType = (Proposition) this.getSemantic();
-				// TODO change according to snebr
+			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
+			Substitutions switchSubs = currentChannel.getSwitch().getSubstitutions();
+			// law closed type yb2a awel case, law open type yb2a two other cases,
+			// areVariablesBound check law el filter fadi wala la2: fadi case 2, la2 case 3
+			if (closedTypeTerm) {
 				String currentContextName = currentChannel.getContextName();
 				Context currentContext = Controller.getContextByName(currentContextName);
-				if (assertedInContext(currentContext)) { // this.semanticType.isAsserted(currentContext)
+				if (assertedInContext(currentContext)) {
 					NodeSet antecedentNodeSet = getDownAntNodeSet();
 					NodeSet toBeSentTo = new NodeSet();
 					for (Node currentNode : antecedentNodeSet) {
 						if (currentNode == currentChannel.getRequester())
 							continue;
-
 						// TODO Akram: if not yet been requested for this
 						// instance
 						// TODO Youssef: added requestServing to monitor requests status over each
 						// channel established
-						if (!currentChannel.isRequestProcessed()) {
+//						Substitutions currentChannelFilterSubs = currentChannel.getFilter().getSubstitutions();
+//						currentChannel.processedGeneralizedRequest(currentChannelFilterSubs)
+						if (!alreadyWorking(currentChannel)) {
 							toBeSentTo.addNode(currentNode);
 						}
 					}
 					sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
 							currentChannel.getContextName(), ChannelTypes.RuleAnt);
+					return;
 				}
-			} else if (variablesList.areVariablesBound()) {
-				// TODO Akram: there are free variables but each is bound
+			} else if (areAllVariablesConstants(switchSubs, filterSubs)) {
+				// TODO Akram: there are free variables but each is bound; check filter beta3 el
+				// channel law empty
+				if (true) {
+					return;
+				}
+
 			} else {
-				// TODO Akram: there is a free variable not bound
+				// TODO Akram: there is a free variable not bound; check filter
+				if (true) {
+					return;
+				}
 			}
 
-		} else {
-			try {
-				super.processSingleRequestsChannel(currentChannel);
-			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | DuplicatePropositionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
+		try {
+			super.processSingleRequestsChannel(currentChannel);
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | DuplicatePropositionException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override

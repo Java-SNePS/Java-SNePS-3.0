@@ -6,26 +6,34 @@ import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
 public class Switch {
-	private Substitutions substitution;
+	private Substitutions substitutions;
 
 	public Switch() {
-		this.substitution = new LinearSubstitutions();
+		this.substitutions = new LinearSubstitutions();
+	}
+
+	public Substitutions getSubstitutions() {
+		return substitutions;
+	}
+
+	public void setSubstitutions(Substitutions substitutions) {
+		this.substitutions = substitutions;
 	}
 
 	public Switch(Substitutions substitution) {
-		this.substitution = substitution;
+		this.substitutions = substitution;
 	}
 
 	public void switchReport(Report r) {
-		for (int i = 0; i < this.substitution.cardinality(); i++) {
-			Binding b = r.getSubstitutions().getBindingByVariable(this.substitution.getBinding(i).getVariable());
-			System.out.println(this.substitution.getBinding(i).getVariable());
+		for (int i = 0; i < this.substitutions.cardinality(); i++) {
+			Binding b = r.getSubstitutions().getBindingByVariable(this.substitutions.getBinding(i).getVariable());
+			System.out.println(this.substitutions.getBinding(i).getVariable());
 			System.out.println("i: " + i + " binding: " + b);
 			if (b != null) {
-				b.setVariable((VariableNode) this.substitution.getBinding(i).getNode());
+				b.setVariable((VariableNode) this.substitutions.getBinding(i).getNode());
 			} else {
-				System.out.println("there u go " + this.substitution.getBinding(i));
-				r.getSubstitutions().putIn(this.substitution.getBinding(i));
+				System.out.println("there u go " + this.substitutions.getBinding(i));
+				r.getSubstitutions().putIn(this.substitutions.getBinding(i));
 				System.out.println("size now " + r.getSubstitutions().cardinality());
 			}
 		}
@@ -36,6 +44,6 @@ public class Switch {
 	}
 
 	public String toString() {
-		return substitution.toString();
+		return substitutions.toString();
 	}
 }

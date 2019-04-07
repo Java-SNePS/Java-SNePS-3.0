@@ -18,6 +18,7 @@ import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.term.Term;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +40,6 @@ import sneps.snip.matching.Substitutions;
 
 public class PropositionNode extends Node implements Serializable {
 	private Support basicSupport;
-
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
 	protected ReportSet knownInstances;
@@ -185,7 +185,10 @@ public class PropositionNode extends Node implements Serializable {
 				sentAtLeastOne |= sendReport(currentReport, currentChannel);
 			}
 			// TODO Akram: passed the filter subs to isWhQuest, is that correct?
-			if (!sentAtLeastOne || isWhQuestion(currentChannel.getFilter().getSubstitutions()))
+			// TODO Youssef: passed the switch subs to isWhQuest, is that also correct?
+			Substitutions switchSubs = currentChannel.getSwitch().getSubstitutions();
+			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
+			if (!sentAtLeastOne || isWhQuestion(switchSubs, filterSubs))
 				if (!alreadyWorking(currentChannel)) {
 					getNodesToSendRequests(ChannelTypes.RuleCons, currentChannel.getContextName(),
 							currentChannel.getFilter().getSubstitutions());
@@ -225,6 +228,7 @@ public class PropositionNode extends Node implements Serializable {
 	public void receiveRequest(Channel channel) {
 		outgoingChannels.addChannel(channel);
 		Runner.addToLowQueue(this);
+		channel.setRequestProcessed(true);
 	}
 
 	/***
@@ -275,7 +279,24 @@ public class PropositionNode extends Node implements Serializable {
 
 	}
 
+	/***
+	 * Method checking if a similar more generic request is being processed and
+	 * awaits a report in order not to re-send the same request
+	 * 
+	 * @param channel current channel handling the current request
+	 * @return boolean represents whether a more generic request has been received
+	 */
 	public boolean alreadyWorking(Channel channel) {
+		ChannelSet filteredChannelsSet = incomingChannels.getFilteredRequestChannels(true);
+		Substitutions currentChannelFilterSubs = channel.getFilter().getSubstitutions();
+		for (Channel incomingChannel : filteredChannelsSet) {
+			if (incomingChannel != channel) {
+				Substitutions processedChannelFilterSubs = incomingChannel.getFilter().getSubstitutions();
+				if (processedChannelFilterSubs.isSubSet(currentChannelFilterSubs)) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

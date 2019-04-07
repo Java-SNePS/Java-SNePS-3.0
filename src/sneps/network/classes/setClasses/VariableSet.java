@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import sneps.network.classes.term.Variable;
+import sneps.snip.Filter;
+import sneps.snip.channels.Channel;
+import sneps.snip.matching.Substitutions;
 
 public class VariableSet implements Iterable<Variable>, Serializable {
 	protected Vector<Variable> variables;
@@ -40,14 +43,4 @@ public class VariableSet implements Iterable<Variable>, Serializable {
 		return variables.isEmpty();
 	}
 
-	/***
-	 * Method to iterate over all variables in the Vector<Variable> to check for
-	 * their bound status
-	 * 
-	 * @return boolean expressing no none-bound free variables
-	 */
-	public boolean areVariablesBound() {
-		// TODO Youssef
-		return false;
-	}
 }

@@ -23,4 +23,20 @@ public class ChannelSet implements Iterable<Channel>, Serializable {
 		channels.add(newChannel);
 	}
 
+	/***
+	 * Method acting as a filter for quick HashSet filtering applied on channels
+	 * based on request processing status.
+	 * 
+	 * @param processedRequest boolean expressing filter criteria
+	 * @return newly created ChannelSet
+	 */
+	public ChannelSet getFilteredRequestChannels(boolean processedRequest) {
+		ChannelSet processedRequestsChannels = new ChannelSet();
+		for (Channel channel : processedRequestsChannels) {
+			if (channel.isRequestProcessed() == processedRequest)
+				processedRequestsChannels.addChannel(channel);
+		}
+		return processedRequestsChannels;
+	}
+
 }

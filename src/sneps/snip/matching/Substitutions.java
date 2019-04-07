@@ -65,4 +65,6 @@ public interface Substitutions {
 
 	public void insertOrUpdate(Binding mb);
 
+	public boolean areVariablesBound();
+
 }

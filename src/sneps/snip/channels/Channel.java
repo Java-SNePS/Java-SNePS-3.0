@@ -1,6 +1,8 @@
 package sneps.snip.channels;
 
 import sneps.network.Node;
+import sneps.network.PropositionNode;
+import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.snip.Filter;
 import sneps.snip.Report;
@@ -101,5 +103,20 @@ public abstract class Channel {
 
 	public void clearReportsBuffer() {
 		reportsBuffer.clear();
+	}
+
+	public boolean processedGeneralizedRequest(Substitutions currentChannelFilterSubs) {
+		ChannelSet filteredChannelsSet = ((PropositionNode) requester).getIncomingChannels()
+				.getFilteredRequestChannels(true);
+		for (Channel incomingChannel : filteredChannelsSet) {
+			if (incomingChannel != this) {
+				Substitutions processedChannelFilterSubs = incomingChannel.getFilter().getSubstitutions();
+				if (processedChannelFilterSubs.isSubSet(currentChannelFilterSubs)) {
+					return true;
+				}
+			}
+		}
+		return false;
+
 	}
 }

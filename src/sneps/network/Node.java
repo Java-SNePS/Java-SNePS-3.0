@@ -199,17 +199,29 @@ public class Node implements Serializable {
 		return ret;
 	}
 
-	public boolean isWhQuestion(Substitutions sub) {
+	public boolean isWhQuestion(Substitutions switchSubs, Substitutions filterSubs) {
+		// law fih free variable mesh bound le constant pattern heya open
+//		int switchCardn = switchSubs.cardinality();
+//		int filterCardn = filterSubs.cardinality();
+//		return switchCardn > 0 && filterCardn < switchCardn;
+
 //		if (!this.getIdentifier().equalsIgnoreCase("patternnode"))
 //			return false;
 //		VariableNode node = (VariableNode) this;
 //		VariableSet variables = node.getFreeVariables();
-//		for (Variable currentVariable: variables) {
-//			Node termNode = sub.term(currentVariable);
+//		for (Variable currentVariable : variables) {
+//			Node termNode = filterSubs.term(currentVariable);
 //			if (termNode == null || (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
 //				return true;
 //		}
-		return false;
+//		return false;
+		return !areAllVariablesConstants(switchSubs, filterSubs);
+	}
+
+	public boolean areAllVariablesConstants(Substitutions switchSubs, Substitutions filterSubs) {
+		int switchCardn = switchSubs.cardinality();
+		int filterCardn = filterSubs.cardinality();
+		return switchCardn > 0 && filterCardn == switchCardn;
 	}
 
 	Context fake() {

@@ -449,4 +449,12 @@ public class LinearSubstitutions implements Substitutions {
 
 	}
 
+	/***
+	 * Method to iterate over all variables in the Vector<Variable> to check for
+	 * their bound status
+	 */
+	public boolean areVariablesBound() {
+		return isNew();
+	}
+
 }
