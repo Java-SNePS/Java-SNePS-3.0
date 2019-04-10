@@ -1,9 +1,11 @@
 package sneps.snip.classes;
 
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import sneps.network.classes.setClasses.FlagNodeSet;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
 /**
@@ -82,6 +84,15 @@ public class RuleUseInfo {
 	public FlagNodeSet getFlagNodeSet() {
 		return fns;
 	}
+	
+	/**
+	 * Return the substitutions list
+	 * 
+	 * @return Substitutions
+	 */
+	public Substitutions getSubstitutions() {
+		return sub;
+	}
 
 	/**
 	 * Check if this and r have no binding conflicts
@@ -149,30 +160,29 @@ public class RuleUseInfo {
 		return null;
 	}
 
-	public PropositionSet getSupports() {
+	public Set<Support> getCombinedSupports() {
 		if (fns.isNew())
-			return new PropositionSet();
+			return new HashSet<Support>();
+		
 		if (fns.cardinality() == 1)
 			return fns.iterator().next().getSupports();
 
-		PropositionSet res = new PropositionSet();
-		for(FlagNode fn : fns){			
+		Iterator<FlagNode> fnIter = fns.iterator();
+		Set<Support> res = fnIter.next().getSupports();
+		while (fnIter.hasNext()) {
+			Set<Support> toBeCombined = fnIter.next().getSupports();
+			res = Support.combine(res, toBeCombined);
+		}
+		
+		/*for(FlagNode fn : fns){
 			try {
 				res = res.union(fn.getSupports());
 			} catch (NotAPropositionNodeException
 					| NodeNotFoundInNetworkException e) {
 			}
-		}
+		}*/
+		
 		return res;
-	}
-	
-	/**
-	 * Return the substitutions list
-	 * 
-	 * @return Substitutions
-	 */
-	public Substitutions getSubstitutions() {
-		return sub;
 	}
 
 }

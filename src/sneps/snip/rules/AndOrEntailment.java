@@ -1,6 +1,7 @@
 package sneps.snip.rules;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -87,7 +88,7 @@ public class AndOrEntailment extends RuleNode {
 		
 		int rem = args-(pos+neg);
 		if(rem<min && (min-pos)>rem) {
-			PropositionSet propSet = report.getSupports();
+			Set<Support> propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
 			rui = new RuleUseInfo(report.getSubstitutions(),
@@ -98,7 +99,7 @@ public class AndOrEntailment extends RuleNode {
 		
 		
 		if(pos+neg==args) {
-		PropositionSet propSet = report.getSupports();
+		Set<Support> propSet = report.getSupports();
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(new FlagNode(signature, propSet, 1));
 		rui = new RuleUseInfo(report.getSubstitutions(),
@@ -140,19 +141,29 @@ public class AndOrEntailment extends RuleNode {
 		Substitutions sub = tRui.getSubstitutions();
 		FlagNodeSet justification = new FlagNodeSet();
 		justification.addAll(tRui.getFlagNodeSet());
-		PropositionSet supports = new PropositionSet();
+		//PropositionSet supports = new PropositionSet();
 
-		for(FlagNode fn : justification){
+		/*for(FlagNode fn : justification){
 			try {
 				supports = supports.union(fn.getSupports());
 			} catch (NotAPropositionNodeException
 					| NodeNotFoundInNetworkException e) {}
+		}*/
+		
+		Iterator<FlagNode> fnIter = justification.iterator();
+		Set<Support> supports = fnIter.next().getSupports();
+		while (fnIter.hasNext()) {
+			Set<Support> toBeCombined = fnIter.next().getSupports();
+			supports = Support.combine(supports, toBeCombined);
 		}
 
-		try {
+		/*try {
 			supports = supports.union(tRui.getSupports());
 		} catch (NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {}
+				| NodeNotFoundInNetworkException e) {}*/
+		
+		Set<Support> tRuiSupport = tRui.getCombinedSupports();
+		supports = Support.combine(supports, tRuiSupport);
 
 		if(this.getTerm() instanceof Open){
 			//knownInstances check this.free vars - > bound

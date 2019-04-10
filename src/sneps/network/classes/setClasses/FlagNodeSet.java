@@ -40,8 +40,7 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 	 *            FlagNode
 	 */
 	public void insert(FlagNode fn) {
-		if (!this.contains(fn))
-			flagNodes.add(fn);
+		flagNodes.add(fn);
 	}
 
 	/**
@@ -77,6 +76,7 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 	public int size() {
 		return flagNodes.size();
 	}
+	
 	/**
 	 * Check if fn is in this
 	 * 

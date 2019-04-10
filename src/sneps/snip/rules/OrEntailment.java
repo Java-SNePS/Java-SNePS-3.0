@@ -45,7 +45,7 @@ public class OrEntailment extends RuleNode {
 			
 			sign = true;
 			
-			PropositionSet propSet = report.getSupports();
+			Set<Support> propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(node, propSet, 1));
 
