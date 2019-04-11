@@ -222,11 +222,17 @@ public class PropositionNode extends Node implements Serializable{
 		return basicSupport.getAssumptionBasedSupport();
 		
 	}
+	public Hashtable<String, ArrayList<PropositionSet>> getTelescopedSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		return basicSupport.getTelescopedSupport();
+	}
 	public Hashtable<String, PropositionSet> getJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getJustificationSupport();
 	}
 	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
 		basicSupport.addJustificationBasedSupport(propSet);
+	}
+	public void addTelescopedSupport(PropositionSet propSet, PropositionSet telescopedSet) {
+		basicSupport.addTelescopedSupport(propSet, telescopedSet);
 	}
 	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		basicSupport.removeNodeFromSupports(propNode);
@@ -245,7 +251,9 @@ public class PropositionNode extends Node implements Serializable{
 	public boolean HasChildren() {
 		return basicSupport.HasChildren();
 	}
-	
+	public String toString() {
+		return basicSupport.toString();
+	}
 	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getMySupportsTree();
 	}
