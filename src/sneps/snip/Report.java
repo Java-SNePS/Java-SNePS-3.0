@@ -5,6 +5,7 @@ import java.util.Set;
 import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
+/*add type of inference*/
 public class Report {
 	private Substitutions substitution;
 	private Set<Support> supports;
@@ -43,6 +44,10 @@ public class Report {
 
 	public boolean isNegative() {
 		return !sign;
+	}
+
+	public void toggleSign() {
+		this.sign = !this.sign;
 	}
 
 	public String toString() {

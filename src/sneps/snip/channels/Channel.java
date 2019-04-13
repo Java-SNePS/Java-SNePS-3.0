@@ -5,6 +5,7 @@ import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.snip.Filter;
+import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
 import sneps.snip.Runner;
 import sneps.snip.Switch;
@@ -21,6 +22,7 @@ public abstract class Channel {
 	private ReportSet reportsBuffer;
 	private boolean requestProcessed = false;
 	private boolean reportProcessed = false;
+	private InferenceTypes inferenceType;
 
 	public Channel() {
 		filter = new Filter();
@@ -29,7 +31,7 @@ public abstract class Channel {
 	}
 
 	public Channel(Substitutions switcherSubstitution, Substitutions filterSubstitutions, String contextID,
-			Node requester, Node reporter, boolean v) {
+			Node requester, Node reporter, boolean v, InferenceTypes inferenceType) {
 		this.filter = new Filter(filterSubstitutions);
 		this.switcher = new Switch(switcherSubstitution);
 		this.contextName = contextID;
@@ -38,9 +40,10 @@ public abstract class Channel {
 		this.valve = v;
 		this.reporter = reporter;
 		reportsBuffer = new ReportSet();
+		this.inferenceType = inferenceType;
 	}
 
-	public boolean addReport(Report report) {
+	public boolean testReportToAdd(Report report) {
 		boolean passTest = filter.canPass(report);
 		System.out.println("Can pass " + passTest);
 		if (passTest && contextName.equals(report.getContextName())) {
@@ -95,6 +98,14 @@ public abstract class Channel {
 
 	public void setReportProcessed(boolean reportProcessed) {
 		this.reportProcessed = reportProcessed;
+	}
+
+	public InferenceTypes getInferenceType() {
+		return inferenceType;
+	}
+
+	public void setInferenceType(InferenceTypes inferenceType) {
+		this.inferenceType = inferenceType;
 	}
 
 	public void setValve(boolean valve) {

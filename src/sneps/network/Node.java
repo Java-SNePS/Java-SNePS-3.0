@@ -9,6 +9,7 @@ import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.NodeSet;
@@ -199,23 +200,14 @@ public class Node implements Serializable {
 		return ret;
 	}
 
-	public boolean isWhQuestion(Substitutions switchSubs, Substitutions filterSubs) {
-		// law fih free variable mesh bound le constant pattern heya open
-//		int switchCardn = switchSubs.cardinality();
-//		int filterCardn = filterSubs.cardinality();
-//		return switchCardn > 0 && filterCardn < switchCardn;
-
-//		if (!this.getIdentifier().equalsIgnoreCase("patternnode"))
-//			return false;
-//		VariableNode node = (VariableNode) this;
-//		VariableSet variables = node.getFreeVariables();
-//		for (Variable currentVariable : variables) {
-//			Node termNode = filterSubs.term(currentVariable);
-//			if (termNode == null || (!termNode.getIdentifier().equalsIgnoreCase("basenode")))
-//				return true;
-//		}
-//		return false;
-		return !areAllVariablesConstants(switchSubs, filterSubs);
+	public boolean isWhQuestion(Substitutions filterSubs) {
+		if (!(this instanceof VariableNode))
+			return false;
+		VariableNode node = (VariableNode) this;
+		VariableSet variables = node.getFreeVariables();
+		int variablesCardn = variables.size();
+		int filterCardn = filterSubs.cardinality();
+		return filterCardn < variablesCardn;
 	}
 
 	public boolean areAllVariablesConstants(Substitutions switchSubs, Substitutions filterSubs) {

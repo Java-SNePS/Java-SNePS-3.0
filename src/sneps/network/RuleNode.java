@@ -281,58 +281,65 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		if (currentChannel instanceof RuleToConsequentChannel) {
 			boolean closedTypeTerm = term instanceof Closed;
-			VariableSet variablesList = ((Open) this.term).getFreeVariables();
+			String currentContextName = currentChannel.getContextName();
+			Context currentContext = Controller.getContextByName(currentContextName);
+//			VariableSet variablesList = ((Open) this.term).getFreeVariables();
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 			Substitutions switchSubs = currentChannel.getSwitch().getSubstitutions();
-			// law closed type yb2a awel case, law open type yb2a two other cases,
-			// areVariablesBound check law el filter fadi wala la2: fadi case 2, la2 case 3
 			if (closedTypeTerm) {
-				String currentContextName = currentChannel.getContextName();
-				Context currentContext = Controller.getContextByName(currentContextName);
 				if (assertedInContext(currentContext)) {
 					NodeSet antecedentNodeSet = getDownAntNodeSet();
-					NodeSet toBeSentTo = new NodeSet();
-					for (Node currentNode : antecedentNodeSet) {
+
+					/*
+					 * fel rule node haguib el incoming channels we hastore ay haga ba3atlha request
+					 * el filter beta3o subset lel request el ana baservo, we hashil el list dih men
+					 * el antecdents
+					 */
+					for (Node currentNode : antecedentNodeSet /* mengheir el prementioned set */) {
+						/* only needed for the andor & thresh */
 						if (currentNode == currentChannel.getRequester())
 							continue;
 						// TODO Akram: if not yet been requested for this
 						// instance
 						// TODO Youssef: added requestServing to monitor requests status over each
 						// channel established
-//						Substitutions currentChannelFilterSubs = currentChannel.getFilter().getSubstitutions();
-//						currentChannel.processedGeneralizedRequest(currentChannelFilterSubs)
-						if (!alreadyWorking(currentChannel)) {
-							toBeSentTo.addNode(currentNode);
-						}
+						// check incoming channels coming from current node law filter subsumes the
+						// filter of currentchannel
+
 					}
+					NodeSet workingNodes = antecedentNodeSet.alreadyWorking(currentChannel, true);
+					NodeSet toBeSentTo = antecedentNodeSet.difference(workingNodes);
 					sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
-							currentChannel.getContextName(), ChannelTypes.RuleAnt);
+							currentChannel.getContextName(), ChannelTypes.RuleAnt, currentChannel.getInferenceType());
 					return;
 				}
-			} else if (areAllVariablesConstants(switchSubs, filterSubs)) {
+			} else {
 				// TODO Akram: there are free variables but each is bound; check filter beta3 el
 				// channel law empty
-				if (true) {
-					return;
-				}
-
-			} else {
-				// TODO Akram: there is a free variable not bound; check filter
-				if (true) {
-					return;
+				ReportSet knownReportSet = knownInstances;
+				for (Report report : knownReportSet) {
+					Substitutions reportSubstitutions = report.getSubstitutions();
+					if (filterSubs.isEqual(reportSubstitutions)) {
+						getNodesToSendRequests(ChannelTypes.RuleCons, currentContextName, null,
+								currentChannel.getInferenceType());
+						if (areAllVariablesConstants(switchSubs, filterSubs))
+							return;
+						else
+							break;
+					}
 				}
 			}
-
 		}
-		try {
-			super.processSingleRequestsChannel(currentChannel);
-		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | DuplicatePropositionException e) {
-			e.printStackTrace();
-		}
+		super.processSingleRequestsChannel(currentChannel);
 
 	}
 
-	@Override
+	// PROCESS REPORT : 3adi -> outgoing channels node we ab3at accordingly, forard
+	// -> outgoing channels and the rest of the consequents kolohom we ab3at 3adi
+
+	/***
+	 * Report handling in Rule proposition nodes.
+	 */
 	public void processReports() {
 		for (Channel currentChannel : incomingChannels) {
 			ReportSet channelReports = currentChannel.getReportsBuffer();

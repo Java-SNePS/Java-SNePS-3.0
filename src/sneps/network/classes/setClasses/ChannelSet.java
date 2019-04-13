@@ -32,7 +32,7 @@ public class ChannelSet implements Iterable<Channel>, Serializable {
 	 */
 	public ChannelSet getFilteredRequestChannels(boolean processedRequest) {
 		ChannelSet processedRequestsChannels = new ChannelSet();
-		for (Channel channel : processedRequestsChannels) {
+		for (Channel channel : channels) {
 			if (channel.isRequestProcessed() == processedRequest)
 				processedRequestsChannels.addChannel(channel);
 		}
