@@ -35,6 +35,7 @@ public abstract class RuisHandler {
 	public NodeSet getPositiveNodes() {
 		return positiveNodes;
 	}
+	
 	public void setPositiveNodes(NodeSet positiveNodes) {
 		this.positiveNodes = positiveNodes;
 	}

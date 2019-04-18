@@ -1,14 +1,10 @@
 package sneps.snip.rules;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.VariableNode;
-import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -16,8 +12,6 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Term;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
@@ -56,7 +50,7 @@ public class NumericalEntailment extends RuleNode {
 	public void applyRuleHandler(Report report, Node signature) {
 		String contxt = report.getContextName();
 		if (report.isPositive()) {
-			Set<Support> propSet = report.getSupports();
+			PropositionSet propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
 			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
@@ -80,9 +74,9 @@ public class NumericalEntailment extends RuleNode {
 			Substitutions sub = Rui.getSubstitutions();
 			FlagNodeSet justification = new FlagNodeSet();
 			justification.addAll(Rui.getFlagNodeSet());
-			//PropositionSet supports = new PropositionSet();
+			PropositionSet supports = new PropositionSet();
 
-			/*for(FlagNode fn : justification){
+			for(FlagNode fn : justification){
 				try {
 					supports = supports.union(fn.getSupports());
 				} catch (NotAPropositionNodeException
@@ -92,17 +86,7 @@ public class NumericalEntailment extends RuleNode {
 			try {
 				supports = supports.union(Rui.getSupports());
 			} catch (NotAPropositionNodeException
-					| NodeNotFoundInNetworkException e) {}*/
-			
-			Iterator<FlagNode> fnIter = justification.iterator();
-			Set<Support> supports = fnIter.next().getSupports();
-			while (fnIter.hasNext()) {
-				Set<Support> toBeCombined = fnIter.next().getSupports();
-				supports = Support.combine(supports, toBeCombined);
-			}
-			
-			Set<Support> RuiSupport = Rui.getCombinedSupports();
-			supports = Support.combine(supports, RuiSupport);
+					| NodeNotFoundInNetworkException e) {}
 
 			if(this.getTerm() instanceof Open){
 				//knownInstances check this.free vars - > bound

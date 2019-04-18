@@ -1,20 +1,11 @@
 package sneps.snip.rules;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
-import sneps.network.classes.Semantic;
-import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
-import sneps.network.classes.term.Term;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
 import sneps.snip.classes.FlagNode;
@@ -45,7 +36,7 @@ public class OrEntailment extends RuleNode {
 			
 			sign = true;
 			
-			Set<Support> propSet = report.getSupports();
+			PropositionSet propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(node, propSet, 1));
 

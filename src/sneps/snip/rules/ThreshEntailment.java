@@ -1,27 +1,19 @@
 package sneps.snip.rules;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
-import sneps.network.PropositionNode;
 import sneps.network.RuleNode;
 import sneps.network.VariableNode;
-import sneps.network.classes.Semantic;
-import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Term;
-import sneps.snebr.Context;
-import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
 import sneps.snip.classes.RuleUseInfo;
@@ -94,7 +86,7 @@ public class ThreshEntailment extends RuleNode {
 		int rem = args-(pos+neg);
 		if(pos>min && pos<max && max-pos>rem) {
 			
-			Set<Support> propSet = report.getSupports();
+			PropositionSet propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
 			rui = new RuleUseInfo(report.getSubstitutions(),
@@ -105,7 +97,7 @@ public class ThreshEntailment extends RuleNode {
 		
 		if(neg+pos==args) {
 			
-			Set<Support> propSet = report.getSupports();
+			PropositionSet propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
 			rui = new RuleUseInfo(report.getSubstitutions(),
@@ -146,9 +138,9 @@ public class ThreshEntailment extends RuleNode {
 		Substitutions sub = tRui.getSubstitutions();
 		FlagNodeSet justification = new FlagNodeSet();
 		justification.addAll(tRui.getFlagNodeSet());
-		//PropositionSet supports = new PropositionSet();
+		PropositionSet supports = new PropositionSet();
 
-		/*for(FlagNode fn : justification){
+		for(FlagNode fn : justification){
 			try {
 				supports = supports.union(fn.getSupports());
 			} catch (NotAPropositionNodeException
@@ -158,17 +150,7 @@ public class ThreshEntailment extends RuleNode {
 		try {
 			supports = supports.union(tRui.getSupports());
 		} catch (NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {}*/
-		
-		Iterator<FlagNode> fnIter = justification.iterator();
-		Set<Support> supports = fnIter.next().getSupports();
-		while (fnIter.hasNext()) {
-			Set<Support> toBeCombined = fnIter.next().getSupports();
-			supports = Support.combine(supports, toBeCombined);
-		}
-		
-		Set<Support> tRuiSupport = tRui.getCombinedSupports();
-		supports = Support.combine(supports, tRuiSupport);
+				| NodeNotFoundInNetworkException e) {}
 
 		if(this.getTerm() instanceof Open){
 			//knownInstances check this.free vars - > bound

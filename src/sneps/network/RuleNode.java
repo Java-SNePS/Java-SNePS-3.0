@@ -8,6 +8,7 @@ import java.util.Set;
 import sneps.network.classes.setClasses.ContextRuisSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
@@ -16,7 +17,6 @@ import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -92,13 +92,13 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		String contextID = report.getContextName();
 		RuleUseInfo rui;
 		if (report.isPositive()) {
-			Set<Support> propSet = report.getSupports();
+			PropositionSet propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
 			rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
 		} else {
-			Set<Support> propSet = report.getSupports();
+			PropositionSet propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 2));
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);

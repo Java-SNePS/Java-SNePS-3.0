@@ -1,11 +1,9 @@
 package sneps.snip.classes;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.FlagNodeSet;
-import sneps.snebr.Support;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
 /**
@@ -155,32 +153,32 @@ public class RuleUseInfo {
 		//System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
 			return new RuleUseInfo(this.getSubstitutions().union(rui.getSubstitutions()), 
-					this.pos + rui.getPosCount(), this.neg + rui.getNegCount(), this.fns.union(rui.getFlagNodeSet()));
+					this.pos + rui.getPosCount(), this.neg + rui.getNegCount(), 
+					this.fns.union(rui.getFlagNodeSet()));
 		}
 		return null;
 	}
+	
+	/**
+	 * Gets the union of supports of each flag node in this RUI's fns
+	 * @return PropositionSet
+	 */
 
-	public Set<Support> getCombinedSupports() {
+	public PropositionSet getSupports() {
 		if (fns.isNew())
-			return new HashSet<Support>();
+			return new PropositionSet();
 		
 		if (fns.cardinality() == 1)
 			return fns.iterator().next().getSupports();
 
-		Iterator<FlagNode> fnIter = fns.iterator();
-		Set<Support> res = fnIter.next().getSupports();
-		while (fnIter.hasNext()) {
-			Set<Support> toBeCombined = fnIter.next().getSupports();
-			res = Support.combine(res, toBeCombined);
-		}
-		
-		/*for(FlagNode fn : fns){
+		PropositionSet res = new PropositionSet();
+		for(FlagNode fn : fns){
 			try {
 				res = res.union(fn.getSupports());
 			} catch (NotAPropositionNodeException
 					| NodeNotFoundInNetworkException e) {
 			}
-		}*/
+		}
 		
 		return res;
 	}
