@@ -283,54 +283,53 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			boolean closedTypeTerm = term instanceof Closed;
 			String currentContextName = currentChannel.getContextName();
 			Context currentContext = Controller.getContextByName(currentContextName);
-//			VariableSet variablesList = ((Open) this.term).getFreeVariables();
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 			Substitutions switchSubs = currentChannel.getSwitch().getSubstitutions();
 			if (closedTypeTerm) {
 				if (assertedInContext(currentContext)) {
 					NodeSet antecedentNodeSet = getDownAntNodeSet();
-
 					/*
 					 * fel rule node haguib el incoming channels we hastore ay haga ba3atlha request
 					 * el filter beta3o subset lel request el ana baservo, we hashil el list dih men
 					 * el antecdents
+					 * 
+					 * ghayar el logic we hat el tosend 3alatoul
 					 */
-					for (Node currentNode : antecedentNodeSet /* mengheir el prementioned set */) {
-						/* only needed for the andor & thresh */
-						if (currentNode == currentChannel.getRequester())
-							continue;
-						// TODO Akram: if not yet been requested for this
-						// instance
-						// TODO Youssef: added requestServing to monitor requests status over each
-						// channel established
-						// check incoming channels coming from current node law filter subsumes the
-						// filter of currentchannel
-
-					}
-					NodeSet workingNodes = antecedentNodeSet.alreadyWorking(currentChannel, true);
-					NodeSet toBeSentTo = antecedentNodeSet.difference(workingNodes);
+					NodeSet neglectingNodes = alreadyWorking(antecedentNodeSet, currentChannel, true);
+					NodeSet toBeSentTo = antecedentNodeSet.difference(neglectingNodes);
 					sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
 							currentChannel.getContextName(), ChannelTypes.RuleAnt, currentChannel.getInferenceType());
 					return;
+				} else {
+					super.processSingleRequestsChannel(currentChannel)
 				}
 			} else {
 				// TODO Akram: there are free variables but each is bound; check filter beta3 el
 				// channel law empty
 				ReportSet knownReportSet = knownInstances;
+				
 				for (Report report : knownReportSet) {
 					Substitutions reportSubstitutions = report.getSubstitutions();
-					if (filterSubs.isEqual(reportSubstitutions)) {
-						getNodesToSendRequests(ChannelTypes.RuleCons, currentContextName, null,
-								currentChannel.getInferenceType());
+					if (filterSubs.isSubSet(reportSubstitutions) && true /*atleast support of the report is asserted in the context*/) {
+						
+						/*men antecedents lel rule*/
+//Case 1: asserted same logic law kolo constants 
+						//getNodesToSendRequests(ChannelTypes.RuleAnt, currentContextName, null,
+							//	currentChannel.getInferenceType());
 						if (areAllVariablesConstants(switchSubs, filterSubs))
 							return;
-						else
+						else {
+						
+							// Case 3: fih one free variale le kol instance hab3at lel antecedents request bel filter beta3 each istance while checking if alreadyWorking on it, we call super.proccessSingle
 							break;
+						}
+					} else {
+						
 					}
 				}
 			}
-		}
-		super.processSingleRequestsChannel(currentChannel);
+		} else
+		 super.processSingleRequestsChannel(currentChannel);
 
 	}
 

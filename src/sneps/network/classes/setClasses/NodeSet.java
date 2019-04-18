@@ -52,32 +52,7 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		return this.nodes.contains(node);
 	}
 
-	/***
-	 * Method checking if a similar more generic request is being processed and
-	 * awaits a report in order not to re-send the same request
-	 * 
-	 * @param node    set on which we will check existing request
-	 * @param channel current channel handling the current request
-	 * @return boolean represents whether a more generic request has been received
-	 */
-	public NodeSet alreadyWorking(Channel channel, boolean ruleType) {
-		NodeSet toSentTo = new NodeSet();
-		for (Node sourceNode : nodes)
-			if (sourceNode instanceof PropositionNode) {
-				Substitutions currentChannelFilterSubs = channel.getFilter().getSubstitutions();
-				ChannelSet incomingChannels = ((PropositionNode) sourceNode).getIncomingChannels();
-				ChannelSet filteredChannelsSet = incomingChannels.getFilteredRequestChannels(true);
-				boolean conditionMet = true;
-				for (Channel incomingChannel : filteredChannelsSet) {
-					Substitutions processedChannelFilterSubs = incomingChannel.getFilter().getSubstitutions();
-					conditionMet |= (ruleType ? sourceNode != incomingChannel.getRequester() : true)
-							&& !processedChannelFilterSubs.isSubSet(currentChannelFilterSubs);
-				}
-				if (conditionMet)
-					toSentTo.addNode(sourceNode);
-			}
-		return toSentTo;
-	}
+	
 
 	public NodeSet Union(NodeSet ns) {
 		NodeSet unionSet = new NodeSet();

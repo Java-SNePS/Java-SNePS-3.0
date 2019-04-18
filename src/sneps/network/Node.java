@@ -161,6 +161,11 @@ public class Node implements Serializable {
 
 	}
 
+	public void receiveReport(Channel newChannel) {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void processReports() {
 		// TODO Auto-generated method stub
 
@@ -210,6 +215,10 @@ public class Node implements Serializable {
 		return filterCardn < variablesCardn;
 	}
 
+	/*
+	 * Every variable that occurs free in the rule matches ma3 an element fel filter
+	 * substitutions
+	 */
 	public boolean areAllVariablesConstants(Substitutions switchSubs, Substitutions filterSubs) {
 		int switchCardn = switchSubs.cardinality();
 		int filterCardn = filterSubs.cardinality();

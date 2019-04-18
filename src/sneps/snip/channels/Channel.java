@@ -43,7 +43,7 @@ public abstract class Channel {
 		this.inferenceType = inferenceType;
 	}
 
-	public boolean testReportToAdd(Report report) {
+	public boolean testReportToSend(Report report) {
 		boolean passTest = filter.canPass(report);
 		System.out.println("Can pass " + passTest);
 		if (passTest && contextName.equals(report.getContextName())) {

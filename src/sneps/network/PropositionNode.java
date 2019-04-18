@@ -67,18 +67,51 @@ public class PropositionNode extends Node implements Serializable {
 	 */
 	public void broadcastReport(Report report) {
 		for (Channel outChannel : outgoingChannels) {
-			if (outChannel.testReportToAdd(report)) {
+			if (outChannel.testReportToSend(report)) {
 				// System.out.println("SENDING REPORT " + this);
 			}
 		}
 	}
 
 	public boolean sendReport(Report report, Channel channel) {
-		if (channel.testReportToAdd(report)) {
+		if (channel.testReportToSend(report)) {
 			// System.out.println("SENDING REPORT " + this);
 			return true;
 		}
 		return false;
+	}
+
+	protected void sendReports(NodeSet isAntecedentTo, ReportSet reports, ChannelTypes channelType) {
+		for (Node node : isAntecedentTo) {
+			for (Report report : reports) {
+				Substitutions reportSubs = report.getSubstitutions();
+				Set<Support> reportSuppSet = report.getSupports();
+				boolean reportSign = report.getSign();
+				String reportContextName = report.getContextName();
+				Channel newChannel = establishChannel(channelType, node, null, reportSubs, reportContextName,
+						InferenceTypes.FORWARD, -1);
+				outgoingChannels.addChannel(newChannel);
+				node.receiveReport(newChannel);
+			}
+		}
+
+	}
+
+	protected void sendReports(List<Match> list, ReportSet reports) {
+		for (Match match : list) {
+			for (Report report : reports) {
+				Substitutions reportSubs = report.getSubstitutions();
+				Set<Support> reportSuppSet = report.getSupports();
+				Node sentTo = match.getNode();
+				boolean reportSign = report.getSign();
+				String reportContextName = report.getContextName();
+				int matchType = match.getMatchType();
+				Channel newChannel = establishChannel(ChannelTypes.MATCHED, sentTo, null, reportSubs, reportContextName,
+						InferenceTypes.FORWARD, matchType);
+				outgoingChannels.addChannel(newChannel);
+				sentTo.receiveReport(newChannel);
+			}
+		}
 	}
 
 	/***
@@ -91,6 +124,8 @@ public class PropositionNode extends Node implements Serializable {
 	 * @param filterSubs     constraints substitutions for a specific request
 	 * @param contextId      context name used
 	 * @param inferenceType  inference type used for this process
+	 * @param matchType      int representing the match Type. -1 if not a matching
+	 *                       node scenario
 	 * @return the established type based channel
 	 */
 	protected Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
@@ -143,9 +178,9 @@ public class PropositionNode extends Node implements Serializable {
 	 * @param currentChannel
 	 */
 	public void processSingleReportsChannel(Channel currentChannel) {
-
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
+
 			Substitutions reportSubs = currentReport.getSubstitutions();
 			Set<Support> reportSupportSet = currentReport.getSupports();
 			boolean reportSign = currentReport.isPositive();
@@ -153,8 +188,8 @@ public class PropositionNode extends Node implements Serializable {
 			boolean toBeSentFlag = true;
 			if (currentChannel instanceof MatchChannel) {
 				int channelMatchType = ((MatchChannel) currentChannel).getMatchType();
-				reportSign = channelMatchType == 2 ? !reportSign : reportSign;
-				toBeSentFlag = (channelMatchType != 1) || reportSign;
+				toBeSentFlag = (channelMatchType == 0) || (channelMatchType == 1 && currentReport.isPositive())
+						|| (channelMatchType == 2 && currentReport.isNegative());
 			}
 			Report alteredReport = new Report(reportSubs, reportSupportSet, reportSign, reportContextName);
 			if (knownInstances.contains(alteredReport))
@@ -163,8 +198,17 @@ public class PropositionNode extends Node implements Serializable {
 				broadcastReport(alteredReport);
 			currentChannel.clearReportsBuffer();
 		}
+		/* Handling forward inference broadcasting */
+		if (currentChannel.getInferenceType() == InferenceTypes.FORWARD) {
+			List<Match> matchesReturned = Matcher.match(this);
+			if (matchesReturned != null)
+				sendReports(matchesReturned, reports);
+			NodeSet isAntecedentTo = getDominatingRules();
+			sendReports(isAntecedentTo, reports, ChannelTypes.RuleAnt);
+		}
 		currentChannel.clearReportsBuffer();
 	}
+
 	// PROCESS REPORT : 3adi -> , forward
 	// -> same as 3adi , plus matching to send and get the nodes el howa lihom
 	// antecedents we send reports
@@ -199,14 +243,12 @@ public class PropositionNode extends Node implements Serializable {
 			broadcastReport(reply);
 		} else {
 			boolean sentAtLeastOne = false;
-			for (Report currentReport : knownInstances) {
+			for (Report currentReport : knownInstances)
 				sentAtLeastOne |= sendReport(currentReport, currentChannel);
-			}
-			Substitutions switchSubs = currentChannel.getSwitch().getSubstitutions();
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 			if (!sentAtLeastOne || isWhQuestion(filterSubs)) {
 				NodeSet dominatingRules = getDominatingRules();
-				NodeSet workingNodes = dominatingRules.alreadyWorking(currentChannel, false);
+				NodeSet workingNodes = alreadyWorking(dominatingRules, currentChannel, false);
 				NodeSet toBeSentTo = dominatingRules.difference(workingNodes);
 				sendRequests(toBeSentTo, new LinearSubstitutions(), currentContextName, ChannelTypes.RuleAnt,
 						currentChannel.getInferenceType());
@@ -302,6 +344,40 @@ public class PropositionNode extends Node implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+
+	/***
+	 * Method comparing opened incoming channels over each node of the nodes whether
+	 * a more generic request of the specified channel was previously sent in order
+	 * not to re-send redundant requests -- ruleType gets applied on Andor or Thresh
+	 * part. -- PropositionNode we static
+	 * 
+	 * @param node    set on which we will check existing request
+	 * @param channel current channel handling the current request
+	 * @return NodeSet containing all nodes previously requesting the subset of the
+	 *         specified channel request
+	 */
+	public static NodeSet alreadyWorking(NodeSet nodes, Channel channel, boolean ruleType) {
+		NodeSet nodesToNeglect = new NodeSet();
+		for (Node sourceNode : nodes)
+			if (sourceNode instanceof PropositionNode) {
+				Substitutions currentChannelFilterSubs = channel.getFilter().getSubstitutions();
+				ChannelSet incomingChannels = ((PropositionNode) sourceNode).getOutgoingChannels();
+				ChannelSet filteredChannelsSet = incomingChannels.getFilteredRequestChannels(true);
+				boolean conditionMet = ruleType && sourceNode == channel.getRequester();
+				if (!conditionMet) {
+					for (Channel incomingChannel : filteredChannelsSet) {
+						Substitutions processedChannelFilterSubs = incomingChannel.getFilter().getSubstitutions();
+						conditionMet |= processedChannelFilterSubs.isSubSet(currentChannelFilterSubs)
+								&& incomingChannel.getRequester() == channel.getReporter();
+						if (conditionMet) {
+							nodesToNeglect.addNode(sourceNode);
+							break;
+						}
+					}
+				}
+			}
+		return nodesToNeglect;
 	}
 
 	public Support getBasicSupport() {

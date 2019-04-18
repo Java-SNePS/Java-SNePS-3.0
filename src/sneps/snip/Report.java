@@ -5,7 +5,6 @@ import java.util.Set;
 import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
-/*add type of inference*/
 public class Report {
 	private Substitutions substitution;
 	private Set<Support> supports;

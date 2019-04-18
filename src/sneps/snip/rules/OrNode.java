@@ -35,7 +35,7 @@ public class OrNode extends RuleNode {
 			Report reply = new Report(report.getSubstitutions(), sup, true, report.getContextName());
 			
 			for (Channel outChannel : outgoingChannels)
-				outChannel.testReportToAdd(reply);
+				outChannel.testReportToSend(reply);
 			
 		}
 		
