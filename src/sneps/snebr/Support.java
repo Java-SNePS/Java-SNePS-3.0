@@ -21,7 +21,7 @@ public class Support implements Serializable{
 	private int id;
 	private Hashtable<String, PropositionSet> justificationSupport;
 	private Hashtable<String, PropositionSet> assumptionBasedSupport;
-	private Hashtable<String, ArrayList<PropositionSet>> telescopedSupport;
+	private Hashtable<String, PropositionSet> telescopedSupport;
 	private ArrayList<ArrayList<ArrayList<Integer>>> mySupportsTree;
 	private ArrayList<ArrayList<Integer>> intialTreeSet;
 	private ArrayList<Integer> parentNodes;
@@ -44,7 +44,7 @@ public class Support implements Serializable{
 		this.id = id;
 		assumptionBasedSupport = new Hashtable<String, PropositionSet>();
 		justificationSupport = new Hashtable<String, PropositionSet>();
-		telescopedSupport = new Hashtable<String, ArrayList<PropositionSet>>();
+		telescopedSupport = new Hashtable<String, PropositionSet>();
 		mySupportsTree = new ArrayList<ArrayList<ArrayList<Integer>>>();
 		intialTreeSet = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> intialTree = new ArrayList<Integer>();
@@ -71,8 +71,7 @@ public class Support implements Serializable{
      *
      * @return a Hashtable containing the sets representing the telescoped supports of this node.
      */
-	public Hashtable<String, ArrayList<PropositionSet>> getTelescopedSupport() 
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException 
+	public Hashtable<String, PropositionSet> getTelescopedSupport() 
 	{
 		return telescopedSupport;
 	}
@@ -172,30 +171,27 @@ public class Support implements Serializable{
 	 * of a proposition node, and it's telescoped set at the current level.
 	 * if the justifictionSupport hashtable contains the direct support then the telescoped 
 	 * set is added in the telescopedSupport, if not then it can't be added.  
-	 * if the hash key already exists in the telescopedSupport hashtable then it means that
-	 * it's not the first level of telescoping, so the new set is just added to the ArrayList
-	 * in which the index represents the telescoping level. 
+	 * if the hash key already exists in the telescopedSupport then it's replaced with the 
+	 * new telescoped set which will contain more elements in the list due to the telescoping levels
      *
      * @param propSet represents the new support of a node.
      * @param telescopedSet represents the telescoped support at the current level.
      */
-	public void addTelescopedSupport(PropositionSet propSet, PropositionSet telescopedSet) {
+	public void addTelescopedSupport(PropositionSet propSet, PropositionSet telescopedSet) 
+			throws NodeNotFoundInPropSetException, NotAPropositionNodeException, 
+			NodeNotFoundInNetworkException {
 		
 		String hash = propSet.getHash();
 		if (justificationSupport.containsKey(hash)) 
 		{
 			if(telescopedSupport.containsKey(hash)) 
 			{
-				ArrayList<PropositionSet> teleList = telescopedSupport.get(hash);
-				teleList.add(telescopedSet);
-				telescopedSupport.replace(hash, teleList);
+				telescopedSupport.replace(hash, telescopedSet);
 			}
 			
 			else 
 			{
-				ArrayList<PropositionSet> teleList = new ArrayList<PropositionSet>();
-				teleList.add(telescopedSet);
-				telescopedSupport.put(hash, teleList);
+				telescopedSupport.put(hash, telescopedSet);
 			}
 		}
 	}
@@ -446,7 +442,7 @@ public class Support implements Serializable{
 	 * Tells whether this proposition node is a hypothesis and user asserted, or this proposition node is a derived node.
 	 * @return boolean
 	 */
-	private boolean isHyp() {
+	public boolean isHyp() {
 		return isHyp;
 	}
 	
@@ -604,12 +600,14 @@ public class Support implements Serializable{
 			n8.addJustificationBasedSupport(s5);
 	
 			n3.addJustificationBasedSupport(s4);
-		
-			n0.addJustificationBasedSupport(s6);
 			
 			n0.addJustificationBasedSupport(s1);
+
+			n0.addJustificationBasedSupport(s6);
+			
 			
 			n0.addTelescopedSupport(s1, s4);
+			
 			n0.addTelescopedSupport(s6, s5);
 			
 			
@@ -631,9 +629,10 @@ public class Support implements Serializable{
 			System.out.println(mySupportsTree.toString());
 			System.out.println(n0.getTelescopedSupport().toString());
 			System.out.println(n0.toString());
-			n0.removeNodeFromSupports(n1);
+			n0.removeNodeFromSupports(n2);
 			System.out.println(n0.toString());
 			System.out.println(n0.getTelescopedSupport().toString());
+			
 	}
 
 	

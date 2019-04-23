@@ -222,7 +222,7 @@ public class PropositionNode extends Node implements Serializable{
 		return basicSupport.getAssumptionBasedSupport();
 		
 	}
-	public Hashtable<String, ArrayList<PropositionSet>> getTelescopedSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public Hashtable<String, PropositionSet> getTelescopedSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		return basicSupport.getTelescopedSupport();
 	}
 	public Hashtable<String, PropositionSet> getJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
@@ -231,7 +231,7 @@ public class PropositionNode extends Node implements Serializable{
 	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
-	public void addTelescopedSupport(PropositionSet propSet, PropositionSet telescopedSet) {
+	public void addTelescopedSupport(PropositionSet propSet, PropositionSet telescopedSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		basicSupport.addTelescopedSupport(propSet, telescopedSet);
 	}
 	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
@@ -264,5 +264,8 @@ public class PropositionNode extends Node implements Serializable{
 
 	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		basicSupport.setHyp(isHyp);
+	}
+	public boolean isHyp() {
+		return basicSupport.isHyp();
 	}
 }
