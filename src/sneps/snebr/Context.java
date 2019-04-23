@@ -2,12 +2,14 @@ package sneps.snebr;
 
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
@@ -16,14 +18,18 @@ import java.util.HashSet;
 
 public class Context implements Serializable{
     private PropositionSet hyps;
+    
+    private ArrayList<PropositionSet> telescopedSet;
 
     private HashSet<String> names;
+    
+    private BitSet hypsBitset;
+
+    private ArrayList<BitSet> telescopedBitset;
 
     protected BitSet getHypsBitset() {
         return hypsBitset;
     }
-
-    private BitSet hypsBitset;
 
     /**
      * Constructs a new empty Context
@@ -32,6 +38,8 @@ public class Context implements Serializable{
         names = new HashSet<String>();
         this.hyps = new PropositionSet();
         this.hypsBitset = new BitSet();
+        this.telescopedSet = new ArrayList<PropositionSet>();
+        this.telescopedBitset = new ArrayList<BitSet>();
     }
 
     /**
@@ -53,6 +61,8 @@ public class Context implements Serializable{
         this.hyps = c.getHypothesisSet();
         this.names = c.getNames();
         this.hypsBitset = c.getHypsBitset();
+        this.telescopedSet = c.getTelescopedSet();
+        this.telescopedBitset = c.getTelescopedBitset();
     }
 
     /**
@@ -63,11 +73,14 @@ public class Context implements Serializable{
      * @throws DuplicatePropositionException  if the hyp is present in the context c
      * @throws NodeNotFoundInNetworkException
      */
-    protected Context(Context c, int hyp) throws NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException {
+    protected Context(Context c, int hyp) throws NotAPropositionNodeException, 
+    DuplicatePropositionException, NodeNotFoundInNetworkException {
         this.names = c.getNames();
         this.hyps = c.getHypothesisSet().add(hyp);
         this.hypsBitset = (BitSet) c.getHypsBitset().clone();
         this.hypsBitset.set(hyp);
+        this.telescopedSet = c.getTelescopedSet();
+        this.telescopedBitset = c.getTelescopedBitset();
     }
 
     /**
@@ -82,18 +95,22 @@ public class Context implements Serializable{
     }
 
     /**
-     * Constructs a new Context using its name and sets the Context's hyps to a passed Proposition set <i>hyps</i>.
+     * Constructs a new Context using its name and sets the Context's hyps to a passed Proposition set 
+     * <i>hyps</i>.
      *
      * @param contextName name of the new Context
      * @param hyps        the hyps the Context's hyps should be set to
      */
-    protected Context(String contextName, PropositionSet hyps) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    protected Context(String contextName, PropositionSet hyps) throws NotAPropositionNodeException, 
+    NodeNotFoundInNetworkException {
         this(contextName);
         this.hyps = hyps;
         this.hypsBitset = new BitSet();
         int [] arr = PropositionSet.getPropsSafely(this.hyps);
         for (int i = 0; i < arr.length; i++)
             this.hypsBitset.set(arr[i]);
+        this.telescopedSet = new ArrayList<PropositionSet>();
+        this.telescopedBitset = new ArrayList<BitSet>();
     }
 
     /**
@@ -103,6 +120,14 @@ public class Context implements Serializable{
      */
     public PropositionSet getHypothesisSet() {
         return hyps;
+    }
+    
+    protected ArrayList<BitSet> getTelescopedBitset() {
+        return telescopedBitset;
+    }
+    
+    public ArrayList<PropositionSet> getTelescopedSet() {
+        return telescopedSet;
     }
 
     /**
@@ -117,6 +142,16 @@ public class Context implements Serializable{
     public String getName() {
         return null;
     }
+    
+    public void addTelescopedPropsToContext(PropositionSet telescopedSet) 
+			throws NotAPropositionNodeException, 
+			NodeNotFoundInNetworkException {
+    	
+    	this.telescopedSet.add(telescopedSet);
+	    int [] arr = PropositionSet.getPropsSafely(this.telescopedSet.get(this.telescopedSet.size()-1));
+	    for (int i = 0; i < arr.length; i++)
+	    	this.telescopedBitset.get(this.telescopedSet.size()-1).set(arr[i]);
+	}
 
     /**
      * Checks if a propositions is asserted in this context
@@ -126,20 +161,33 @@ public class Context implements Serializable{
      * @throws NotAPropositionNodeException   If the node p is not a proposition.
      * @throws NodeNotFoundInNetworkException If the node p doesn't exist in the network.
      */
-    public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, 
+    NodeNotFoundInNetworkException {
         int hyp = p.getId();
 
         return Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) > 0
                 || isSupported(p);
     }
-
+    
     public boolean isSupported(PropositionNode node) {
+    	return isSupported(node, 0);
+    }
+
+    public boolean isSupported(PropositionNode node, int level) {
         Collection<PropositionSet> assumptionSet = node.getBasicSupport()
                 .getAssumptionBasedSupport()
                 .values();
         for (PropositionSet assumptionHyps : assumptionSet) {
             if (assumptionHyps.isSubSet(this.hyps)) {
-                return true;
+            	if(level == 0)
+                	return true;
+            	PropositionSet telescopedSet = node.getBasicSupport()
+                        .getTelescopedSupport().get(assumptionHyps.getHash());
+            	if(this.telescopedSet.size() >= level && level > 0) {
+            		if (telescopedSet.isSubSet(this.telescopedSet.get(level-1))||telescopedSet.isEmpty()) {
+            			return true;
+            		}
+            	}
             }
         }
         return false;
@@ -160,6 +208,7 @@ public class Context implements Serializable{
 
         return asserted;
     }
+    
 
     /**
      * Adds a name to the set of names of the context if not a duplicate.
