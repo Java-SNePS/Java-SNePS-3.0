@@ -2,6 +2,7 @@ package sneps.snip.matching;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
+import sneps.network.classes.setClasses.VariableSet;
 
 public interface Substitutions {
 
@@ -65,6 +66,6 @@ public interface Substitutions {
 
 	public void insertOrUpdate(Binding mb);
 
-	public boolean areVariablesBound();
+	public boolean eachBound(VariableSet freeVariables);
 
 }

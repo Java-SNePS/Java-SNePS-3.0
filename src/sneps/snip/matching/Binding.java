@@ -23,7 +23,7 @@ public class Binding {
 	 * 
 	 * @return variable
 	 */
-	public VariableNode getVariable() {
+	public VariableNode getVariableNode() {
 		return variable;
 	}
 
@@ -43,7 +43,7 @@ public class Binding {
 	 * @return true if equal false otherwise
 	 */
 	public boolean isEqual(Binding binding) {
-		if (this.getNode() == binding.getNode() && this.getVariable() == binding.getVariable())
+		if (this.getNode() == binding.getNode() && this.getVariableNode() == binding.getVariableNode())
 			return true;
 		return false;
 	}

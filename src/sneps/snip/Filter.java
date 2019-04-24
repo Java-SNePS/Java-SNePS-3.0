@@ -31,7 +31,7 @@ public class Filter {
 		for (int i = 0; i < this.substitutions.cardinality(); i++) {
 			Binding currentFilterBinding = substitutions.getBinding(i);
 			Binding currentReportBinding = report.getSubstitutions()
-					.getBindingByVariable(currentFilterBinding.getVariable());
+					.getBindingByVariable(currentFilterBinding.getVariableNode());
 			System.out.println("Bindings " + currentFilterBinding + " " + report.getSubstitutions());
 			if (currentReportBinding != null && currentFilterBinding.getNode() != currentReportBinding.getNode())
 				return false;

@@ -219,10 +219,12 @@ public class Node implements Serializable {
 	 * Every variable that occurs free in the rule matches ma3 an element fel filter
 	 * substitutions
 	 */
-	public boolean areAllVariablesConstants(Substitutions switchSubs, Substitutions filterSubs) {
-		int switchCardn = switchSubs.cardinality();
-		int filterCardn = filterSubs.cardinality();
-		return switchCardn > 0 && filterCardn == switchCardn;
+	public boolean areAllVariablesConstants(Substitutions filterSubs) {
+		VariableSet freeVariables = new VariableSet();
+		if (term instanceof Open)
+			freeVariables = ((Open) term).getFreeVariables();
+		return filterSubs.eachBound(freeVariables);
+
 	}
 
 	Context fake() {

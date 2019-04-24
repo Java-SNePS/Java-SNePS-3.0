@@ -26,8 +26,8 @@ public class Switch {
 
 	public void switchReport(Report r) {
 		for (int i = 0; i < this.substitutions.cardinality(); i++) {
-			Binding b = r.getSubstitutions().getBindingByVariable(this.substitutions.getBinding(i).getVariable());
-			System.out.println(this.substitutions.getBinding(i).getVariable());
+			Binding b = r.getSubstitutions().getBindingByVariable(this.substitutions.getBinding(i).getVariableNode());
+			System.out.println(this.substitutions.getBinding(i).getVariableNode());
 			System.out.println("i: " + i + " binding: " + b);
 			if (b != null) {
 				b.setVariable((VariableNode) this.substitutions.getBinding(i).getNode());

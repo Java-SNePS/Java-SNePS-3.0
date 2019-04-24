@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import sneps.network.Node;
 import sneps.network.VariableNode;
+import sneps.network.classes.setClasses.VariableSet;
+import sneps.network.classes.term.Variable;
 
 public class LinearSubstitutions implements Substitutions {
 	private Vector<Binding> sub;
@@ -67,7 +69,7 @@ public class LinearSubstitutions implements Substitutions {
 	 */
 	public boolean isBound(VariableNode mv) {
 		for (int i = 0; i < sub.size(); i++) {
-			if (sub.get(i).getVariable() == mv) {
+			if (sub.get(i).getVariableNode() == mv) {
 				return true;
 			}
 		}
@@ -99,7 +101,7 @@ public class LinearSubstitutions implements Substitutions {
 	public VariableNode srcNode(Node mn) {
 		for (int i = 0; i < sub.size(); i++) {
 			if (sub.get(i).getNode() == mn) {
-				return sub.get(i).getVariable();
+				return sub.get(i).getVariableNode();
 			}
 		}
 		return null;
@@ -114,7 +116,7 @@ public class LinearSubstitutions implements Substitutions {
 	 */
 	public Binding getBindingByVariable(VariableNode mv) {
 		for (int i = 0; i < sub.size(); i++) {
-			if (sub.get(i).getVariable() == mv) {
+			if (sub.get(i).getVariableNode() == mv) {
 				return sub.get(i);
 			}
 		}
@@ -260,7 +262,7 @@ public class LinearSubstitutions implements Substitutions {
 	 */
 	public Node term(VariableNode mv) {
 		for (int i = 0; i < sub.size(); i++) {
-			if (sub.get(i).getVariable() == mv) {
+			if (sub.get(i).getVariableNode() == mv) {
 				return sub.get(i).getNode();
 			}
 		}
@@ -341,11 +343,11 @@ public class LinearSubstitutions implements Substitutions {
 		LinearSubstitutions sl = (LinearSubstitutions) s;
 		for (int i = 0; i < this.sub.size(); i++) {
 			for (int j = 0; j < sl.sub.size(); j++) {
-				if (sl.sub.get(j).getVariable() == this.sub.get(i).getVariable()) {
+				if (sl.sub.get(j).getVariableNode() == this.sub.get(i).getVariableNode()) {
 					if (sl.sub.get(j).getNode() != this.sub.get(i).getNode())
 						return false;
 				} else if (sl.sub.get(j).getNode() == this.sub.get(i).getNode())
-					if (sl.sub.get(j).getVariable() != this.sub.get(i).getVariable())
+					if (sl.sub.get(j).getVariableNode() != this.sub.get(i).getVariableNode())
 						return false;
 			}
 		}
@@ -427,7 +429,7 @@ public class LinearSubstitutions implements Substitutions {
 	public String toString() {
 		String res = "";
 		for (int i = 0; i < sub.size(); i++) {
-			res += sub.get(i).getNode().getIdentifier() + " substitutes " + sub.get(i).getVariable().getIdentifier()
+			res += sub.get(i).getNode().getIdentifier() + " substitutes " + sub.get(i).getVariableNode().getIdentifier()
 					+ '\n';
 		}
 		return res;
@@ -435,26 +437,39 @@ public class LinearSubstitutions implements Substitutions {
 
 	public int termID(int variableID) {
 		for (int i = 0; i < sub.size(); i++)
-			if (sub.get(i).getVariable().getId() == variableID)
+			if (sub.get(i).getVariableNode().getId() == variableID)
 				return sub.get(i).getNode().getId();
 		return -1;
 	}
 
 	@Override
 	public void insertOrUpdate(Binding mb) {
-		if (isBound(mb.getVariable()))
-			update(getBindingByVariable(mb.getVariable()), mb.getNode());
+		if (isBound(mb.getVariableNode()))
+			update(getBindingByVariable(mb.getVariableNode()), mb.getNode());
 		else
 			putIn(mb);
 
 	}
 
-	/***
+	/**
 	 * Method to iterate over all variables in the Vector<Variable> to check for
 	 * their bound status
 	 */
-	public boolean areVariablesBound() {
-		return isNew();
+	public boolean eachBound(VariableSet freeVariables) {
+		boolean condition = true;
+		for (Binding binding : sub) {
+			VariableSet bindingFreeVariables = binding.getVariableNode().getFreeVariables();
+			for (Variable bindVariable : bindingFreeVariables) {
+				
+			}
+			for (Variable variable : freeVariables) {
+
+				String variableIdentifier = variable.getIdentifier();
+
+			}
+		}
+		return condition;
+
 	}
 
 }

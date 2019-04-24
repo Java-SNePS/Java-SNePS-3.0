@@ -248,8 +248,7 @@ public class PropositionNode extends Node implements Serializable {
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 			if (!sentAtLeastOne || isWhQuestion(filterSubs)) {
 				NodeSet dominatingRules = getDominatingRules();
-				NodeSet workingNodes = alreadyWorking(dominatingRules, currentChannel, false);
-				NodeSet toBeSentTo = dominatingRules.difference(workingNodes);
+				NodeSet toBeSentTo = alreadyWorking(dominatingRules, currentChannel, false);
 				sendRequests(toBeSentTo, new LinearSubstitutions(), currentContextName, ChannelTypes.RuleAnt,
 						currentChannel.getInferenceType());
 				if (!(currentChannel instanceof MatchChannel)) // was in !alreadyWorking if condition
@@ -350,34 +349,35 @@ public class PropositionNode extends Node implements Serializable {
 	 * Method comparing opened incoming channels over each node of the nodes whether
 	 * a more generic request of the specified channel was previously sent in order
 	 * not to re-send redundant requests -- ruleType gets applied on Andor or Thresh
-	 * part. -- PropositionNode we static
+	 * part.
 	 * 
 	 * @param node    set on which we will check existing request
 	 * @param channel current channel handling the current request
-	 * @return NodeSet containing all nodes previously requesting the subset of the
-	 *         specified channel request
+	 * @return NodeSet containing all nodes that has not previously requested the
+	 *         subset of the specified channel request
 	 */
 	public static NodeSet alreadyWorking(NodeSet nodes, Channel channel, boolean ruleType) {
-		NodeSet nodesToNeglect = new NodeSet();
+		NodeSet nodesToConsider = new NodeSet();
 		for (Node sourceNode : nodes)
 			if (sourceNode instanceof PropositionNode) {
-				Substitutions currentChannelFilterSubs = channel.getFilter().getSubstitutions();
-				ChannelSet incomingChannels = ((PropositionNode) sourceNode).getOutgoingChannels();
-				ChannelSet filteredChannelsSet = incomingChannels.getFilteredRequestChannels(true);
 				boolean conditionMet = ruleType && sourceNode == channel.getRequester();
 				if (!conditionMet) {
-					for (Channel incomingChannel : filteredChannelsSet) {
-						Substitutions processedChannelFilterSubs = incomingChannel.getFilter().getSubstitutions();
-						conditionMet |= processedChannelFilterSubs.isSubSet(currentChannelFilterSubs)
-								&& incomingChannel.getRequester() == channel.getReporter();
+					conditionMet = true;
+					Substitutions currentChannelFilterSubs = channel.getFilter().getSubstitutions();
+					ChannelSet outgoingChannels = ((PropositionNode) sourceNode).getOutgoingChannels();
+					ChannelSet filteredChannelsSet = outgoingChannels.getFilteredRequestChannels(true);
+					for (Channel outgoingChannel : filteredChannelsSet) {
+						Substitutions processedChannelFilterSubs = outgoingChannel.getFilter().getSubstitutions();
+						conditionMet &= !processedChannelFilterSubs.isSubSet(currentChannelFilterSubs)
+								&& outgoingChannel.getRequester() == channel.getReporter();
 						if (conditionMet) {
-							nodesToNeglect.addNode(sourceNode);
+							nodesToConsider.addNode(sourceNode);
 							break;
 						}
 					}
 				}
 			}
-		return nodesToNeglect;
+		return nodesToConsider;
 	}
 
 	public Support getBasicSupport() {

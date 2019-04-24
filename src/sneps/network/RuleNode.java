@@ -34,6 +34,8 @@ import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
+import sneps.snip.rules.AndOrNode;
+import sneps.snip.rules.ThreshNode;
 
 public abstract class RuleNode extends PropositionNode implements Serializable {
 
@@ -269,6 +271,14 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			}
 	}
 
+	public void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel) {
+		NodeSet antecedentNodeSet = getDownAntNodeSet();
+		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
+		NodeSet toBeSentTo = alreadyWorking(antecedentNodeSet, currentChannel, ruleType);
+		sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(), currentChannel.getContextName(),
+				ChannelTypes.RuleAnt, currentChannel.getInferenceType());
+	}
+
 	/***
 	 * Request handling in Rule proposition nodes.
 	 * 
@@ -284,52 +294,43 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			String currentContextName = currentChannel.getContextName();
 			Context currentContext = Controller.getContextByName(currentContextName);
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
-			Substitutions switchSubs = currentChannel.getSwitch().getSubstitutions();
 			if (closedTypeTerm) {
 				if (assertedInContext(currentContext)) {
-					NodeSet antecedentNodeSet = getDownAntNodeSet();
-					/*
-					 * fel rule node haguib el incoming channels we hastore ay haga ba3atlha request
-					 * el filter beta3o subset lel request el ana baservo, we hashil el list dih men
-					 * el antecdents
-					 * 
-					 * ghayar el logic we hat el tosend 3alatoul
-					 */
-					NodeSet neglectingNodes = alreadyWorking(antecedentNodeSet, currentChannel, true);
-					NodeSet toBeSentTo = antecedentNodeSet.difference(neglectingNodes);
-					sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
-							currentChannel.getContextName(), ChannelTypes.RuleAnt, currentChannel.getInferenceType());
+					requestAntecedentsNotAlreadyWorkingOn(currentChannel);
 					return;
 				} else {
-					super.processSingleRequestsChannel(currentChannel)
+					super.processSingleRequestsChannel(currentChannel);
 				}
 			} else {
 				// TODO Akram: there are free variables but each is bound; check filter beta3 el
 				// channel law empty
 				ReportSet knownReportSet = knownInstances;
-				
 				for (Report report : knownReportSet) {
 					Substitutions reportSubstitutions = report.getSubstitutions();
-					if (filterSubs.isSubSet(reportSubstitutions) && true /*atleast support of the report is asserted in the context*/) {
-						
-						/*men antecedents lel rule*/
+					if (filterSubs.isSubSet(reportSubstitutions)
+							&& true /* atleast support of the report is asserted in the context */) {
+
+						/* men antecedents lel rule */
 //Case 1: asserted same logic law kolo constants 
-						//getNodesToSendRequests(ChannelTypes.RuleAnt, currentContextName, null,
-							//	currentChannel.getInferenceType());
-						if (areAllVariablesConstants(switchSubs, filterSubs))
+						// getNodesToSendRequests(ChannelTypes.RuleAnt, currentContextName, null,
+						// currentChannel.getInferenceType());
+						if (areAllVariablesConstants(filterSubs)) {
+							requestAntecedentsNotAlreadyWorkingOn(currentChannel);
 							return;
-						else {
-						
-							// Case 3: fih one free variale le kol instance hab3at lel antecedents request bel filter beta3 each istance while checking if alreadyWorking on it, we call super.proccessSingle
+						} else {
+
+							// Case 3: fih one free variale le kol instance hab3at lel antecedents request
+							// bel filter beta3 each istance while checking if alreadyWorking on it, we call
+							// super.proccessSingle
 							break;
 						}
 					} else {
-						
+
 					}
 				}
 			}
 		} else
-		 super.processSingleRequestsChannel(currentChannel);
+			super.processSingleRequestsChannel(currentChannel);
 
 	}
 
