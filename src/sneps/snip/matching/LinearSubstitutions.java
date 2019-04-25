@@ -6,6 +6,7 @@ import sneps.network.Node;
 import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.VariableSet;
 import sneps.network.classes.term.Variable;
+import sneps.snip.classes.VariableNodeStats;
 
 public class LinearSubstitutions implements Substitutions {
 	private Vector<Binding> sub;
@@ -451,24 +452,29 @@ public class LinearSubstitutions implements Substitutions {
 
 	}
 
-	/**
-	 * Method to iterate over all variables in the Vector<Variable> to check for
-	 * their bound status
+	/***
+	 * Method checking the freeVariables Set making sure each has a compatible
+	 * Binding in the instance Vector<Binding>
+	 * 
+	 * @param freeVariables VariableSet
+	 * 
+	 * @return VariableNodeStats
 	 */
-	public boolean eachBound(VariableSet freeVariables) {
-		boolean condition = true;
+	public VariableNodeStats extractBoundStatus(VariableSet freeVariables) {
+		boolean forAllCondition = true;
+		Vector<Binding> extractedFilterRelevantToVariables = new Vector<Binding>();
 		for (Binding binding : sub) {
-			VariableSet bindingFreeVariables = binding.getVariableNode().getFreeVariables();
-			for (Variable bindVariable : bindingFreeVariables) {
-				
-			}
+			VariableNode bindingVariableNode = binding.getVariableNode();
+			boolean bindingFound = false;
 			for (Variable variable : freeVariables) {
-
-				String variableIdentifier = variable.getIdentifier();
-
+				Variable bindingVariable = (Variable) bindingVariableNode.getTerm();
+				bindingFound |= variable.equals(bindingVariable);
 			}
+			if (bindingFound)
+				extractedFilterRelevantToVariables.add(binding);
+			forAllCondition &= bindingFound;
 		}
-		return condition;
+		return new VariableNodeStats(forAllCondition, extractedFilterRelevantToVariables, this);
 
 	}
 

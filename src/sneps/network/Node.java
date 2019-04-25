@@ -23,6 +23,7 @@ import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
 import sneps.snip.channels.MatchChannel;
 import sneps.snip.channels.RuleToConsequentChannel;
+import sneps.snip.classes.VariableNodeStats;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
@@ -208,6 +209,7 @@ public class Node implements Serializable {
 	public boolean isWhQuestion(Substitutions filterSubs) {
 		if (!(this instanceof VariableNode))
 			return false;
+		/* change sizes check as they are no longer important */.IMP.
 		VariableNode node = (VariableNode) this;
 		VariableSet variables = node.getFreeVariables();
 		int variablesCardn = variables.size();
@@ -215,15 +217,25 @@ public class Node implements Serializable {
 		return filterCardn < variablesCardn;
 	}
 
-	/*
-	 * Every variable that occurs free in the rule matches ma3 an element fel filter
-	 * substitutions
+	/***
+	 * Method computing an output of VariableNodeStats containing info about a
+	 * certain node with variables by checking the input Substitutions and comparing
+	 * them with the instance freeVariables, stating whether over a given
+	 * substitutions the node will have all its freeVariables bound and also
+	 * filtering the input substitutions to match the free variables (not including
+	 * extra irrelevant filters)
+	 * 
+	 * @param filterSubs Substitutions the given substitutions on which bindings
+	 *                   check will occur
+	 * @return VariableNodeStats
 	 */
-	public boolean areAllVariablesConstants(Substitutions filterSubs) {
+	public VariableNodeStats computeNodeStats(Substitutions filterSubs) {
 		VariableSet freeVariables = new VariableSet();
 		if (term instanceof Open)
 			freeVariables = ((Open) term).getFreeVariables();
-		return filterSubs.eachBound(freeVariables);
+		VariableNodeStats toBeReturned = filterSubs.extractBoundStatus(freeVariables);
+		toBeReturned.setNodeId(id);
+		return toBeReturned;
 
 	}
 

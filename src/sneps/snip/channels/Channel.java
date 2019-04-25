@@ -46,6 +46,7 @@ public abstract class Channel {
 	public boolean testReportToSend(Report report) {
 		boolean passTest = filter.canPass(report);
 		System.out.println("Can pass " + passTest);
+		.passTest. /*Test the context name if it will pass or not*/
 		if (passTest && contextName.equals(report.getContextName())) {
 			System.out.println("\n\nThe switcher data:\n" + switcher);
 			switcher.switchReport(report);

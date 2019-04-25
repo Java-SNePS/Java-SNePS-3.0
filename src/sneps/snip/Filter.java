@@ -1,5 +1,6 @@
 package sneps.snip;
 
+import sneps.network.VariableNode;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
@@ -28,10 +29,10 @@ public class Filter {
 	}
 
 	public boolean canPass(Report report) {
-		for (int i = 0; i < this.substitutions.cardinality(); i++) {
+		for (int i = 0; i < substitutions.cardinality(); i++) {
 			Binding currentFilterBinding = substitutions.getBinding(i);
-			Binding currentReportBinding = report.getSubstitutions()
-					.getBindingByVariable(currentFilterBinding.getVariableNode());
+			VariableNode currentFilterVariableNode = currentFilterBinding.getVariableNode();
+			Binding currentReportBinding = report.getSubstitutions().getBindingByVariable(currentFilterVariableNode);
 			System.out.println("Bindings " + currentFilterBinding + " " + report.getSubstitutions());
 			if (currentReportBinding != null && currentFilterBinding.getNode() != currentReportBinding.getNode())
 				return false;

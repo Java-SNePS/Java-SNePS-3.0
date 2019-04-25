@@ -3,6 +3,7 @@ package sneps.snip.matching;
 import sneps.network.Node;
 import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.VariableSet;
+import sneps.snip.classes.VariableNodeStats;
 
 public interface Substitutions {
 
@@ -66,6 +67,6 @@ public interface Substitutions {
 
 	public void insertOrUpdate(Binding mb);
 
-	public boolean eachBound(VariableSet freeVariables);
+	public VariableNodeStats extractBoundStatus(VariableSet freeVariables);
 
 }

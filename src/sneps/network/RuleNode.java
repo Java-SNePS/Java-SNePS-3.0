@@ -1,9 +1,11 @@
 package sneps.network;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.Vector;
 
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -32,6 +34,8 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
+import sneps.snip.classes.VariableNodeStats;
+import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 import sneps.snip.rules.AndOrNode;
@@ -279,6 +283,35 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				ChannelTypes.RuleAnt, currentChannel.getInferenceType());
 	}
 
+	/* Check error in COntext */
+//	public boolean anySupportAssertedInContext(Report report)
+//			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+//		String reportContextName = report.getContextName();
+//		Set<Support> reportSupports = report.getSupports();
+//		for (Support support : reportSupports) {
+//			int supportId = support.getId();
+//			PropositionNode supportNode = (PropositionNode) Network.getNodeById(supportId);
+//			if (supportNode.assertedInContext(reportContextName))
+//				return true;
+//		}
+//		return false;
+//	}
+
+	public boolean anySupportAssertedInContext(Report report)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		String reportContextName = report.getContextName();
+		Context reportContext = Controller.getContextByName(reportContextName);
+		Hashtable<String, PropositionSet> reportSupports = report.getSupports();
+		PropositionSet contextHypothesisSet = reportContext.getHypothesisSet();
+		Collection<PropositionSet> reportSupportsSet = reportSupports.values();
+		for (PropositionSet assumptionHyps : reportSupportsSet) {
+			if (assumptionHyps.isSubSet(contextHypothesisSet)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/***
 	 * Request handling in Rule proposition nodes.
 	 * 
@@ -295,6 +328,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			Context currentContext = Controller.getContextByName(currentContextName);
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 			if (closedTypeTerm) {
+				/* Case 1 */
 				if (assertedInContext(currentContext)) {
 					requestAntecedentsNotAlreadyWorkingOn(currentChannel);
 					return;
@@ -302,33 +336,34 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 					super.processSingleRequestsChannel(currentChannel);
 				}
 			} else {
-				// TODO Akram: there are free variables but each is bound; check filter beta3 el
-				// channel law empty
-				ReportSet knownReportSet = knownInstances;
-				for (Report report : knownReportSet) {
-					Substitutions reportSubstitutions = report.getSubstitutions();
-					if (filterSubs.isSubSet(reportSubstitutions)
-							&& true /* atleast support of the report is asserted in the context */) {
-
-						/* men antecedents lel rule */
-//Case 1: asserted same logic law kolo constants 
-						// getNodesToSendRequests(ChannelTypes.RuleAnt, currentContextName, null,
-						// currentChannel.getInferenceType());
-						if (areAllVariablesConstants(filterSubs)) {
+				VariableNodeStats ruleNodeStats = computeNodeStats(filterSubs);
+				boolean ruleNodeAllVariablesBound = ruleNodeStats.areAllVariablesBound();
+				Vector<Binding> ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
+				if (ruleNodeAllVariablesBound) {
+					/* Case 2 */
+					ReportSet knownReportSet = knownInstances;
+					for (Report report : knownReportSet) {
+						Substitutions reportSubstitutions = report.getSubstitutions();
+						VariableNodeStats reportNodeStats = computeNodeStats(reportSubstitutions);
+						Vector<Binding> reportNodeExtractedSubs = reportNodeStats.getVariableNodeSubs();
+						if (ruleNodeExtractedSubs.size() == reportNodeExtractedSubs.size()
+								&& anySupportAssertedInContext(report)) {
 							requestAntecedentsNotAlreadyWorkingOn(currentChannel);
 							return;
-						} else {
-
-							// Case 3: fih one free variale le kol instance hab3at lel antecedents request
-							// bel filter beta3 each istance while checking if alreadyWorking on it, we call
-							// super.proccessSingle
-							break;
 						}
-					} else {
-
 					}
+					super.processSingleRequestsChannel(currentChannel);
+					return;
+				} else {
+					/* Case 3 */
+					// Case 3: fih one free variale le kol instance hab3at lel antecedents request
+					// bel filter beta3 each istance while checking if alreadyWorking on it, we call
+					// super.proccessSingle
+					super.processSingleRequestsChannel(currentChannel);
 				}
+
 			}
+
 		} else
 			super.processSingleRequestsChannel(currentChannel);
 

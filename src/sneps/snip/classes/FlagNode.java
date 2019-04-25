@@ -1,14 +1,16 @@
 package sneps.snip.classes;
 
+import java.util.Hashtable;
 import java.util.Set;
 
 import sneps.network.Node;
+import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Support;
 
 public class FlagNode {
 
 	private Node node;
-	private Set<Support> supports;
+	private Hashtable<String, PropositionSet> supports;
 	private int flag;
 
 	/**
@@ -16,14 +18,14 @@ public class FlagNode {
 	 * 
 	 * @param n
 	 *            node
-	 * @param set
+	 * @param hashtable
 	 *            support
 	 * @param f
 	 *            true or false
 	 */
-	public FlagNode(Node n, Set<Support> set, int f) {
+	public FlagNode(Node n, Hashtable<String, PropositionSet> hashtable, int f) {
 		node = n;
-		supports = set;
+		supports = hashtable;
 		flag = f;
 	}
 
@@ -41,7 +43,7 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public Set<Support> getSupports() {
+	public Hashtable<String, PropositionSet> getSupports() {
 		return supports;
 	}
 
