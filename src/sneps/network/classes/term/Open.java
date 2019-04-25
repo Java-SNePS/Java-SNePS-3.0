@@ -49,20 +49,17 @@ public class Open extends Molecular implements Serializable{
 				// if node is pattern node (means it dominates free variables)
 				if (nodeType.equals("Open")){
 					Open open = (Open) ns.getNode(j).getTerm();
-					VariableSet patternFVars = new VariableSet();
-					patternFVars.addAll(open.getFreeVariables());
+					VariableSet patternFVars = open.getFreeVariables();
 					// looping over free variables of the pattern node
 					for (int k = 0; k < patternFVars.size(); k++){
 						Variable variable = patternFVars.getVariable(k);
-						// looping over the down cables
-						Enumeration<DownCable> dCs = dCableSet.getDownCables().elements();
-						while(dCs.hasMoreElements()){
-							DownCable d = dCs.nextElement();
-							// TODO implement contains and remove in VariableSet
-							/*if (d.getNodeSet().contains(variable))
-								patternFVars.remove(variable);*/
-						}
+						
+						// if a variable already exists in this variable set, remove it from the pattern node variable set to avoid duplicates
+						if(variables.contains(variable))
+							patternFVars.removeVariable(variable);
+						
 					}
+					
 					this.variables.addAll(patternFVars);
 				}
 			}
