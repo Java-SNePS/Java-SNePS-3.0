@@ -233,7 +233,6 @@ public class PropositionNode extends Node implements Serializable {
 		PropositionSet propSet = new PropositionSet();
 		propSet.add(instanceNodeId);
 		Hashtable<String, PropositionSet> nodeAssumptionBasedSupport = getAssumptionBasedSupport();
-
 		String currentContextName = currentChannel.getContextName();
 		Context desiredContext = Controller.getContextByName(currentContextName);
 		if (assertedInContext(desiredContext)) {
