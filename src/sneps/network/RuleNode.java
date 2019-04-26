@@ -339,46 +339,26 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				VariableNodeStats ruleNodeStats = computeNodeStats(filterSubs);
 				boolean ruleNodeAllVariablesBound = ruleNodeStats.areAllVariablesBound();
 				Vector<Binding> ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
-				if (ruleNodeAllVariablesBound) {
-					/* Case 2 */
-					ReportSet knownReportSet = knownInstances;
-					for (Report report : knownReportSet) {
-						Substitutions reportSubstitutions = report.getSubstitutions();
-						VariableNodeStats reportNodeStats = computeNodeStats(reportSubstitutions);
-						Vector<Binding> reportNodeExtractedSubs = reportNodeStats.getVariableNodeSubs();
-						boolean caseCondition = ruleNodeAllVariablesBound
-								? reportNodeExtractedSubs.size() == ruleNodeExtractedSubs.size()
-								: reportNodeExtractedSubs.size() < ruleNodeExtractedSubs.size();
-						if (caseCondition && anySupportAssertedInContext(report)) {
-							requestAntecedentsNotAlreadyWorkingOn(currentChannel);
-							if (ruleNodeAllVariablesBound)
-								return;
-						}
+				/* Case 2 & 3 */
+				ReportSet knownReportSet = knownInstances;
+				for (Report report : knownReportSet) {
+					Substitutions reportSubstitutions = report.getSubstitutions();
+					VariableNodeStats reportNodeStats = computeNodeStats(reportSubstitutions);
+					Vector<Binding> reportNodeExtractedSubs = reportNodeStats.getVariableNodeSubs();
+					boolean caseCondition = ruleNodeAllVariablesBound
+							? reportNodeExtractedSubs.size() == ruleNodeExtractedSubs.size()
+							: reportNodeExtractedSubs.size() < ruleNodeExtractedSubs.size();
+					if (caseCondition && anySupportAssertedInContext(report)) {
+						requestAntecedentsNotAlreadyWorkingOn(currentChannel);
+						if (ruleNodeAllVariablesBound)
+							return;
 					}
-					super.processSingleRequestsChannel(currentChannel);
-					return;
-				} else {
-					/* Case 3 */
-					// Case 3: fih one free variable le kol instance hab3at lel antecedents request
-					// bel filter beta3 each istance while checking if alreadyWorking on it
-					ReportSet knownReportSet = knownInstances;
-					for (Report report : knownReportSet) {
-						Substitutions reportSubstitutions = report.getSubstitutions();
-						VariableNodeStats reportNodeStats = computeNodeStats(reportSubstitutions);
-						Vector<Binding> reportNodeExtractedSubs = reportNodeStats.getVariableNodeSubs();
-						if (reportNodeExtractedSubs.size() < ruleNodeExtractedSubs.size()
-								&& anySupportAssertedInContext(report)) {
-							requestAntecedentsNotAlreadyWorkingOn(currentChannel);
-						}
-					}
-					super.processSingleRequestsChannel(currentChannel);
 				}
-
+				super.processSingleRequestsChannel(currentChannel);
+				return;
 			}
-
 		} else
 			super.processSingleRequestsChannel(currentChannel);
-
 	}
 
 	// PROCESS REPORT : 3adi -> outgoing channels node we ab3at accordingly, forard
