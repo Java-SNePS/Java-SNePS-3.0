@@ -206,15 +206,21 @@ public class Node implements Serializable {
 		return ret;
 	}
 
+	/***
+	 * Checking if this node instance contains not yet bound free variables
+	 * 
+	 * @param filterSubs reference substitutions
+	 * @return boolean computed from VariableNodeStats.areAllVariablesBound()
+	 */
 	public boolean isWhQuestion(Substitutions filterSubs) {
-		if (!(this instanceof VariableNode))
-			return false;
-		/* change sizes check as they are no longer important */.IMP.
-		VariableNode node = (VariableNode) this;
-		VariableSet variables = node.getFreeVariables();
-		int variablesCardn = variables.size();
-		int filterCardn = filterSubs.cardinality();
-		return filterCardn < variablesCardn;
+		VariableNodeStats currentNodeStats = computeNodeStats(filterSubs);
+		return !currentNodeStats.areAllVariablesBound();
+		/*
+		 * if (!(this instanceof VariableNode)) return false; VariableNode node =
+		 * (VariableNode) this; VariableSet variables = node.getFreeVariables(); int
+		 * variablesCardn = variables.size(); int filterCardn =
+		 * filterSubs.cardinality(); return filterCardn < variablesCardn;
+		 */
 	}
 
 	/***

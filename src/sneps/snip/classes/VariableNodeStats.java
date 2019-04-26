@@ -43,6 +43,12 @@ public class VariableNodeStats {
 		this.nodeId = nodeId;
 	}
 
+	/***
+	 * Method returns whether all freeVariables concerning this node are bound
+	 * through the origin substitutions or not
+	 * 
+	 * @return boolean
+	 */
 	public boolean areAllVariablesBound() {
 		return allVariablesBound;
 	}
