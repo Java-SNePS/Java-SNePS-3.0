@@ -1,6 +1,6 @@
 package sneps.network.classes.setClasses;
 
-import java.util.HashSet;
+import java.util.HashSet; 
 import java.util.Iterator;
 
 import sneps.snip.classes.RuisHandler;
@@ -37,10 +37,40 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		return ruis.iterator();
 	}
 
-	public boolean add(RuleUseInfo rui) {
-		return ruis.add(rui);
+	public RuleUseInfoSet add(RuleUseInfo rui) {
+		ruis.add(rui);
+		return this;
 	}
 
+	@Override
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
+		//In case of inserting into a RUI set
+		if(!singleton)
+			return combineAdd(rui);
+		
+		//In case of inserting into a singleton RUI 
+		if(isEmpty())
+			return add(rui);
+		
+		return combine(rui);
+	}
+	
+	/**
+	 * Combines rui with every RUI in this RUISet.
+	 * @param rui
+	 * @return RuleUseInfoSet 
+	 */
+	public RuleUseInfoSet combine(RuleUseInfo rui) {
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		for (RuleUseInfo tRui : ruis) {
+			RuleUseInfo tmp = rui.combine(tRui);
+			if (tmp != null)
+				res.add(tmp);
+		}
+		
+		return res;
+	}
+	
 	/**
 	 * Combines every RUI in this RUISet with every RUI in second.
 	 * @param second
@@ -60,26 +90,24 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		return res;
 	}
 
-	@Override
-	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		if(!singleton) {
-			ruis.add(rui);
-		}
-	}
-
 	/**
 	 * Adds all the RUIs in rootRUIS to this RUISet.
 	 * @param rootRUIS
 	 * @return boolean
 	 */
-	public boolean addAll(RuleUseInfoSet rootRUIS) {
-		boolean flag = true;
-		for(RuleUseInfo rui : rootRUIS){
-			if(!ruis.add(rui))
-				flag = false;
-		}
+	public RuleUseInfoSet addAll(RuleUseInfoSet rootRUIS) {
+		for(RuleUseInfo rui : rootRUIS)
+			ruis.add(rui);
+
+		return this;
+	}
+	
+	public RuleUseInfoSet combineAdd(RuleUseInfo rui) {
+		RuleUseInfoSet temp = this.combine(rui);
+		temp.add(rui);
+		this.addAll(temp);
 		
-		return flag;
+		return this;
 	}
 
 	public boolean contains(RuleUseInfo rui){
@@ -88,5 +116,9 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 
 	public boolean isEmpty() {
 		return ruis.isEmpty();
+	}
+	
+	public int size() {
+		return ruis.size();
 	}
 }
