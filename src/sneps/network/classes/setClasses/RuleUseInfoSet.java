@@ -15,14 +15,21 @@ import sneps.snip.classes.RuleUseInfo;
  */
 public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo> {
 	private HashSet<RuleUseInfo> ruis;
-
-	public RuleUseInfoSet(String contextName, boolean b) {
-		super(contextName);
+	
+	/**
+	 * A boolean indicating whether this RuleUseInfoSet is treated as single 
+	 * RuleUseInfo.
+	 */
+	private boolean singleton;
+	
+	public RuleUseInfoSet() {
 		ruis = new HashSet<RuleUseInfo>();
 	}
 
-	public RuleUseInfoSet() {
+	public RuleUseInfoSet(String contextName, boolean singleton) {
+		super(contextName);
 		ruis = new HashSet<RuleUseInfo>();
+		this.singleton = singleton;
 	}
 
 	@Override
@@ -34,6 +41,13 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		return ruis.add(rui);
 	}
 
+	/**
+	 * Combines every RUI in this RUISet with every RUI in second.
+	 * @param second
+	 * 		RUISet
+	 * @return
+	 * 		Combined RUISet
+	 */
 	public RuleUseInfoSet combine(RuleUseInfoSet second) {
 		RuleUseInfoSet res = new RuleUseInfoSet(this.context, false);
 		for(RuleUseInfo rui1 : this){
@@ -42,21 +56,29 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 					res.add(rui1.combine(rui2));
 			}
 		}
+		
 		return res;
 	}
 
 	@Override
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		ruis.add(rui);
-		return this;
+		if(!singleton) {
+			ruis.add(rui);
+		}
 	}
 
+	/**
+	 * Adds all the RUIs in rootRUIS to this RUISet.
+	 * @param rootRUIS
+	 * @return boolean
+	 */
 	public boolean addAll(RuleUseInfoSet rootRUIS) {
 		boolean flag = true;
 		for(RuleUseInfo rui : rootRUIS){
 			if(!ruis.add(rui))
 				flag = false;
 		}
+		
 		return flag;
 	}
 

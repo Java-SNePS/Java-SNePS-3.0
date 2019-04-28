@@ -12,25 +12,21 @@ public class VariableNode extends Node implements Serializable{
 	private boolean snepslogFlag;
 
 	public VariableNode() {
-		freeVariables = new VariableSet();
 		snepslogFlag = false;
 	}
 
 	public VariableNode(Term trm) {
 		super(trm);
-		freeVariables = new VariableSet();
 		snepslogFlag = false;
 	}
 
 	public VariableNode(Semantic sem) {
 		super(sem);
-		freeVariables = new VariableSet();
 		snepslogFlag = false;
 	}
 
 	public VariableNode(Semantic sem, Term trm) {
 		super(sem, trm);
-		freeVariables = new VariableSet();
 		snepslogFlag = false;
 	}
 

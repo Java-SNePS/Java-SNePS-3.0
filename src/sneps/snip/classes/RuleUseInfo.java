@@ -150,12 +150,12 @@ public class RuleUseInfo {
 	 * @return RuleUseInfo
 	 */
 	public RuleUseInfo combine(RuleUseInfo rui) {
-		//System.out.println(this.isDisjoint(rui) + " " +  this.isVarsCompatible(rui));
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
 			return new RuleUseInfo(this.getSubstitutions().union(rui.getSubstitutions()), 
 					this.pos + rui.getPosCount(), this.neg + rui.getNegCount(), 
 					this.fns.union(rui.getFlagNodeSet()));
 		}
+		
 		return null;
 	}
 	
