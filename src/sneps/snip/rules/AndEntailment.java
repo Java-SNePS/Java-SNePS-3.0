@@ -149,7 +149,7 @@ public class AndEntailment extends RuleNode {
 		NodeSet ants = antNodesWithoutVars;
 		ants.addAll(antNodesWithVars);
 		tree.buildTree(ants);
-		this.addContextRUIS(context, tree);
+		this.addContextRuiHandler(context, tree);
 		return tree;
 	}
 

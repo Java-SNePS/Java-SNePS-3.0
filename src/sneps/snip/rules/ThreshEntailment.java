@@ -206,7 +206,7 @@ public class ThreshEntailment extends RuleNode {
 	 */
 	protected RuisHandler createRuisHandler(String contextName) {
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
-		return this.addContextRUIS(contextName, index);
+		return this.addContextRuiHandler(contextName, index);
 	}
 
 

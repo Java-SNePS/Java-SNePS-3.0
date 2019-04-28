@@ -12,6 +12,8 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.term.Base;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
@@ -31,16 +33,36 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
 	
 	private NodeSet consequents;
+	
 	/**
-	 * a NodeSet containing all the pattern antecedents attached to this Node
+	 * A NodeSet containing all the pattern antecedents attached to this RuleNode.
 	 */
 	protected NodeSet antNodesWithVars;
 	protected NodeSet antNodesWithoutVars;
 	protected Set<Integer> antNodesWithVarsIDs;
 	protected Set<Integer> antNodesWithoutVarsIDs;
+	
+	/**
+	 * Set to true if all the antecedents with variables share the same
+	 * variables, false otherwise.
+	 */
 	protected boolean shareVars;
+	
+	/**
+	 * A VarNodeSet of the common free VariableNodes shared between the antecedents.
+	 */
 	protected VarNodeSet sharedVars;
+	
+	/**
+	 * A ContextRuisSet that is used to map each context to its appropriate 
+	 * RuiHandler for this RuleNode.
+	 */
 	protected ContextRuisSet contextRuisSet;
+	
+	/**
+	 * A Hashtable used to map each context to a single RuleUseInfo 
+	 * that contains all the instances that do not dominate variables.
+	 */
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
 	public RuleNode() {
@@ -67,6 +89,23 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
+	
+
+	public NodeSet getConsequents() {
+		return consequents;
+	}
+	
+	public ContextRuisSet getContextRuisSet() {
+		return contextRuisSet;
+	}
+	
+	public int getAntSize(){
+		return antNodesWithoutVars.size() + antNodesWithVars.size();
+	}
+	
+	protected NodeSet getPatternNodes() {
+		return antNodesWithVars;
+	}
 
 	protected void sendReportToConsequents(Report reply) {
 		if(!knownInstances.contains(reply))
@@ -76,6 +115,11 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 				outChannel.addReport(reply);
 	}
 
+	/**
+	 * Process antecedent nodes, used for initialization.
+	 * 
+	 * @param antNodes
+	 */
 	protected void processNodes(NodeSet antNodes) {
 		this.splitToNodesWithVarsAndWithout(antNodes, antNodesWithVars, antNodesWithoutVars);
 		for (Node n : antNodesWithVars) {
@@ -88,29 +132,47 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		sharedVars = getSharedVarsNodes(antNodesWithVars);
 	}
 
+	/**
+	 * The main method that does all the inference process in the RuleNode. Creates 
+	 * a RUI for the given report, and inserts it into the appropriate RuisHandler 
+	 * associated with the report's context, for this RuleNode. It instantiates a 
+	 * RuisHandler if this is the first report received in a particular context. It 
+	 * then applies the inference rules of this RuleNode on the current stored RUIs.
+	 * 
+	 * @param report
+	 * @param signature
+	 * 		The instance that is being reported by the report.
+	 */
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
 		RuleUseInfo rui;
+		PropositionSet propSet = report.getSupports();
+		FlagNodeSet fns = new FlagNodeSet();
+		
 		if (report.isPositive()) {
-			PropositionSet propSet = report.getSupports();
-			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
 			rui = new RuleUseInfo(report.getSubstitutions(),
 					1, 0, fns);
 		} else {
-			PropositionSet propSet = report.getSupports();
-			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 2));
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
-		RuisHandler crtemp = contextRuisSet.getByContext(contextID);
+		
+		RuisHandler crtemp = contextRuisSet.getByContext(contextID);		
+		
+		//This is the first report received by this RuleNode in the context given 
+		//by contextID, so a RuisHandler is created, and added to this RuleNode's 
+		//contextRuisSet
 		if(crtemp == null){
-			crtemp = addContextRUIS(contextID);
+			crtemp = addContextRuiHandler(contextID);
 		}
 
+		//The RUI created for the given report is inserted to the corresponding 
+		//RuisHandler for the report's context given by contextID
 		RuleUseInfoSet res = crtemp.insertRUI(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
+		
 		for (RuleUseInfo tRui : res) {
 			applyRuleOnRui(tRui, contextID);
 		}
@@ -118,28 +180,34 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 
 	abstract protected void applyRuleOnRui(RuleUseInfo tRui, String contextID);
 
+	/**
+	 * Clears all the information saved by this RuleNode about the instances received.
+	 */
 	public void clear() {
 		contextRuisSet.clear();
 		contextConstantRUI.clear();
 	}
-
+	
+	/**
+	 * Returns true if all the nodes in the given NodeSet share the same set of 
+	 * VariableNodes, and false otherwise.
+	 * 
+	 * @param nodes
+	 * @return boolean
+	 */
 	public boolean allShareVars(NodeSet nodes) {
 		if (nodes.isEmpty())
 			return false;
+			//return true;
 
 		VariableNode n = (VariableNode) nodes.getNode(0);
-		boolean res = true;
 		for (int i = 1; i < nodes.size(); i++) {
 			if (!n.hasSameFreeVariablesAs((VariableNode) nodes.getNode(i))) {
-				res = false;
-				break;
+				return false;
 			}
 		}
-		return res;
-	}
-
-	public NodeSet getConsequents() {
-		return consequents;
+		
+		return true;
 	}
 
 	public void addAntecedent(Node ant){
@@ -148,14 +216,18 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		else
 			antNodesWithoutVars.addNode(ant);
 	}
-
-	public ContextRuisSet getContextRuisSet() {
-		return contextRuisSet;
-	}
-
+	
+	/**
+	 * Returns a VarNodeSet of VariableNodes that are shared among some/all the Nodes 
+	 * in the given NodeSet.
+	 * 
+	 * @param nodes
+	 * @return VarNodeSet
+	 */
 	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {
 		VarNodeSet res = new VarNodeSet();
 		VarNodeSet temp = new VarNodeSet();
+		
 		if (nodes.isEmpty())
 			return res;
 
@@ -176,63 +248,125 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 						temp.addVarNode(var);
 			}
 		}
+		
 		return res;
 	}
+	
+	/**
+	 * Returns true if the given Node is a constant node i.e. does not have
+	 * free variables.
+	 * 
+	 * @param n
+	 * @return boolean
+	 */
+	public static boolean isConstantNode(Node n) {
+		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);
+	}
+	
+	/*public static boolean isConstantNode(Node n) {
+		return !((n instanceof VariableNode) || 
+				((n.getTerm() instanceof Open) && !(((Open) (n.getTerm())).getFreeVariables().isEmpty())));
+	}*/
+	
+	//Or call addAntecedent()
 
+	/**
+	 * Returns a NodeSet of the nodes that are being pointed at, by this RuleNode, 
+	 * with the DownCables that have the same relation name as the given String.
+	 * 
+	 * @param name
+	 * 		Relation name.
+	 * @return NodeSet
+	 */
 	public NodeSet getDownNodeSet(String name) {
 		if(term != null && term instanceof Molecular)
 			return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
 		return null;
 	}
 
+	/**
+	 * Returns a NodeSet of the antecedents down cable set, and in case of AndOr or 
+	 * Thresh, returns the arguments down cable set.
+	 * 
+	 * @return NodeSet
+	 */
 	public abstract NodeSet getDownAntNodeSet();
 
 	public NodeSet getUpNodeSet(String name) {
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
 	}
 
+	/**
+	 * Returns the RuisHandler associated with the given context.
+	 * 
+	 * @param cntxt
+	 * @return RuisHandler
+	 */
 	public RuisHandler getContextRuiHandler(String cntxt) {
 		return contextRuisSet.getByContext(cntxt);
 	}
 
-	public RuisHandler addContextRUIS(String contextName) {
+	/**
+	 * Creates an appropriate RuisHandler for a given context for this RuleNode, 
+	 * according to whether all, some or none of the variables in the antecedents are
+	 * shared. Then adds the RuisHandler to this contextRuisSet.
+	 * 
+	 * @param contextName
+	 * @return RuisHandler
+	 */
+	public RuisHandler addContextRuiHandler(String contextName) {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
+			//Antecedents with variables share the same set of variables
 			if (shareVars)
-				si = new SIndex(contextName, sharedVars, SIndex.SINGLETONRUIS);
+				si = new SIndex(contextName, sharedVars, SIndex.SINGLETON);
+			//Some variables are shared
 			else
 				si = new SIndex(contextName, sharedVars, getSIndexContextType());
-			return this.addContextRUIS(si);
+			//return this.addContextRUIS(si);
+			return this.addContextRuiHandler(contextName, si);
 		} else {
-			return this.addContextRUIS(contextName, createRuisHandler(contextName));
+			//PTree in case of and-entailment
+			//RUISet otherwise
+			return this.addContextRuiHandler(contextName, createRuisHandler(contextName));
 		}
 	}
-
-	private RuleUseInfoSet addContextRUIS(SIndex si) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int getAntSize(){
-		return antNodesWithoutVars.size() + antNodesWithVars.size();
-	}
-
-	public RuisHandler addContextRUIS(String cntxt, RuisHandler cRuis) {
+	
+	/**
+	 * Adds the given RuisHandler by the given context name to this contextRuisSet.
+	 * 
+	 * @param cntxt
+	 * 		Context name.
+	 * @param cRuis
+	 * 		RuisHandler to be added.
+	 * @return RuisHandler
+	 */
+	public RuisHandler addContextRuiHandler(String cntxt, RuisHandler cRuis) {
 		return this.contextRuisSet.addHandlerSet(cntxt, cRuis);
 	}
 
 	protected abstract RuisHandler createRuisHandler(String contextName);
 
-	protected RuleUseInfoSet createContextRUISNonShared(String contextName) {
+	/**
+	 * Returns a RUISet to be used in case all the antecedents do not share a common 
+	 * variable, and this RuleNode is not an AndEntailment.
+	 * 
+	 * @param contextName
+	 * @return RuleUseInfoSet
+	 */
+	protected RuleUseInfoSet createContextRuiHandlerNonShared(String contextName) {
 		return new RuleUseInfoSet(contextName, false);
 	}
 
+	/**
+	 * Returns a byte that represents an appropriate SIndex type that is used in case 
+	 * the antecedents share some but not all variables. </br></br>
+	 * <b>SIndex.PTree: </b> in AndEntailment </br>
+	 * <b>SIndex.RUIS: </b> in other rule nodes
+	 * @return byte
+	 */
 	protected byte getSIndexContextType() {
 		return SIndex.RUIS;
-	}
-
-	protected NodeSet getPatternNodes() {
-		return antNodesWithVars;
 	}
 
 	public void splitToNodesWithVarsAndWithout(NodeSet allNodes, NodeSet withVars, NodeSet WithoutVars) {
@@ -266,10 +400,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 
 	public RuleUseInfo getConstantRUI(String context) {
 		return contextConstantRUI.get(context);
-	}
-
-	public static boolean isConstantNode(Node n) {
-		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);
 	}
 
 	@Override

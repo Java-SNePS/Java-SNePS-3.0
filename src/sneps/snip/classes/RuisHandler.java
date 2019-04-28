@@ -30,6 +30,13 @@ public abstract class RuisHandler {
 		return context;
 	}
 
+	/**
+	 *Inserts the given RuleUseInfo into this RuisHandler and returns the RuleUseInfoSet 
+	 *resulted from combining it with the RuleUseInfos in this RuisHandler
+	 * @param rui
+	 * RuleUseInfo
+	 * @return RuleUseInfoSet
+	 */
 	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
 	
 	public NodeSet getPositiveNodes() {

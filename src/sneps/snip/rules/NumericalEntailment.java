@@ -41,7 +41,7 @@ public class NumericalEntailment extends RuleNode {
 	}
 
 	/**
-	 * Creates the first RuleUseInfo from a given Report and stores it(if positive)
+	 * Creates the first RuleUseInfo from a given Report and stores it (if positive)
 	 * Also checks if current number of positive Reports satisfy rule
 	 * @param report
 	 * @param signature
@@ -59,6 +59,7 @@ public class NumericalEntailment extends RuleNode {
 		}
 		int curPos = contextRuisSet.getByContext(contxt).getPositiveNodes().size();
 		int n = antNodesWithoutVars.size()+antNodesWithVars.size();
+		//The second cond will be removed
 		if ((curPos >= i) && ((curPos < n-i+1) || (curPos < n-1) ) )
 			sendSavedRUIs(report.getContextName());
 	}
@@ -143,7 +144,8 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
 		SIndex set = (SIndex) contextRuisSet.getByContext(contxt);
-		if (set == null) 
+		if (set == null)
+			//Add check for vars
 			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0);
 		set.insertRUI(rui);
 		if(!set.getPositiveNodes().contains(signature))
@@ -162,6 +164,7 @@ public class NumericalEntailment extends RuleNode {
 		if (antNodesWithoutVars.size() != addedConstant.getPosCount())
 			return;
 
+		//Should be a RuisHandler in general, not a PTree
 		RuleUseInfoSet ruis = ((PTree)contextRuisSet.getByContext(contextID)).getAllRootRuis();
 		if (ruis == null) {
 			applyRuleOnRui(addedConstant, contextID);
@@ -184,7 +187,7 @@ public class NumericalEntailment extends RuleNode {
 	@Override
 	public RuisHandler createRuisHandler(String contextName) {
 		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
-		return this.addContextRUIS(contextName, index);
+		return this.addContextRuiHandler(contextName, index);
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package sneps.snip.classes;
 
 import java.util.Hashtable;
-import java.util.Set;
 
 import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.NodeSet;
@@ -9,30 +8,34 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
-import sneps.snip.matching.Substitutions;
 
 public class SIndex extends RuisHandler {
-	
-	
-	private byte ruiType;
-	public static final byte RUIS = 0, SINGLETONRUIS = 1, PTREE = 2;
+
+	/**
+	 * A Hashtable used to map different substitutions to different RuisHandlers.
+	 */
+	private Hashtable<Integer, RuisHandler> map;
+	private byte ruiHandlerType;
+	public static final byte RUIS = 0, SINGLETON = 1, PTREE = 2;
 	private VarNodeSet sharedVars;
 	private NodeSet nodesWithVars;
 
 	/**
-	 * 
 	 * @param context
-	 * 			context Name
-	 * @param SharedVars
-	 * 			set<integers>
-	 * @param ruisType
-	 * 			byte
+	 * 		Context name.
+	 * @param ruiHandlerType
+	 * 		The type of RuisHandler used by a rule to be mapped to in this SIndex.
+	 * @param sharedVars
+	 * 		Set of shared variables whose bindings are used to hash on in this SIndex.
+	 * @param nodesWithVars	
 	 */
-	
-	public SIndex(String context, VarNodeSet SharedVars, byte ruisType) {
+	public SIndex(String context, byte ruiHandlerType, VarNodeSet sharedVars, 
+			NodeSet nodesWithVars) {
 		super(context);
-		this.sharedVars=SharedVars;
-		this.ruiType=ruisType;
+		map = new Hashtable<Integer, RuisHandler>();
+		this.ruiHandlerType = ruiHandlerType;
+		this.sharedVars = sharedVars;
+		this.nodesWithVars = nodesWithVars;
 	}
 
 	/**
@@ -42,13 +45,8 @@ public class SIndex extends RuisHandler {
 	 * 
 	 * @param rui
 	 * 			Rule Use Info
-	 * 
-	 * 
-	 * 
 	 */
-	
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
-		
 		int[] vars = new int[sharedVars.size()];
 		int index = 0;
 		for (VariableNode varId : sharedVars) {
@@ -57,18 +55,15 @@ public class SIndex extends RuisHandler {
 		}
 		
 		int x = getIndex(vars);
-
 		
-		RuisHandler trui= SIndexHelper.map.get(x);
+		RuisHandler trui= map.get(x);
 		if (trui == null) {
-			trui = getNewRUIS();
-			SIndexHelper.map.put(x, trui);
-
+			trui = getNewRUIType();
+			map.put(x, trui);
 		}
 		
 		RuleUseInfoSet res = trui.insertRUI(rui);
 		return res;
-		
 	}
 	
 	private int getIndex(int[] x) {
@@ -83,22 +78,20 @@ public class SIndex extends RuisHandler {
 		hash ^= hash >> 17;
 		hash += hash << 5;
 		return hash;
-	}
-	
+	}	
 
 	/**
-	 * create a new rule use info based on its type
+	 * Creates a new RuisHandler based on the type of SIndex needed.
 	 * 
 	 */
-
-	private RuisHandler getNewRUIS() {
+	private RuisHandler getNewRUIType() {
 		RuisHandler tempRui = null;
 		switch (ruiType) {
 		case PTREE:
 			tempRui = new PTree();
 			((PTree) tempRui).buildTree(nodesWithVars);
 			break;
-		case SINGLETONRUIS:
+		case SINGLETON:
 			tempRui = new RuleUseInfoSet(getContext() , true);
 			break;
 		case RUIS:
@@ -116,9 +109,9 @@ public class SIndex extends RuisHandler {
 	 * @return int
 	 */
 	
-	/*public int getSize() {
+	public int getSize() {
 		return map.size();
-	}*/
+	}
 
 
 }
