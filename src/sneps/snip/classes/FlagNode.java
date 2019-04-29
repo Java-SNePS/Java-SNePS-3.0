@@ -1,11 +1,13 @@
 package sneps.snip.classes;
 
+import java.util.Collection;
+
 import sneps.network.Node;
 import sneps.network.classes.setClasses.PropositionSet;
 
 public class FlagNode {
 	private Node node;
-	private PropositionSet supports;
+	private Collection<PropositionSet> supports;
 	private int flag;
 
 	/**
@@ -18,7 +20,7 @@ public class FlagNode {
 	 * @param f,
 	 *            true or false
 	 */
-	public FlagNode(Node n, PropositionSet set, int f) {
+	public FlagNode(Node n, Collection<PropositionSet> set, int f) {
 		node = n;
 		supports = set;
 		flag = f;
@@ -38,7 +40,7 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public PropositionSet getSupports() {
+	public Collection<PropositionSet> getSupports() {
 		return supports;
 	}
 

@@ -29,7 +29,9 @@ public class VarNodeSet implements Iterable<VariableNode> {
 	}
 
 	public void addVarNode(VariableNode n) {
-		variables.add(n);
+		if(!(variables.contains(n))) {
+			variables.add(n);
+		}
 	}
 
 	public void addAll(VarNodeSet allVariables) {

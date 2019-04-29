@@ -34,4 +34,11 @@ public class DoIfNode extends RuleNode {
 		return null;
 	}
 
+
+	@Override
+	protected byte getSIndexType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -8,7 +8,6 @@ import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
-import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Term;
 import sneps.network.Node;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -29,7 +28,9 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.matching.Substitutions;
 
-public class PropositionNode extends Node implements Serializable{
+public class PropositionNode extends Node implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private Support basicSupport;
 	
 	protected ChannelSet outgoingChannels;

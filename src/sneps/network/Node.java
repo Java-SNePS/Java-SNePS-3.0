@@ -6,7 +6,9 @@ import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snip.channels.Channel;
@@ -94,7 +96,10 @@ public class Node implements Serializable {
 	 * @return the name or the label of the current node.
 	 */
 	public String getIdentifier() {
-		return this.term.getIdentifier();
+		if(this.term != null)
+			return this.term.getIdentifier();
+		else
+			return "";
 	}
 
 	/**
@@ -265,6 +270,53 @@ public class Node implements Serializable {
 	 */
 	public void updateUpCables() {
 		((Molecular) this.getTerm()).updateUpCables(this);
+	}
+	
+	public boolean hasSameFreeVariablesAs(Node n) {
+		//this Node is a VariableNode
+		if(this instanceof VariableNode) {
+			//Node to be compared with is also a VariableNode
+			if(n instanceof VariableNode) {
+				if(this.equals(((VariableNode) n)))
+					return true;
+			}
+			
+			//Node to be compared with is an Open node
+			if(n.getTerm() instanceof Open) {
+				VarNodeSet freeVars = ((Open) n.getTerm()).getFreeVariables();
+				if((freeVars.size() == 1) && (this.equals(freeVars.getVarNode(0))))
+					return true;
+			}
+		}
+		
+		//this Node is an Open node
+		if(this.getTerm() instanceof Open) {
+			VarNodeSet n1freeVars = ((Open) this.getTerm()).getFreeVariables();
+			
+			//Node to be compared with is a VariableNode
+			if(n instanceof VariableNode) {
+				if((n1freeVars.size() == 1) && 
+						(n1freeVars.getVarNode(0).equals(((VariableNode) n))))
+					return true;
+			}
+			
+			//Node to be compared with is an Open node
+			if(n.getTerm() instanceof Open) {
+				VarNodeSet n2freeVars = ((Open) n.getTerm()).getFreeVariables();
+				if(n1freeVars.size() != n2freeVars.size())
+					return false;
+				
+				for(int i = 0; i < n1freeVars.size(); i++) {
+					if(!(n2freeVars.contains(n1freeVars.getVarNode(i)))) {
+						return false;
+					}
+				}
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

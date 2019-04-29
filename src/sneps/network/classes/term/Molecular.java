@@ -26,6 +26,10 @@ public class Molecular extends Term implements Serializable{
 		super(identifier);
 		this.downCableSet = downCableSet;
 	}
+	
+	public Molecular(String id) {
+		super(id);
+	}
 
 	public DownCableSet getDownCableSet() {
 		return this.downCableSet;

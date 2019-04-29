@@ -14,20 +14,10 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
  * @version 3.00 31/5/2018
  */
 public abstract class RuisHandler {
-	protected String context;
 	private NodeSet positiveNodes;
 
 	public RuisHandler(){
 		positiveNodes = new NodeSet();
-	}
-	
-	public RuisHandler(String contextID) {
-		this();
-		this.context = contextID;
-	}
-
-	public String getContext() {
-		return context;
 	}
 
 	/**

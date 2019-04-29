@@ -34,4 +34,11 @@ public class WhenDoNode extends RuleNode {
 		return null;
 	}
 
+
+	@Override
+	protected byte getSIndexType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

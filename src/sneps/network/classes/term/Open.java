@@ -28,8 +28,18 @@ public class Open extends Molecular implements Serializable{
 		this.variables = new VarNodeSet();
 		this.updateFreeVariables();
 	}
+	
+	public Open(String id) {
+		super(id);
+		this.variables = new VarNodeSet();
+	}
+	
 	public VarNodeSet getFreeVariables() {
 		return variables;
+	}
+	
+	public void addFreeVariable(VariableNode n) {
+		variables.addVarNode(n);
 	}
 
 	/**

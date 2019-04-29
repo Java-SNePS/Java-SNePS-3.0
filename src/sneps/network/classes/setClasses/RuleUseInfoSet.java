@@ -26,8 +26,7 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		ruis = new HashSet<RuleUseInfo>();
 	}
 
-	public RuleUseInfoSet(String contextName, boolean singleton) {
-		super(contextName);
+	public RuleUseInfoSet(boolean singleton) {
 		ruis = new HashSet<RuleUseInfo>();
 		this.singleton = singleton;
 	}
@@ -79,7 +78,7 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 	 * 		Combined RUISet
 	 */
 	public RuleUseInfoSet combine(RuleUseInfoSet second) {
-		RuleUseInfoSet res = new RuleUseInfoSet(this.context, false);
+		RuleUseInfoSet res = new RuleUseInfoSet(false);
 		for(RuleUseInfo rui1 : this){
 			for(RuleUseInfo rui2 : second){
 				//if(rui1.isDisjoint(rui2))

@@ -32,9 +32,8 @@ public class SIndex extends RuisHandler {
 	 * 		Set of shared variables whose bindings are used to hash on in this SIndex.
 	 * @param nodesWithVars	
 	 */
-	public SIndex(String context, byte ruiHandlerType, VarNodeSet sharedVars, 
+	public SIndex(byte ruiHandlerType, VarNodeSet sharedVars, 
 			NodeSet nodesWithVars) {
-		super(context);
 		map = new Hashtable<ArrayList<Integer>, RuisHandler>();
 		this.ruiHandlerType = ruiHandlerType;
 		this.sharedVars = sharedVars;
@@ -76,14 +75,14 @@ public class SIndex extends RuisHandler {
 		RuisHandler tempRui = null;
 		switch (ruiHandlerType) {
 		case SINGLETON:
-			tempRui = new RuleUseInfoSet(getContext() , true);
+			tempRui = new RuleUseInfoSet(true);
 			break;
 		case PTREE:
 			tempRui = new PTree();
 			((PTree) tempRui).buildTree(nodesWithVars);
 			break;
 		case RUIS:
-			tempRui = new RuleUseInfoSet(getContext() , false);
+			tempRui = new RuleUseInfoSet(false);
 			break;
 		default:
 			break;

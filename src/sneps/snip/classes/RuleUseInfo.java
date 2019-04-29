@@ -164,7 +164,7 @@ public class RuleUseInfo {
 	 * @return PropositionSet
 	 */
 
-	public PropositionSet getSupports() {
+	/*public PropositionSet getSupports() {
 		if (fns.isNew())
 			return new PropositionSet();
 		
@@ -181,6 +181,6 @@ public class RuleUseInfo {
 		}
 		
 		return res;
-	}
+	}*/
 
 }

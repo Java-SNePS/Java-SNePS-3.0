@@ -1,6 +1,7 @@
 package sneps.network;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -12,11 +13,8 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.ReportSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
-import sneps.network.classes.term.Base;
-import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Variable;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
@@ -146,7 +144,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public void applyRuleHandler(Report report, Node signature) {
 		String contextID = report.getContextName();
 		RuleUseInfo rui;
-		PropositionSet propSet = report.getSupports();
+		Collection<PropositionSet> propSet = report.getSupports();
 		FlagNodeSet fns = new FlagNodeSet();
 		
 		if (report.isPositive()) {
@@ -198,11 +196,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public boolean allShareVars(NodeSet nodes) {
 		if (nodes.isEmpty())
 			return false;
-			//return true;
 
-		VariableNode n = (VariableNode) nodes.getNode(0);
+		Node n = nodes.getNode(0);
 		for (int i = 1; i < nodes.size(); i++) {
-			if (!n.hasSameFreeVariablesAs((VariableNode) nodes.getNode(i))) {
+			if (!(n.hasSameFreeVariablesAs(nodes.getNode(i)))) {
 				return false;
 			}
 		}
@@ -210,7 +207,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return true;
 	}
 
-	public void addAntecedent(Node ant){
+	public void addAntecedent(Node ant) {
 		if(ant instanceof VariableNode || ant.getTerm() instanceof Open)
 			antNodesWithVars.addNode(ant);
 		else
@@ -231,15 +228,15 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		if (nodes.isEmpty())
 			return res;
 
-		for(Node curNode : nodes){
-			if(curNode instanceof VariableNode){
-				if(temp.contains((VariableNode)curNode))
-					res.addVarNode((VariableNode)curNode);
+		for(Node curNode : nodes) {
+			if(curNode instanceof VariableNode) {
+				if(temp.contains((VariableNode) curNode))
+					res.addVarNode((VariableNode) curNode);
 				else
 					temp.addVarNode((VariableNode) curNode);
 			}
 			
-			if(curNode.getTerm() instanceof Open){
+			if(curNode.getTerm() instanceof Open) {
 				VarNodeSet free = ((Open)curNode.getTerm()).getFreeVariables();
 				for(VariableNode var : free)
 					if(temp.contains(var))
@@ -251,24 +248,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		
 		return res;
 	}
-	
-	/**
-	 * Returns true if the given Node is a constant node i.e. does not have
-	 * free variables.
-	 * 
-	 * @param n
-	 * @return boolean
-	 */
-	public static boolean isConstantNode(Node n) {
-		return !(n.getTerm() instanceof Molecular) || (n.getTerm() instanceof Variable);
-	}
-	
-	/*public static boolean isConstantNode(Node n) {
-		return !((n instanceof VariableNode) || 
-				((n.getTerm() instanceof Open) && !(((Open) (n.getTerm())).getFreeVariables().isEmpty())));
-	}*/
-	
-	//Or call addAntecedent()
 
 	/**
 	 * Returns a NodeSet of the nodes that are being pointed at, by this RuleNode, 
@@ -319,13 +298,15 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			SIndex si = null;
 			//Antecedents with variables share the same set of variables
 			if (shareVars)
-				si = new SIndex(contextName, sharedVars, SIndex.SINGLETON);
-			//Some variables are shared
+				si = new SIndex(SIndex.SINGLETON, sharedVars, antNodesWithVars);
+			//Antecedents share some but not all variables
 			else
-				si = new SIndex(contextName, sharedVars, getSIndexContextType());
-			//return this.addContextRUIS(si);
+				si = new SIndex(getSIndexType(), sharedVars, antNodesWithVars);
+			
 			return this.addContextRuiHandler(contextName, si);
-		} else {
+		} 
+		
+		else {
 			//PTree in case of and-entailment
 			//RUISet otherwise
 			return this.addContextRuiHandler(contextName, createRuisHandler(contextName));
@@ -355,7 +336,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @return RuleUseInfoSet
 	 */
 	protected RuleUseInfoSet createContextRuiHandlerNonShared(String contextName) {
-		return new RuleUseInfoSet(contextName, false);
+		return new RuleUseInfoSet(false);
 	}
 
 	/**
@@ -365,17 +346,12 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * <b>SIndex.RUIS: </b> in other rule nodes
 	 * @return byte
 	 */
-	protected byte getSIndexContextType() {
-		return SIndex.RUIS;
-	}
+	protected abstract byte getSIndexType();
 
 	public void splitToNodesWithVarsAndWithout(NodeSet allNodes, NodeSet withVars, NodeSet WithoutVars) {
 		for (int i = 0; i < allNodes.size(); i++) {
 			Node n = allNodes.getNode(i);
-			if (isConstantNode(n))
-				WithoutVars.addNode(n);
-			else
-				withVars.addNode(n);
+			addAntecedent(n);
 		}
 	}
 

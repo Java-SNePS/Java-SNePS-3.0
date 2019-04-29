@@ -1,5 +1,7 @@
 package sneps.snip;
 
+import java.util.Collection;
+
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snip.matching.Substitutions;
 
@@ -12,11 +14,11 @@ import sneps.snip.matching.Substitutions;
  */
 public class Report {
 	private Substitutions substitution;
-	private PropositionSet supports;
+	private Collection<PropositionSet> supports;
 	private boolean sign;
 	private String contextName;
 
-	public Report(Substitutions substitution, PropositionSet set, boolean sign, String contextID) {
+	public Report(Substitutions substitution, Collection<PropositionSet> set, boolean sign, String contextID) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
@@ -27,7 +29,7 @@ public class Report {
 		return substitution;
 	}
 
-	public PropositionSet getSupports() {
+	public Collection<PropositionSet> getSupports() {
 		return supports;
 	}
 
