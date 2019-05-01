@@ -16,6 +16,9 @@ import java.util.LinkedList;
 
 import sneps.network.classes.PathTrace;
 import sneps.network.classes.Relation;
+import sneps.network.classes.setClasses.PropositionSet;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.snebr.Context;
 
@@ -26,12 +29,32 @@ public class BangPath extends Path implements Serializable{
      */
 	@Override
 	public LinkedList<Object[]> follow(Node node, PathTrace trace, Context context) {
-		/*
+		
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
+		// get node ID and get all IDs of asserted propositions
+		int nodeID = node.getId();
+		PropositionSet assertedPropositionsInContext = context.getHypothesisSet();
+		int[] assertedPropositionIDs = null;
+		try {
+			assertedPropositionIDs = PropositionSet.getPropsSafely(assertedPropositionsInContext);
+		}
+		catch(NodeNotFoundInNetworkException | NotAPropositionNodeException exception){
+			return result;
+		}
+		
+		// loop over all IDs and look for given ID, if found set the "propositionIsAsserted" flag to true
+		boolean propositionIsAsserted = false;
+		for(int i = 0; i < assertedPropositionIDs.length; i++) {
+			int currentID = assertedPropositionIDs[i];
+			if(currentID == nodeID) {
+				propositionIsAsserted = true;
+			}
+		}
+		
 		// check it's proposition and it's asserted
 		if ((node.getSemanticType().getSuperClassesNames().contains("Proposition") ||
 				node.getSemanticType().getClass().getSimpleName().equals("Proposition")) &&
-					context.getHypothesisSet().propositions.contains(node.getSemanticType())
+					propositionIsAsserted
 		)
 		{
 			PathTrace pt = trace.clone();
@@ -42,7 +65,7 @@ public class BangPath extends Path implements Serializable{
 			o[1] = pt;
 			result.add(o);
 		}
-		return result;*/return null;
+		return result;
 	}
 
 	/** (non-Javadoc)
@@ -50,11 +73,33 @@ public class BangPath extends Path implements Serializable{
      */
 	@Override
 	public LinkedList<Object[]> followConverse(Node node, PathTrace trace, Context context) {
-		/*
+		
 		LinkedList<Object[]> result = new LinkedList<Object[]>();
+		// get node ID and get all IDs of asserted propositions
+		int nodeID = node.getId();
+		PropositionSet assertedPropositionsInContext = context.getHypothesisSet();
+		int[] assertedPropositionIDs = null;
+		try {
+			assertedPropositionIDs = PropositionSet.getPropsSafely(assertedPropositionsInContext);
+		}
+		catch(NodeNotFoundInNetworkException | NotAPropositionNodeException exception){
+			return result;
+		}
+		
+		// loop over all IDs and look for given ID, if found set the "propositionIsAsserted" flag to true
+		boolean propositionIsAsserted = false;
+		for(int i = 0; i < assertedPropositionIDs.length; i++) {
+			int currentID = assertedPropositionIDs[i];
+			if(currentID == nodeID) {
+				propositionIsAsserted = true;
+			}
+		}
+		
+		// check it's proposition and it's asserted
 		if ((node.getSemanticType().getSuperClassesNames().contains("Proposition") ||
 				node.getSemanticType().getClass().getSimpleName().equals("Proposition")) &&
-					context.getHypothesisSet().propositions.contains(node.getSemanticType()))
+					propositionIsAsserted
+		)
 		{
 			PathTrace pt = trace.clone();
 			pt.addSupport(node);
@@ -64,7 +109,7 @@ public class BangPath extends Path implements Serializable{
 			o[1] = pt;
 			result.add(o);
 		}
-		return result;*/return null;
+		return result;
 	}
 
 	/** (non-Javadoc)
