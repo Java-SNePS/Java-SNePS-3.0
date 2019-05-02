@@ -16,13 +16,11 @@ public class Report {
 	private Substitutions substitution;
 	private Collection<PropositionSet> supports;
 	private boolean sign;
-	private String contextName;
 
-	public Report(Substitutions substitution, Collection<PropositionSet> set, boolean sign, String contextID) {
+	public Report(Substitutions substitution, Collection<PropositionSet> set, boolean sign) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
-		this.contextName = contextID;
 	}
 
 	public Substitutions getSubstitutions() {
@@ -36,8 +34,8 @@ public class Report {
 	@Override
 	public boolean equals(Object report) {
 		Report castedReport = (Report) report;
-		return this.substitution.equals(castedReport.substitution) && this.sign == castedReport.sign
-				&& this.contextName == castedReport.contextName;
+		return this.substitution.equals(castedReport.substitution) 
+				&& this.sign == castedReport.sign;
 	}
 
 	public boolean getSign() {
@@ -53,10 +51,7 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports.toString();
+		return "Sign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports.toString();
 	}
 
-	public String getContextName() {
-		return contextName;
-	}
 }

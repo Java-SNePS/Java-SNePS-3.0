@@ -31,6 +31,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
 	
 	private NodeSet consequents;
+	protected NodeSet antecedents;
 	
 	/**
 	 * A NodeSet containing all the pattern antecedents attached to this RuleNode.
@@ -55,48 +56,54 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * A ContextRuisSet that is used to map each context to its appropriate 
 	 * RuiHandler for this RuleNode.
 	 */
-	protected ContextRuisSet contextRuisSet;
+	//protected ContextRuisSet contextRuisSet;
+	
+	/**
+	 * A RuisHandler that is used to keep track of all the RUIs for this RuleNode.
+	 */
+	protected RuisHandler ruisHandler;
 	
 	/**
 	 * A Hashtable used to map each context to a single RuleUseInfo 
-	 * that contains all the instances that do not dominate variables.
+	 * that contains all the constant instances that do not dominate variables.
 	 */
 	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
 
 	public RuleNode() {
 		consequents = new NodeSet();
+		antecedents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
 		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
+		//contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 
 	public RuleNode(Molecular syn) {
 		super(syn);
 		consequents = new NodeSet();
+		antecedents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
 		antNodesWithoutVarsIDs = new HashSet<Integer>();
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
 		sharedVars = new VarNodeSet();
-		contextRuisSet = new ContextRuisSet();
+		//contextRuisSet = new ContextRuisSet();
 		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 	
-
 	public NodeSet getConsequents() {
 		return consequents;
 	}
-	
-	public ContextRuisSet getContextRuisSet() {
-		return contextRuisSet;
+
+	public RuisHandler getRuisHandler() {
+		return ruisHandler;
 	}
-	
+
 	public int getAntSize(){
 		return antNodesWithoutVars.size() + antNodesWithVars.size();
 	}
@@ -142,7 +149,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * 		The instance that is being reported by the report.
 	 */
 	public void applyRuleHandler(Report report, Node signature) {
-		String contextID = report.getContextName();
+		//String contextID = report.getContextName();
 		RuleUseInfo rui;
 		Collection<PropositionSet> propSet = report.getSupports();
 		FlagNodeSet fns = new FlagNodeSet();
@@ -156,33 +163,31 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
 		
-		RuisHandler crtemp = contextRuisSet.getByContext(contextID);		
+		//RuisHandler crtemp = contextRuisSet.getByContext(contextID);		
 		
-		//This is the first report received by this RuleNode in the context given 
-		//by contextID, so a RuisHandler is created, and added to this RuleNode's 
-		//contextRuisSet
-		if(crtemp == null){
-			crtemp = addContextRuiHandler(contextID);
+		// This is the first report received by this RuleNode, so a RuisHandler is 
+		// created
+		if(ruisHandler == null){
+			ruisHandler = addRuiHandler();
 		}
 
-		//The RUI created for the given report is inserted to the corresponding 
-		//RuisHandler for the report's context given by contextID
-		RuleUseInfoSet res = crtemp.insertRUI(rui);
+		// The RUI created for the given report is inserted to the RuisHandler
+		RuleUseInfoSet res = ruisHandler.insertRUI(rui);
 		if (res == null)
 			res = new RuleUseInfoSet();
 		
 		for (RuleUseInfo tRui : res) {
-			applyRuleOnRui(tRui, contextID);
+			applyRuleOnRui(tRui);
 		}
 	}
 
-	abstract protected void applyRuleOnRui(RuleUseInfo tRui, String contextID);
+	abstract protected void applyRuleOnRui(RuleUseInfo tRui);
 
 	/**
 	 * Clears all the information saved by this RuleNode about the instances received.
 	 */
 	public void clear() {
-		contextRuisSet.clear();
+		//contextRuisSet.clear();
 		contextConstantRUI.clear();
 	}
 	
@@ -281,39 +286,39 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @param cntxt
 	 * @return RuisHandler
 	 */
-	public RuisHandler getContextRuiHandler(String cntxt) {
+	/*public RuisHandler getContextRuiHandler(String cntxt) {
 		return contextRuisSet.getByContext(cntxt);
-	}
+	}*/
 
 	/**
-	 * Creates an appropriate RuisHandler for a given context for this RuleNode, 
-	 * according to whether all, some or none of the variables in the antecedents are
-	 * shared. Then adds the RuisHandler to this contextRuisSet.
+	 * Creates an appropriate RuisHandler for this RuleNode, according to whether all, 
+	 * some or none of the variables in the antecedents are shared.
 	 * 
 	 * @param contextName
 	 * @return RuisHandler
 	 */
-	public RuisHandler addContextRuiHandler(String contextName) {
+	public RuisHandler addRuiHandler() {
 		if (sharedVars.size() != 0) {
 			SIndex si = null;
-			//Antecedents with variables share the same set of variables
+			// Antecedents with variables share the same set of variables
 			if (shareVars)
 				si = new SIndex(SIndex.SINGLETON, sharedVars, antNodesWithVars);
-			//Antecedents share some but not all variables
+			// Antecedents share some but not all variables
 			else
 				si = new SIndex(getSIndexType(), sharedVars, antNodesWithVars);
 			
-			return this.addContextRuiHandler(contextName, si);
+			return si;
 		} 
 		
 		else {
-			//PTree in case of and-entailment
-			//RUISet otherwise
-			return this.addContextRuiHandler(contextName, createRuisHandler(contextName));
+			// PTree in case of and-entailment
+			// RUISet otherwise
+			//return this.addContextRuiHandler(contextName, createRuisHandler(contextName));
+			return createRuisHandler();
 		}
 	}
 	
-	/**
+	/*/**
 	 * Adds the given RuisHandler by the given context name to this contextRuisSet.
 	 * 
 	 * @param cntxt
@@ -322,11 +327,11 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * 		RuisHandler to be added.
 	 * @return RuisHandler
 	 */
-	public RuisHandler addContextRuiHandler(String cntxt, RuisHandler cRuis) {
+	/*public RuisHandler addContextRuiHandler(String cntxt, RuisHandler cRuis) {
 		return this.contextRuisSet.addHandlerSet(cntxt, cRuis);
-	}
+	}*/
 
-	protected abstract RuisHandler createRuisHandler(String contextName);
+	protected abstract RuisHandler createRuisHandler();
 
 	/**
 	 * Returns a RUISet to be used in case all the antecedents do not share a common 

@@ -125,7 +125,9 @@ public class Node implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return this.term.toString();
+		if(this.term != null)
+			return this.term.toString();
+		return null;
 	}
 
 	/**

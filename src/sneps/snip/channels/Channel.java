@@ -42,7 +42,7 @@ public abstract class Channel {
 
 	public boolean addReport(Report report) {
 		System.out.println("Can pass " + filter.canPass(report));
-		if (filter.canPass(report) && contextName == report.getContextName()) {
+		if (filter.canPass(report)) {
 			System.out.println("\n\nThe Switch data:\n" + switch_);
 			switch_.switchReport(report);
 			reportsBuffer.addReport(report);

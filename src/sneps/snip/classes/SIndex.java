@@ -7,8 +7,6 @@ import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
-import sneps.snip.classes.PTree;
-import sneps.snip.classes.RuisHandler;
 
 public class SIndex extends RuisHandler {
 
@@ -17,7 +15,7 @@ public class SIndex extends RuisHandler {
 	 * ArrayList<Integer> represents the ids of the bound values of the substitutions 
 	 * for the shared variables.
 	 */
-	private Hashtable<ArrayList<Integer>, RuisHandler> map;
+	public Hashtable<ArrayList<Integer>, RuisHandler> map;
 	private byte ruiHandlerType;
 	public static final byte RUIS = 0, SINGLETON = 1, PTREE = 2;
 	private VarNodeSet sharedVars;
@@ -39,6 +37,12 @@ public class SIndex extends RuisHandler {
 		this.sharedVars = sharedVars;
 		this.nodesWithVars = nodesWithVars;
 	}
+	
+	public SIndex(byte ruiHandlerType, VarNodeSet sharedVars) {
+		map = new Hashtable<ArrayList<Integer>, RuisHandler>();
+		this.ruiHandlerType = ruiHandlerType;
+		this.sharedVars = sharedVars;
+	}
 
 	/**
 	 * Inserts the RuleUseInfo in the map based on the bound values for the 
@@ -53,18 +57,24 @@ public class SIndex extends RuisHandler {
 		ArrayList<Integer> boundValues = new ArrayList<Integer>();
 		int boundValueID;
 		for(VariableNode var : sharedVars) {
-			boundValueID = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
-			boundValues.add(boundValueID);
+			if(rui.getSubstitutions().getBindingByVariable(var) != null) {
+				boundValueID = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
+				boundValues.add(boundValueID);
+			}
 		}
 		
-		RuisHandler trui = map.get(boundValues);
-		if (trui == null) {
-			trui = getNewRUIType();
-			map.put(boundValues, trui);
+		if(!boundValues.isEmpty()) {
+			RuisHandler trui = map.get(boundValues);
+			if (trui == null) {
+				trui = getNewRUIType();
+				map.put(boundValues, trui);
+			}
+			
+			RuleUseInfoSet res = trui.insertRUI(rui);
+			return res;
 		}
 		
-		RuleUseInfoSet res = trui.insertRUI(rui);
-		return res;
+		return null;
 	}
 
 	/**

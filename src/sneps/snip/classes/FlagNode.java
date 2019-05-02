@@ -25,6 +25,11 @@ public class FlagNode {
 		supports = set;
 		flag = f;
 	}
+	
+	public FlagNode(Node n, int f) {
+		node = n;
+		flag = f;
+	}
 
 	/**
 	 * Return the node of the flag node

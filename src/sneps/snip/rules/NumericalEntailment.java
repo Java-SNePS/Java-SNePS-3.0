@@ -1,5 +1,7 @@
 package sneps.snip.rules;
 
+import java.util.Collection;
+
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
@@ -34,10 +36,18 @@ import sneps.snip.matching.Substitutions;
  */
 public class NumericalEntailment extends RuleNode {
 	private static final long serialVersionUID = 3546852401118194013L;
+	
 	private int i;
 
 	public NumericalEntailment(Molecular syn) {
 		super(syn);
+		// Initializing i
+		NodeSet max = getDownNodeSet("i");
+		i = Integer.parseInt(max.getNode(0).getIdentifier());
+		
+		// Initializing the antecedents
+		antecedents = getDownAntNodeSet();
+		processNodes(antecedents);
 	}
 
 	/**
@@ -48,15 +58,24 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	@Override
 	public void applyRuleHandler(Report report, Node signature) {
-		String contxt = report.getContextName();
 		if (report.isPositive()) {
-			PropositionSet propSet = report.getSupports();
+			Collection<PropositionSet> propSet = report.getSupports();
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.insert(new FlagNode(signature, propSet, 1));
-			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
-					1, 0, fns);
-			addNotSentRui(rui, contxt, signature);
+			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
+			
+			// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
+			// SIndex in case there shared variables between the antecedents, or 
+			// RUISet in case there are no shared variables
+			if(ruisHandler == null){
+				ruisHandler = addRuiHandler();
+			}
+			
+			ruisHandler.insertRUI(rui);
+			if(!ruisHandler.getPositiveNodes().contains(signature))
+				ruisHandler.getPositiveNodes().addNode(signature);
 		}
+		
 		int curPos = contextRuisSet.getByContext(contxt).getPositiveNodes().size();
 		int n = antNodesWithoutVars.size()+antNodesWithVars.size();
 		//The second cond will be removed
@@ -137,22 +156,6 @@ public class NumericalEntailment extends RuleNode {
 	}
 
 	/**
-	 * Inserts given RuleUseInfo into the appropriate SIndex and updates the corresponding SIndex
-	 * @param rui
-	 * @param contxt
-	 * @param signature
-	 */
-	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
-		SIndex set = (SIndex) contextRuisSet.getByContext(contxt);
-		if (set == null)
-			//Add check for vars
-			set = new SIndex(contxt, getSharedVarsNodes(antNodesWithVars), (byte) 0);
-		set.insertRUI(rui);
-		if(!set.getPositiveNodes().contains(signature))
-			set.getPositiveNodes().addNode(signature);
-		contextRuisSet.addHandlerSet(contxt, set);
-	}
-	/**
 	 * Prepares the appropriate SIndex and all its root RuleUseInfo for broadcasting  
 	 * @param contextID
 	 */
@@ -180,26 +183,25 @@ public class NumericalEntailment extends RuleNode {
 	}
 
 	/**
-	 * Creates an appropriate SIndex as a RuisHandler and inserts it into ContextRuisSet by Context
-	 * @param contextName
-	 * @return
-	 */
-	@Override
-	public RuisHandler createRuisHandler(String contextName) {
-		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
-		return this.addContextRuiHandler(contextName, index);
-	}
-
-	/**
 	 * Naming convention used to retrieve Nodes in Down Antecedent position is "iant";
 	 * "i" for NumericalEntailment, "ant" for Antecedent
 	 * @return
 	 */
 	@Override
 	public NodeSet getDownAntNodeSet(){
-		return this.getDownNodeSet("iant");
+		return this.getDownNodeSet("&ant");
 	}
 
+	@Override
+	protected RuisHandler createRuisHandler() {
+		return new RuleUseInfoSet(false);
+	}
+
+	@Override
+	protected byte getSIndexType() {
+		return SIndex.RUIS;
+	}
+	
 	/**
 	 * Getter for i
 	 * @return
@@ -207,6 +209,7 @@ public class NumericalEntailment extends RuleNode {
 	public int getI() {
 		return i;
 	}
+	
 	/**
 	 * Setter for i
 	 * @param newI
@@ -214,4 +217,5 @@ public class NumericalEntailment extends RuleNode {
 	public void setI(int newI){
 		i = newI;
 	}
+
 }
