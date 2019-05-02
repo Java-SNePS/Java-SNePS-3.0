@@ -1,38 +1,49 @@
 package sneps.snip;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Set;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.PropositionSet;
+import sneps.snebr.Context;
 import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
 public class Report {
 	private Substitutions substitution;
-	private Hashtable<String, PropositionSet> supports;
+	private Collection<PropositionSet> supports;
 	private boolean sign;
-	private String contextName;
 
-	public Report(Substitutions substitution, Hashtable<String, PropositionSet> set, boolean sign, String contextID) {
+	public Report(Substitutions substitution, Collection<PropositionSet> set, boolean sign) {
 		this.substitution = substitution;
 		this.supports = set;
 		this.sign = sign;
-		this.contextName = contextID;
+	}
+
+	public boolean anySupportAssertedInContext(Context reportContext)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		Collection<PropositionSet> reportSupportsSet = getSupports();
+		PropositionSet contextHypothesisSet = reportContext.getHypothesisSet();
+		for (PropositionSet assumptionHyps : reportSupportsSet)
+			if (assumptionHyps.isSubSet(contextHypothesisSet))
+				return true;
+		return false;
 	}
 
 	public Substitutions getSubstitutions() {
 		return substitution;
 	}
 
-	public Hashtable<String, PropositionSet> getSupports() {
+	public Collection<PropositionSet> getSupports() {
 		return supports;
 	}
 
 	@Override
 	public boolean equals(Object report) {
 		Report castedReport = (Report) report;
-		return this.substitution.equals(castedReport.substitution) && this.sign == castedReport.sign
-				&& this.contextName == castedReport.contextName;
+		return this.substitution.equals(castedReport.substitution) && this.sign == castedReport.sign;
 	}
 
 	public boolean getSign() {
@@ -52,11 +63,7 @@ public class Report {
 	}
 
 	public String toString() {
-		return "ContextID : " + contextName + "\nSign: " + sign + "\nSubstitution: " + substitution + "\nSupport: "
-				+ supports;
+		return "Sign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
 	}
 
-	public String getContextName() {
-		return contextName;
-	}
 }

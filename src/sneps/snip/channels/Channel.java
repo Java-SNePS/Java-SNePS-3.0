@@ -1,9 +1,13 @@
 package sneps.snip.channels;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
+import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snip.Filter;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
@@ -43,12 +47,13 @@ public abstract class Channel {
 		this.inferenceType = inferenceType;
 	}
 
-	public boolean testReportToSend(Report report) {
+	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		boolean passTest = filter.canPass(report);
 		System.out.println("Can pass " + passTest);
-		.passTest. /*Test the context name if it will pass or not*/
-		if (passTest && contextName.equals(report.getContextName())) {
-			System.out.println("\n\nThe switcher data:\n" + switcher);
+		/* Test the context name if it will pass or not */
+		Context channelContext = Controller.getContextByName(getContextName());
+		if (passTest && report.anySupportAssertedInContext(channelContext)) {
+			System.out.println("\nThe switcher data:\n" + switcher);
 			switcher.switchReport(report);
 			reportsBuffer.addReport(report);
 			Runner.addToHighQueue(requester);

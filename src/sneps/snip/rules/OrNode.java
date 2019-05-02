@@ -1,5 +1,7 @@
 package sneps.snip.rules;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -27,17 +29,14 @@ public class OrNode extends RuleNode {
 	}
 
 	public void applyRuleHandler(Report report, Node node) {
-
 		if (report.isPositive()) {
-
 			Support originSupports = this.getBasicSupport();
-			Hashtable<String, PropositionSet> sup = new Hashtable<String, PropositionSet>();
+			Collection<PropositionSet> originSupportsSet = originSupports.getAssumptionBasedSupport().values();
+			Collection<PropositionSet> sup = new ArrayList<PropositionSet>();
 			sup.add(originSupports);
-			Report reply = new Report(report.getSubstitutions(), sup, true, report.getContextName());
-
+			Report reply = new Report(report.getSubstitutions(), sup, true);
 			for (Channel outChannel : outgoingChannels)
 				outChannel.testReportToSend(reply);
-
 		}
 
 	}

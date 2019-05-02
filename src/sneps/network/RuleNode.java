@@ -107,17 +107,18 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 		sharedVars = getSharedVarsInts(antNodesWithVars);
 	}
 
-	public void applyRuleHandler(Report report, Node signature) {
-		String contextID = report.getContextName();
+	public void applyRuleHandler(Report report, Channel currentChannel) {
+		Node currentChannelReporter = currentChannel.getReporter();
+		String contextID = currentChannel.getContextName();
 		// Context context = SNeBR.getContextByID(contextID);
 		RuleUseInfo rui;
 		if (report.isPositive()) {
-			FlagNode fn = new FlagNode(signature, report.getSupports(), 1);
+			FlagNode fn = new FlagNode(currentChannelReporter, report.getSupports(), 1);
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
 		} else {
-			FlagNode fn = new FlagNode(signature, report.getSupports(), 2);
+			FlagNode fn = new FlagNode(currentChannelReporter, report.getSupports(), 2);
 			FlagNodeSet fns = new FlagNodeSet();
 			fns.putIn(fn);
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
@@ -263,7 +264,34 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 		return !(n instanceof VariableNode) || n instanceof RuleNode || ((VariableNode) n).getFreeVariables().isEmpty();
 	}
 
-	@Override
+	protected void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel) {
+		NodeSet antecedentNodeSet = getDownAntNodeSet();
+		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
+		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, ruleType);
+		sendRequestsToNodeSet(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
+				currentChannel.getContextName(), ChannelTypes.RuleAnt, currentChannel.getInferenceType());
+	}
+
+	protected void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel, Report report) {
+		NodeSet antecedentNodeSet = getDownAntNodeSet();
+		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
+		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, ruleType);
+		sendRequestsToNodeSet(toBeSentTo, report.getSubstitutions(), currentChannel.getContextName(),
+				ChannelTypes.RuleAnt, currentChannel.getInferenceType());
+
+	}
+
+	/*
+	 * Check error in Context public boolean anySupportAssertedInContext(Report
+	 * report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	 * String reportContextName = report.getContextName(); Set<Support>
+	 * reportSupports = report.getSupports(); for (Support support : reportSupports)
+	 * { int supportId = support.getId(); PropositionNode supportNode =
+	 * (PropositionNode) Network.getNodeById(supportId); if
+	 * (supportNode.assertedInContext(reportContextName)) return true; } return
+	 * false; }
+	 */
+
 	public void processRequests() {
 		for (Channel outChannel : outgoingChannels)
 			try {
@@ -275,43 +303,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			}
 	}
 
-	public void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel) {
-		NodeSet antecedentNodeSet = getDownAntNodeSet();
-		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
-		NodeSet toBeSentTo = alreadyWorking(antecedentNodeSet, currentChannel, ruleType);
-		sendRequests(toBeSentTo, currentChannel.getFilter().getSubstitutions(), currentChannel.getContextName(),
-				ChannelTypes.RuleAnt, currentChannel.getInferenceType());
-	}
-
-	/* Check error in COntext */
-//	public boolean anySupportAssertedInContext(Report report)
-//			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-//		String reportContextName = report.getContextName();
-//		Set<Support> reportSupports = report.getSupports();
-//		for (Support support : reportSupports) {
-//			int supportId = support.getId();
-//			PropositionNode supportNode = (PropositionNode) Network.getNodeById(supportId);
-//			if (supportNode.assertedInContext(reportContextName))
-//				return true;
-//		}
-//		return false;
-//	}
-
-	public boolean anySupportAssertedInContext(Report report)
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		String reportContextName = report.getContextName();
-		Context reportContext = Controller.getContextByName(reportContextName);
-		Hashtable<String, PropositionSet> reportSupports = report.getSupports();
-		PropositionSet contextHypothesisSet = reportContext.getHypothesisSet();
-		Collection<PropositionSet> reportSupportsSet = reportSupports.values();
-		for (PropositionSet assumptionHyps : reportSupportsSet) {
-			if (assumptionHyps.isSubSet(contextHypothesisSet)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/***
 	 * Request handling in Rule proposition nodes.
 	 * 
@@ -320,7 +311,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	 * @throws NotAPropositionNodeException
 	 * @throws DuplicatePropositionException
 	 */
-	public void processSingleRequestsChannel(Channel currentChannel)
+	protected void processSingleRequestsChannel(Channel currentChannel)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		if (currentChannel instanceof RuleToConsequentChannel) {
 			boolean closedTypeTerm = term instanceof Closed;
@@ -348,10 +339,13 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 					boolean caseCondition = ruleNodeAllVariablesBound
 							? reportNodeExtractedSubs.size() == ruleNodeExtractedSubs.size()
 							: reportNodeExtractedSubs.size() < ruleNodeExtractedSubs.size();
-					if (caseCondition && anySupportAssertedInContext(report)) {
-						requestAntecedentsNotAlreadyWorkingOn(currentChannel);
-						if (ruleNodeAllVariablesBound)
+					if (caseCondition && report.anySupportAssertedInContext(currentContext)) {
+						if (ruleNodeAllVariablesBound) {
+							requestAntecedentsNotAlreadyWorkingOn(currentChannel);
 							return;
+						} else
+							requestAntecedentsNotAlreadyWorkingOn(currentChannel, report);
+
 					}
 				}
 				super.processSingleRequestsChannel(currentChannel);
@@ -368,15 +362,18 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	 * Report handling in Rule proposition nodes.
 	 */
 	public void processReports() {
-		for (Channel currentChannel : incomingChannels) {
-			ReportSet channelReports = currentChannel.getReportsBuffer();
-			for (Report currentReport : channelReports) {
-				if (currentChannel instanceof AntecedentToRuleChannel) {
-					applyRuleHandler(currentReport, currentChannel.getReporter());
-				}
+		for (Channel currentChannel : incomingChannels)
+			processSingleReportsChannel(currentChannel);
+	}
+
+	protected void processSingleReportsChannel(Channel currentChannel) {
+		ReportSet channelReports = currentChannel.getReportsBuffer();
+		for (Report currentReport : channelReports) {
+			if (currentChannel instanceof AntecedentToRuleChannel) {
+				applyRuleHandler(currentReport, currentChannel);
 			}
-			currentChannel.clearReportsBuffer();
 		}
+		currentChannel.clearReportsBuffer();
 	}
 
 }

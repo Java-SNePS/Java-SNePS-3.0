@@ -1,5 +1,6 @@
 package sneps.snip.classes;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -10,22 +11,19 @@ import sneps.snebr.Support;
 public class FlagNode {
 
 	private Node node;
-	private Hashtable<String, PropositionSet> supports;
+	private Collection<PropositionSet> supports;
 	private int flag;
 
 	/**
 	 * Create a new flag node
 	 * 
-	 * @param n
-	 *            node
-	 * @param hashtable
-	 *            support
-	 * @param f
-	 *            true or false
+	 * @param n          node
+	 * @param collection support
+	 * @param f          true or false
 	 */
-	public FlagNode(Node n, Hashtable<String, PropositionSet> hashtable, int f) {
+	public FlagNode(Node n, Collection<PropositionSet> collection, int f) {
 		node = n;
-		supports = hashtable;
+		supports = collection;
 		flag = f;
 	}
 
@@ -43,13 +41,13 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public Hashtable<String, PropositionSet> getSupports() {
+	public Collection<PropositionSet> getSupports() {
 		return supports;
 	}
 
 	/**
-	 * Return the flag of the flag node (1 is true, 2 is false, 3 is unknown and
-	 * 4 is requested)
+	 * Return the flag of the flag node (1 is true, 2 is false, 3 is unknown and 4
+	 * is requested)
 	 * 
 	 * @return Node
 	 */
@@ -60,8 +58,7 @@ public class FlagNode {
 	/**
 	 * Check if this and fn are equal
 	 * 
-	 * @param fn
-	 *            flag node
+	 * @param fn flag node
 	 * @return true or false
 	 */
 	public boolean isEqual(FlagNode fn) {
@@ -71,12 +68,10 @@ public class FlagNode {
 	/**
 	 * Set the value of the flag to x
 	 * 
-	 * @param x
-	 *            int
+	 * @param x int
 	 */
 	public void setFlag(int x) {
 		flag = x;
 	}
-	
-	
+
 }
