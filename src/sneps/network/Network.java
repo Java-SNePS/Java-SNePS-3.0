@@ -650,18 +650,14 @@ public class Network implements Serializable {
 	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame) throws CannotBuildNodeException,
 			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
-		Object[] result = downCableSetExists(array);
+		// this node is either null, or an equivalent node to the one this method is tryin to build
+		// if an equivalent node is found, it is returned and no new node is built.
+		Node equivalentNodeInNetwork = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null)) {
-			// TODO Look for that node and return it
-			return null;
+		if (equivalentNodeInNetwork != null) {
+			return equivalentNodeInNetwork;
 		}
-
-		if (((Boolean) result[0] == true) && (result[1] != null)) {
-			throw new EquivalentNodeException("The equivalent node '" + "' was used instead", (Node) result[1]);
-		}
-
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
@@ -708,16 +704,13 @@ public class Network implements Serializable {
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
 			NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
-		Object[] result = downCableSetExists(array);
+		// this node is either null, or an equivalent node to the one this method is tryin to build
+		// if an equivalent node is found, it is returned and no new node is built.
+		Node equivalentNodeInNetwork = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null)) {
-			// TODO Look for that node and return it
-			return null;
-		}
-		if (((Boolean) result[0] == true) && (result[1] != null)) {
-			throw new EquivalentNodeException(
-					"The equivalent node '" + ((Node) result[1]).toString() + "' was used instead", (Node) result[1]);
+		if (equivalentNodeInNetwork != null) {
+			return equivalentNodeInNetwork;
 		}
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
