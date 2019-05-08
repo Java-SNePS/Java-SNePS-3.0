@@ -62,68 +62,67 @@ public class PropositionNode extends Node implements Serializable {
 	}
 
 	/***
-	 * Adding a report to all outgoing channels
+	 * Trying to send a report to all outgoing channels
 	 * 
 	 * @param report
 	 */
 	public void broadcastReport(Report report) {
-		for (Channel outChannel : outgoingChannels) {
-			try {
-				if (outChannel.testReportToSend(report)) {
-					// System.out.println("SENDING REPORT " + this);
-				}
-			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		for (Channel outChannel : outgoingChannels)
+			sendReport(report, outChannel);
 	}
 
+	/***
+	 * Used to send a report over a channel through calling Channel.testReportToSend
+	 * 
+	 * @param report
+	 * @param channel
+	 * @return
+	 */
 	public boolean sendReport(Report report, Channel channel) {
 		try {
 			if (channel.testReportToSend(report)) {
-				// System.out.println("SENDING REPORT " + this);
-				return true;
+				System.out.println("Report instance (" + report + ") was successfuly sent over (" + channel + ")");
 			}
 		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Report instance (" + report + ") could not be sent.");
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	private void sendReports(NodeSet isAntecedentTo, ReportSet reports, ChannelTypes channelType,
+	protected void sendReports(NodeSet isAntecedentTo, ReportSet reports, ChannelTypes channelType,
 			Channel currentChannel) {
-		for (Node node : isAntecedentTo) {
-			for (Report report : reports) {
-				Substitutions reportSubs = report.getSubstitutions();
-				Collection<PropositionSet> reportSuppSet = report.getSupports();
-				boolean reportSign = report.getSign();
-				String currentChannelContextName = currentChannel.getContextName();
-				Channel newChannel = establishChannel(channelType, node, null, reportSubs, currentChannelContextName,
-						InferenceTypes.FORWARD, -1);
-				outgoingChannels.addChannel(newChannel);
-				node.receiveReport(newChannel);
+		if (isAntecedentTo != null)
+			for (Node node : isAntecedentTo) {
+				for (Report report : reports) {
+					Substitutions reportSubs = report.getSubstitutions();
+					Support reportSupp = report.getSupport();
+					boolean reportSign = report.getSign();
+					String currentChannelContextName = currentChannel.getContextName();
+					Channel newChannel = establishChannel(channelType, node, null, reportSubs,
+							currentChannelContextName, -1);
+					outgoingChannels.addChannel(newChannel);
+					node.receiveReport(newChannel);
+				}
 			}
-		}
-
 	}
 
-	private void sendReports(List<Match> list, ReportSet reports, Channel currentChannel) {
-		for (Match match : list) {
-			for (Report report : reports) {
-				Substitutions reportSubs = report.getSubstitutions();
-				Collection<PropositionSet> reportSuppSet = report.getSupports();
-				Node sentTo = match.getNode();
-				boolean reportSign = report.getSign();
-				String currentChannelContextName = currentChannel.getContextName();
-				int matchType = match.getMatchType();
-				Channel newChannel = establishChannel(ChannelTypes.MATCHED, sentTo, null, reportSubs,
-						currentChannelContextName, InferenceTypes.FORWARD, matchType);
-				outgoingChannels.addChannel(newChannel);
-				sentTo.receiveReport(newChannel);
+	protected void sendReports(List<Match> list, ReportSet reports, Channel currentChannel) {
+		if (list != null)
+			for (Match match : list) {
+				for (Report report : reports) {
+					Substitutions reportSubs = report.getSubstitutions();
+//					Collection<PropositionSet> reportSuppSet = report.getSupports();
+					Node sentTo = match.getNode();
+//					boolean reportSign = report.getSign();
+					String currentChannelContextName = currentChannel.getContextName();
+					int matchType = match.getMatchType();
+					Channel newChannel = establishChannel(ChannelTypes.MATCHED, sentTo, null, reportSubs,
+							currentChannelContextName, matchType);
+					outgoingChannels.addChannel(newChannel);
+					sentTo.receiveReport(newChannel);
+				}
 			}
-		}
 	}
 
 	/***
@@ -140,8 +139,8 @@ public class PropositionNode extends Node implements Serializable {
 	 *                       node scenario
 	 * @return the established type based channel
 	 */
-	private Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
-			Substitutions filterSubs, String contextName, InferenceTypes inferenceType, int matchType) {
+	protected Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
+			Substitutions filterSubs, String contextName, int matchType) {
 		boolean matchTypeEstablishing = currentElement instanceof Match;
 		Node evaluatedReporter = matchTypeEstablishing ? ((Match) currentElement).getNode() : (Node) currentElement;
 		Substitutions switchLinearSubs = switchSubs == null ? new LinearSubstitutions() : switchSubs;
@@ -149,14 +148,14 @@ public class PropositionNode extends Node implements Serializable {
 		switch (type) {
 		case MATCHED:
 			newChannel = new MatchChannel(switchLinearSubs, filterSubs, contextName, this, evaluatedReporter, true,
-					inferenceType, matchType);
+					matchType);
 			break;
 		case RuleAnt:
 			newChannel = new AntecedentToRuleChannel(switchLinearSubs, filterSubs, contextName, this, evaluatedReporter,
-					true, inferenceType);
+					true);
 		default:
 			newChannel = new RuleToConsequentChannel(switchLinearSubs, filterSubs, contextName, this, evaluatedReporter,
-					true, inferenceType);
+					true);
 		}
 		return newChannel;
 
@@ -171,13 +170,13 @@ public class PropositionNode extends Node implements Serializable {
 	 * @param contextId
 	 * @param inferenceType
 	 */
-	protected void sendRequestsToMatches(List<Match> list, String contextId, InferenceTypes inferenceType) {
+	protected void sendRequestsToMatches(List<Match> list, String contextId) {
 		for (Match currentMatch : list) {
 			Substitutions switchSubs = currentMatch.getSwitchSubs();
 			Substitutions filterSubs = currentMatch.getFilterSubs();
 			int matchType = currentMatch.getMatchType();
 			Channel newChannel = establishChannel(ChannelTypes.MATCHED, currentMatch, switchSubs, filterSubs, contextId,
-					inferenceType, matchType);
+					matchType);
 			incomingChannels.addChannel(newChannel);
 			currentMatch.getNode().receiveRequest(newChannel);
 		}
@@ -194,9 +193,9 @@ public class PropositionNode extends Node implements Serializable {
 	 * @param inferenceType
 	 */
 	protected void sendRequestsToNodeSet(NodeSet ns, Substitutions filterSubs, String contextID,
-			ChannelTypes channelType, InferenceTypes inferenceType) {
+			ChannelTypes channelType) {
 		for (Node sentTo : ns) {
-			Channel newChannel = establishChannel(channelType, sentTo, null, filterSubs, contextID, inferenceType, -1);
+			Channel newChannel = establishChannel(channelType, sentTo, null, filterSubs, contextID, -1);
 			incomingChannels.addChannel(newChannel);
 			sentTo.receiveRequest(newChannel);
 		}
@@ -223,20 +222,13 @@ public class PropositionNode extends Node implements Serializable {
 	 */
 	protected void processSingleRequestsChannel(Channel currentChannel)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
-		// TODO check correctness
-		int instanceNodeId = getId();
-		PropositionSet propSet = new PropositionSet();
-		propSet.add(instanceNodeId);
-		Collection<PropositionSet> nodeAssumptionBasedSupport = getAssumptionBasedSupport().values();
+		Support nodeSupport = getBasicSupport();
 		String currentContextName = currentChannel.getContextName();
 		Context desiredContext = Controller.getContextByName(currentContextName);
 		if (assertedInContext(desiredContext)) {
 			// TODO change the subs to hashsubs
-			Collection<PropositionSet> support = new ArrayList<PropositionSet>();
-			support.add(propSet);
-			Report reply = new Report(new LinearSubstitutions(), nodeAssumptionBasedSupport, true);
-			knownInstances.addReport(reply);
-			broadcastReport(reply);
+			Report reply = new Report(new LinearSubstitutions(), nodeSupport, true, InferenceTypes.BACKWARD);
+			sendReport(reply, currentChannel);
 		} else {
 			boolean sentAtLeastOne = false;
 			for (Report currentReport : knownInstances)
@@ -246,17 +238,12 @@ public class PropositionNode extends Node implements Serializable {
 				NodeSet dominatingRules = getDominatingRules();
 				NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel, false);
 				sendRequestsToNodeSet(toBeSentToDom, new LinearSubstitutions(), currentContextName,
-						ChannelTypes.RuleAnt, currentChannel.getInferenceType());
+						ChannelTypes.RuleAnt);
 				if (!(currentChannel instanceof MatchChannel)) {
 					List<Match> matchingNodes = Matcher.match(this);
 					List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel, false);
-					sendRequestsToMatches(toBeSentToMatch, currentContextName, currentChannel.getInferenceType());
+					sendRequestsToMatches(toBeSentToMatch, currentContextName);
 				}
-				/*
-				 * if (!(currentChannel instanceof MatchChannel)) // was in !alreadyWorking if
-				 * condition getNodesToSendRequests(ChannelTypes.MATCHED,
-				 * currentChannel.getContextName(), null, currentChannel.getInferenceType());
-				 */
 			}
 		}
 	}
@@ -275,28 +262,28 @@ public class PropositionNode extends Node implements Serializable {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Substitutions reportSubs = currentReport.getSubstitutions();
-			Collection<PropositionSet> reportSupportSet = currentReport.getSupports();
+			Support reportSupport = currentReport.getSupport();
 			boolean reportSign = currentReport.isPositive();
-			String currentChannelContextName = currentChannel.getContextName();
 			boolean toBeSentFlag = true;
 			if (currentChannel instanceof MatchChannel) {
 				int channelMatchType = ((MatchChannel) currentChannel).getMatchType();
 				toBeSentFlag = (channelMatchType == 0) || (channelMatchType == 1 && currentReport.isPositive())
 						|| (channelMatchType == 2 && currentReport.isNegative());
 			}
-			Report alteredReport = new Report(reportSubs, reportSupportSet, reportSign);
-			if (knownInstances.contains(alteredReport))
-				continue;
-			if (toBeSentFlag)
-				broadcastReport(alteredReport);
-		}
-		/* Handling forward inference broadcasting */
-		if (currentChannel.getInferenceType() == InferenceTypes.FORWARD) {
-			List<Match> matchesReturned = Matcher.match(this);
-			if (matchesReturned != null)
+			Report alteredBReport = new Report(reportSubs, reportSupport, reportSign, InferenceTypes.BACKWARD);
+			Report alteredFReport = new Report(reportSubs, reportSupport, reportSign, InferenceTypes.FORWARD);
+			boolean backwardReportFound = knownInstances.contains(alteredBReport);
+			boolean forwardReportFound = knownInstances.contains(alteredFReport);
+			if ((!backwardReportFound || !forwardReportFound) && toBeSentFlag) {
+				broadcastReport(!forwardReportFound ? alteredFReport : alteredBReport);
+			}
+			/* Handling forward inference broadcasting */
+			if (currentReport.getInferenceType() == InferenceTypes.FORWARD) {
+				List<Match> matchesReturned = Matcher.match(this);
 				sendReports(matchesReturned, reports, currentChannel);
-			NodeSet isAntecedentTo = getDominatingRules();
-			sendReports(isAntecedentTo, reports, ChannelTypes.RuleAnt, currentChannel);
+				NodeSet isAntecedentTo = getDominatingRules();
+				sendReports(isAntecedentTo, reports, ChannelTypes.RuleAnt, currentChannel);
+			}
 		}
 		currentChannel.clearReportsBuffer();
 	}
@@ -339,6 +326,7 @@ public class PropositionNode extends Node implements Serializable {
 	public void receiveReports(Channel channel) {
 		outgoingChannels.addChannel(channel);
 		Runner.addToHighQueue(this);
+		channel.setReportProcessed(true);
 	}
 
 	public void deduce() {
@@ -346,7 +334,8 @@ public class PropositionNode extends Node implements Serializable {
 		String currentContextName = Controller.getCurrentContextName();
 		getNodesToSendRequests(ChannelTypes.RuleCons, currentContextName, null, InferenceTypes.BACKWARD);
 		getNodesToSendRequests(ChannelTypes.MATCHED, currentContextName, null, InferenceTypes.BACKWARD);
-		Runner.run(); // what to return here ?
+		// what to return here ?
+		System.out.println(Runner.run());
 	}
 
 	public void add() {
@@ -369,13 +358,13 @@ public class PropositionNode extends Node implements Serializable {
 			case MATCHED:
 				List<Match> matchesReturned = Matcher.match(this);
 				if (matchesReturned != null)
-					sendRequestsToMatches(matchesReturned, currentContextName, inferenceType);
+					sendRequestsToMatches(matchesReturned, currentContextName);
 				break;
 			case RuleCons:
 				NodeSet dominatingRules = getDominatingRules();
 				// TODO Youssef: check if passing a new LinearSubstitutions is correct
 				Substitutions linearSubs = substitutions == null ? new LinearSubstitutions() : substitutions;
-				sendRequestsToNodeSet(dominatingRules, linearSubs, currentContextName, channelType, inferenceType);
+				sendRequestsToNodeSet(dominatingRules, linearSubs, currentContextName, channelType);
 				break;
 			default:
 				break;

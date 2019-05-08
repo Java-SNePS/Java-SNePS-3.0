@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.classes.Semantic;
@@ -32,11 +34,16 @@ public class OrNode extends RuleNode {
 		if (report.isPositive()) {
 			Support originSupports = this.getBasicSupport();
 			Collection<PropositionSet> originSupportsSet = originSupports.getAssumptionBasedSupport().values();
-			Collection<PropositionSet> sup = new ArrayList<PropositionSet>();
-			sup.add(originSupports);
-			Report reply = new Report(report.getSubstitutions(), sup, true);
+			Support sup = new Support(this);
+			// sup.add(originSupports);
+			Report reply = new Report(report.getSubstitutions(), sup, true, null);
 			for (Channel outChannel : outgoingChannels)
-				outChannel.testReportToSend(reply);
+				try {
+					outChannel.testReportToSend(reply);
+				} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 	}

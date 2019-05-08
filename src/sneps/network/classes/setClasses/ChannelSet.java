@@ -1,26 +1,25 @@
 package sneps.network.classes.setClasses;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import sneps.snip.channels.Channel;
 
-import java.io.Serializable;
-import java.util.HashSet;
-
-public class ChannelSet implements Iterable<Channel>, Serializable {
-	private HashSet<Channel> channels;
+public class ChannelSet implements Iterable<Channel> {
+	private Set<Channel> channels;
 
 	public ChannelSet() {
 		channels = new HashSet<Channel>();
 	}
 
+	public void addChannel(Channel channel) {
+		channels.add(channel);
+	}
+
 	@Override
 	public Iterator<Channel> iterator() {
 		return channels.iterator();
-	}
-
-	public void addChannel(Channel newChannel) {
-		channels.add(newChannel);
 	}
 
 	/***
@@ -39,4 +38,7 @@ public class ChannelSet implements Iterable<Channel>, Serializable {
 		return processedRequestsChannels;
 	}
 
+	public Set<Channel> getChannels() {
+		return channels;
+	}
 }

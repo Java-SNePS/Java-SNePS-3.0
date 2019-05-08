@@ -12,8 +12,8 @@ public class MatchChannel extends Channel {
 	}
 
 	public MatchChannel(Substitutions switchSubstitution, Substitutions filterSubstitutions, String contextID,
-			Node requester, Node reporter, boolean v, InferenceTypes inferenceType, int matchType) {
-		super(switchSubstitution, filterSubstitutions, contextID, requester, reporter, v, inferenceType);
+			Node requester, Node reporter, boolean v, int matchType) {
+		super(switchSubstitution, filterSubstitutions, contextID, requester, reporter, v);
 		this.setMatchType(matchType);
 	}
 

@@ -159,12 +159,12 @@ public class Node implements Serializable {
 
 	public void receiveRequest(Channel newChannel) {
 		// TODO Auto-generated method stub - install channel
-
+		Runner.addToLowQueue(this);
 	}
 
 	public void receiveReport(Channel newChannel) {
 		// TODO Auto-generated method stub
-
+		Runner.addToHighQueue(this);
 	}
 
 	public void processReports() {
@@ -215,12 +215,6 @@ public class Node implements Serializable {
 	public boolean isWhQuestion(Substitutions filterSubs) {
 		VariableNodeStats currentNodeStats = computeNodeStats(filterSubs);
 		return !currentNodeStats.areAllVariablesBound();
-		/*
-		 * if (!(this instanceof VariableNode)) return false; VariableNode node =
-		 * (VariableNode) this; VariableSet variables = node.getFreeVariables(); int
-		 * variablesCardn = variables.size(); int filterCardn =
-		 * filterSubs.cardinality(); return filterCardn < variablesCardn;
-		 */
 	}
 
 	/***

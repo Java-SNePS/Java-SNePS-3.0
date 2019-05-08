@@ -26,7 +26,6 @@ public abstract class Channel {
 	private ReportSet reportsBuffer;
 	private boolean requestProcessed = false;
 	private boolean reportProcessed = false;
-	private InferenceTypes inferenceType;
 
 	public Channel() {
 		filter = new Filter();
@@ -35,7 +34,7 @@ public abstract class Channel {
 	}
 
 	public Channel(Substitutions switcherSubstitution, Substitutions filterSubstitutions, String contextID,
-			Node requester, Node reporter, boolean v, InferenceTypes inferenceType) {
+			Node requester, Node reporter, boolean v) {
 		this.filter = new Filter(filterSubstitutions);
 		this.switcher = new Switch(switcherSubstitution);
 		this.contextName = contextID;
@@ -44,7 +43,6 @@ public abstract class Channel {
 		this.valve = v;
 		this.reporter = reporter;
 		reportsBuffer = new ReportSet();
-		this.inferenceType = inferenceType;
 	}
 
 	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
@@ -104,14 +102,6 @@ public abstract class Channel {
 
 	public void setReportProcessed(boolean reportProcessed) {
 		this.reportProcessed = reportProcessed;
-	}
-
-	public InferenceTypes getInferenceType() {
-		return inferenceType;
-	}
-
-	public void setInferenceType(InferenceTypes inferenceType) {
-		this.inferenceType = inferenceType;
 	}
 
 	public void setValve(boolean valve) {

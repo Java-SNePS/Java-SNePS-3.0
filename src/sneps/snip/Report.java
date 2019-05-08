@@ -13,18 +13,20 @@ import sneps.snip.matching.Substitutions;
 
 public class Report {
 	private Substitutions substitution;
-	private Collection<PropositionSet> supports;
+	private Support support;
 	private boolean sign;
+	private InferenceTypes inferenceType;
 
-	public Report(Substitutions substitution, Collection<PropositionSet> set, boolean sign) {
+	public Report(Substitutions substitution, Support suppt, boolean sign, InferenceTypes inference) {
 		this.substitution = substitution;
-		this.supports = set;
+		this.support = suppt;
 		this.sign = sign;
+		this.inferenceType = inference;
 	}
 
 	public boolean anySupportAssertedInContext(Context reportContext)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		Collection<PropositionSet> reportSupportsSet = getSupports();
+		Collection<PropositionSet> reportSupportsSet = support.getAssumptionBasedSupport().values();
 		PropositionSet contextHypothesisSet = reportContext.getHypothesisSet();
 		for (PropositionSet assumptionHyps : reportSupportsSet)
 			if (assumptionHyps.isSubSet(contextHypothesisSet))
@@ -36,8 +38,8 @@ public class Report {
 		return substitution;
 	}
 
-	public Collection<PropositionSet> getSupports() {
-		return supports;
+	public Support getSupport() {
+		return support;
 	}
 
 	@Override
@@ -63,7 +65,15 @@ public class Report {
 	}
 
 	public String toString() {
-		return "Sign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + supports;
+		return "Sign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + support;
+	}
+
+	public InferenceTypes getInferenceType() {
+		return inferenceType;
+	}
+
+	public void setInferenceType(InferenceTypes inferenceType) {
+		this.inferenceType = inferenceType;
 	}
 
 }

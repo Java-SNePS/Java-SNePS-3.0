@@ -466,10 +466,9 @@ public class LinearSubstitutions implements Substitutions {
 		for (Binding binding : sub) {
 			VariableNode bindingVariableNode = binding.getVariableNode();
 			boolean bindingFound = false;
-			for (Variable variable : freeVariables) {
-				Variable bindingVariable = (Variable) bindingVariableNode.getTerm();
+			Variable bindingVariable = (Variable) bindingVariableNode.getTerm();
+			for (Variable variable : freeVariables)
 				bindingFound |= variable.equals(bindingVariable);
-			}
 			if (bindingFound)
 				extractedFilterRelevantToVariables.add(binding);
 			forAllCondition &= bindingFound;

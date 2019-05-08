@@ -5,10 +5,12 @@ import sneps.network.Node;
 public class Match {
 	private Substitutions filterSubs; // whquestion atleastone free not bound
 	// no filter on match channel
-	// target (switch el heya variables to variables) <- source (filter el heya variables to constants)
+	// target (switch el heya variables to variables) <- source (filter el heya
+	// variables to constants)
 	private Substitutions switchSubs;
 	private Node node;
 	private int matchType;
+	// add propset as support
 
 	public Match(Substitutions filterSubs, Substitutions switchSubs, Node n, int type) {
 		this.filterSubs = filterSubs;
