@@ -35,6 +35,7 @@ public interface Substitutions {
     public void unionIn (Substitutions s);
     public void update(Binding mb , Node mn);
     public Node value(VariableNode n);
+    public int size();
 
 
 }

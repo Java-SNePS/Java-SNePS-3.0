@@ -14,12 +14,7 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
  * @version 3.00 31/5/2018
  */
 public abstract class RuisHandler {
-	private NodeSet positiveNodes;
-
-	public RuisHandler(){
-		positiveNodes = new NodeSet();
-	}
-
+	
 	/**
 	 * Inserts the given RuleUseInfo into this RuisHandler and returns the 
 	 * RuleUseInfoSet resulted from combining it with the RuleUseInfos in this 
@@ -30,11 +25,7 @@ public abstract class RuisHandler {
 	 */
 	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
 	
-	public NodeSet getPositiveNodes() {
-		return positiveNodes;
-	}
+	abstract public boolean isEmpty();
 	
-	public void setPositiveNodes(NodeSet positiveNodes) {
-		this.positiveNodes = positiveNodes;
-	}
+	abstract public void clear();
 }

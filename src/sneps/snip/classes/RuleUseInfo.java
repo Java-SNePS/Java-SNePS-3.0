@@ -1,9 +1,7 @@
 package sneps.snip.classes;
 
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.FlagNodeSet;
-import sneps.network.classes.setClasses.PropositionSet;
+import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
 /**
@@ -20,6 +18,10 @@ public class RuleUseInfo {
 	private int pos;
 	private int neg;
 	private FlagNodeSet fns;
+	
+	public RuleUseInfo() {
+		
+	}
 
 	public RuleUseInfo(Substitutions s, int p, int n, FlagNodeSet f) {
 		sub = s;
@@ -111,23 +113,14 @@ public class RuleUseInfo {
 	 * @return true or false
 	 */
 	public boolean isJoint(RuleUseInfo r) {
-		// for (int i = 0; i < fns.cardinality(); i++) {
-		// for (int j = 0; j < r.getFlagNodeSet().cardinality(); j++) {
-		// if (fns.getFlagNode(i)
-		// .getNode()
-		// .getIdentifier()
-		// .equals(r.getFlagNodeSet().getFlagNode(j).getNode()
-		// .getIdentifier()))
-		// return true;
-		// }
-		// }
 		for (FlagNode fn1 : fns) {
 			for (FlagNode fn2 : r.getFlagNodeSet()) {
-				System.out.println("---->> " + fn1.getNode() + " " + fn1.getNode());
+				//System.out.println("---->> " + fn1.getNode() + " " + fn1.getNode());
 				if (fn1.getNode() == fn2.getNode())
 					return true;
 			}
 		}
+		
 		return false;
 	}
 
@@ -159,28 +152,9 @@ public class RuleUseInfo {
 		return null;
 	}
 	
-	/**
-	 * Gets the union of supports of each flag node in this RUI's fns
-	 * @return PropositionSet
-	 */
-
-	/*public PropositionSet getSupports() {
-		if (fns.isNew())
-			return new PropositionSet();
-		
-		if (fns.cardinality() == 1)
-			return fns.iterator().next().getSupports();
-
-		PropositionSet res = new PropositionSet();
-		for(FlagNode fn : fns){
-			try {
-				res = res.union(fn.getSupports());
-			} catch (NotAPropositionNodeException
-					| NodeNotFoundInNetworkException e) {
-			}
-		}
-		
-		return res;
-	}*/
+	public String toString() {
+		return "Sub: " + sub.toString() + " Pos: " + pos + " Neg: " + neg + 
+				" Fns: " + fns.toString();
+	}
 
 }

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.ContextRuisSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
@@ -17,6 +19,7 @@ import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -24,13 +27,14 @@ import sneps.snip.channels.ChannelTypes;
 import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 
 public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
 	
-	private NodeSet consequents;
+	protected NodeSet consequents;
 	protected NodeSet antecedents;
 	
 	/**
@@ -67,9 +71,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * A Hashtable used to map each context to a single RuleUseInfo 
 	 * that contains all the constant instances that do not dominate variables.
 	 */
-	private Hashtable<Context, RuleUseInfo> contextConstantRUI;
+	protected RuleUseInfo constantRUI;
 
-	public RuleNode() {
+	public RuleNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		consequents = new NodeSet();
 		antecedents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
@@ -78,11 +82,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
 		sharedVars = new VarNodeSet();
-		//contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 
-	public RuleNode(Molecular syn) {
+	public RuleNode(Molecular syn) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		super(syn);
 		consequents = new NodeSet();
 		antecedents = new NodeSet();
@@ -92,8 +94,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
 		sharedVars = new VarNodeSet();
-		//contextRuisSet = new ContextRuisSet();
-		contextConstantRUI = new Hashtable<Context, RuleUseInfo>();
 	}
 	
 	public NodeSet getConsequents() {
@@ -110,6 +110,26 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	
 	protected NodeSet getPatternNodes() {
 		return antNodesWithVars;
+	}
+	
+	public NodeSet getAntecedents() {
+		return antecedents;
+	}
+	
+	public NodeSet getAntsWithoutVars() {
+		return antNodesWithoutVars;
+	}
+	
+	public NodeSet getAntsWithVars() {
+		return antNodesWithVars;
+	}
+
+	public void setAntecedents(NodeSet antecedents) {
+		this.antecedents = antecedents;
+	}
+
+	public void setConsequents(NodeSet consequents) {
+		this.consequents = consequents;
 	}
 
 	protected void sendReportToConsequents(Report reply) {
@@ -149,9 +169,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * 		The instance that is being reported by the report.
 	 */
 	public void applyRuleHandler(Report report, Node signature) {
-		//String contextID = report.getContextName();
 		RuleUseInfo rui;
-		Collection<PropositionSet> propSet = report.getSupports();
+		Support propSet = report.getSupport();
 		FlagNodeSet fns = new FlagNodeSet();
 		
 		if (report.isPositive()) {
@@ -163,32 +182,49 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
 		}
 		
-		//RuisHandler crtemp = contextRuisSet.getByContext(contextID);		
-		
-		// This is the first report received by this RuleNode, so a RuisHandler is 
-		// created
-		if(ruisHandler == null){
+		// This is the first report received by this RuleNode, so 
+		// a RuisHandler is created
+		if(ruisHandler == null) {
 			ruisHandler = addRuiHandler();
 		}
-
-		// The RUI created for the given report is inserted to the RuisHandler
-		RuleUseInfoSet res = ruisHandler.insertRUI(rui);
-		if (res == null)
-			res = new RuleUseInfoSet();
 		
-		for (RuleUseInfo tRui : res) {
-			applyRuleOnRui(tRui);
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		if(antNodesWithoutVars.contains(signature))
+			addConstantRui(rui);
+		else {
+			// The RUI created for the given report is inserted to the RuisHandler
+			res = ruisHandler.insertRUI(rui);
+		}
+		
+		if (res == null) {
+			applyRuleOnRui(constantRUI);
+			return;
+		}
+		
+		if(constantRUI != null) {
+			RuleUseInfo combined;
+			for (RuleUseInfo tRui : res) {
+				combined = tRui.combine(constantRUI);
+				if(combined != null)
+					applyRuleOnRui(combined);
+			}
+		}
+		else {
+			for (RuleUseInfo tRui : res) {
+				applyRuleOnRui(tRui);
+			}
 		}
 	}
 
-	abstract protected void applyRuleOnRui(RuleUseInfo tRui);
+	abstract protected RuleResponse applyRuleOnRui(RuleUseInfo tRui);
 
 	/**
+	 * 
 	 * Clears all the information saved by this RuleNode about the instances received.
 	 */
 	public void clear() {
-		//contextRuisSet.clear();
-		contextConstantRUI.clear();
+		
+		//contextConstantRUI.clear();
 	}
 	
 	/**
@@ -232,6 +268,20 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		
 		if (nodes.isEmpty())
 			return res;
+		
+		if(nodes.size() == 1) {
+			if(nodes.getNode(0) instanceof VariableNode) {
+				res.addVarNode((VariableNode) nodes.getNode(0));
+				return res;
+			}
+			
+			if(nodes.getNode(0).getTerm() instanceof Open) {
+				VarNodeSet free = ((Open) nodes.getNode(0).getTerm()).getFreeVariables();
+				for(VariableNode var : free)
+					res.addVarNode(var);
+				return res;
+			}
+		}
 
 		for(Node curNode : nodes) {
 			if(curNode instanceof VariableNode) {
@@ -263,7 +313,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @return NodeSet
 	 */
 	public NodeSet getDownNodeSet(String name) {
-		if(term != null && term instanceof Molecular)
+		if(term != null && term instanceof Molecular && 
+				((Molecular) term).getDownCableSet().getDownCable(name) != null)
 			return ((Molecular)term).getDownCableSet().getDownCable(name).getNodeSet();
 		return null;
 	}
@@ -340,7 +391,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @param contextName
 	 * @return RuleUseInfoSet
 	 */
-	protected RuleUseInfoSet createContextRuiHandlerNonShared(String contextName) {
+	protected RuleUseInfoSet createContextRuiHandlerNonShared() {
 		return new RuleUseInfoSet(false);
 	}
 
@@ -360,27 +411,22 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		}
 	}
 
-	public RuleUseInfo addConstantRuiToContext(String context, RuleUseInfo rui) {
-		Context contxt = (Context) Controller.getContextByName(context);
-		RuleUseInfo tRui = contextConstantRUI.get(contxt);
-		if (tRui != null)
-			tRui = rui.combine(tRui);
+	public RuleUseInfo addConstantRui(RuleUseInfo rui) {
+		//Context contxt = (Context) Controller.getContextByName(context);
+		//RuleUseInfo tRui = contextConstantRUI.get(contxt);
+		if (constantRUI != null)
+			constantRUI = rui.combine(constantRUI);
 		else
-			tRui = rui;
-		if (tRui == null)
+			constantRUI = rui;
+		if (constantRUI == null)
 			throw new NullPointerException(
 					"The existed RUI could not be merged " + "with the given rui so check your code again");
-		contextConstantRUI.put(contxt, tRui);
-		return tRui;
+		//contextConstantRUI.put(contxt, tRui);
+		return constantRUI;
 	}
 
-	public RuleUseInfo getConstantRui(Context con) {
-		RuleUseInfo tRui = contextConstantRUI.get(con);
-		return tRui;
-	}
-
-	public RuleUseInfo getConstantRUI(String context) {
-		return contextConstantRUI.get(context);
+	public RuleUseInfo getConstantRui() {
+		return constantRUI;
 	}
 
 	@Override

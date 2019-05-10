@@ -26,6 +26,10 @@ public class Support implements Serializable{
 	private boolean hasChildren;
 	private boolean TreeComputed;
 
+	public Support() {
+		
+	}
+	
 	public Support(int id) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		this.id = id;
 		assumptionBasedSupport = new Hashtable<String, PropositionSet>();

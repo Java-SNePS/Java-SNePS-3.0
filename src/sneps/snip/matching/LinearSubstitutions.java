@@ -461,6 +461,10 @@ public class LinearSubstitutions implements Substitutions {
 			}
 		}
 	}
+	
+	public int size() {
+		return sub.size();
+	}
 
 
 	/*public int termID(int variableID) {

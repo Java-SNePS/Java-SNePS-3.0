@@ -13,9 +13,6 @@ import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
 public class OrEntailment extends RuleNode {
-
-	boolean sign = false;
-	private int ant,cq;
 	
 
 	/**

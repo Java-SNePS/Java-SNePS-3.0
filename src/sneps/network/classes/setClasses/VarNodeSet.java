@@ -24,7 +24,7 @@ public class VarNodeSet implements Iterable<VariableNode> {
 		return variables.iterator();
 	}
 
-	public VariableNode getVarNode(int index){
+	public VariableNode getVarNode(int index) {
 		return variables.get(index);
 	}
 

@@ -120,4 +120,17 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 	public int size() {
 		return ruis.size();
 	}
+	
+	public void clear() {
+		ruis.clear();
+	}
+	
+	public String toString() {
+		String res = null;
+		for(RuleUseInfo rui : ruis) {
+			res = rui.toString() + " ";
+		}
+		
+		return res;
+	}
 }

@@ -94,4 +94,16 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		for(FlagNode fn : fns)
 			flagNodes.add(fn);
 	}
+	
+	public String toString() {
+		String res = null;
+		for(FlagNode fn : flagNodes) {
+			if(res != null)
+				res += fn.toString() + "\n";
+			else
+				res = fn.toString() + "\n";
+		}
+		
+		return res;
+	}
 }

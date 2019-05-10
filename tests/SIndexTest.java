@@ -3,6 +3,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.VariableNode;
@@ -22,7 +24,7 @@ import sneps.snip.matching.LinearSubstitutions;
 public class SIndexTest {
 
 	@Test
-	public void newSIndex() {
+	public void newSIndex() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		
 		/**
 		 * Creating Nodes
@@ -99,6 +101,7 @@ public class SIndexTest {
 		vns5.addVarNode(vn5);
 		vns6.addVarNode(vn6);
 		vns7.addVarNode(vn7);
+		
 		//RUI set SIndex
 		SIndex index = new SIndex((byte) 0, vns);
 		

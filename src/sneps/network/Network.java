@@ -1088,6 +1088,8 @@ public class Network implements Serializable {
 	 *            the case frame implemented by the new pattern or proposition node.
 	 *
 	 * @return the newly created pattern node or proposition node.
+	 * @throws NodeNotFoundInNetworkException 
+	 * @throws NotAPropositionNodeException 
 	 *
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
@@ -1095,7 +1097,7 @@ public class Network implements Serializable {
 	 */
 
 	@SuppressWarnings("rawtypes")
-	private static Node createPatNode(Object[][] relNodeSet, CaseFrame caseFrame) {
+	private static Node createPatNode(Object[][] relNodeSet, CaseFrame caseFrame) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
@@ -1136,7 +1138,7 @@ public class Network implements Serializable {
 
 	}
 
-	private static Node createPatNode(Object[][] relNodeSet, RelationsRestrictedCaseFrame caseFrame) {
+	private static Node createPatNode(Object[][] relNodeSet, RelationsRestrictedCaseFrame caseFrame) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0], (NodeSet) relNodeSet[i][1]));
@@ -1188,6 +1190,8 @@ public class Network implements Serializable {
 	 *            the case frame implemented by the new closed or proposition node.
 	 *
 	 * @return the newly created closed or proposition node.
+	 * @throws NodeNotFoundInNetworkException 
+	 * @throws NotAPropositionNodeException 
 	 *
 	 * @throws Exception
 	 *             if the semantic class specified by the case frame was not
@@ -1195,7 +1199,7 @@ public class Network implements Serializable {
 	 */
 
 	@SuppressWarnings("rawtypes")
-	private static Node createClosedNode(Object[][] relNodeSet, CaseFrame caseFrame) {
+	private static Node createClosedNode(Object[][] relNodeSet, CaseFrame caseFrame) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0], (NodeSet) relNodeSet[i][1]));
@@ -1231,7 +1235,7 @@ public class Network implements Serializable {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static Node createClosedNode(Object[][] relNodeSet, RelationsRestrictedCaseFrame caseFrame) {
+	private static Node createClosedNode(Object[][] relNodeSet, RelationsRestrictedCaseFrame caseFrame) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		LinkedList<DownCable> dCables = new LinkedList<DownCable>();
 		for (int i = 0; i < relNodeSet.length; i++) {
 			dCables.add(new DownCable((Relation) relNodeSet[i][0], (NodeSet) relNodeSet[i][1]));

@@ -31,14 +31,14 @@ import sneps.snip.matching.Substitutions;
 public class PropositionNode extends Node implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Support basicSupport;
-	
+	protected Support basicSupport;
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
 	protected ReportSet knownInstances;
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
+		basicSupport = new Support();
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -47,6 +47,7 @@ public class PropositionNode extends Node implements Serializable {
 	
 	public PropositionNode(Term trm) {
 		super(Semantic.proposition, trm);
+		basicSupport = new Support();
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -56,8 +57,8 @@ public class PropositionNode extends Node implements Serializable {
  	public void processSingleChannelReports(Channel currentChannel) {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
-			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupports(),
-					currentReport.getSign(), currentReport.getContextName());
+			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupport(),
+					currentReport.getSign());
 			if (knownInstances.contains(alteredReport)) {
 				continue;
 			}else{
