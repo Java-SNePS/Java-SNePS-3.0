@@ -686,6 +686,39 @@ public class Controller {
     	}
     	
     }
+    
+    @SuppressWarnings("unchecked")
+	public static BaseSupportGraph GTrim(BaseSupportGraph G) {
+    	
+    	LinkedList<LinkedList<PropositionSet>> hypsList = G.getHypsAdjList();
+    	LinkedList<LinkedList<PropositionSet>> supportslist = G.getSupportsAdjList();
+    	
+    	for (Iterator iter = hypsList.iterator(); iter.hasNext();){
+    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
+    		PropositionSet currentNode = currentRow.peek(); // looks at the first element of the list (the Node)
+    		PropositionSet currentSupport = currentRow.get(1); // looks at the first support that the node is a subset of
+    		if(currentNode.equals(currentSupport)){
+    			G.removeFromHypList(currentNode);
+    		}
+    	}
+    	
+    	for (Iterator iter = supportslist.iterator(); iter.hasNext();){
+    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
+    		PropositionSet currentSupport = currentRow.peek(); // looks at the first element of the list (the Support)
+    		try {
+    			
+    			PropositionSet currentSupportedNode = currentRow.get(1);
+    		
+    		} catch(NullPointerException e) {
+    		
+    			G.removeFromSupportList(currentSupport);
+    			
+    		}
+    		
+    	}
+    	
+		return G;
+    }
    
 
     
