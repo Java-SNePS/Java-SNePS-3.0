@@ -18,6 +18,10 @@ public class LinearSubstitutions implements Substitutions {
 		sub = new Vector<Binding>();
 	}
 
+	public LinearSubstitutions(Vector<Binding> vectorBindings) {
+		sub = vectorBindings;
+	}
+
 	/**
 	 * Check if the substitutions list new or not (empty)
 	 * 
@@ -473,7 +477,8 @@ public class LinearSubstitutions implements Substitutions {
 				extractedFilterRelevantToVariables.add(binding);
 			forAllCondition &= bindingFound;
 		}
-		return new VariableNodeStats(forAllCondition, extractedFilterRelevantToVariables, this);
+		Substitutions extractedFilterSubs = new LinearSubstitutions(extractedFilterRelevantToVariables);
+		return new VariableNodeStats(forAllCondition, extractedFilterSubs, this);
 
 	}
 

@@ -10,9 +10,9 @@ public class VariableNodeStats {
 	private boolean allVariablesBound;
 	private Substitutions referenceSubs;
 	private int nodeId;
-	private Vector<Binding> variableNodeSubs;
+	private Substitutions variableNodeSubs;
 
-	public VariableNodeStats(boolean variablesBound, Vector<Binding> extractedFilterRelevantToVariables,
+	public VariableNodeStats(boolean variablesBound, Substitutions extractedFilterRelevantToVariables,
 			Substitutions refSubs, int id) {
 		allVariablesBound = variablesBound;
 		variableNodeSubs = extractedFilterRelevantToVariables;
@@ -20,7 +20,7 @@ public class VariableNodeStats {
 		nodeId = id;
 	}
 
-	public VariableNodeStats(boolean variablesBound, Vector<Binding> extractedFilterRelevantToVariables,
+	public VariableNodeStats(boolean variablesBound, Substitutions extractedFilterRelevantToVariables,
 			Substitutions refSubs) {
 		allVariablesBound = variablesBound;
 		variableNodeSubs = extractedFilterRelevantToVariables;
@@ -57,11 +57,16 @@ public class VariableNodeStats {
 		this.allVariablesBound = allVariablesBound;
 	}
 
-	public Vector<Binding> getVariableNodeSubs() {
+	public Substitutions getVariableNodeSubs() {
 		return variableNodeSubs;
 	}
 
-	public void setVariableNodeSubs(Vector<Binding> variableNodeSubs) {
+	public void setVariableNodeSubs(Substitutions variableNodeSubs) {
 		this.variableNodeSubs = variableNodeSubs;
 	}
+
+	public boolean isSubSet(Substitutions variableSubstitutions) {
+		return variableNodeSubs.isSubSet(variableSubstitutions);
+	}
+
 }

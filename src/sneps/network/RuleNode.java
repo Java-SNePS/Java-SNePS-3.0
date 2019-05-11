@@ -26,8 +26,10 @@ import sneps.network.classes.term.Term;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snebr.Support;
+import sneps.snip.Filter;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
+import sneps.snip.Runner;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
 import sneps.snip.channels.ChannelTypes;
@@ -271,18 +273,27 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	protected void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel) {
 		NodeSet antecedentNodeSet = getDownAntNodeSet();
 		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
-		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, ruleType);
+		Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
+		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, filterSubs, ruleType);
 		sendRequestsToNodeSet(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
 				currentChannel.getContextName(), ChannelTypes.RuleAnt);
 	}
 
+	/***
+	 * Sending requests with a union substitutions between the original request and
+	 * the report to all Antecedents not already working on that type of request.
+	 * 
+	 * @param currentChannel
+	 * @param report
+	 */
 	protected void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel, Report report) {
 		NodeSet antecedentNodeSet = getDownAntNodeSet();
 		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
-		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, ruleType);
-		sendRequestsToNodeSet(toBeSentTo, report.getSubstitutions(), currentChannel.getContextName(),
-				ChannelTypes.RuleAnt);
-
+		Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
+		Substitutions reportSubs = report.getSubstitutions();
+		Substitutions unionSubs = filterSubs.union(reportSubs);
+		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, unionSubs, ruleType);
+		sendRequestsToNodeSet(toBeSentTo, unionSubs, currentChannel.getContextName(), ChannelTypes.RuleAnt);
 	}
 
 	/*
@@ -296,20 +307,37 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	 * false; }
 	 */
 
-	protected void sendReportToNodeSet(NodeSet nodeSet, Report report, ChannelTypes channelType,
+	public void handleResponseOfApplyRuleHandler(RuleResponse ruleResponse, Report currentReport,
 			Channel currentChannel) {
-		if (nodeSet != null)
-			for (Node node : nodeSet) {
-				Substitutions reportSubs = report.getSubstitutions();
-				Support reportSupp = report.getSupport();
-				boolean reportSign = report.getSign();
-				String currentChannelContextName = currentChannel.getContextName();
-				Channel newChannel = establishChannel(channelType, node, null, reportSubs, currentChannelContextName,
-						-1);
-				outgoingChannels.addChannel(newChannel);
-				node.receiveReport(newChannel);
-
+		String currentChannelContextName = currentChannel.getContextName();
+		if (ruleResponse != null) {
+			Report toBeSent = ruleResponse.getReport();
+			broadcastReport(toBeSent);
+			if (toBeSent.getInferenceType() == InferenceTypes.FORWARD) {
+				NodeSet consequents = ruleResponse.getConsequents();
+				NodeSet filteredNodeSet = removeExistingNodesOutgoingChannels(consequents);
+				sendReportToNodeSet(filteredNodeSet, toBeSent, currentChannelContextName, ChannelTypes.RuleCons);
 			}
+		} else if (currentReport.getInferenceType() == InferenceTypes.FORWARD) {
+
+			Substitutions currentChannelFilterSubs = currentChannel.getFilter().getSubstitutions();
+			NodeSet antecedents = getDownAntNodeSet();
+			antecedents.removeNode(currentChannel.getReporter());
+			sendRequestsToNodeSet(antecedents, currentChannelFilterSubs, currentChannelContextName,
+					ChannelTypes.RuleAnt);
+		}
+	}
+
+	private NodeSet removeExistingNodesOutgoingChannels(NodeSet nodeSet) {
+		ChannelSet outgoingChannels = getOutgoingChannels();
+		Collection<Channel> channels = outgoingChannels.getChannels();
+		for (Node node : nodeSet)
+			for (Channel channel : channels) {
+				Node channelRequester = channel.getRequester();
+				if (node.equals(channelRequester))
+					nodeSet.removeNode(node);
+			}
+		return nodeSet;
 	}
 
 	public void processRequests() {
@@ -349,17 +377,13 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			} else {
 				VariableNodeStats ruleNodeStats = computeNodeStats(filterSubs);
 				boolean ruleNodeAllVariablesBound = ruleNodeStats.areAllVariablesBound();
-				Vector<Binding> ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
+				Substitutions ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
 				/* Case 2 & 3 */
 				ReportSet knownReportSet = knownInstances;
 				for (Report report : knownReportSet) {
 					Substitutions reportSubstitutions = report.getSubstitutions();
-					VariableNodeStats reportNodeStats = computeNodeStats(reportSubstitutions);
-					Vector<Binding> reportNodeExtractedSubs = reportNodeStats.getVariableNodeSubs();
-					boolean caseCondition = ruleNodeAllVariablesBound
-							? reportNodeExtractedSubs.size() == ruleNodeExtractedSubs.size()
-							: reportNodeExtractedSubs.size() < ruleNodeExtractedSubs.size();
-					if (caseCondition && report.anySupportAssertedInContext(currentContext)) {
+					boolean subSetCheck = ruleNodeExtractedSubs.isSubSet(reportSubstitutions);
+					if (subSetCheck && report.anySupportAssertedInContext(currentContext)) {
 						if (ruleNodeAllVariablesBound) {
 							requestAntecedentsNotAlreadyWorkingOn(currentChannel);
 							return;
@@ -368,6 +392,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 
 					}
 				}
+				/*
+				 * balash delwa2ty: badal el super i just need the isWhQuestion mel superto be
+				 * executed bas
+				 */
 				super.processSingleRequestsChannel(currentChannel);
 				return;
 			}
@@ -383,47 +411,70 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	 */
 	public void processReports() {
 		for (Channel currentChannel : incomingChannels)
-			processSingleReportsChannel(currentChannel);
+			try {
+				processSingleReportsChannel(currentChannel);
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | DuplicatePropositionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
-	protected void processSingleReportsChannel(Channel currentChannel) {
+	protected void processSingleReportsChannel(Channel currentChannel)
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException {
 		ReportSet channelReports = currentChannel.getReportsBuffer();
 		String currentChannelContextName = currentChannel.getContextName();
-		Substitutions currentChannelFilterSubs = currentChannel.getFilter().getSubstitutions();
-		Substitutions currentChannelSwitchSubs = currentChannel.getSwitch().getSubstitutions();
+		boolean assertedInContext = assertedInContext(currentChannelContextName);
+		boolean closedTypeTerm = term instanceof Closed;
+		ReportSet currentChannelReportBuffer = currentChannel.getReportsBuffer();
 		for (Report currentReport : channelReports) {
+			boolean forwardReportType = currentReport.getInferenceType() == InferenceTypes.FORWARD;
 			Substitutions currentReportSubs = currentReport.getSubstitutions();
 			if (currentChannel instanceof AntecedentToRuleChannel) {
-				RuleResponse ruleResponse = applyRuleHandler(currentReport, currentChannel);
-				if (ruleResponse != null) {
-					Report toBeSent = ruleResponse.getReport();
-					broadcastReport(toBeSent);
-					if (toBeSent.getInferenceType() == InferenceTypes.FORWARD) {
-						NodeSet consequents = ruleResponse.getConsequents();
-						NodeSet filteredNodeSet = removeExistingNodesOutgoingChannels(consequents);
-						sendReportToNodeSet(filteredNodeSet, toBeSent, ChannelTypes.RuleCons, currentChannel);
+				if (forwardReportType) {
+					if (closedTypeTerm) {
+						/* Check ana asserted ezay */
+					} else if (assertedInContext) {
+						RuleResponse ruleResponse = applyRuleHandler(currentReport, currentChannel);
+						handleResponseOfApplyRuleHandler(ruleResponse, currentReport, currentChannel);
+						/* DONE: remove the report 3ashan khalas i asserted myself */
+						currentChannelReportBuffer.removeReport(currentReport);
+					} else {
+						Channel newChannel = ((AntecedentToRuleChannel) currentChannel).clone();
+						Filter newChannelSubs = new Filter(currentReportSubs);
+						newChannel.setFilter(newChannelSubs);
+						super.processSingleRequestsChannel(newChannel);
 					}
-				} else if (currentReport.getInferenceType() == InferenceTypes.FORWARD) {
-					NodeSet antecedents = getDownAntNodeSet();
-					antecedents.removeNode(this);
-					sendRequestsToNodeSet(antecedents, currentChannelFilterSubs, currentChannelContextName,
-							ChannelTypes.RuleAnt);
+					/* add report to buffer */
+				} else {
+					/* keda keda asserted, fa remove the report from the buffer */
+					RuleResponse ruleResponse = applyRuleHandler(currentReport, currentChannel);
+					handleResponseOfApplyRuleHandler(ruleResponse, currentReport, currentChannel);
+					/* DONE: remove the report 3ashan khalas i asserted myself */
+					currentChannelReportBuffer.removeReport(currentReport);
 				}
+			} else {
+				Set<Channel> ruleConsChannels = getOutgoingRuleConsequentChannels();
+				if (forwardReportType) {
 
+				} else {
+					if (ruleConsChannels.isEmpty()) {
+						Runner.addToLowQueue(this);
+					} else {
+
+					}
+				}
+				/*
+				 * backward: if existing outgoing channels (ruletoconsequent) to handle request,
+				 * put on the low queue
+				 *
+				 * else same as super but add filters over outgoing channels to send on to send
+				 * over antecedent to rule and match types
+				 * 
+				 * 
+				 * forward: send requests to the antecedents with the report subs
+				 */
 			}
 		}
-		currentChannel.clearReportsBuffer();
 	}
 
-	private NodeSet removeExistingNodesOutgoingChannels(NodeSet nodeSet) {
-		ChannelSet outgoingChannels = getOutgoingChannels();
-		Set<Channel> channels = outgoingChannels.getChannels();
-		for (Node node : nodeSet)
-			for (Channel channel : channels) {
-				Node channelRequester = channel.getRequester();
-				if (node.equals(channelRequester))
-					nodeSet.removeNode(node);
-			}
-		return nodeSet;
-	}
 }

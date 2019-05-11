@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
@@ -30,12 +31,12 @@ public class OrNode extends RuleNode {
 		cq = getDownNodeSet("cq").size();
 	}
 
-	public void applyRuleHandler(Report report, Node node) {
+	public void applyRuleHandler(Report report, Node node) throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		if (report.isPositive()) {
 			Support originSupports = this.getBasicSupport();
 			Collection<PropositionSet> originSupportsSet = originSupports.getAssumptionBasedSupport().values();
-			Support sup = new Support(this);
-			// sup.add(originSupports);
+			PropositionSet sup = new PropositionSet();
+			sup.add(getId());
 			Report reply = new Report(report.getSubstitutions(), sup, true, null);
 			for (Channel outChannel : outgoingChannels)
 				try {

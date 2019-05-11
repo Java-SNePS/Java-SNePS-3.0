@@ -30,7 +30,7 @@ public abstract class Channel {
 	public Channel() {
 		filter = new Filter();
 		switcher = new Switch();
-		reportsBuffer = new ReportSet();
+		setReportsBuffer(new ReportSet());
 	}
 
 	public Channel(Substitutions switcherSubstitution, Substitutions filterSubstitutions, String contextID,
@@ -42,18 +42,21 @@ public abstract class Channel {
 		this.reporter = reporter;
 		this.valve = v;
 		this.reporter = reporter;
-		reportsBuffer = new ReportSet();
+		setReportsBuffer(new ReportSet());
+	}
+
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
 	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		boolean passTest = filter.canPass(report);
 		System.out.println("Can pass " + passTest);
-		/* Test the context name if it will pass or not */
 		Context channelContext = Controller.getContextByName(getContextName());
 		if (passTest && report.anySupportAssertedInContext(channelContext)) {
 			System.out.println("\nThe switcher data:\n" + switcher);
 			switcher.switchReport(report);
-			reportsBuffer.addReport(report);
+			getReportsBuffer().addReport(report);
 			Runner.addToHighQueue(requester);
 			return true;
 		}
@@ -109,7 +112,7 @@ public abstract class Channel {
 	}
 
 	public void clearReportsBuffer() {
-		reportsBuffer.clear();
+		getReportsBuffer().clear();
 	}
 
 	public boolean processedGeneralizedRequest(Substitutions currentChannelFilterSubs) {
@@ -126,4 +129,9 @@ public abstract class Channel {
 		return false;
 
 	}
+
+	public void setReportsBuffer(ReportSet reportsBuffer) {
+		this.reportsBuffer = reportsBuffer;
+	}
+
 }

@@ -11,19 +11,19 @@ import sneps.snebr.Support;
 public class FlagNode {
 
 	private Node node;
-	private Support supports;
+	private PropositionSet supports;
 	private int flag;
 
 	/**
 	 * Create a new flag node
 	 * 
 	 * @param n       node
-	 * @param support support
+	 * @param propositionSet support
 	 * @param f       true or false
 	 */
-	public FlagNode(Node n, Support support, int f) {
+	public FlagNode(Node n, PropositionSet propositionSet, int f) {
 		node = n;
-		supports = support;
+		supports = propositionSet;
 		flag = f;
 	}
 
@@ -41,7 +41,7 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public Support getSupports() {
+	public PropositionSet getSupports() {
 		return supports;
 	}
 

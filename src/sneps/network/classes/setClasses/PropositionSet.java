@@ -91,7 +91,7 @@ public class PropositionSet implements Serializable {
 	 *
 	 * @return an int array containing the props
 	 */
-	private int[] getProps() {
+	public int[] getProps() {
 		return props;
 	}
 
