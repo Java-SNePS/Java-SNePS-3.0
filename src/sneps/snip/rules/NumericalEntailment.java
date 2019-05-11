@@ -51,6 +51,7 @@ public class NumericalEntailment extends RuleNode {
 		//antecedents = getDownAntNodeSet();
 		//processNodes(antecedents);
 		
+		// Initializing the consequents
 		consequents = getDownNodeSet("iconsq");
 		
 		reportsToBeSent = new ArrayList<Report>();

@@ -93,8 +93,9 @@ public class NumericalEntailmentTests extends TestCase {
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
-			var = new VariableNode(new Variable("X"));
 		}
+		
+		var = new VariableNode(new Variable("X"));
 
 //------------------------------------- prop1, prop2, prop3, prop4 ----------------------------------------------//
 
@@ -161,46 +162,7 @@ public class NumericalEntailmentTests extends TestCase {
 			dcList.clear();
 			//------------------------------------------------------------//
 
-//------------------------------------- Numerical Supports ----------------------------------------------//
-
-		/*try {
-			support.add(prop1.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		assumptionBasedSupport.put("key", support);
-		fn = new FlagNode(prop1, assumptionBasedSupport.values(), 1);
-		fns.insert(fn);
-
-		support.clearSet();
-		
-		try {
-			support.add(prop2.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		assumptionBasedSupport.clear();
-		assumptionBasedSupport.put("key", support);
-		fn = new FlagNode(prop2, assumptionBasedSupport.values(), 1);
-		fns.insert(fn);
-
-		support.clearSet();
-		
-		try {
-			support.add(prop3.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		support.clearSet();
-		assumptionBasedSupport.clear();
-		assumptionBasedSupport.put("key", support);
-		fn = new FlagNode(prop3, assumptionBasedSupport.values(), 1);
-		fns.insert(fn);
-		
-		support.clearSet();*/
+//------------------------------------- Numerical ----------------------------------------------//
 
 		nodeSet.addNode(prop1);
 		dc.add(new DownCable(antsRel, nodeSet));
@@ -229,7 +191,7 @@ public class NumericalEntailmentTests extends TestCase {
 		NodeSet c = new NodeSet();
 		c.addNode(prop4);
 
-//------------------------------------- AND ----------------------------------------------//
+//------------------------------------- NUMERICAL ----------------------------------------------//
 
 		numerical = new NumericalEntailment(new Open("Open", dcss));
 		//System.out.println(numerical.getId());

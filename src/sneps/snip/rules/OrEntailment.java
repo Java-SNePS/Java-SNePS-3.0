@@ -1,71 +1,86 @@
 package sneps.snip.rules;
 
+import java.util.ArrayList;
+
+import sneps.exceptions.DuplicatePropositionException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NodeNotFoundInPropSetException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
-import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
+import sneps.snebr.Support;
 import sneps.snip.Report;
-import sneps.snip.channels.Channel;
-import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 
 public class OrEntailment extends RuleNode {
+	private static final long serialVersionUID = 1L;
 	
+	// Used for testing
+	private ArrayList<Report> reportsToBeSent;
 
-	/**
-	 *Constructor for the Or Entailment
-	 * @param syn
-	 */
-	public OrEntailment(Molecular syn) {
+	public OrEntailment(Molecular syn) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		super(syn);
+		
+		// Initializing the antecedents
+		antecedents = getDownAntNodeSet();
+		processNodes(antecedents);
+		
+		// Initializing the consequents
+		consequents = getDownNodeSet("Vconsq");
+		
+		reportsToBeSent = new ArrayList<Report>();
 	}
 	
-	/**
-	 * Checks if the report received is true
-	 * If yes, the report is sent to the ants with the true report
-	 */
 	public void applyRuleHandler(Report report, Node node) {
-		
 		if(report.isPositive()) {
+			Support replySupport = new Support();
+			/*PropositionSet propSet = new PropositionSet();
+			try {
+				propSet.add(node.getId());
+				propSet.add(this.getId());
+			} catch (DuplicatePropositionException | NotAPropositionNodeException 
+					| NodeNotFoundInNetworkException e) {
+				e.printStackTrace();
+			}
+			try {
+				replySupport.addJustificationBasedSupport(propSet);
+			} catch (NodeNotFoundInPropSetException | NotAPropositionNodeException 
+					| NodeNotFoundInNetworkException e) {
+				e.printStackTrace();
+			}*/
 			
-			sign = true;
-			
-			PropositionSet propSet = report.getSupports();
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(node, propSet, 1));
-
-			Report reply = new Report(report.getSubstitutions(), propSet, sign, report.getContextName());
-			
-			for (Channel outChannel : outgoingChannels)
-				outChannel.addReport(reply);
-			
+			Report reply = new Report(report.getSubstitutions(), replySupport, true);
+			reportsToBeSent.add(reply);
 		}
-		
-}
+	}
 	
-
-
+	@Override
+	protected RuleResponse applyRuleOnRui(RuleUseInfo tRui) {
+		return null;
+	}
+	
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("Vant");
 	}
 
 	@Override
-	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
-		
+	protected RuisHandler createRuisHandler() {
+		return null;
 	}
 
 	@Override
-	protected RuisHandler createRuisHandler(String contextName) {
-		// TODO Auto-generated method stub
-		return null;
+	protected byte getSIndexType() {
+		return 0;
 	}
 	
-	public boolean getReply() {
-		return sign;
+	public ArrayList<Report> getSentReports() {
+		return reportsToBeSent;
 	}
 
 }

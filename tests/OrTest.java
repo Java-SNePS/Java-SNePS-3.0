@@ -24,6 +24,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Term;
@@ -33,6 +34,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
@@ -49,30 +51,11 @@ public class OrTest {
 	private static Node fido, var, dog, barks;
 	private static Node prop1, prop2, prop3, prop4;
 	private static RuleUseInfo rui;
-	private static Report report;
+	private static Report report, report1;
 	
 	
 	@BeforeClass
 	public static void BuildNetwork() throws Exception {
-		/**
-		 * build context
-		 */
-		try {
-			context = Controller.createContext(contextName);
-		} catch (DuplicateContextNameException e1) {
-			assertNotNull(e1.getMessage(), e1);
-		}
-		
-		/**
-		 * Create substitutions,
-		 * FlagNodeSet,
-		 * FlagNode,
-		 * PropositionSet,
-		 * wires,
-		 * relations,
-		 * caseFrames
-		 */
-		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
 		FlagNode fn;
@@ -98,7 +81,6 @@ public class OrTest {
 		rels.clear();
 		
 		
-		
 		/**
 		 * Building propositions & base nodes,
 		 * adding wires
@@ -116,11 +98,9 @@ public class OrTest {
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
-			var = new VariableNode(new Variable("X"));
 		}
 		
-	
-		
+		var = new VariableNode(new Variable("X"));
 		
 		try {
 			wires.clear();	wires.add(wire1);	wires.add(wire2);
@@ -137,82 +117,53 @@ public class OrTest {
 		} catch (CannotBuildNodeException | EquivalentNodeException
 				| NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
-			LinkedList<DownCable> dcList = new LinkedList<DownCable>();
-			NodeSet nodeSet1 = new NodeSet();
-			DownCable dc1;	DownCableSet dcs;
+		}
+		
+		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
+		NodeSet nodeSet1 = new NodeSet();
+		DownCable dc1;	DownCableSet dcs;
 
-			nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop1 = new Node(new Open("Prop1", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameCD); 
-			prop2 = new Node(new Open("Prop2", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(var);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop3 = new Node(new Open("Prop3", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMD); 
-			prop4 = new Node(new Open("Prop4", dcs));
-			dcList.clear();
-		}
+		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop1 = new Node(new Closed("Prop1", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameCD); 
+		prop2 = new Node(new Closed("Prop2", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop3 = new Node(new Open("Prop3", dcs));
+		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMD); 
+		prop4 = new Node(new Closed("Prop4", dcs));
+		dcList.clear();
 		
-		
-		
-		
-		try {
-			support.add(prop1.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop1, support, 1);
-		fns.insert(fn);
-
-		support.clearSet();
-		try {
-			support.add(prop2.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop2, support, 1);
-		fns.insert(fn);
-
-		support.clearSet();
-		try {
-			support.add(prop3.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop3, support, 1);
-		fns.insert(fn);
 
 		nodeSet.addNode(prop1);
 		dc.add(new DownCable(antsRel, nodeSet));
@@ -229,35 +180,29 @@ public class OrTest {
 		nodeSet.addNode(prop4);
 		dc.add(new DownCable(consRel, nodeSet));
 
-		DownCableSet dcs = new DownCableSet(dc, caseFrameAC);
+		DownCableSet dcss = new DownCableSet(dc, caseFrameAC);
 		
 		
 		/**
-		 * Or-entailment
+		 * Or-Entailment
 		 */
 		
-		or = new OrEntailment(new Open("Open", dcs));
+		or = new OrEntailment(new Open("Open", dcss));
 
-		try {
-			support.add(dog.getId());
-			support.add(fido.getId());
-			support.add(var.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-
-		sub.insert(new Binding((VariableNode) var,fido));
-		rui = new RuleUseInfo(sub, 1, 0, fns);
-		report = new Report(sub, support, true, contextName);
+		sub.insert(new Binding((VariableNode) var, fido));
+		LinearSubstitutions s = new LinearSubstitutions();
 		
+		report = new Report(sub, new Support(), true);
+		report1 = new Report(s, new Support(), true);
 	}
 
 	@Test
-	public void applyRuleHandler() {
+	public void testApplyRuleHandler() {
+		or.applyRuleHandler(report, prop3);
+		assertEquals(1, or.getSentReports().size());
 		
-		or.applyRuleHandler(report,fido);
-		assertEquals(true,or.getReply());
+		or.applyRuleHandler(report1, prop1);
+		assertEquals(2, or.getSentReports().size());
 	}
 	
 	
