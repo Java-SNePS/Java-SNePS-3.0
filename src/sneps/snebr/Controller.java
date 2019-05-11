@@ -654,6 +654,71 @@ public class Controller {
         return contextSet.getContext(contextName);
     }
     
+    /*
+     * Loops on all proposition nodes in the network, and checks them against the list of hyps in all contexts.
+     * Nodes that are not hyps in any context are removed from the network
+     */
+    public static void k0Compression(ContextSet contextSet) throws NumberFormatException, NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeCannotBeRemovedException, NodeNotFoundInPropSetException{
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> tmp = contextSet.getNames();
+    	String[] contextIds = new String[tmp.size()];
+    	Iterator<String> iter = tmp.iterator();
+    	int i = 0;
+    	while (iter.hasNext()) {
+    	    contextIds[i] = iter.next();
+    	    i++;
+    	}
+    	Set<String> nodeKeys = propositionNodes.keySet();
+    	for(String key: nodeKeys){
+        	for(int x = 0; x < contextIds.length; x++) {
+        		Context tmpContext = contextSet.getContext(contextIds[x]);
+        		PropositionSet currProp = new PropositionSet(propositionNodes.get(key).getId());
+        		// (currProp).isSubSet(tmpContext.getHypothesisSet())
+        		// (propositionNodes.get(key)).isHyp()
+        		if((currProp).isSubSet(tmpContext.getHypothesisSet())){
+        			break;
+        		}
+        		if(x == contextIds.length - 1){
+        			Network.removeNode(propositionNodes.get(key));
+        			removePropositionFromAllContexts(propositionNodes.get(key));        			
+        		}
+        	}
+    	}
+    	
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static BaseSupportGraph GTrim(BaseSupportGraph G) {
+    	
+    	LinkedList<LinkedList<PropositionSet>> hypsList = G.getHypsAdjList();
+    	LinkedList<LinkedList<PropositionSet>> supportslist = G.getSupportsAdjList();
+    	
+    	for (Iterator iter = hypsList.iterator(); iter.hasNext();){
+    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
+    		PropositionSet currentNode = currentRow.peek(); // looks at the first element of the list (the Node)
+    		PropositionSet currentSupport = currentRow.get(1); // looks at the first support that the node is a subset of
+    		if(currentNode.equals(currentSupport)){
+    			G.removeFromHypList(currentNode);
+    		}
+    	}
+    	
+    	for (Iterator iter = supportslist.iterator(); iter.hasNext();){
+    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
+    		PropositionSet currentSupport = currentRow.peek(); // looks at the first element of the list (the Support)
+    		try {
+    			
+    			PropositionSet currentSupportedNode = currentRow.get(1);
+    		
+    		} catch(NullPointerException e) {
+    		
+    			G.removeFromSupportList(currentSupport);
+    			
+    		}
+    		
+    	}
+    	
+		return G;
+    }
    
 
     
