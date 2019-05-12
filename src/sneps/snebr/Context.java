@@ -2,7 +2,6 @@ package sneps.snebr;
 
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.PropositionNode;
@@ -112,6 +111,23 @@ public class Context implements Serializable{
         this.telescopedSet = new ArrayList<PropositionSet>();
         this.telescopedBitset = new ArrayList<BitSet>();
     }
+    
+    protected Context(String contextName, PropositionSet hyps, ArrayList<PropositionSet> props) throws NotAPropositionNodeException, 
+    NodeNotFoundInNetworkException {
+        this(contextName);
+        this.hyps = hyps;
+        this.hypsBitset = new BitSet();
+        int [] arr = PropositionSet.getPropsSafely(this.hyps);
+        for (int i = 0; i < arr.length; i++)
+            this.hypsBitset.set(arr[i]);
+        this.telescopedSet = props;
+        this.telescopedBitset = new ArrayList<BitSet>();
+        for(int i=0; i < this.telescopedSet.size(); i++) {
+        	arr = PropositionSet.getPropsSafely(this.telescopedSet.get(i));
+    	    for (int j = 0; j < arr.length; j++)
+    	    	this.telescopedBitset.get(i).set(arr[i]);
+        }
+    }
 
     /**
      * Returns the hyps of this Context
@@ -142,16 +158,6 @@ public class Context implements Serializable{
     public String getName() {
         return null;
     }
-    
-    public void addTelescopedPropsToContext(PropositionSet telescopedSet) 
-			throws NotAPropositionNodeException, 
-			NodeNotFoundInNetworkException {
-    	
-    	this.telescopedSet.add(telescopedSet);
-	    int [] arr = PropositionSet.getPropsSafely(this.telescopedSet.get(this.telescopedSet.size()-1));
-	    for (int i = 0; i < arr.length; i++)
-	    	this.telescopedBitset.get(this.telescopedSet.size()-1).set(arr[i]);
-	}
 
     /**
      * Checks if a propositions is asserted in this context
@@ -161,12 +167,17 @@ public class Context implements Serializable{
      * @throws NotAPropositionNodeException   If the node p is not a proposition.
      * @throws NodeNotFoundInNetworkException If the node p doesn't exist in the network.
      */
-    public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException, 
+    public boolean isAsserted(PropositionNode p) throws NotAPropositionNodeException,
+    NodeNotFoundInNetworkException {
+    	return isAsserted(p, 0);
+    }
+    
+    public boolean isAsserted(PropositionNode p, int level) throws NotAPropositionNodeException,
     NodeNotFoundInNetworkException {
         int hyp = p.getId();
 
         return Arrays.binarySearch(PropositionSet.getPropsSafely(this.hyps), hyp) > 0
-                || isSupported(p);
+                || isSupported(p, level);
     }
     
     public boolean isSupported(PropositionNode node) {
