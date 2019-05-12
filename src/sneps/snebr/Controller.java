@@ -126,7 +126,9 @@ public class Controller {
      * @throws DuplicatePropositionException   if the hyp to be asserted in the Context is already asserted
      * @throws NodeNotFoundInNetworkException
      */
-    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExistException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException, ContradictionFoundException {
+    public static Context addPropToContext(String contextName, int hyp) throws ContextNameDoesntExistException, 
+    NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInNetworkException,
+    ContradictionFoundException {
         Context oldContext = contextSet.getContext(contextName);
 
         if (oldContext == null)
@@ -147,11 +149,41 @@ public class Controller {
         PropositionNode node = (PropositionNode) Network.getNodeById(hyp);
         node.setHyp(true);
         PropositionSet hypSet = oldContext.getHypothesisSet().add(hyp);
+        
+        ArrayList<PropositionSet> teleProps = oldContext.getTelescopedSet();
 
-        Context newContext = new Context(contextName, hypSet);
+        Context newContext = new Context(contextName, hypSet, teleProps);
 
         return contextSet.add(newContext);
     }
+    
+    public static Context addTelescopedPropToContext(String contextName, int prop, int level)
+			throws ContextNameDoesntExistException, NotAPropositionNodeException, 
+			NodeNotFoundInNetworkException, DuplicatePropositionException, ContradictionFoundException {
+    	
+    	 Context oldContext = contextSet.getContext(contextName);
+         if (oldContext == null)
+             throw new ContextNameDoesntExistException(contextName);
+         oldContext.removeName(contextName);
+         Context temp = new Context(contextName, new 
+        		 PropositionSet(PropositionSet.getPropsSafely(oldContext.getHypothesisSet())));
+         ArrayList<NodeSet> contradictions = checkForContradiction((PropositionNode) Network.getNodeById(prop), temp, false);
+
+         if (contradictions != null) {
+             conflictingContext = contextName;
+             throw new ContradictionFoundException(contradictions);
+         }         
+         PropositionSet hypSet = oldContext.getHypothesisSet();
+         
+         ArrayList<PropositionSet> teleProps = oldContext.getTelescopedSet();
+         
+         teleProps.get(level).add(prop);
+         
+         Context newContext = new Context(contextName, hypSet, teleProps);
+
+         return contextSet.add(newContext);
+    	
+	}
 
     /**
      * Asserts a set of hyps in an existing Context
