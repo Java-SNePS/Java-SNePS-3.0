@@ -688,38 +688,46 @@ public class Controller {
     }
     
     @SuppressWarnings("unchecked")
-	public static BaseSupportGraph GTrim(BaseSupportGraph G) {
+	public static void GTrim(BaseSupportGraph G) {
+    	GTrimHelper(G, G.getGraphSize());
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static void GTrimHelper(BaseSupportGraph G, int previousGraphSize){
     	
-    	LinkedList<LinkedList<PropositionSet>> hypsList = G.getHypsAdjList();
-    	LinkedList<LinkedList<PropositionSet>> supportslist = G.getSupportsAdjList();
+    	LinkedList<LinkedList<GraphNode>> hypsList = G.getHypsAdjList();
+    	LinkedList<LinkedList<GraphNode>> supportsList = G.getSupportsAdjList();
     	
     	for (Iterator iter = hypsList.iterator(); iter.hasNext();){
-    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
-    		PropositionSet currentNode = currentRow.peek(); // looks at the first element of the list (the Node)
-    		PropositionSet currentSupport = currentRow.get(1); // looks at the first support that the node is a subset of
-    		if(currentNode.equals(currentSupport)){
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		if(currentRow.size() <= 1){
+    			GraphNode currentNode = currentRow.peek(); // gets the first element of the list (the Node to be removed)
     			G.removeFromHypList(currentNode);
     		}
     	}
     	
-    	for (Iterator iter = supportslist.iterator(); iter.hasNext();){
-    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
-    		PropositionSet currentSupport = currentRow.peek(); // looks at the first element of the list (the Support)
-    		try {
-    			
-    			PropositionSet currentSupportedNode = currentRow.get(1);
-    		
-    		} catch(NullPointerException e) {
-    		
+    	for (Iterator iter = supportsList.iterator(); iter.hasNext();){
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		if(currentRow.size() <=1){
+    			GraphNode currentSupport = currentRow.peek(); // gets the first element of the list (the Support to be removed)
     			G.removeFromSupportList(currentSupport);
-    			
     		}
     		
     	}
     	
-		return G;
+    	if(G.getGraphSize() == previousGraphSize){
+    		return;
+    	} else {
+    		GTrimHelper(G, G.getGraphSize());
+    	}
     }
-   
+    
+    
+    public static void removeNodeFromLayeredBeliefState(PropositionNode node){
+    	//who to make a hyp?
+    	//Is this the point where I need the tree?
+    }
+    
 
     
     public static void save(String f) throws FileNotFoundException, IOException {
@@ -735,4 +743,45 @@ public class Controller {
 		cis.close();
 		tempSet = null;
     }
+    
+    public static void main(String[] args) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+    	Network net;
+    	Semantic sem;
+    	String semanticType = "Proposition";
+    	ContextSet contexts = new ContextSet();
+    	PropositionNode n0;
+    	PropositionNode n1;
+    	PropositionNode n2;
+    	PropositionNode n3;
+    	PropositionNode n4;
+    	PropositionNode n5;
+    	PropositionNode n6;
+    	PropositionNode n7;
+    	
+    	sem = new Semantic(semanticType);
+    	net = new Network();
+    	
+    	net.buildBaseNode("s", sem);// 0
+		net.buildBaseNode("p", sem);// 1
+		net.buildBaseNode("q", sem);// 2
+		net.buildBaseNode("r", sem);// 3
+		net.buildBaseNode("m", sem);// 4
+		net.buildBaseNode("n", sem);// 5
+		net.buildBaseNode("v", sem);// 6
+		net.buildBaseNode("z", sem);// 7
+		
+		BaseSupportGraph G = new BaseSupportGraph();
+    	int[] props = new int[2];
+    	props[0] = 0;
+    	props[1] = 1;
+    	int[] props1 = {0,1};
+		//GraphNode gn0 = new GraphNode(new PropositionSet(props));
+		//GraphNode gn1 = new GraphNode(new PropositionSet(props1));
+		//System.out.println(gn0);
+		//System.out.println(gn1);
+		//System.out.println(gn0.equals(gn1));
+		//PropositionSet p0 = gn0.getPropositionSet();
+		//PropositionSet p1 = gn1.getPropositionSet();
+		//System.out.println(p0.equals(p1));
+	}
 }

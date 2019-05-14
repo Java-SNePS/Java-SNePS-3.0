@@ -15,67 +15,85 @@ public class BaseSupportGraph {
 	
 //	Adjacency lists representing the graph
 //	2 lists because it is a bipartite graph
-	private LinkedList<LinkedList<PropositionSet>> hypsAdjList;
-	private LinkedList<LinkedList<PropositionSet>> supportsAdjList;
+	private LinkedList<LinkedList<PropositionSet>> hypsAdjList1;
+	private LinkedList<LinkedList<PropositionSet>> supportsAdjList1;
+	private LinkedList<LinkedList<GraphNode>> hypsAdjList;
+	private LinkedList<LinkedList<GraphNode>> supportsAdjList;
 	private LinkedList<PropositionSet> allSupports;
 	
 	
 	@SuppressWarnings("unchecked")
 	public BaseSupportGraph() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		int noOfNodes = (Network.getPropositionNodes()).size();
-		hypsAdjList = new LinkedList<LinkedList<PropositionSet>>();
+		hypsAdjList = new LinkedList<LinkedList<GraphNode>>();
 		
 	    for (int i = 0; i < noOfNodes; i++){
-	    	hypsAdjList.add(new LinkedList<PropositionSet>());
+	    	hypsAdjList.add(new LinkedList<GraphNode>());
 	    }
 		Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
 		allSupports = new LinkedList<PropositionSet>();
 		Set<String> nodeKeys = propositionNodes.keySet();
 		int i = 0;
     	for(String key: nodeKeys){
-    		LinkedList<PropositionSet> currentNodeRow = hypsAdjList.get(i);
-    		currentNodeRow.add(new PropositionSet(propositionNodes.get(key).getId())); // adding the node in the 1st column
+    		LinkedList<GraphNode> currentNodeRow = hypsAdjList.get(i);
+    		currentNodeRow.add(new GraphNode(new PropositionSet(propositionNodes.get(key).getId()),0)); // adding the node in the 1st column
     		Hashtable<String, PropositionSet> justificationSupport = propositionNodes.get(key).getJustificationSupport();
     		Set<String> supportKeys = justificationSupport.keySet();
     		int j = 0;
     		for(String supportKey: supportKeys){
     			//hypsAdjList[i].add(justificationSupport.get(supportKey));
-    			allSupports.add(justificationSupport.get(supportKey));
-    			supportsAdjList.add(new LinkedList<PropositionSet>());
-    			LinkedList<PropositionSet> currentSupportRow = supportsAdjList.get(j);
-    			currentSupportRow.add(justificationSupport.get(supportKey));
-    			currentSupportRow.add(new PropositionSet(propositionNodes.get(key).getId()));
-    			j++;
+    			GraphNode currSupport = new GraphNode(justificationSupport.get(supportKey),1);
+    			if(!(contains(allSupports, currSupport.getPropositionSet()))){ //revise
+    				allSupports.add(currSupport.getPropositionSet());
+    				supportsAdjList.add(new LinkedList<GraphNode>());
+    				LinkedList<GraphNode> currentSupportRow = supportsAdjList.get(j);
+    				currentSupportRow.add(currSupport);
+    				currentSupportRow.add(new GraphNode(new PropositionSet(propositionNodes.get(key).getId()),0));
+    				j++;
+    			} else {
+    				int suppIndex = supportsAdjList.indexOf(currSupport); //revise
+    				LinkedList<GraphNode> currentSupportRow = supportsAdjList.get(suppIndex);
+    				currentSupportRow.add(new GraphNode(new PropositionSet(propositionNodes.get(key).getId()),0));
+    			}
     		}
     		i++;
     	}
     	for(Iterator iter = hypsAdjList.iterator(); iter.hasNext();){
-    		LinkedList<PropositionSet> currentHypList = (LinkedList<PropositionSet>) iter.next();
-    		PropositionSet currHyp = currentHypList.peekFirst();
+    		LinkedList<GraphNode> currentHypList = (LinkedList<GraphNode>) iter.next();
+    		GraphNode currHyp = currentHypList.peekFirst();
         	for (Iterator it = allSupports.iterator(); it.hasNext();) {
-                PropositionSet currentSupport = (PropositionSet) it.next();
-                if(currHyp.isSubSet(currentSupport)){
+                GraphNode currentSupport = (GraphNode) it.next();
+                if((currHyp.isSubSet(currentSupport)) && !(currHyp.equals(currentSupport))){
                 	currentHypList.add(currentSupport);
                 }
              }
     	}
 	}
 	
+
+	
 	@SuppressWarnings("unchecked")
 	public void removeFromHypList(Object O){
 		//code for removing a node from the graph
-		PropositionSet toBeDeleted = (PropositionSet) O;
+		GraphNode toBeDeleted = (GraphNode) O;
 		for(Iterator iter = hypsAdjList.iterator(); iter.hasNext();){
-			LinkedList<PropositionSet> currentHypList = (LinkedList<PropositionSet>) iter.next();
-			if((currentHypList.peek()).equals(toBeDeleted)){
-				hypsAdjList.remove(currentHypList);
+			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+			if((currentRow.peek()).equals(toBeDeleted)){
+				hypsAdjList.remove(currentRow);
 			}
 		}
 		
 		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
-			LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
-			if((currentRow.get(1)).equals(toBeDeleted)){
-				currentRow.remove(1);
+			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+			
+			currentRow.removeFirst();
+			if(currentRow.contains(toBeDeleted)){
+				if (currentRow.size()>1){
+					currentRow.remove(toBeDeleted);
+				}
+				else {
+					//stopped here
+				}
 			}
 		}
 	}
@@ -86,7 +104,7 @@ public class BaseSupportGraph {
 		PropositionSet toBeDeleted = (PropositionSet) O;
 		
 		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
-			LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
+			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
 			if((currentRow.get(0)).equals(toBeDeleted)){
 				supportsAdjList.remove(currentRow);
 			}
@@ -94,15 +112,66 @@ public class BaseSupportGraph {
 		
 	}
 	
+	public int indexOfSupportRow(GraphNode node) throws Exception { //revise
+		int index = -1;
+		int i = 0;
+		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
+			GraphNode curr = supportsAdjList.getFirst().getFirst();
+			if(curr.equals(node)){
+				index = i;
+				break;
+			}
+			i++;
+		}
+		if(index == -1){
+			throw new Exception("Support Node not found");
+		}
+		return index;
+	}
 	
-	public LinkedList<LinkedList<PropositionSet>> getHypsAdjList() {
+	public static boolean contains(LinkedList<PropositionSet> list , PropositionSet propSet){
+		for(Iterator it = list.iterator(); it.hasNext();){
+			PropositionSet curr = (PropositionSet) it.next();
+			if(curr.equals(propSet)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	
+	public void printBaseSupportGraph() {
+		System.out.println("Hyps Adj List: ");
+		for (Iterator i = hypsAdjList.iterator(); i.hasNext();){
+			LinkedList<GraphNode> row = (LinkedList<GraphNode>) i.next();
+			System.out.println(row);
+		}
+		
+//		System.out.println("Supps Adj List: ");
+//		for (Iterator i = supportsAdjList.iterator(); i.hasNext();){
+//			LinkedList<GraphNode> row = (LinkedList<GraphNode>) i.next();
+//			System.out.println(row);
+//		}
+	}
+
+
+
+	public int getGraphSize() {
+		return (hypsAdjList.size() + supportsAdjList.size());
+	}
+	
+	
+	public LinkedList<LinkedList<GraphNode>> getHypsAdjList() {
 		return hypsAdjList;
 	}
 	
 
-	public LinkedList<LinkedList<PropositionSet>> getSupportsAdjList() {
+	public LinkedList<LinkedList<GraphNode>> getSupportsAdjList() {
 		return supportsAdjList;
 	}
 	
 
 }
+
