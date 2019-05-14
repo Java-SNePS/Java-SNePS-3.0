@@ -773,6 +773,49 @@ public class Controller {
     	//Is this the point where I need the tree?
     }
     
+    public ArrayList<ArrayList<Integer>> findTriplets(BaseSupportGraph G) {
+    	
+    	ArrayList<ArrayList<Integer>> result = new  ArrayList<ArrayList<Integer>>();
+    	LinkedList<LinkedList<GraphNode>> hypsList = G.getHypsAdjList();
+    	LinkedList<LinkedList<GraphNode>> supportsList = G.getSupportsAdjList();
+    	
+    	for(Iterator iter = hypsList.iterator(); iter.hasNext();){
+    		ArrayList<Integer> path = new ArrayList<Integer>();
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		GraphNode firstNode = currentRow.getFirst();
+    		int i = 0;
+    		path.add(firstNode.getId());
+    		for(Iterator it = currentRow.iterator(); it.hasNext();){
+    			if(i > 0){
+    				GraphNode currentSuppNode = (GraphNode) it.next();
+    				path.add(currentSuppNode.getId());
+    				for (Iterator iterator = supportsList.iterator(); iterator.hasNext();) {
+    					LinkedList<GraphNode> currSupportRow = (LinkedList<GraphNode>) iterator.next();
+    					GraphNode currSupport = currSupportRow.getFirst();
+    					if(currSupport.equals(currentSuppNode)){
+    						int j = 0;
+    						for (Iterator itr = currSupportRow.iterator(); itr.hasNext();){
+    							if(j>0){
+    								GraphNode currPropNode = (GraphNode) itr.next();
+    								path.add(currPropNode.getId());
+    								result.add(path);
+    								path.remove(path.size()-1);
+    							}
+    							i++;
+    						}
+    						path.remove(path.size()-1);
+    						break;
+    					}
+    				}
+    			}
+    			i++;
+    		}
+    		
+    	}
+    	
+		return result;
+    	
+    }
 
     
     public static void save(String f) throws FileNotFoundException, IOException {
