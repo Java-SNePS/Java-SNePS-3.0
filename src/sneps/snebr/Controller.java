@@ -722,6 +722,51 @@ public class Controller {
     	}
     }
     
+    public static int[] noOfOccurancesInSupports(PropositionNode nodeToBeChecked) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	int[] result = new int[2];
+    	int noOfOccurancesInJustifications = 0;
+    	int noOfOccurancesInAssumptions = 0;
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> nodeKeySet = propositionNodes.keySet();
+    	PropositionSet currNode = new PropositionSet(nodeToBeChecked.getId());
+    	for(String key : nodeKeySet){
+    		Hashtable<String, PropositionSet> currJustificationSupport = propositionNodes.get(key).getJustificationSupport();
+    		Set<String> justsKeySet = currJustificationSupport.keySet();
+    		for(String jKey : justsKeySet){
+        		if(currNode.isSubSet(currJustificationSupport.get(jKey))){
+        			noOfOccurancesInJustifications++;
+        		}
+    		}
+    		Hashtable<String, PropositionSet> currAssumptionBasedSupport = propositionNodes.get(key).getAssumptionBasedSupport();
+    		Set<String> assumptionsKeySet = currAssumptionBasedSupport.keySet();
+    		for(String aKey : assumptionsKeySet){
+        		if(currNode.isSubSet(currAssumptionBasedSupport.get(aKey))){
+        			noOfOccurancesInAssumptions++;
+        		}
+    		}
+    	}
+    	
+    	
+    	result[0] = noOfOccurancesInJustifications;
+    	result[1] = noOfOccurancesInAssumptions;
+		
+    	return result;
+    	
+    }
+    
+    
+    public static void alphaCut(double threshold) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> nodeKeySet = propositionNodes.keySet();
+    	
+    	for(String key : nodeKeySet){
+    		int [] occs = noOfOccurancesInSupports(propositionNodes.get(key));
+    		double alpha = (occs[0] / occs[1]);
+    		if(alpha < threshold){
+    			removeNodeFromLayeredBeliefState(propositionNodes.get(key));
+    		}
+    	}
+    }
     
     public static void removeNodeFromLayeredBeliefState(PropositionNode node){
     	//who to make a hyp?
