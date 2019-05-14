@@ -14,6 +14,7 @@ import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
+import sneps.snip.InferenceTypes;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
@@ -56,14 +57,6 @@ public class SIndexTest {
 		PropositionNode pn3 = new PropositionNode();
 		
 		PropositionSet ps = new PropositionSet();
-		PropositionSet ps1 = new PropositionSet();
-		PropositionSet ps2 = new PropositionSet();
-		PropositionSet ps3 = new PropositionSet();
-		PropositionSet ps4 = new PropositionSet();
-		PropositionSet ps5 = new PropositionSet();
-		PropositionSet ps6 = new PropositionSet();
-		PropositionSet ps7 = new PropositionSet();
-		
 		
 		Variable v = new Variable("x");
 		Variable v1 = new Variable("y");
@@ -124,14 +117,14 @@ public class SIndexTest {
 		ls4.putIn(b8);
 		ls5.putIn(b9);
 		
-		FlagNode fn = new FlagNode(n, 1);
-		FlagNode fn1 = new FlagNode(n1, 1);
-		FlagNode fn2 = new FlagNode(n2, 1);
-		FlagNode fn3 = new FlagNode(n3, 1);
-		FlagNode fn4 = new FlagNode(n4, 1);
-		FlagNode fn5 = new FlagNode(n5, 1);
-		FlagNode fn6 = new FlagNode(n6, 1);
-		FlagNode fn7 = new FlagNode(n7, 1);
+		FlagNode fn = new FlagNode(n, ps, 1);
+		FlagNode fn1 = new FlagNode(n1, ps, 1);
+		FlagNode fn2 = new FlagNode(n2, ps, 1);
+		FlagNode fn3 = new FlagNode(n3, ps, 1);
+		FlagNode fn4 = new FlagNode(n4, ps, 1);
+		FlagNode fn5 = new FlagNode(n5, ps, 1);
+		FlagNode fn6 = new FlagNode(n6, ps, 1);
+		FlagNode fn7 = new FlagNode(n7, ps, 1);
 		
 		FlagNodeSet fns = new FlagNodeSet();
 		FlagNodeSet fns1 = new FlagNodeSet();
@@ -157,37 +150,37 @@ public class SIndexTest {
 		 * Creating new Ruis and inserting them in the map
 		 */
 		
-		RuleUseInfo rui = new RuleUseInfo(ls, 1, 0, fns);
+		RuleUseInfo rui = new RuleUseInfo(ls, 1, 0, fns, InferenceTypes.BACKWARD);
 		index.insertRUI(rui);
 		index1.insertRUI(rui);
 		
 		
-		RuleUseInfo rui1 = new RuleUseInfo(ls1, 1, 0, fns1);
+		RuleUseInfo rui1 = new RuleUseInfo(ls1, 1, 0, fns1, InferenceTypes.BACKWARD);
 		
 		
-		RuleUseInfo rui2 = new RuleUseInfo(ls1, 1, 0, fns2);
+		RuleUseInfo rui2 = new RuleUseInfo(ls1, 1, 0, fns2, InferenceTypes.BACKWARD);
 		
 		
-		RuleUseInfo rui3 = new RuleUseInfo(ls1, 1, 0, fns2);
+		RuleUseInfo rui3 = new RuleUseInfo(ls1, 1, 0, fns2, InferenceTypes.BACKWARD);
 		
 		
-		RuleUseInfo rui4 = new RuleUseInfo(ls3, 0, 1, fns3);
+		RuleUseInfo rui4 = new RuleUseInfo(ls3, 0, 1, fns3, InferenceTypes.BACKWARD);
 		
 		
-		RuleUseInfo rui5 = new RuleUseInfo(ls2, 2, 0, fns4);
+		RuleUseInfo rui5 = new RuleUseInfo(ls2, 2, 0, fns4, InferenceTypes.BACKWARD);
 		index.insertRUI(rui5);
 		index1.insertRUI(rui5);
 		
 		
-		RuleUseInfo rui6 = new RuleUseInfo(ls, 3, 0, fns5);
+		RuleUseInfo rui6 = new RuleUseInfo(ls, 3, 0, fns5, InferenceTypes.BACKWARD);
 		index.insertRUI(rui6);
 		index1.insertRUI(rui6);
 		
-		RuleUseInfo rui7 = new RuleUseInfo(ls4, 4, 0, fns5);
+		RuleUseInfo rui7 = new RuleUseInfo(ls4, 4, 0, fns5, InferenceTypes.BACKWARD);
 		index.insertRUI(rui7);
 		index1.insertRUI(rui7);
 		
-		RuleUseInfo rui8 = new RuleUseInfo(ls5, 5, 0, fns5);
+		RuleUseInfo rui8 = new RuleUseInfo(ls5, 5, 0, fns5, InferenceTypes.BACKWARD);
 		index.insertRUI(rui8);
 		index1.insertRUI(rui8);
 		

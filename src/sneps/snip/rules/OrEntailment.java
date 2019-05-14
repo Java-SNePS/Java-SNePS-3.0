@@ -21,8 +21,6 @@ public class OrEntailment extends NumericalEntailment {
 		super(syn);
 		antecedents = getDownAntNodeSet();
 		consequents = getDownConsqNodeSet();
-		
-		reportsToBeSent = new ArrayList<Report>();
 	}
 	
 	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {

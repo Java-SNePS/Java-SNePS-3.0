@@ -203,9 +203,7 @@ public class NumericalEntailmentTests extends TestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		//fns = new FlagNodeSet();
-		//fn = new FlagNode(prop1, new Support(), 1);
-		//fns.insert(fn);
+
 		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
 	}
 
