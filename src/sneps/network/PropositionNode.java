@@ -15,8 +15,11 @@ import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 
 import java.util.Hashtable;
+import java.util.Set;
 
+import sneps.snebr.Context;
 import sneps.snebr.Support;
+import sneps.snip.InferenceTypes;
 import sneps.snip.Pair;
 import sneps.snip.Report;
 import sneps.snip.Runner;
@@ -38,7 +41,6 @@ public class PropositionNode extends Node implements Serializable {
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
-		basicSupport = new Support();
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -47,7 +49,6 @@ public class PropositionNode extends Node implements Serializable {
 	
 	public PropositionNode(Term trm) {
 		super(Semantic.proposition, trm);
-		basicSupport = new Support();
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
 		knownInstances = new ReportSet();
@@ -58,7 +59,7 @@ public class PropositionNode extends Node implements Serializable {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupport(),
-					currentReport.getSign());
+					currentReport.getSign(), InferenceTypes.BACKWARD);
 			if (knownInstances.contains(alteredReport)) {
 				continue;
 			}else{
@@ -205,43 +206,88 @@ public class PropositionNode extends Node implements Serializable {
 	public Support getBasicSupport() {
 		return basicSupport;
 	}
+	
 	public void setBasicSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		this.basicSupport = new Support(this.getId());
 	}
+	
 	public ChannelSet getOutgoingChannels() {
 		return outgoingChannels;
 	}
+	
 	public void setOutgoingChannels(ChannelSet outgoingChannels) {
 		this.outgoingChannels = outgoingChannels;
 	}
+	
 	public ChannelSet getIncomingChannels() {
 		return incomingChannels;
 	}
+	
 	public void setIncomingChannels(ChannelSet incomingChannels) {
 		this.incomingChannels = incomingChannels;
 	}
+	
 	public ReportSet getKnownInstances() {
 		return knownInstances;
 	}
+	
 	public void setKnownInstances(ReportSet knownInstances) {
 		this.knownInstances = knownInstances;
 	}
+	
 	public Hashtable<String, PropositionSet> getAssumptionBasedSupport() {
 		return basicSupport.getAssumptionBasedSupport();
 	}
+	
 	public Hashtable<String, PropositionSet> getJustificationSupport() {
 		return basicSupport.getJustificationSupport();
 	}
+	
 	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
+	
 	public boolean removeNodeFromSupports(PropositionNode propNode) {
-		return basicSupport.removeNodeFromSupports(propNode);
-		
+		return basicSupport.removeNodeFromSupports(propNode);	
 	}
 
 	public ReportSet getNewInstances() {
 		return newInstances;
+	}
+	
+	protected Set<Channel> getOutgoingAntecedentRuleChannels() {
+		return outgoingChannels.getAntRuleChannels();
+	}
+
+	protected Set<Channel> getOutgoingRuleConsequentChannels() {
+		return outgoingChannels.getRuleConsChannels();
+	}
+
+	protected Set<Channel> getOutgoingMatchChannels() {
+		return outgoingChannels.getMatchChannels();
+	}
+
+	protected Set<Channel> getIncomingAntecedentRuleChannels() {
+		return incomingChannels.getAntRuleChannels();
+	}
+
+	protected Set<Channel> getIncomingRuleConsequentChannels() {
+		return incomingChannels.getRuleConsChannels();
+	}
+
+	protected Set<Channel> getIncomingMatchChannels() {
+		return incomingChannels.getMatchChannels();
+	}
+
+	public boolean assertedInContext(Context reportContext) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	public Channel establishChannel(ChannelTypes rulecons, Node n, LinearSubstitutions linearSubstitutions,
+			LinearSubstitutions linearSubstitutions2, Context currentContext, int j) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

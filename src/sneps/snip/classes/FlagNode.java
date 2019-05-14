@@ -1,11 +1,11 @@
 package sneps.snip.classes;
 
 import sneps.network.Node;
-import sneps.snebr.Support;
+import sneps.network.classes.setClasses.PropositionSet;
 
 public class FlagNode {
 	private Node node;
-	private Support supports;
+	private PropositionSet support;
 	private int flag;
 
 	/**
@@ -18,14 +18,9 @@ public class FlagNode {
 	 * @param f,
 	 *            true or false
 	 */
-	public FlagNode(Node n, Support set, int f) {
+	public FlagNode(Node n, PropositionSet set, int f) {
 		node = n;
-		supports = set;
-		flag = f;
-	}
-	
-	public FlagNode(Node n, int f) {
-		node = n;
+		support= set;
 		flag = f;
 	}
 
@@ -43,8 +38,8 @@ public class FlagNode {
 	 * 
 	 * @return support
 	 */
-	public Support getSupports() {
-		return supports;
+	public PropositionSet getSupport() {
+		return support;
 	}
 
 	/**
@@ -65,7 +60,7 @@ public class FlagNode {
 	 * @return true or false
 	 */
 	public boolean isEqual(FlagNode fn) {
-		return fn.node == node && fn.supports == supports && fn.flag == flag;
+		return fn.node == node && fn.support == support && fn.flag == flag;
 	}
 	
 	public String toString() {

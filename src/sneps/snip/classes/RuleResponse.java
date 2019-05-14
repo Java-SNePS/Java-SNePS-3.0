@@ -1,44 +1,48 @@
 package sneps.snip.classes;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.snip.Report;
+import sneps.snip.channels.Channel;
 
 public class RuleResponse {
 	
-	private ArrayList<Report> reports;
-	private NodeSet consequents;
+	private Report report;
+	private Set<Channel> consequentChannels;
 	
 	public RuleResponse() {
-		this.reports = new ArrayList<Report>();
-		this.consequents = new NodeSet();
+		consequentChannels = new HashSet<Channel>();
+	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
+	}
+
+	public Set<Channel> getConsequentChannels() {
+		return consequentChannels;
+	}
+
+	public void setConsequentChannels(Set<Channel> consequentChannels) {
+		this.consequentChannels = consequentChannels;
 	}
 	
-	public RuleResponse(ArrayList<Report> reports, NodeSet consequents) {
-		this.reports = reports;
-		this.consequents = consequents;
-	}
-
-	public ArrayList<Report> getReport() {
-		return reports;
-	}
-
-	public void setReport(ArrayList<Report> reports) {
-		this.reports = reports;
+	public void addChannel(Channel c) {
+		this.consequentChannels.add(c);
 	}
 	
-	public void addReport(Report r) {
-		reports.add(r);
-	}
-
-	public NodeSet getConsequents() {
-		return consequents;
-	}
-
-	public void setConsequents(NodeSet consequents) {
-		this.consequents = consequents;
+	public void addAllChannels(Set<Channel> channels) {
+		for(Channel c : channels) {
+			this.consequentChannels.add(c);
+		}
 	}
 	
+	public void clear() {
+		consequentChannels.clear();
+	}
 
 }

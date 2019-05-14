@@ -2,6 +2,7 @@ package sneps.snip.classes;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Set;
 
 import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.NodeSet;
@@ -122,6 +123,18 @@ public class SIndex extends RuisHandler {
 	
 	public void clear() {
 		map.clear();
+	}
+	
+	public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui) {
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		Set<ArrayList<Integer>> keys = map.keySet();
+        for(ArrayList<Integer> key : keys) {
+        	RuisHandler handler = map.get(key);
+        	RuleUseInfoSet temp = handler.combineConstantRUI(rui);
+        	res.addAll(temp);
+        }
+        
+        return res;
 	}
 
 

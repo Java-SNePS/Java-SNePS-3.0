@@ -1,7 +1,7 @@
 package sneps.snip.classes;
 
 import sneps.network.classes.setClasses.FlagNodeSet;
-import sneps.snebr.Support;
+import sneps.snip.InferenceTypes;
 import sneps.snip.matching.Substitutions;
 
 /**
@@ -19,15 +19,21 @@ public class RuleUseInfo {
 	private int neg;
 	private FlagNodeSet fns;
 	
+	/**
+	 * Type of Report this RUI is produced from.
+	 */
+	private InferenceTypes type;
+	
 	public RuleUseInfo() {
 		
 	}
 
-	public RuleUseInfo(Substitutions s, int p, int n, FlagNodeSet f) {
+	public RuleUseInfo(Substitutions s, int p, int n, FlagNodeSet f, InferenceTypes t) {
 		sub = s;
 		pos = p;
 		neg = n;
 		fns = f;
+		type = t;
 	}
 	
 	/**
@@ -94,6 +100,10 @@ public class RuleUseInfo {
 		return sub;
 	}
 
+	public InferenceTypes getType() {
+		return type;
+	}
+
 	/**
 	 * Check if this and r have no binding conflicts
 	 * 
@@ -115,7 +125,6 @@ public class RuleUseInfo {
 	public boolean isJoint(RuleUseInfo r) {
 		for (FlagNode fn1 : fns) {
 			for (FlagNode fn2 : r.getFlagNodeSet()) {
-				//System.out.println("---->> " + fn1.getNode() + " " + fn1.getNode());
 				if (fn1.getNode() == fn2.getNode())
 					return true;
 			}
@@ -144,9 +153,16 @@ public class RuleUseInfo {
 	 */
 	public RuleUseInfo combine(RuleUseInfo rui) {
 		if (this.isDisjoint(rui) && this.isVarsCompatible(rui)) {
+			InferenceTypes resultingType;
+			if(this.getType().equals(InferenceTypes.FORWARD) || 
+					rui.getType().equals(InferenceTypes.FORWARD))
+				resultingType = InferenceTypes.FORWARD;
+			else
+				resultingType = InferenceTypes.BACKWARD;
+			
 			return new RuleUseInfo(this.getSubstitutions().union(rui.getSubstitutions()), 
 					this.pos + rui.getPosCount(), this.neg + rui.getNegCount(), 
-					this.fns.union(rui.getFlagNodeSet()));
+					this.fns.union(rui.getFlagNodeSet()), resultingType);
 		}
 		
 		return null;
@@ -154,7 +170,7 @@ public class RuleUseInfo {
 	
 	public String toString() {
 		return "Sub: " + sub.toString() + " Pos: " + pos + " Neg: " + neg + 
-				" Fns: " + fns.toString();
+				" Fns: " + fns.toString() + "Type: " + type;
 	}
 
 }

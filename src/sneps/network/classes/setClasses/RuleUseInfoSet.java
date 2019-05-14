@@ -51,7 +51,8 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		if(isEmpty())
 			return add(rui);
 		
-		return combine(rui);
+		ruis = combine(rui).getRuis();
+		return this;
 	}
 	
 	/**
@@ -125,6 +126,10 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		ruis.clear();
 	}
 	
+	public HashSet<RuleUseInfo> getRuis() {
+		return ruis;
+	}
+
 	public String toString() {
 		String res = null;
 		for(RuleUseInfo rui : ruis) {
@@ -132,5 +137,10 @@ public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo>
 		}
 		
 		return res;
+	}
+
+	@Override
+	public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui) {
+		return combine(rui);
 	}
 }

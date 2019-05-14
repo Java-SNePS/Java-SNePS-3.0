@@ -2,71 +2,63 @@ package sneps.snip.rules;
 
 import java.util.ArrayList;
 
-import sneps.exceptions.DuplicatePropositionException;
+
 import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
-import sneps.network.RuleNode;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 
-public class OrEntailment extends RuleNode {
+public class OrEntailment extends NumericalEntailment {
 	private static final long serialVersionUID = 1L;
 	
-	// Used for testing
-	private ArrayList<Report> reportsToBeSent;
-
-	public OrEntailment(Molecular syn) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public OrEntailment(Molecular syn) {
 		super(syn);
-		
-		// Initializing the antecedents
 		antecedents = getDownAntNodeSet();
-		processNodes(antecedents);
-		
-		// Initializing the consequents
-		consequents = getDownNodeSet("Vconsq");
+		consequents = getDownConsqNodeSet();
 		
 		reportsToBeSent = new ArrayList<Report>();
 	}
 	
-	public void applyRuleHandler(Report report, Node node) {
-		if(report.isPositive()) {
-			Support replySupport = new Support();
-			/*PropositionSet propSet = new PropositionSet();
-			try {
-				propSet.add(node.getId());
-				propSet.add(this.getId());
-			} catch (DuplicatePropositionException | NotAPropositionNodeException 
-					| NodeNotFoundInNetworkException e) {
-				e.printStackTrace();
-			}
-			try {
-				replySupport.addJustificationBasedSupport(propSet);
-			} catch (NodeNotFoundInPropSetException | NotAPropositionNodeException 
-					| NodeNotFoundInNetworkException e) {
-				e.printStackTrace();
-			}*/
-			
-			Report reply = new Report(report.getSubstitutions(), replySupport, true);
-			reportsToBeSent.add(reply);
+	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
+		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
+		RuleResponse response = new RuleResponse();
+		PropositionSet replySupport = new PropositionSet();
+		try {
+			replySupport.union(report.getSupport());
+		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+			e.printStackTrace();
 		}
+		// TODO
+		// Add rule node to replySupport
+		Report reply = new Report(report.getSubstitutions(), replySupport, 
+				true, report.getInferenceType());
+		reportsToBeSent.add(reply);
+		response.setReport(reply);
+		//Set<Channel> outgoingChannels = getOutgoingChannelsForReport(reply);
+		//response.addAllChannels(outgoingChannels);
+		responseList.add(response);
+		return responseList;
 	}
-	
+
 	@Override
-	protected RuleResponse applyRuleOnRui(RuleUseInfo tRui) {
+	protected Report applyRuleOnRui(RuleUseInfo tRui) {
 		return null;
 	}
 	
 	@Override
 	public NodeSet getDownAntNodeSet() {
 		return this.getDownNodeSet("Vant");
+	}
+	
+	@Override
+	public NodeSet getDownConsqNodeSet() {
+		return this.getDownNodeSet("Vconsq");
 	}
 
 	@Override
@@ -77,10 +69,6 @@ public class OrEntailment extends RuleNode {
 	@Override
 	protected byte getSIndexType() {
 		return 0;
-	}
-	
-	public ArrayList<Report> getSentReports() {
-		return reportsToBeSent;
 	}
 
 }

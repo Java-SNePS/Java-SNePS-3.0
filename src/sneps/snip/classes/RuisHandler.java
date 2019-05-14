@@ -1,6 +1,5 @@
 package sneps.snip.classes;
 
-import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 
 /**
@@ -24,6 +23,8 @@ public abstract class RuisHandler {
 	 * @return RuleUseInfoSet
 	 */
 	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
+	
+	abstract public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui);
 	
 	abstract public boolean isEmpty();
 	

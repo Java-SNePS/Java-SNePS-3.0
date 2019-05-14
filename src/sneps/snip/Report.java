@@ -1,40 +1,49 @@
 package sneps.snip;
 
-import java.util.Collection;
-
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
+import sneps.network.Network;
+import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
-import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
 public class Report {
 	private Substitutions substitution;
-	private Support support;
+	
+	/**
+	 * Contains the id of the proposition node denoting the actual instance 
+	 * represented by this Report
+	 */
+	private PropositionSet support;
 	private boolean sign;
+	private InferenceTypes inferenceType;
 
-	public Report(Substitutions substitution, Support suppt, boolean sign) {
-		this.substitution = substitution;
-		this.support = suppt;
-		this.sign = sign;
-	}
+	public Report(Substitutions substitution, PropositionSet suppt, boolean sign, InferenceTypes inference) {
+        this.substitution = substitution;
+        this.support = suppt;
+        this.sign = sign;
+        this.inferenceType = inference;
+    }
 
-	public boolean anySupportAssertedInContext(Context reportContext)
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		Collection<PropositionSet> reportSupportsSet = support.getAssumptionBasedSupport().values();
-		PropositionSet contextHypothesisSet = reportContext.getHypothesisSet();
-		for (PropositionSet assumptionHyps : reportSupportsSet)
-			if (assumptionHyps.isSubSet(contextHypothesisSet))
-				return true;
-		return false;
-	}
+    public boolean anySupportAssertedInContext(Context reportContext)
+            throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+        int[] reportSupportsSet = support.getProps();
+        int currentPropNodeId;
+        for (int i = 0; i < reportSupportsSet.length; i++) {
+            currentPropNodeId = reportSupportsSet[i];
+            PropositionNode retrievedNode = (PropositionNode) Network.getNodeById(currentPropNodeId);
+            if (retrievedNode.assertedInContext(reportContext))
+                return true;
+        }
+        return false;
+    }
 
 	public Substitutions getSubstitutions() {
 		return substitution;
 	}
 
-	public Support getSupport() {
+	public PropositionSet getSupport() {
 		return support;
 	}
 
@@ -62,7 +71,16 @@ public class Report {
 	}
 
 	public String toString() {
-		return "Sign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " + support;
+		return "Sign: " + sign + "\nSubstitution: " + substitution + "\nSupport: " 
+	                 + support + "\nType: " + inferenceType;
 	}
+	
+	public InferenceTypes getInferenceType() {
+        return inferenceType;
+    }
+	
+    public void setInferenceType(InferenceTypes inferenceType) {
+        this.inferenceType = inferenceType;
+    }
 
 }

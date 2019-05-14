@@ -1,6 +1,7 @@
 package sneps.network;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -30,6 +31,7 @@ import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
+import sneps.snip.matching.LinearSubstitutions;
 
 public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
@@ -73,7 +75,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 */
 	protected RuleUseInfo constantRUI;
 
-	public RuleNode() throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+	public RuleNode() {
 		consequents = new NodeSet();
 		antecedents = new NodeSet();
 		antNodesWithoutVars = new NodeSet();
@@ -84,7 +86,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		sharedVars = new VarNodeSet();
 	}
 
-	public RuleNode(Molecular syn) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public RuleNode(Molecular syn) {
 		super(syn);
 		consequents = new NodeSet();
 		antecedents = new NodeSet();
@@ -145,7 +147,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * 
 	 * @param antNodes
 	 */
-	protected void processNodes(NodeSet antNodes) {
+	public void processNodes(NodeSet antNodes) {
 		this.splitToNodesWithVarsAndWithout(antNodes, antNodesWithVars, antNodesWithoutVars);
 		for (Node n : antNodesWithVars) {
 			antNodesWithVarsIDs.add(n.getId());
@@ -167,8 +169,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @param report
 	 * @param signature
 	 * 		The instance that is being reported by the report.
+	 * @return 
 	 */
-	public void applyRuleHandler(Report report, Node signature) {
+	/*public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
 		RuleUseInfo rui;
 		Support propSet = report.getSupport();
 		FlagNodeSet fns = new FlagNodeSet();
@@ -214,17 +217,17 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 				applyRuleOnRui(tRui);
 			}
 		}
-	}
+	}*/
 
-	abstract protected RuleResponse applyRuleOnRui(RuleUseInfo tRui);
+	abstract protected Report applyRuleOnRui(RuleUseInfo tRui);
 
 	/**
 	 * 
 	 * Clears all the information saved by this RuleNode about the instances received.
 	 */
 	public void clear() {
-		
-		//contextConstantRUI.clear();
+		if(ruisHandler != null)
+			ruisHandler.clear();
 	}
 	
 	/**
@@ -326,6 +329,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @return NodeSet
 	 */
 	public abstract NodeSet getDownAntNodeSet();
+	
+	public abstract NodeSet getDownConsqNodeSet();
 
 	public NodeSet getUpNodeSet(String name) {
 		return this.getUpCableSet().getUpCable(name).getNodeSet();
@@ -428,6 +433,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public RuleUseInfo getConstantRui() {
 		return constantRUI;
 	}
+	
+	protected abstract Set<Channel> getOutgoingChannelsForReport(Report r);
 
 	@Override
 	public void processRequests() {
@@ -474,7 +481,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			ReportSet channelReports = currentChannel.getReportsBuffer();
 			for (Report currentReport : channelReports) {
 				if (currentChannel instanceof AntecedentToRuleChannel) {
-					applyRuleHandler(currentReport, currentChannel.getReporter());
+					//applyRuleHandler(currentReport, currentChannel.getReporter());
 				}
 			}
 			currentChannel.clearReportsBuffer();

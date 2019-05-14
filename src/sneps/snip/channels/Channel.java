@@ -80,4 +80,9 @@ public abstract class Channel {
 	public void clearReportsBuffer() {
 		reportsBuffer.clear();
 	}
+
+	public boolean isRequestProcessed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

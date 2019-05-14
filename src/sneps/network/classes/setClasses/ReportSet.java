@@ -21,12 +21,12 @@ public class ReportSet implements Iterable<Report>, Serializable {
 		reports = new HashSet<Report>();
 	}
 	
-	public void addReport(Report rport){
+	public void addReport(Report rport) {
 		reports.add(rport);
 	}
 	
 	@Override
-	public Iterator<Report> iterator(){
+	public Iterator<Report> iterator() {
 		return reports.iterator();
 	}
 
@@ -37,7 +37,6 @@ public class ReportSet implements Iterable<Report>, Serializable {
 	public void clear() {
 		reports = new HashSet<Report>();
 	}
-
 	
 	public boolean isEmpty() {
 		return reports.isEmpty();

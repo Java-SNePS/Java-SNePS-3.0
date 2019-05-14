@@ -1,10 +1,10 @@
 package sneps.snip.rules;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NodeNotFoundInPropSetException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
@@ -13,13 +13,16 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.term.Molecular;
-import sneps.snebr.Support;
+import sneps.snebr.Controller;
 import sneps.snip.Report;
+import sneps.snip.channels.Channel;
+import sneps.snip.channels.ChannelTypes;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
+import sneps.snip.matching.LinearSubstitutions;
 
 /**
  * @className NumericalEntailment.java
@@ -38,9 +41,9 @@ public class NumericalEntailment extends RuleNode {
 	private int i;
 	
 	// Used for testing
-	private ArrayList<Report> reportsToBeSent;
+	protected ArrayList<Report> reportsToBeSent;
 
-	public NumericalEntailment(Molecular syn) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public NumericalEntailment(Molecular syn) {
 		super(syn);
 		// Initializing i
 		NodeSet max = getDownNodeSet("i");
@@ -48,106 +51,134 @@ public class NumericalEntailment extends RuleNode {
 			i = Integer.parseInt(max.getNode(0).getIdentifier());
 		
 		// Initializing the antecedents
-		//antecedents = getDownAntNodeSet();
+		antecedents = getDownAntNodeSet();
 		//processNodes(antecedents);
 		
 		// Initializing the consequents
-		consequents = getDownNodeSet("iconsq");
+		consequents = getDownConsqNodeSet();
 		
 		reportsToBeSent = new ArrayList<Report>();
 	}
 
 	/**
-	 * Creates the first RuleUseInfo from a given Report and stores it (if positive)
-	 * Also checks if current number of positive Reports satisfies the rule
+	 * Creates the first RuleUseInfo from a given Report and stores it (if positive), 
+	 * also checks if current number of positive Reports satisfies the rule.
 	 * @param report
 	 * @param signature
 	 */
-	@Override
-	public void applyRuleHandler(Report report, Node signature) {
+	//@Override
+	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
 		processNodes(antecedents);
 		System.out.println("---------------");
-		if (report.isPositive()) {
-			//System.out.println("CREATING POSITIVE RUI");
-			Support propSet = report.getSupport();
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(signature, propSet, 1));
-			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
-			//System.out.println(rui);
-			
-			// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
-			// SIndex in case there are shared variables between the antecedents, or 
-			// RUISet in case there are no shared variables
-			if(ruisHandler == null)
-				ruisHandler = addRuiHandler();
-			
-			RuleResponse response = new RuleResponse();
-			response.setConsequents(consequents);
-			if(antNodesWithoutVars.contains(signature)) {
-				addConstantRui(rui);
-				//System.out.println(constantRUI);
-				if (ruisHandler.isEmpty())
-					applyRuleOnRui(constantRUI);
-				
-				// What if ruisHandler is not empty? I need to combine constantRUI with
-				// all the RUIs stored or what?
+		
+		if(report.isNegative())
+			return null;
+		
+		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
+		RuleResponse response = new RuleResponse();
+		Report reply;
+		Set<Channel> forwardChannels;
+		
+		//System.out.println("CREATING POSITIVE RUI");
+		PropositionSet propSet = report.getSupport();
+		FlagNodeSet fns = new FlagNodeSet();
+		fns.insert(new FlagNode(signature, propSet, 1));
+		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns, 
+				report.getInferenceType());
+		//System.out.println(rui);
+		
+		// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
+		// SIndex in case there are shared variables between the antecedents, or 
+		// RUISet in case there are no shared variables
+		if(ruisHandler == null)
+			ruisHandler = addRuiHandler();
+		
+		if(antNodesWithoutVars.contains(signature)) {
+			addConstantRui(rui);
+			if (ruisHandler.isEmpty()) {
+				reply = applyRuleOnRui(constantRUI);
+				/*if(reply != null) {
+					forwardChannels = getOutgoingChannelsForReport(reply);
+					response.setReport(reply);
+					response.addAllChannels(forwardChannels);
+					responseList.add(response);
+				}*/
 			}
 			else {
-				// The RUI created for the given report is inserted to the RuisHandler
-				RuleUseInfoSet res = ruisHandler.insertRUI(rui);
-				//System.out.println(res);
-				
-				if(constantRUI != null) {
-					RuleUseInfo combined;
-					for (RuleUseInfo tRui : res) {
-						combined = tRui.combine(constantRUI);
-						if(combined != null) {
-							applyRuleOnRui(combined);
-						}
+				RuleUseInfoSet combined  = ruisHandler.combineConstantRUI(constantRUI);
+				for (RuleUseInfo tRui : combined) {
+					reply = applyRuleOnRui(tRui);
+					if(reply != null) {
+						forwardChannels = getOutgoingChannelsForReport(reply);
+						response.clear();
+						response.setReport(reply);
+						response.addAllChannels(forwardChannels);
+						responseList.add(response);
 					}
 				}
-				else {
-					for (RuleUseInfo tRui : res) {
-						applyRuleOnRui(tRui);
+			}
+		}
+		else {
+			// The RUI created for the given report is inserted to the RuisHandler
+			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
+			//System.out.println(res);
+			
+			if(constantRUI != null) {
+				RuleUseInfo combined;
+				for (RuleUseInfo tRui : res) {
+					combined = tRui.combine(constantRUI);
+					if(combined != null) {
+						reply = applyRuleOnRui(combined);
+						/*if(reply != null) {
+							forwardChannels = getOutgoingChannelsForReport(reply);
+							response.clear();
+							response.setReport(reply);
+							response.addAllChannels(forwardChannels);
+							responseList.add(response);
+						}*/
+					}
+				}
+			}
+			else {
+				for (RuleUseInfo tRui : res) {
+					reply = applyRuleOnRui(tRui);
+					if(reply != null) {
+						forwardChannels = getOutgoingChannelsForReport(reply);
+						response.clear();
+						response.setReport(reply);
+						response.addAllChannels(forwardChannels);
+						responseList.add(response);
 					}
 				}
 			}
 		}
 		
-	}
+		if(responseList.isEmpty())
+			return null;
 	
-	protected RuleResponse applyRuleOnRui(RuleUseInfo rui) {
+		return responseList;
+	}
+
+	protected Report applyRuleOnRui(RuleUseInfo rui) {
 		if(rui.getPosCount() < i)
 			return null;
 		
-		Support replySupport = new Support();
-		/*PropositionSet propSet = new PropositionSet();
+		PropositionSet replySupport = new PropositionSet();
 		for(FlagNode fn : rui.getFlagNodeSet())
 			try {
-				propSet.add(fn.getNode().getId());
-			} catch (DuplicatePropositionException | NotAPropositionNodeException 
-					| NodeNotFoundInNetworkException e) {
+				replySupport.union(fn.getSupport());
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
 				e.printStackTrace();
 			}
+
+		// TODO
+		// Add rule node to replySupport
 		
-		try {
-			propSet.add(this.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException 
-				| NodeNotFoundInNetworkException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			replySupport.addJustificationBasedSupport(propSet);
-		} catch (NodeNotFoundInPropSetException | NotAPropositionNodeException 
-				| NodeNotFoundInNetworkException e) {
-			e.printStackTrace();
-		}*/
-		
-		Report reply = new Report(rui.getSubstitutions(), replySupport, true);
+		Report reply = new Report(rui.getSubstitutions(), replySupport, true, 
+				rui.getType());
+		System.out.println(reply);
 		reportsToBeSent.add(reply);
-		
-		return new RuleResponse();
+		return reply;
 	}
 	
 	/**
@@ -159,6 +190,11 @@ public class NumericalEntailment extends RuleNode {
 	public NodeSet getDownAntNodeSet(){
 		return this.getDownNodeSet("iant");
 	}
+	
+	@Override
+	public NodeSet getDownConsqNodeSet() {
+		return this.getDownNodeSet("iconsq");
+	}
 
 	@Override
 	protected RuisHandler createRuisHandler() {
@@ -168,6 +204,27 @@ public class NumericalEntailment extends RuleNode {
 	@Override
 	protected byte getSIndexType() {
 		return SIndex.RUIS;
+	}
+	
+	protected Set<Channel> getOutgoingChannelsForReport(Report r) {
+		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
+		Set<Channel> replyChannels = new HashSet<Channel>();
+		for(Node n : consequents) {
+			for(Channel c : outgoingChannels) {
+				if(c.getRequester().getId() == n.getId() && 
+						r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
+					replyChannels.add(c);
+					break;
+				}
+			}
+			
+			Channel ch = establishChannel(ChannelTypes.RuleCons, n, 
+					new LinearSubstitutions(), (LinearSubstitutions) 
+					r.getSubstitutions(), Controller.getCurrentContext(), -1);
+			replyChannels.add(ch);
+		}
+		
+		return replyChannels;
 	}
 	
 	/**
