@@ -43,7 +43,7 @@ public class BaseSupportGraph {
     		for(String supportKey: supportKeys){
     			//hypsAdjList[i].add(justificationSupport.get(supportKey));
     			GraphNode currSupport = new GraphNode(justificationSupport.get(supportKey),1);
-    			if(!(contains(allSupports, currSupport.getPropositionSet()))){ //revise
+    			if(!(contains(allSupports, currSupport.getPropositionSet()))){
     				allSupports.add(currSupport.getPropositionSet());
     				supportsAdjList.add(new LinkedList<GraphNode>());
     				LinkedList<GraphNode> currentSupportRow = supportsAdjList.get(j);
@@ -51,7 +51,7 @@ public class BaseSupportGraph {
     				currentSupportRow.add(new GraphNode(new PropositionSet(propositionNodes.get(key).getId()),0));
     				j++;
     			} else {
-    				int suppIndex = supportsAdjList.indexOf(currSupport); //revise
+    				int suppIndex = indexOfSupportRow(currSupport);
     				LinkedList<GraphNode> currentSupportRow = supportsAdjList.get(suppIndex);
     				currentSupportRow.add(new GraphNode(new PropositionSet(propositionNodes.get(key).getId()),0));
     			}
@@ -112,8 +112,8 @@ public class BaseSupportGraph {
 		
 	}
 	
-	public int indexOfSupportRow(GraphNode node) throws Exception { //revise
-		int index = -1;
+	public int indexOfSupportRow(GraphNode node) {
+		int index = 0;
 		int i = 0;
 		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
 			GraphNode curr = supportsAdjList.getFirst().getFirst();
@@ -122,9 +122,6 @@ public class BaseSupportGraph {
 				break;
 			}
 			i++;
-		}
-		if(index == -1){
-			throw new Exception("Support Node not found");
 		}
 		return index;
 	}

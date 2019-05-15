@@ -22,6 +22,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
+
+import oracle.jrockit.jfr.tools.ConCatRepository;
+
 public class Controller {
     private static String currContext = "default";
     private static ContextSet contextSet = new ContextSet(currContext);
@@ -680,7 +684,7 @@ public class Controller {
         		}
         		if(x == contextIds.length - 1){
         			Network.removeNode(propositionNodes.get(key));
-        			removePropositionFromAllContexts(propositionNodes.get(key));        			
+        			removePropositionFromAllContexts(propositionNodes.get(key));
         		}
         	}
     	}
@@ -768,10 +772,65 @@ public class Controller {
     	}
     }
     
-    public static void removeNodeFromLayeredBeliefState(PropositionNode node){
-    	//who to make a hyp?
-    	//Is this the point where I need the tree?
+    public static void removeNodeFromLayeredBeliefState(PropositionNode node) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	ArrayList<ArrayList<Integer>> parentsTree = getParentsLayered(node);
+    	for(int i = 0; i < parentsTree.size()-1; i++){
+    		ArrayList<Integer> currentLayer = parentsTree.get(i);
+    		
+    			for(int j = 0; j < currentLayer.size()-1; j++) {
+    				int parentId = currentLayer.get(j);
+    				PropositionNode currParent = (PropositionNode) Network.getNodeById(parentId);
+    				PropositionSet currParentPropSet = new PropositionSet(parentId);
+    				if(i == 0) {
+    	   				Hashtable<String, PropositionSet> justSupp = currParent.getJustificationSupport();
+        				Set<String> justKeySet = justSupp.keySet();
+        				for(String justKey : justKeySet){
+        					PropositionSet currJust = justSupp.get(justKey);
+        					if(currParentPropSet.isSubSet(currJust)){
+        						justSupp.remove(justKey);
+        					}
+        				}
+    				}
+    				Hashtable<String, PropositionSet> AssumpSupp = currParent.getAssumptionBasedSupport();
+    				Set<String> AssumpKeySet = AssumpSupp.keySet();
+    				
+    			}
+    	}
     }
+    
+    
+    public static ArrayList<Integer> getDirectParents(PropositionNode child) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    	ArrayList<Integer> result = new ArrayList<Integer>();
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> nodesKeySet = propositionNodes.keySet();
+    	PropositionSet childPropSet = new PropositionSet(child.getId());
+    	
+    	for(String NodeKey : nodesKeySet) {
+    		PropositionNode currNode = propositionNodes.get(NodeKey);
+    		Hashtable<String, PropositionSet> currJustSupp = currNode.getJustificationSupport();
+    		Set<String> suppsKeySet = currJustSupp.keySet();
+    		for(String suppKey : suppsKeySet) {
+    			PropositionSet currSet = currJustSupp.get(suppKey);
+    			if(childPropSet.isSubSet(currSet)){
+    				result.add(currNode.getId());
+    				break;
+    			}
+    		}
+    	}
+    	
+    	
+    	return result;
+    }
+    
+    public static ArrayList<Integer> concatLists(ArrayList<Integer> l1, ArrayList<Integer> l2) {
+    	
+    	for(int i = 0; i< l2.size()-1; i++) {
+    		l1.add(l2.get(i));
+    	}
+    	
+    	return l1;
+    }
+    
     
     public ArrayList<ArrayList<Integer>> findTriplets(BaseSupportGraph G) {
     	
@@ -786,8 +845,8 @@ public class Controller {
     		int i = 0;
     		path.add(firstNode.getId());
     		for(Iterator it = currentRow.iterator(); it.hasNext();){
+    			GraphNode currentSuppNode = (GraphNode) it.next();
     			if(i > 0){
-    				GraphNode currentSuppNode = (GraphNode) it.next();
     				path.add(currentSuppNode.getId());
     				for (Iterator iterator = supportsList.iterator(); iterator.hasNext();) {
     					LinkedList<GraphNode> currSupportRow = (LinkedList<GraphNode>) iterator.next();
@@ -795,9 +854,43 @@ public class Controller {
     					if(currSupport.equals(currentSuppNode)){
     						int j = 0;
     						for (Iterator itr = currSupportRow.iterator(); itr.hasNext();){
+    							GraphNode currPropNode = (GraphNode) itr.next();
     							if(j>0){
-    								GraphNode currPropNode = (GraphNode) itr.next();
     								path.add(currPropNode.getId());
+    								result.add(path);
+    								path.remove(path.size()-1);
+    							}
+    							i++;
+    						}
+    						path.remove(path.size()-1);
+    						break;
+    					}
+    				}
+    			}
+    			i++;
+    		}
+    		
+    	}
+    	
+    	for(Iterator iter = supportsList.iterator(); iter.hasNext();){
+    		ArrayList<Integer> path = new ArrayList<Integer>();
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		GraphNode firstNode = currentRow.getFirst();
+    		int i = 0;
+    		path.add(firstNode.getId());
+    		for(Iterator it = currentRow.iterator(); it.hasNext();){
+    			GraphNode currentPropNode = (GraphNode) it.next();
+    			if(i > 0){	
+    				path.add(currentPropNode.getId());
+    				for (Iterator iterator = hypsList.iterator(); iterator.hasNext();) {
+    					LinkedList<GraphNode> currPropRow = (LinkedList<GraphNode>) iterator.next();
+    					GraphNode currProp = currPropRow.getFirst();
+    					if(currProp.equals(currentPropNode)){
+    						int j = 0;
+    						for (Iterator itr = currPropRow.iterator(); itr.hasNext();){
+    							GraphNode currSuppNode = (GraphNode) itr.next();
+    							if(j>0){
+    								path.add(currSuppNode.getId());
     								result.add(path);
     								path.remove(path.size()-1);
     							}
@@ -845,10 +938,19 @@ public class Controller {
     	PropositionNode n5;
     	PropositionNode n6;
     	PropositionNode n7;
+    	PropositionNode n8;
+    	PropositionNode n9;
+    	PropositionNode n10;
+    	PropositionNode n11;
+    	PropositionNode n12;
+    	PropositionNode n13;
+    	PropositionNode n14;
     	
     	sem = new Semantic(semanticType);
     	net = new Network();
     	
+    	//Building Network Nodes
+    	//The Network Nodes Labels and Corresponding Ids
     	net.buildBaseNode("s", sem);// 0
 		net.buildBaseNode("p", sem);// 1
 		net.buildBaseNode("q", sem);// 2
@@ -857,12 +959,49 @@ public class Controller {
 		net.buildBaseNode("n", sem);// 5
 		net.buildBaseNode("v", sem);// 6
 		net.buildBaseNode("z", sem);// 7
+		net.buildBaseNode("a", sem);// 8
+		net.buildBaseNode("b", sem);// 9
+		net.buildBaseNode("c", sem);// 10
+		net.buildBaseNode("d", sem);// 11
+		net.buildBaseNode("e", sem);// 12
+		net.buildBaseNode("f", sem);// 13
+		net.buildBaseNode("g", sem);// 14
 		
-		BaseSupportGraph G = new BaseSupportGraph();
-    	int[] props = new int[2];
-    	props[0] = 0;
-    	props[1] = 1;
-    	int[] props1 = {0,1};
+		
+		//Getting the Network PropositionNodes
+		 n0 = (PropositionNode) net.getNode("s");
+		 n1 = (PropositionNode) net.getNode("p");
+		 n2 = (PropositionNode) net.getNode("q");
+		 n3 = (PropositionNode) net.getNode("r");
+		 n4 = (PropositionNode) net.getNode("m");
+		 n5 = (PropositionNode) net.getNode("n");
+		 n6 = (PropositionNode) net.getNode("v");
+		 n7 = (PropositionNode) net.getNode("z");
+		 n8 = (PropositionNode) net.getNode("a");
+		 n9 = (PropositionNode) net.getNode("b");
+		 n10 = (PropositionNode) net.getNode("c");
+		 n11 = (PropositionNode) net.getNode("d");
+		 n12 = (PropositionNode) net.getNode("e");
+		 n13 = (PropositionNode) net.getNode("f");
+		 n14 = (PropositionNode) net.getNode("g");
+		 
+		 //Setting Specific Nodes to be Hyps. So that no support are needed for this node.
+		 //If node is not set, it is considers as Derived node.
+		 n2.setHyp(true);
+		 n4.setHyp(true);
+		 n5.setHyp(true);
+		 n6.setHyp(true);
+		 n7.setHyp(true);
+		 n9.setHyp(true);
+		 n10.setHyp(true);
+		 n11.setHyp(true);
+		 n12.setHyp(true);
+		 n13.setHyp(true);
+		 n14.setHyp(true);
+		 
+		 //BaseSupportGraph G = new BaseSupportGraph();
+		 System.out.println(n1.getParentNodes());
+		 System.out.println(n1.getMySupportsTree());
 		//GraphNode gn0 = new GraphNode(new PropositionSet(props));
 		//GraphNode gn1 = new GraphNode(new PropositionSet(props1));
 		//System.out.println(gn0);
