@@ -798,6 +798,33 @@ public class Controller {
     	}
     }
     
+    public static ArrayList<ArrayList<Integer>> getParentsLayered(PropositionNode child) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+    	boolean parentsFound = false;
+    	ArrayList<Integer> firstLayer = getDirectParents(child);
+    	if(firstLayer.size() > 0) {
+    		parentsFound = true;
+    		result.add(firstLayer);
+    	}
+    	int i = 0;
+    	while(parentsFound){
+    		ArrayList<Integer> nextLayer = new ArrayList<Integer>();
+    		ArrayList<Integer> prevLayer = result.get(i);
+    		for(int j = 0; j < prevLayer.size()-1; j++){
+    			PropositionNode currChild = (PropositionNode) Network.getNodeById(prevLayer.get(j));
+    			concatLists(nextLayer, getDirectParents(currChild));
+    		}
+    		
+    		if(nextLayer.size() > 0){
+    			result.add(nextLayer);
+    			i++;
+    		} else {
+    			parentsFound = false;
+    		}
+    	}
+    	
+    	return result;
+    }
     
     public static ArrayList<Integer> getDirectParents(PropositionNode child) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
     	ArrayList<Integer> result = new ArrayList<Integer>();
