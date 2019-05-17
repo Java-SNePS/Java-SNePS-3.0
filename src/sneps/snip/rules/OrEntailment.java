@@ -45,7 +45,7 @@ public class OrEntailment extends NumericalEntailment {
 	}
 
 	@Override
-	protected Report applyRuleOnRui(RuleUseInfo tRui) {
+	protected RuleResponse applyRuleOnRui(RuleUseInfo tRui) {
 		return null;
 	}
 	

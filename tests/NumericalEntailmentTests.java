@@ -49,7 +49,7 @@ public class NumericalEntailmentTests extends TestCase {
 	private static Node fido, var, dog, barks;
 	private static Node prop1, prop2, prop3, prop4;
 	private static RuleUseInfo rui;
-	private static Report report;
+	private static Report report, report1;
 
  	public void setUp() {
  		try {
@@ -119,51 +119,51 @@ public class NumericalEntailmentTests extends TestCase {
 			assertNotNull(e1.getMessage(), e1);
 		}
 		
-			LinkedList<DownCable> dcList = new LinkedList<DownCable>();
-			NodeSet nodeSet1 = new NodeSet();
-			DownCable dc1;	DownCableSet dcs;
+		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
+		NodeSet nodeSet1 = new NodeSet();
+		DownCable dc1;	DownCableSet dcs;
 
-			nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop1 = new PropositionNode(new Closed("Prop1", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameCD); 
-			prop2 = new PropositionNode(new Closed("Prop2", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(var);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC);
-			prop3 = new PropositionNode(new Open("Prop3", dcs));
-			((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMD); 
-			prop4 = new PropositionNode(new Closed("Prop4", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
+		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop1 = new PropositionNode(new Closed("Prop1", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameCD); 
+		prop2 = new PropositionNode(new Closed("Prop2", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC);
+		prop3 = new PropositionNode(new Open("Prop3", dcs));
+		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMD); 
+		prop4 = new PropositionNode(new Closed("Prop4", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//	
 
 //------------------------- Numerical Setup ------------------------------------//
 
@@ -200,11 +200,22 @@ public class NumericalEntailmentTests extends TestCase {
 		/*try {
 			support.add(prop1.getId());
 		} catch (DuplicatePropositionException | NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 
 		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
+		
+		LinearSubstitutions sub1 = new LinearSubstitutions();
+		PropositionSet support1 = new PropositionSet();
+		/*try {
+			support.add(prop3.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		sub1.putIn(new Binding((VariableNode) var, fido));
+		report1 = new Report(sub1, support1, true, InferenceTypes.BACKWARD);
+
 	}
 
  	/*@Test
@@ -246,18 +257,7 @@ public class NumericalEntailmentTests extends TestCase {
 				numerical.getRuisHandler() instanceof SIndex);
 		assertEquals(SIndex.SINGLETON, ((SIndex) (numerical.getRuisHandler())).getRuiHandlerType());
 		
-		LinearSubstitutions sub = new LinearSubstitutions();
-		PropositionSet support = new PropositionSet();
-		/*try {
-			support.add(prop3.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		sub.putIn(new Binding((VariableNode) var, fido));
-		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
-
-		numerical.applyRuleHandler(report, prop3);
+		numerical.applyRuleHandler(report1, prop3);
 		assertEquals(1, numerical.getReplies().size());
 	}
 
@@ -272,7 +272,7 @@ public class NumericalEntailmentTests extends TestCase {
 		assertEquals(3, numerical.getDownAntNodeSet().size());
 	}*/
 
-	public void tearDown(){
+	public void tearDown() {
 		Network.clearNetwork();
 		numerical.clear();
 		fido = null;

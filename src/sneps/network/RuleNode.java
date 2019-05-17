@@ -74,6 +74,12 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * that contains all the constant instances that do not dominate variables.
 	 */
 	protected RuleUseInfo constantRUI;
+	
+	/**
+	 * Used for testing.
+	 */
+	protected ArrayList<Report> reportsToBeSent;
+
 
 	public RuleNode() {
 		consequents = new NodeSet();
@@ -84,6 +90,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
 		sharedVars = new VarNodeSet();
+		reportsToBeSent = new ArrayList<Report>();
 	}
 
 	public RuleNode(Molecular syn) {
@@ -96,10 +103,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
 		sharedVars = new VarNodeSet();
-	}
-	
-	public NodeSet getConsequents() {
-		return consequents;
+		reportsToBeSent = new ArrayList<Report>();
 	}
 
 	public RuisHandler getRuisHandler() {
@@ -132,6 +136,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 
 	public void setConsequents(NodeSet consequents) {
 		this.consequents = consequents;
+	}
+	
+	public ArrayList<Report> getReplies() {
+		return reportsToBeSent;
 	}
 
 	protected void sendReportToConsequents(Report reply) {
@@ -171,18 +179,23 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * 		The instance that is being reported by the report.
 	 * @return 
 	 */
-	/*public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
+	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
+		System.out.println("---------------------");
+		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
+		RuleResponse response = new RuleResponse();
+		
 		RuleUseInfo rui;
-		Support propSet = report.getSupport();
+		PropositionSet propSet = report.getSupport();
 		FlagNodeSet fns = new FlagNodeSet();
 		
 		if (report.isPositive()) {
 			fns.insert(new FlagNode(signature, propSet, 1));
-			rui = new RuleUseInfo(report.getSubstitutions(),
-					1, 0, fns);
+			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns, 
+					report.getInferenceType());
 		} else {
 			fns.insert(new FlagNode(signature, propSet, 2));
-			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
+			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns, 
+					report.getInferenceType());
 		}
 		
 		// This is the first report received by this RuleNode, so 
@@ -191,35 +204,53 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			ruisHandler = addRuiHandler();
 		}
 		
-		RuleUseInfoSet res = new RuleUseInfoSet();
-		if(antNodesWithoutVars.contains(signature))
+		if(antNodesWithoutVars.contains(signature)) {
 			addConstantRui(rui);
+			if (ruisHandler.isEmpty()) {
+				response = applyRuleOnRui(constantRUI);
+				if(response != null)
+					responseList.add(response);
+			}
+			else {
+				RuleUseInfoSet combined  = ruisHandler.combineConstantRUI(constantRUI);
+				for (RuleUseInfo tRui : combined) {
+					response = applyRuleOnRui(tRui);
+					if(response != null)
+						responseList.add(response);
+				}
+			}
+		}
 		else {
 			// The RUI created for the given report is inserted to the RuisHandler
-			res = ruisHandler.insertRUI(rui);
-		}
-		
-		if (res == null) {
-			applyRuleOnRui(constantRUI);
-			return;
-		}
-		
-		if(constantRUI != null) {
-			RuleUseInfo combined;
-			for (RuleUseInfo tRui : res) {
-				combined = tRui.combine(constantRUI);
-				if(combined != null)
-					applyRuleOnRui(combined);
+			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
+			
+			if(constantRUI != null) {
+				RuleUseInfo combined;
+				for (RuleUseInfo tRui : res) {
+					combined = tRui.combine(constantRUI);
+					if(combined != null) {
+						response = applyRuleOnRui(combined);
+						if(response != null)
+							responseList.add(response);
+					}
+				}
+			}
+			else {
+				for (RuleUseInfo tRui : res) {
+					response = applyRuleOnRui(tRui);
+					if(response != null)
+						responseList.add(response);
+				}
 			}
 		}
-		else {
-			for (RuleUseInfo tRui : res) {
-				applyRuleOnRui(tRui);
-			}
-		}
-	}*/
+		
+		if(responseList.isEmpty())
+			return null;
+	
+		return responseList;
+	}
 
-	abstract protected Report applyRuleOnRui(RuleUseInfo tRui);
+	abstract protected RuleResponse applyRuleOnRui(RuleUseInfo tRui);
 
 	/**
 	 * 
@@ -228,6 +259,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public void clear() {
 		if(ruisHandler != null)
 			ruisHandler.clear();
+		constantRUI = null;	
 	}
 	
 	/**

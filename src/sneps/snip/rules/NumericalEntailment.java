@@ -40,9 +40,6 @@ public class NumericalEntailment extends RuleNode {
 	
 	private int i;
 	
-	// Used for testing
-	protected ArrayList<Report> reportsToBeSent;
-
 	public NumericalEntailment(Molecular syn) {
 		super(syn);
 		// Initializing i
@@ -56,8 +53,6 @@ public class NumericalEntailment extends RuleNode {
 		
 		// Initializing the consequents
 		consequents = getDownConsqNodeSet();
-		
-		reportsToBeSent = new ArrayList<Report>();
 	}
 
 	/**
@@ -76,10 +71,7 @@ public class NumericalEntailment extends RuleNode {
 		
 		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
 		RuleResponse response = new RuleResponse();
-		Report reply;
-		Set<Channel> forwardChannels;
 		
-		//System.out.println("CREATING POSITIVE RUI");
 		PropositionSet propSet = report.getSupport();
 		FlagNodeSet fns = new FlagNodeSet();
 		fns.insert(new FlagNode(signature, propSet, 1));
@@ -96,59 +88,40 @@ public class NumericalEntailment extends RuleNode {
 		if(antNodesWithoutVars.contains(signature)) {
 			addConstantRui(rui);
 			if (ruisHandler.isEmpty()) {
-				reply = applyRuleOnRui(constantRUI);
-				/*if(reply != null) {
-					forwardChannels = getOutgoingChannelsForReport(reply);
-					response.setReport(reply);
-					response.addAllChannels(forwardChannels);
+				response = applyRuleOnRui(constantRUI);
+				if(response != null)
 					responseList.add(response);
-				}*/
 			}
 			else {
 				RuleUseInfoSet combined  = ruisHandler.combineConstantRUI(constantRUI);
 				for (RuleUseInfo tRui : combined) {
-					reply = applyRuleOnRui(tRui);
-					if(reply != null) {
-						forwardChannels = getOutgoingChannelsForReport(reply);
-						response.clear();
-						response.setReport(reply);
-						response.addAllChannels(forwardChannels);
+					response = applyRuleOnRui(tRui);
+					if(response != null)
 						responseList.add(response);
-					}
 				}
 			}
 		}
 		else {
 			// The RUI created for the given report is inserted to the RuisHandler
 			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
-			//System.out.println(res);
+			System.out.println(res);
 			
 			if(constantRUI != null) {
 				RuleUseInfo combined;
 				for (RuleUseInfo tRui : res) {
 					combined = tRui.combine(constantRUI);
 					if(combined != null) {
-						reply = applyRuleOnRui(combined);
-						/*if(reply != null) {
-							forwardChannels = getOutgoingChannelsForReport(reply);
-							response.clear();
-							response.setReport(reply);
-							response.addAllChannels(forwardChannels);
+						response = applyRuleOnRui(combined);
+						if(response != null)
 							responseList.add(response);
-						}*/
 					}
 				}
 			}
 			else {
 				for (RuleUseInfo tRui : res) {
-					reply = applyRuleOnRui(tRui);
-					if(reply != null) {
-						forwardChannels = getOutgoingChannelsForReport(reply);
-						response.clear();
-						response.setReport(reply);
-						response.addAllChannels(forwardChannels);
+					response = applyRuleOnRui(tRui);
+					if(response != null)
 						responseList.add(response);
-					}
 				}
 			}
 		}
@@ -159,7 +132,7 @@ public class NumericalEntailment extends RuleNode {
 		return responseList;
 	}
 
-	protected Report applyRuleOnRui(RuleUseInfo rui) {
+	protected RuleResponse applyRuleOnRui(RuleUseInfo rui) {
 		if(rui.getPosCount() < i)
 			return null;
 		
@@ -178,7 +151,13 @@ public class NumericalEntailment extends RuleNode {
 				rui.getType());
 		System.out.println(reply);
 		reportsToBeSent.add(reply);
-		return reply;
+		
+		RuleResponse r = new RuleResponse();
+		r.setReport(reply);
+		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		r.addAllChannels(forwardChannels);
+		
+		return r;
 	}
 	
 	/**
@@ -241,10 +220,6 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	public void setI(int newI) {
 		i = newI;
-	}
-	
-	public ArrayList<Report> getReplies() {
-		return reportsToBeSent;
 	}
 
 }

@@ -106,4 +106,13 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		
 		return res;
 	}
+	
+	public NodeSet getAllNodes() {
+		NodeSet res = new NodeSet();
+		for(FlagNode fn : flagNodes) {
+			res.addNode(fn.getNode());
+		}
+		
+		return res;
+	}
 }

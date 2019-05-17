@@ -7,236 +7,120 @@ import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
-import sneps.network.VariableNode;
-import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
-import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.term.Molecular;
-import sneps.network.classes.term.Open;
+import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
+import sneps.snip.channels.ChannelTypes;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
-import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.matching.Substitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleResponse;
 
 public class ThreshEntailment extends RuleNode {
-
-	private static boolean sign = false;
+	private static final long serialVersionUID = 1L;
 	
-	private int min, max, args;
-	private int pos=0;
-	private int neg=0;
-	public int getThreshMin() {
-		return min;
-	}
-
-	public int getThreshMax() {
-		return max;
-	}
-
-	public int getThreshArgs() {
-		return args;
-	}
+	private int min;
+	private int max;
 	
-	public void setThreshMin(int min) {
-		this.min = min;
-	}
-
-	public void setThreshMax(int max) {
-		this.max = max;
-	}
-
-	public void setThreshArgs(int args) {
-		this.args = args;
-	}
-
-
-	/**
-	 * Constructor for the Thresh Entailment
-	 * @param syn
-	 */
 	public ThreshEntailment(Molecular syn) {
 		super(syn);
+		NodeSet minNode = getDownNodeSet("min");
+		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
+		NodeSet maxNode = getDownNodeSet("max");
+		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
+		antecedents = getDownAntNodeSet();
+		processNodes(antecedents);
 	}
-	
-	/**
-	 * When a report is received, it checks whether it is true or false
-	 * Then the positive or negative will be updated accordingly
-	 * When there is enough args received to create a RUI, for the rule to check,
-	 * A RUI will be created and apply the rule on this RUI
-	 */
-	
-	public void applyRuleHandler(Report report, Node signature) {
-		
-		String contextID = report.getContextName();
-		RuleUseInfo rui;
-		
-		if(report.isPositive()) {
-			pos++;
-		}
-		if(report.isNegative()) {
-			neg++;
-		}
-		
-		int rem = args-(pos+neg);
-		if(pos>min && pos<max && max-pos>rem) {
-			
-			PropositionSet propSet = report.getSupports();
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(signature, propSet, 1));
-			rui = new RuleUseInfo(report.getSubstitutions(),
-					pos, neg, fns);
-			applyRuleOnRui(rui, contextID);
-			
-		}
-		
-		if(neg+pos==args) {
-			
-			PropositionSet propSet = report.getSupports();
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(signature, propSet, 1));
-			rui = new RuleUseInfo(report.getSubstitutions(),
-					pos, neg, fns);
-			applyRuleOnRui(rui, contextID);
-			
-		}
-		
-	}
-	
-	
-	
-	
-	/**
-	 * Checks the condition for firing the rule.
-	 * If the conditions are true, the sign is set to true
-	 * Then a new report is created with the sign that was set.
-	 * The report is broadcasted to the ants.
-	 */
-	protected void applyRuleOnRui(RuleUseInfo tRui, String contextID) {
-		
-		if (tRui.getPosCount() < min || tRui.getPosCount()>max)
-			sign = true;
-		else if (tRui.getPosCount()>= min && tRui.getPosCount() <= max)
-			sign = false;
-		
-		int rem = args-(tRui.getPosCount()+tRui.getNegCount());
-		if(tRui.getPosCount()>min && tRui.getPosCount()<max && max-tRui.getPosCount()>rem) {
-			sign=false;
-		}
-		
-		Set<Integer> nodesSentReports = new HashSet<Integer>();
-		for (FlagNode fn : tRui.getFlagNodeSet()) {
-			nodesSentReports.add(fn.getNode().getId());
-		}
-		
-		
-		Substitutions sub = tRui.getSubstitutions();
-		FlagNodeSet justification = new FlagNodeSet();
-		justification.addAll(tRui.getFlagNodeSet());
-		PropositionSet supports = new PropositionSet();
 
-		for(FlagNode fn : justification){
+	@Override
+	protected RuleResponse applyRuleOnRui(RuleUseInfo rui) {
+		boolean reportSign = false;
+		if (rui.getPosCount() == min
+				&& rui.getNegCount() == getAntSize() - max - 1)
+			reportSign = true;
+		else if (rui.getPosCount() != min - 1
+				|| rui.getNegCount() != getAntSize() - max)
+			return null;
+		
+		PropositionSet replySupport = new PropositionSet();
+		for(FlagNode fn : rui.getFlagNodeSet())
 			try {
-				supports = supports.union(fn.getSupports());
-			} catch (NotAPropositionNodeException
-					| NodeNotFoundInNetworkException e) {}
-		}
-
-		try {
-			supports = supports.union(tRui.getSupports());
-		} catch (NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {}
-
-		if(this.getTerm() instanceof Open){
-			//knownInstances check this.free vars - > bound
-			VarNodeSet freeVars = ((Open)this.getTerm()).getFreeVariables();
-			Substitutions ruiSub = tRui.getSubstitutions();
-			boolean allBound = true;
-
-			for(Report report : knownInstances){
-				//Bound to same thing(if bound)
-				for(VariableNode var : freeVars){
-					if(!report.getSubstitutions().isBound(var)){
-						allBound = false;
-						break;
-					}
-				}
-				if(allBound){//if yes
-					Substitutions instanceSub = report.getSubstitutions();
-
-					for(int i = 0; i < ruiSub.cardinality(); i++){
-						Binding ruiBind = ruiSub.getBinding(i);//if rui also bound
-						Binding instanceBind = instanceSub.
-								getBindingByVariable(ruiBind.getVariable());
-						if( !((instanceBind != null) &&
-								(instanceBind.isEqual(ruiBind))) ){
-							allBound = false;
-							break;
-						}
-					}
-					if(allBound){
-						//combine known with rui
-						Substitutions newSub = new LinearSubstitutions();
-						newSub.insert(instanceSub);
-						newSub.insert(ruiSub);
-
-					}
-				}
+				replySupport.union(fn.getSupport());
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+				e.printStackTrace();
 			}
-		}
-		
-		
-		Report forwardReport = new Report(sub, supports, sign, contextID);
-		
-		for (Channel outChannel : outgoingChannels) {
-			if(!nodesSentReports.contains(outChannel.getRequester().getId()))
-			outChannel.addReport(forwardReport);
-		}
-		
-	}
-	
-	/**
-	 * Create the SIndex within the context
-	 * @param ContextName
-	 */
-	protected RuisHandler createRuisHandler(String contextName) {
-		SIndex index = new SIndex(contextName, getSharedVarsNodes(antNodesWithVars), (byte) 0);
-		return this.addContextRuiHandler(contextName, index);
-	}
 
+		// TODO
+		// Add rule node to replySupport
+		
+		consequents = antecedents.difference(rui.getFlagNodeSet().getAllNodes());
+		
+		Report reply = new Report(rui.getSubstitutions(), replySupport, reportSign, 
+				rui.getType());
+		reportsToBeSent.add(reply);
+		
+		RuleResponse r = new RuleResponse();
+		r.setReport(reply);
+		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		r.addAllChannels(forwardChannels);
+		
+		return r;
+	}
 
 	@Override
 	public NodeSet getDownAntNodeSet() {
-		return this.getDownNodeSet("Tant");
-	}
-	
-	public boolean getSign() {
-		return sign;
-	}
-	
-
-	public int getPos() {
-		return pos;
-	}
-	
-	public int getNeg() {
-		return neg;
+		return getDownNodeSet("arg");
 	}
 
-	/**
-	 * Clears all the variables.
-	 * Used in testing
-	 */
-	public void clrAll() {
-		min=0;
-		max=0;
-		pos=0;
-		neg=0;
+	@Override
+	public NodeSet getDownConsqNodeSet() {
+		return null;
+	}
+
+	@Override
+	protected RuisHandler createRuisHandler() {
+		return new RuleUseInfoSet(false);
+	}
+
+	@Override
+	protected byte getSIndexType() {
+		return SIndex.RUIS;
+	}
+
+	@Override
+	protected Set<Channel> getOutgoingChannelsForReport(Report r) {
+		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
+		Set<Channel> replyChannels = new HashSet<Channel>();
+		for(Node n : consequents) {
+			for(Channel c : outgoingChannels) {
+				if(c.getRequester().getId() == n.getId() && 
+						r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
+					replyChannels.add(c);
+					break;
+				}
+			}
+			
+			Channel ch = establishChannel(ChannelTypes.RuleCons, n, 
+					new LinearSubstitutions(), (LinearSubstitutions) 
+					r.getSubstitutions(), Controller.getCurrentContext(), -1);
+			replyChannels.add(ch);
+		}
 		
+		return replyChannels;
 	}
+	
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
+	}
+
 }

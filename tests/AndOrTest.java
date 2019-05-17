@@ -25,6 +25,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
@@ -33,6 +34,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuleUseInfo;
@@ -42,63 +44,25 @@ import sneps.snip.rules.AndOrEntailment;
 import sneps.snip.rules.OrEntailment;
 
 public class AndOrTest {
-
 	
 	private static Context context;
 	private static String contextName = "TempContext";
 	private static AndOrEntailment andor;
-	private static Node fido, var, dog, barks;
-	private static Node prop1, prop2, prop3, prop4;
-	private static RuleUseInfo rui;
+	private static Node fido, var, dog, barks, animal, veg, mineral;
+	private static Node prop1, prop2, prop3, prop4, prop5, prop6, prop7;
 	private static Report report;
-	private static Report report1;
-	private static Report report2;
-	private static Report report3;
-	private static Report report4;
-	private static Report report5;
-	private static Report report6;
-	private static Report report7;
-	private static Report report8;
-	private static Report report9;
-	private static Report report10;
-	private static Report report11;
-	private static Report report12;
-	private static Report report13;
-	private static Report report14;
-	private static Report report15;
-	private static Report report16;
-	private static Report report17;
-	private static Report report18;
-	private static Report report19;
-	private static Report report20;
-	private static Report report21;
-	private static Report report22;
-	private static Report report23;
-	private static Report report24;
-	private static Report report25;
-	private static Report report26;
-	private static Report report27;
-	private static Report report28;
+	private static Report report1, report2, report3, report4, report5, report6, 
+	report7, report8, report9, report10, report11, report12, report13, report14, 
+	report15, report16, report17, report18, report19, report20, report21, report22, 
+	report23, report24, report25, report26, report27, report28;
 
 	@BeforeClass
- 	public static void setUpBeforeClass() throws Exception {
+ 	public static void setUp() throws Exception {
 		try {
 			context = Controller.createContext(contextName);
 		} catch (DuplicateContextNameException e1) {
 			assertNotNull(e1.getMessage(), e1);
 		}
-		
-		
-		/**
-		 * Create substitutions,
-		 * FlagNodeSet,
-		 * FlagNode,
-		 * PropositionSet,
-		 * wires,
-		 * relations,
-		 * caseFrames
-		 */
-		
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
 		FlagNodeSet fns = new FlagNodeSet();
@@ -113,6 +77,7 @@ public class AndOrTest {
 		Relation doesRel = Network.defineRelation("Does", "NodeSet");
 		Relation antsRel = Network.defineRelation("Xant", "Xant");
 		Relation consRel = Network.defineRelation("Xconsq", "Xconsq");
+		Relation argsRel = Network.defineRelation("arg", "arg");
 		rels.add(memberRel);	rels.add(classRel);
 		CaseFrame caseFrameMC = Network.defineCaseFrame("MemberClass", rels);
 		rels.clear();		rels.add(classRel);		rels.add(doesRel);
@@ -121,34 +86,34 @@ public class AndOrTest {
  		CaseFrame caseFrameMD = Network.defineCaseFrame("MemberDoes", rels);
 		rels.clear();		rels.add(antsRel);		rels.add(consRel);
  		CaseFrame caseFrameAC = Network.defineCaseFrame("AntsCons", rels);
+ 		rels.clear();		rels.add(argsRel);
+ 		CaseFrame caseFrameArgs = Network.defineCaseFrame("Args", rels);
 		Wire wire1 = null, wire2 = null, wire3 = null, wire4 = null;
+		Wire wire5 = null, wire6 = null, wire7 = null;
 		rels.clear();
 		
-		
-		
-		
-		/**
-		 * Building propositions & base nodes,
-		 * adding wires
-		 */
 		
 		try {
 			var = Network.buildVariableNode("X");
 			fido = Network.buildBaseNode("Fido", new Semantic("Base"));
-			dog = Network.buildBaseNode("Dog", new Semantic("Proposition"));//MolecularNode(wires, caseFrame);
-			barks = Network.buildBaseNode("Barks", new Semantic("Proposition"));//MolecularNode(wires, caseFrame);
+			dog = Network.buildBaseNode("Dog", new Semantic("Base"));
+			barks = Network.buildBaseNode("Barks", new Semantic("Base"));
 			wire1 = new Wire(memberRel, fido);
 			wire2 = new Wire(classRel, dog);
 			wire3 = new Wire(doesRel, barks);
 			wire4 = new Wire(memberRel, var);
+			
+			animal = Network.buildBaseNode("Animal", new Semantic("Base"));
+			veg = Network.buildBaseNode("Vegetable", new Semantic("Base"));
+			mineral = Network.buildBaseNode("Mineral", new Semantic("Base"));
+			wire5 = new Wire(classRel, animal);
+			wire6 = new Wire(classRel, veg);
+			wire7 = new Wire(classRel, mineral);
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
 			var = new VariableNode(new Variable("X"));
 		}
-		
-		
-		
 		
 		
 		try {
@@ -163,214 +128,171 @@ public class AndOrTest {
 
 			wires.clear();	wires.add(wire1);	wires.add(wire3);
 			prop4 = Network.buildMolecularNode(wires, caseFrameMD);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire5);
+			prop5 = Network.buildMolecularNode(wires, caseFrameArgs);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire6);
+			prop6 = Network.buildMolecularNode(wires, caseFrameArgs);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire7);
+			prop7 = Network.buildMolecularNode(wires, caseFrameArgs);
 		} catch (CannotBuildNodeException | EquivalentNodeException
 				| NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
-			LinkedList<DownCable> dcList = new LinkedList<DownCable>();
-			NodeSet nodeSet1 = new NodeSet();
-			DownCable dc1;	DownCableSet dcs;
-
-			nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop1 = new Node(new Open("Prop1", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameCD); 
-			prop2 = new Node(new Open("Prop2", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(var);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop3 = new Node(new Open("Prop3", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMD); 
-			prop4 = new Node(new Open("Prop4", dcs));
-			dcList.clear();
 		}
 		
-		
-		
-		
-		try {
-			support.add(prop1.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop1, support, 1);
-		fns.insert(fn);
+		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
+		NodeSet nodeSet1 = new NodeSet();
+		DownCable dc1;	DownCableSet dcs;
 
-		support.clearSet();
-		try {
-			support.add(prop2.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop2, support, 1);
-		fns.insert(fn);
+		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop1 = new Node(new Closed("Prop1", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameCD); 
+		prop2 = new Node(new Closed("Prop2", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop3 = new Node(new Open("Prop3", dcs));
+		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMD); 
+		prop4 = new Node(new Closed("Prop4", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(animal);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop5 = new Node(new Open("Prop5", dcs));
+		((Open) (prop5.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(veg);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop6 = new Node(new Open("Prop6", dcs));
+		((Open) (prop6.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+	    nodeSet1.clear();		nodeSet1.addNode(mineral);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop7 = new Node(new Open("Prop7", dcs));
+		((Open) (prop7.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+				
+//---------------------------------------------------------------------------------//
 
-		support.clearSet();
-		try {
-			support.add(prop3.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop3, support, 1);
-		fns.insert(fn);
-
-		nodeSet.addNode(prop1);
-		dc.add(new DownCable(antsRel, nodeSet));
+		/*nodeSet.addNode(prop1);
+		dc.add(new DownCable(argsRel, nodeSet));
 
 		nodeSet.clear();
 		nodeSet.addNode(prop2);
-		dc.add(new DownCable(antsRel, nodeSet));
+		dc.add(new DownCable(argsRel, nodeSet));
 
 		nodeSet.clear();
 		nodeSet.addNode(prop3);
-		dc.add(new DownCable(antsRel, nodeSet));
+		dc.add(new DownCable(argsRel, nodeSet));
 
 		nodeSet.clear();
 		nodeSet.addNode(prop4);
-		dc.add(new DownCable(consRel, nodeSet));
+		dc.add(new DownCable(argsRel, nodeSet));*/
+		
+		nodeSet.addNode(prop5);
+		nodeSet.addNode(prop6);
+		nodeSet.addNode(prop7);
+		dc.add(new DownCable(argsRel, nodeSet));
 
-		DownCableSet dcs = new DownCableSet(dc, caseFrameAC);
+		DownCableSet dcss = new DownCableSet(dc, caseFrameArgs);
 		
-		/**
-		 * AndOr-Entailment
-		 */
-		
-		
-		andor = new AndOrEntailment(new Open("Open", dcs));
+		NodeSet a = new NodeSet();
+		a.addNode(prop5);
+		a.addNode(prop6);
+		a.addNode(prop7);
 
-		try {
-			support.add(dog.getId());
-			support.add(fido.getId());
-			support.add(var.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
+//---------------------------- ANDOR -----------------------------------//
+		
+		andor = new AndOrEntailment(new Open("Open", dcss));
+		andor.setAntecedents(a);
+		andor.setMax(2);
+		andor.setMin(1);
+		
+		sub = new LinearSubstitutions();
+		support = new PropositionSet();
+		/*try {
+		support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-
-		sub.insert(new Binding((VariableNode) var,fido));
-		rui = new RuleUseInfo(sub, 1, 0, fns);
-		report = new Report(sub, support, true, contextName);
-		report1 = new Report(sub, support, true, contextName);
-		report2 = new Report(sub, support, true, contextName);
-		report3 = new Report(sub, support, true, contextName);
-		report4 = new Report(sub, support, false, contextName);
-		report5 = new Report(sub, support, false, contextName);
-		report6 = new Report(sub, support, false, contextName);
-		report7 = new Report(sub, support, false, contextName);
-		report8 = new Report(sub, support, false, contextName);
-		report9 = new Report(sub, support, false, contextName);
-	
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
 		
-		report10 = new Report(sub, support, true, contextName);
-		report11 = new Report(sub, support, true, contextName);
-		report12 = new Report(sub, support, true, contextName);
-		report13 = new Report(sub, support, true, contextName);
-		report14 = new Report(sub, support, true, contextName);
-		report15 = new Report(sub, support, true, contextName);
-		report16 = new Report(sub, support, true, contextName);
-		report17 = new Report(sub, support, true, contextName);
-		report18 = new Report(sub, support, false, contextName);
-		report19 = new Report(sub, support, false, contextName);
-		
-		
-		report20 = new Report(sub, support, true, contextName);
-		report21 = new Report(sub, support, false, contextName);
-		report22 = new Report(sub, support, false, contextName);
-		report23 = new Report(sub, support, false, contextName);
-		report24 = new Report(sub, support, false, contextName);
-		report25 = new Report(sub, support, false, contextName);
-		report26 = new Report(sub, support, false, contextName);
-		report27 = new Report(sub, support, false, contextName);
-		report28 = new Report(sub, support, false, contextName);
-	
-		andor.setAndOrArgs(10);
-		andor.setAndOrMax(5);
-		andor.setAndOrMin(3);
+		support = new PropositionSet();
+		/*try {
+		support.add(prop6.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		report1 = new Report(sub, support, true, InferenceTypes.BACKWARD);
 	}
-	
 	
 	@Test
 	public void test() {
-		andor.setAndOrArgs(10);
-		andor.setAndOrMax(5);
-		andor.setAndOrMin(3);
-		andor.applyRuleHandler(report, fido);
-		andor.applyRuleHandler(report1, fido);
-		andor.applyRuleHandler(report2, fido);
-		andor.applyRuleHandler(report3, fido);
-		andor.applyRuleHandler(report4, fido);
-		andor.applyRuleHandler(report5, fido);
-		andor.applyRuleHandler(report6, fido);
-		andor.applyRuleHandler(report7, fido);
-		andor.applyRuleHandler(report8, fido);
-		andor.applyRuleHandler(report9, fido);
-		//assertEquals(4, andor.getPos());
-		//assertEquals(6, andor.getNeg());
-		assertEquals(3,andor.getAndOrMin());
-		assertEquals(5,andor.getAndOrMax());
-		assertEquals(10,andor.getAndOrArgs());
-		assertEquals(true, andor.isSign());
-		andor.clrAll();
+		andor.applyRuleHandler(report, prop5);
+		assertEquals(0, andor.getReplies().size());
+		
+		andor.applyRuleHandler(report1, prop6);
+		assertEquals(1, andor.getReplies().size());
 	}
 	
 	@Test
-	public void testTwo() {
-		andor.setAndOrArgs(10);
-		andor.setAndOrMax(5);
-		andor.setAndOrMin(3);
-		andor.applyRuleHandler(report10, fido);
-		andor.applyRuleHandler(report11, fido);
-		andor.applyRuleHandler(report12, fido);
-		andor.applyRuleHandler(report13, fido);
-		andor.applyRuleHandler(report14, fido);
-		andor.applyRuleHandler(report15, fido);
-		andor.applyRuleHandler(report16, fido);
-		andor.applyRuleHandler(report17, fido);
-		andor.applyRuleHandler(report18, fido);
-		andor.applyRuleHandler(report19, fido);
-		//assertEquals(8, andor.getPos());
-		//assertEquals(2, andor.getNeg());
-		assertEquals(3,andor.getAndOrMin());
-		assertEquals(5,andor.getAndOrMax());
-		assertEquals(10,andor.getAndOrArgs());
-		assertEquals(false, andor.isSign());
-		andor.clrAll();
+	public void test2() {
+		
 	}
 	
-	@Test
-	public void testThree() {
-		andor.setAndOrArgs(10);
-		andor.setAndOrMax(5);
-		andor.setAndOrMin(3);
+	/*@Test
+	public void test3() {
 		andor.applyRuleHandler(report20, fido);
 		andor.applyRuleHandler(report21, fido);
 		andor.applyRuleHandler(report22, fido);
@@ -382,13 +304,10 @@ public class AndOrTest {
 		andor.applyRuleHandler(report28, fido);
 		//assertEquals(1, andor.getPos());
 		//assertEquals(8, andor.getNeg());
-		assertEquals(3,andor.getAndOrMin());
-		assertEquals(5,andor.getAndOrMax());
-		assertEquals(10,andor.getAndOrArgs());
-		assertEquals(false, andor.isSign());
-		andor.clrAll();
+	}*/
+	
+	public void tearDown() {
+		Network.clearNetwork();
+		andor.clear();
 	}
-	
-	
-	
 }
