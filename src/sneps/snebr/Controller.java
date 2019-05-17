@@ -947,6 +947,60 @@ public class Controller {
     	
     }
     
+    public static ArrayList<Integer> findHittingSet(ArrayList<ArrayList<Integer>> sets) { //greedy hitting set algorithm
+    	ArrayList<Integer> result = new ArrayList<Integer>();
+    	
+    	while(!(sets.isEmpty())){
+    		int mode = mostCommonElement(sets);
+        	for(int i = 0; i < sets.size(); i++) {
+        		if(sets.get(i).contains(mode)) {
+        			result.remove(i);
+        		}
+        	}
+    		result.add(mode);
+    	}
+
+    	
+    	return result;
+    }
+    
+    public static int mostCommonElement(ArrayList<ArrayList<Integer>> sets){ //revise //efficiency 0
+    	int maxValue = 0;
+    	ArrayList<Integer> superSet = new ArrayList<Integer>();
+    	for(int i = 0; i < sets.size(); i++) {
+    		ArrayList<Integer> currSet = sets.get(i);
+    		for(int j = 0; j < currSet.size(); j++) {
+    			if(currSet.get(j) > maxValue){
+    				maxValue = currSet.get(j);
+    			}
+    			superSet.add(currSet.get(j));
+    		}
+    	}
+    	int[] maxVals = new int[maxValue];
+    	
+    	for(int i = 0; i < superSet.size(); i++){
+    		int currElement = superSet.get(i);
+    		for(int j = 0; j < superSet.size(); j++) {
+    			int tmp = superSet.get(i);
+    			if(currElement == tmp){
+    				maxVals[currElement]++;
+    			}
+    		}
+    	}
+    	int maxCount = 0;
+    	int max = 0;
+    	for(int i = 0; i < maxVals.length; i++) {
+    		if(maxVals[i] > maxCount){
+    			maxCount = maxVals[i];
+    			max = i;
+    		}
+    	}
+    	
+    	
+    	return max;
+    }
+
+    
     public static void save(String f) throws FileNotFoundException, IOException {
     	ObjectOutputStream cos = new ObjectOutputStream(new FileOutputStream(new File(f)));
 		cos.writeObject(contextSet);
