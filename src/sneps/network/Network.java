@@ -644,11 +644,12 @@ public class Network implements Serializable {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws CaseFrameMissMatchException 
 	 * @throws DuplicateNodeException
 	 *
 	 */
 	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame) throws CannotBuildNodeException,
-			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException, CaseFrameMissMatchException {
 		Object[][] array = turnWiresIntoArray(wires);
 		// this node is either null, or an equivalent node to the one this method is tryin to build
 		// if an equivalent node is found, it is returned and no new node is built.
@@ -665,7 +666,9 @@ public class Network implements Serializable {
 		// System.out.println("done 2nd");
 		Object[][] relNodeSet = turnIntoRelNodeSet(array);
 		// check that the down cable set is following the case frame
-		// System.out.println("done 3rd");
+		if (!followingCaseFrame(relNodeSet, caseFrame))
+			throw new CaseFrameMissMatchException(
+					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// create the Molecular Node
 		if (caseFrame.getSemanticClass().equals("Proposition")) {
 			PropositionNode propNode;
@@ -1128,6 +1131,25 @@ public class Network implements Serializable {
 			if (list.containsKey(r.getName())) {
 				if (((NodeSet) array[i][1]).size() >= caseFrame.getRelationWithConstraints(r).getLimit()) {
 					list.remove(r.getName());
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		if (!list.isEmpty())
+			return false;
+		return true;
+	}
+	
+	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
+		LinkedList<Relation> list = caseFrame.getRelations();
+		for (int i = 0; i < array.length; i++) {
+			Relation r = (Relation) array[i][0];
+			if (list.contains(r)) {
+				if (((NodeSet) array[i][1]).size() >= r.getLimit()) {
+					list.remove(r);
 				} else {
 					return false;
 				}
