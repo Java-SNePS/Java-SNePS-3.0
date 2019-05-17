@@ -8,6 +8,7 @@ public class GraphNode {
 	private int id;
 	private int type; //PropositionNode (0) or Support (1)
 	private PropositionSet propositionSet;
+	private int propositionNodeId;
 	
 	public GraphNode(PropositionSet propSet, int type) {
 		this.id = ++idGenerator;
@@ -22,7 +23,7 @@ public class GraphNode {
 	public boolean deeplyEquals(Object o) {
 		GraphNode n = (GraphNode) o;
 
-		return (this.id == n.getId()) && (this.propositionSet.equals(n.getPropositionSet()));
+		return (this.id == n.getGraphId()) && (this.propositionSet.equals(n.getPropositionSet()));
 		
 	}
 	
@@ -32,8 +33,20 @@ public class GraphNode {
 		return this.propositionSet.equals(n.getPropositionSet());
 		
 	}
+	
+	public int getPropositionNodeId() throws Exception{
+		int nodeId = 0;
+		if(this.type == 0) {
+			int [] props = PropositionSet.getPropsSafely(propositionSet);
+			nodeId = props[0];
+			return nodeId;
+		} else {
+			throw new Exception("Not a Proposition Node");
+		}
+		
+	}
 
-	public int getId() {
+	public int getGraphId() {
 		return id;
 	}
 

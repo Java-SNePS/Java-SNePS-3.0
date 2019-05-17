@@ -759,7 +759,7 @@ public class Controller {
     }
     
     
-    public static void alphaCut(double threshold) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    public static void alphaCut(double threshold) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException{
     	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
     	Set<String> nodeKeySet = propositionNodes.keySet();
     	
@@ -772,28 +772,38 @@ public class Controller {
     	}
     }
     
-    public static void removeNodeFromLayeredBeliefState(PropositionNode node) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
-    	ArrayList<ArrayList<Integer>> parentsTree = getParentsLayered(node);
-    	for(int i = 0; i < parentsTree.size()-1; i++){
+    public static void removeNodeFromLayeredBeliefState(PropositionNode toBeRemoved) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException{
+    	ArrayList<ArrayList<Integer>> parentsTree = getParentsLayered(toBeRemoved);
+    	
+    	for(int i = 0; i < parentsTree.size()-1; i++){ // revise -1
     		ArrayList<Integer> currentLayer = parentsTree.get(i);
     		
-    			for(int j = 0; j < currentLayer.size()-1; j++) {
+    			for(int j = 0; j < currentLayer.size()-1; j++) { // revise -1
     				int parentId = currentLayer.get(j);
     				PropositionNode currParent = (PropositionNode) Network.getNodeById(parentId);
     				PropositionSet currParentPropSet = new PropositionSet(parentId);
+    				int toBeRemovedId = toBeRemoved.getId();
+    				PropositionSet toBeRemovedPropSet = new PropositionSet(toBeRemovedId);
     				if(i == 0) {
     	   				Hashtable<String, PropositionSet> justSupp = currParent.getJustificationSupport();
         				Set<String> justKeySet = justSupp.keySet();
         				for(String justKey : justKeySet){
         					PropositionSet currJust = justSupp.get(justKey);
-        					if(currParentPropSet.isSubSet(currJust)){
-        						justSupp.remove(justKey);
+        					if(toBeRemovedPropSet.isSubSet(currJust)){
+        						currJust.remove(toBeRemovedId); // stopped here
+        						justSupp.remove(justKey); // revise
         					}
         				}
     				}
-    				Hashtable<String, PropositionSet> AssumpSupp = currParent.getAssumptionBasedSupport();
-    				Set<String> AssumpKeySet = AssumpSupp.keySet();
-    				
+    				Hashtable<String, PropositionSet> assumpSupp = currParent.getAssumptionBasedSupport();
+    				Set<String> assumpKeySet = assumpSupp.keySet();
+    				for(String assumpKey : assumpKeySet){
+    					PropositionSet currAssump = assumpSupp.get(assumpKey);
+    					if(currParentPropSet.isSubSet(currAssump)){
+    						assumpSupp.remove(assumpKey);
+    					}
+    				}
+
     			}
     	}
     }
@@ -851,7 +861,7 @@ public class Controller {
     
     public static ArrayList<Integer> concatLists(ArrayList<Integer> l1, ArrayList<Integer> l2) {
     	
-    	for(int i = 0; i< l2.size()-1; i++) {
+    	for(int i = 0; i< l2.size(); i++) {
     		l1.add(l2.get(i));
     	}
     	
@@ -870,11 +880,11 @@ public class Controller {
     		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
     		GraphNode firstNode = currentRow.getFirst();
     		int i = 0;
-    		path.add(firstNode.getId());
+    		path.add(firstNode.getGraphId());
     		for(Iterator it = currentRow.iterator(); it.hasNext();){
     			GraphNode currentSuppNode = (GraphNode) it.next();
     			if(i > 0){
-    				path.add(currentSuppNode.getId());
+    				path.add(currentSuppNode.getGraphId());
     				for (Iterator iterator = supportsList.iterator(); iterator.hasNext();) {
     					LinkedList<GraphNode> currSupportRow = (LinkedList<GraphNode>) iterator.next();
     					GraphNode currSupport = currSupportRow.getFirst();
@@ -883,7 +893,7 @@ public class Controller {
     						for (Iterator itr = currSupportRow.iterator(); itr.hasNext();){
     							GraphNode currPropNode = (GraphNode) itr.next();
     							if(j>0){
-    								path.add(currPropNode.getId());
+    								path.add(currPropNode.getGraphId());
     								result.add(path);
     								path.remove(path.size()-1);
     							}
@@ -904,11 +914,11 @@ public class Controller {
     		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
     		GraphNode firstNode = currentRow.getFirst();
     		int i = 0;
-    		path.add(firstNode.getId());
+    		path.add(firstNode.getGraphId());
     		for(Iterator it = currentRow.iterator(); it.hasNext();){
     			GraphNode currentPropNode = (GraphNode) it.next();
     			if(i > 0){	
-    				path.add(currentPropNode.getId());
+    				path.add(currentPropNode.getGraphId());
     				for (Iterator iterator = hypsList.iterator(); iterator.hasNext();) {
     					LinkedList<GraphNode> currPropRow = (LinkedList<GraphNode>) iterator.next();
     					GraphNode currProp = currPropRow.getFirst();
@@ -917,7 +927,7 @@ public class Controller {
     						for (Iterator itr = currPropRow.iterator(); itr.hasNext();){
     							GraphNode currSuppNode = (GraphNode) itr.next();
     							if(j>0){
-    								path.add(currSuppNode.getId());
+    								path.add(currSuppNode.getGraphId());
     								result.add(path);
     								path.remove(path.size()-1);
     							}
@@ -936,7 +946,6 @@ public class Controller {
 		return result;
     	
     }
-
     
     public static void save(String f) throws FileNotFoundException, IOException {
     	ObjectOutputStream cos = new ObjectOutputStream(new FileOutputStream(new File(f)));

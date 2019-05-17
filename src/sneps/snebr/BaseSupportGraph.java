@@ -74,7 +74,6 @@ public class BaseSupportGraph {
 	
 	@SuppressWarnings("unchecked")
 	public void removeFromHypList(Object O){
-		//code for removing a node from the graph
 		GraphNode toBeDeleted = (GraphNode) O;
 		for(Iterator iter = hypsAdjList.iterator(); iter.hasNext();){
 			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
@@ -86,13 +85,15 @@ public class BaseSupportGraph {
 		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
 			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
 			
-			currentRow.removeFirst();
-			if(currentRow.contains(toBeDeleted)){
-				if (currentRow.size()>1){
+			GraphNode firstElement = currentRow.removeFirst();
+			boolean exists = currentRow.contains(toBeDeleted);
+			currentRow.addFirst(firstElement);
+			if(exists){
+				if (currentRow.size()>2){
 					currentRow.remove(toBeDeleted);
 				}
 				else {
-					//stopped here
+					supportsAdjList.remove(currentRow);
 				}
 			}
 		}
@@ -100,15 +101,30 @@ public class BaseSupportGraph {
 	
 	@SuppressWarnings("unchecked")
 	public void removeFromSupportList(Object O){
-		//code for removing a node from the graph
-		PropositionSet toBeDeleted = (PropositionSet) O;
-		
+		GraphNode toBeDeleted = (GraphNode) O;
 		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
 			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
-			if((currentRow.get(0)).equals(toBeDeleted)){
+			if((currentRow.peek()).equals(toBeDeleted)){
 				supportsAdjList.remove(currentRow);
 			}
 		}
+		
+		for(Iterator iter = hypsAdjList.iterator(); iter.hasNext();){
+			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+			
+			GraphNode firstElement = currentRow.removeFirst();
+			boolean exists = currentRow.contains(toBeDeleted);
+			currentRow.addFirst(firstElement);
+			if(exists){
+				if (currentRow.size()>2){
+					currentRow.remove(toBeDeleted);
+				}
+				else {
+					hypsAdjList.remove(currentRow);
+				}
+			}
+		}
+		
 		
 	}
 	
