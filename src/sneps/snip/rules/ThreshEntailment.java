@@ -1,23 +1,18 @@
 package sneps.snip.rules;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
-import sneps.network.Node;
 import sneps.network.RuleNode;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.term.Molecular;
-import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
-import sneps.snip.channels.ChannelTypes;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
-import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
@@ -91,28 +86,6 @@ public class ThreshEntailment extends RuleNode {
 	@Override
 	protected byte getSIndexType() {
 		return SIndex.RUIS;
-	}
-
-	@Override
-	protected Set<Channel> getOutgoingChannelsForReport(Report r) {
-		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
-		Set<Channel> replyChannels = new HashSet<Channel>();
-		for(Node n : consequents) {
-			for(Channel c : outgoingChannels) {
-				if(c.getRequester().getId() == n.getId() && 
-						r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
-					replyChannels.add(c);
-					break;
-				}
-			}
-			
-			Channel ch = establishChannel(ChannelTypes.RuleCons, n, 
-					new LinearSubstitutions(), (LinearSubstitutions) 
-					r.getSubstitutions(), Controller.getCurrentContext(), -1);
-			replyChannels.add(ch);
-		}
-		
-		return replyChannels;
 	}
 	
 	public void setMin(int min) {

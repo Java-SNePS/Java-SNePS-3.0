@@ -94,28 +94,6 @@ public class AndOrEntailment extends RuleNode {
 		return SIndex.RUIS;
 	}
 
-	@Override
-	protected Set<Channel> getOutgoingChannelsForReport(Report r) {
-		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
-		Set<Channel> replyChannels = new HashSet<Channel>();
-		for(Node n : consequents) {
-			for(Channel c : outgoingChannels) {
-				if(c.getRequester().getId() == n.getId() && 
-						r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
-					replyChannels.add(c);
-					break;
-				}
-			}
-			
-			Channel ch = establishChannel(ChannelTypes.RuleCons, n, 
-					new LinearSubstitutions(), (LinearSubstitutions) 
-					r.getSubstitutions(), Controller.getCurrentContext(), -1);
-			replyChannels.add(ch);
-		}
-		
-		return replyChannels;
-	}
-
 	public void setMin(int min) {
 		this.min = min;
 	}

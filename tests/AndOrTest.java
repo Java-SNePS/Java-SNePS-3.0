@@ -1,5 +1,4 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -9,7 +8,6 @@ import org.junit.Test;
 
 import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.DuplicateContextNameException;
-import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -20,13 +18,10 @@ import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.CaseFrame;
-import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
-import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
 import sneps.network.classes.term.Closed;
-import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.FlagNodeSet;
@@ -37,25 +32,20 @@ import sneps.snebr.Controller;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
-import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.rules.AndOrEntailment;
-import sneps.snip.rules.OrEntailment;
 
 public class AndOrTest {
 	
 	private static Context context;
 	private static String contextName = "TempContext";
 	private static AndOrEntailment andor;
-	private static Node fido, var, dog, barks, animal, veg, mineral;
-	private static Node prop1, prop2, prop3, prop4, prop5, prop6, prop7;
-	private static Report report;
-	private static Report report1, report2, report3, report4, report5, report6, 
-	report7, report8, report9, report10, report11, report12, report13, report14, 
-	report15, report16, report17, report18, report19, report20, report21, report22, 
-	report23, report24, report25, report26, report27, report28;
-
+	private static Node fido, var, dog, barks, animal, veg, mineral, human;
+	private static Node prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8;
+	private static Report report, report1, report2;
+	
 	@BeforeClass
  	public static void setUp() throws Exception {
 		try {
@@ -65,8 +55,6 @@ public class AndOrTest {
 		}
 		
 		LinearSubstitutions sub = new LinearSubstitutions();
-		FlagNodeSet fns = new FlagNodeSet();
-		FlagNode fn;
 		PropositionSet support = new PropositionSet();
  		ArrayList<Wire> wires = new ArrayList<Wire>();
  		LinkedList<DownCable> dc = new LinkedList<DownCable>();
@@ -89,7 +77,7 @@ public class AndOrTest {
  		rels.clear();		rels.add(argsRel);
  		CaseFrame caseFrameArgs = Network.defineCaseFrame("Args", rels);
 		Wire wire1 = null, wire2 = null, wire3 = null, wire4 = null;
-		Wire wire5 = null, wire6 = null, wire7 = null;
+		Wire wire5 = null, wire6 = null, wire7 = null, wire8 = null;
 		rels.clear();
 		
 		
@@ -106,9 +94,11 @@ public class AndOrTest {
 			animal = Network.buildBaseNode("Animal", new Semantic("Base"));
 			veg = Network.buildBaseNode("Vegetable", new Semantic("Base"));
 			mineral = Network.buildBaseNode("Mineral", new Semantic("Base"));
+			human = Network.buildBaseNode("Human", new Semantic("Base"));
 			wire5 = new Wire(classRel, animal);
 			wire6 = new Wire(classRel, veg);
 			wire7 = new Wire(classRel, mineral);
+			wire8 = new Wire(classRel, human);
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
@@ -137,6 +127,9 @@ public class AndOrTest {
 			
 			wires.clear();	wires.add(wire4);	wires.add(wire7);
 			prop7 = Network.buildMolecularNode(wires, caseFrameArgs);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire8);
+			prop8 = Network.buildMolecularNode(wires, caseFrameArgs);
 		} catch (CannotBuildNodeException | EquivalentNodeException
 				| NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
@@ -219,7 +212,17 @@ public class AndOrTest {
 		prop7 = new Node(new Open("Prop7", dcs));
 		((Open) (prop7.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
-				
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(human);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop8 = new Node(new Open("Prop8", dcs));
+		((Open) (prop8.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
 //---------------------------------------------------------------------------------//
 
 		/*nodeSet.addNode(prop1);
@@ -240,19 +243,14 @@ public class AndOrTest {
 		nodeSet.addNode(prop5);
 		nodeSet.addNode(prop6);
 		nodeSet.addNode(prop7);
+		nodeSet.addNode(prop8);
 		dc.add(new DownCable(argsRel, nodeSet));
 
 		DownCableSet dcss = new DownCableSet(dc, caseFrameArgs);
-		
-		NodeSet a = new NodeSet();
-		a.addNode(prop5);
-		a.addNode(prop6);
-		a.addNode(prop7);
 
 //---------------------------- ANDOR -----------------------------------//
 		
 		andor = new AndOrEntailment(new Open("Open", dcss));
-		andor.setAntecedents(a);
 		andor.setMax(2);
 		andor.setMin(1);
 		
@@ -278,33 +276,107 @@ public class AndOrTest {
 	}
 	
 	@Test
+	public void testProcessNodes() {
+ 		assertEquals(0, andor.getConsequents().size());
+		assertEquals(4, andor.getAntecedents().size());
+		assertEquals(4, andor.getAntsWithVars().size());
+		assertEquals(0, andor.getAntsWithoutVars().size());
+ 	}
+	
+	/**
+	 * First inference rule allowed by andor (j args are true, then the other n-j 
+	 * have to be false).
+	 */
+	@Test
 	public void test() {
 		andor.applyRuleHandler(report, prop5);
+		assertNotNull("Null RuisHandler", andor.getRuisHandler());
+		assertTrue("addRuiHandler doesn't create an SIndex as a RuisHandler", 
+				andor.getRuisHandler() instanceof SIndex);
+		assertEquals(SIndex.SINGLETON, ((SIndex) (andor.getRuisHandler())).getRuiHandlerType());
 		assertEquals(0, andor.getReplies().size());
 		
 		andor.applyRuleHandler(report1, prop6);
 		assertEquals(1, andor.getReplies().size());
+		assertEquals(false, andor.getReplies().get(0).getSign());
+		assertEquals(2, andor.getConsequents().size());
+		assertEquals(prop7, andor.getConsequents().getNode(0));
+		assertEquals(prop8, andor.getConsequents().getNode(1));
 	}
 	
+	/**
+	 * Second inference rule  allowed by andor (n-i args are false, then the other i 
+	 * have to be true).
+	 */
 	@Test
 	public void test2() {
+		andor.clear();
+		LinearSubstitutions sub = new LinearSubstitutions();
+		PropositionSet support = new PropositionSet();
+		/*try {
+		support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report = new Report(sub, support, false, InferenceTypes.FORWARD);
 		
+		support = new PropositionSet();
+		/*try {
+		support.add(prop7.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		report1 = new Report(sub, support, false, InferenceTypes.BACKWARD);
+		
+		support = new PropositionSet();
+		/*try {
+		support.add(prop8.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		report2 = new Report(sub, support, false, InferenceTypes.BACKWARD);
+		
+		andor.applyRuleHandler(report, prop5);
+		assertEquals(0, andor.getReplies().size());
+		
+		andor.applyRuleHandler(report1, prop7);
+		assertEquals(0, andor.getReplies().size());
+		
+		andor.applyRuleHandler(report2, prop8);
+		assertEquals(1, andor.getReplies().size());
+		assertEquals(true, andor.getReplies().get(0).getSign());
+		assertEquals(1, andor.getConsequents().size());
+		assertEquals(prop6, andor.getConsequents().getNode(0));
 	}
 	
-	/*@Test
+	/**
+	 * Min and Max are both equal to 1.
+	 */
+	@Test
 	public void test3() {
-		andor.applyRuleHandler(report20, fido);
-		andor.applyRuleHandler(report21, fido);
-		andor.applyRuleHandler(report22, fido);
-		andor.applyRuleHandler(report23, fido);
-		andor.applyRuleHandler(report24, fido);
-		andor.applyRuleHandler(report25, fido);
-		andor.applyRuleHandler(report26, fido);
-		andor.applyRuleHandler(report27, fido);
-		andor.applyRuleHandler(report28, fido);
-		//assertEquals(1, andor.getPos());
-		//assertEquals(8, andor.getNeg());
-	}*/
+		andor.clear();
+		andor.setMax(1);
+		andor.setMin(1);
+		LinearSubstitutions sub = new LinearSubstitutions();
+		PropositionSet support = new PropositionSet();
+		/*try {
+		support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
+		
+		andor.applyRuleHandler(report, prop5);
+		assertEquals(1, andor.getReplies().size());
+		assertEquals(false, andor.getReplies().get(0).getSign());
+		assertEquals(3, andor.getConsequents().size());
+	}
 	
 	public void tearDown() {
 		Network.clearNetwork();

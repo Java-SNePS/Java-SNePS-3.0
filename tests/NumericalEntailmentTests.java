@@ -237,7 +237,7 @@ public class NumericalEntailmentTests extends TestCase {
 	/*@Test
 	public void testApplyRuleHandler2() {
 		numerical.setI(2);
-		numerical.getReplies().clear();
+		numerical.clear();
 		
 		numerical.applyRuleHandler(report, prop1);
 		
@@ -247,7 +247,7 @@ public class NumericalEntailmentTests extends TestCase {
 	@Test
 	public void testApplyRuleHandler3() {
 		numerical.setI(2);
-		numerical.getReplies().clear();
+		numerical.clear();
 		
 		numerical.applyRuleHandler(report, prop1);
 		

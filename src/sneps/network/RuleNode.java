@@ -133,6 +133,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public void setAntecedents(NodeSet antecedents) {
 		this.antecedents = antecedents;
 	}
+	
+	public NodeSet getConsequents() {
+		return consequents;
+	}
 
 	public void setConsequents(NodeSet consequents) {
 		this.consequents = consequents;
@@ -200,11 +204,11 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		
 		// This is the first report received by this RuleNode, so 
 		// a RuisHandler is created
-		if(ruisHandler == null) {
+		if(ruisHandler == null)
 			ruisHandler = addRuiHandler();
-		}
 		
 		if(antNodesWithoutVars.contains(signature)) {
+			System.out.println("CONSTANT");
 			addConstantRui(rui);
 			if (ruisHandler.isEmpty()) {
 				response = applyRuleOnRui(constantRUI);
@@ -221,6 +225,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			}
 		}
 		else {
+			System.out.println("VAR");
 			// The RUI created for the given report is inserted to the RuisHandler
 			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
 			
@@ -259,7 +264,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	public void clear() {
 		if(ruisHandler != null)
 			ruisHandler.clear();
-		constantRUI = null;	
+		constantRUI = null;
+		reportsToBeSent.clear();
 	}
 	
 	/**
@@ -466,7 +472,26 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return constantRUI;
 	}
 	
-	protected abstract Set<Channel> getOutgoingChannelsForReport(Report r);
+	protected Set<Channel> getOutgoingChannelsForReport(Report r) {
+		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
+		Set<Channel> replyChannels = new HashSet<Channel>();
+		for(Node n : consequents) {
+			for(Channel c : outgoingChannels) {
+				if(c.getRequester().getId() == n.getId() && 
+						r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
+					replyChannels.add(c);
+					break;
+				}
+			}
+			
+			Channel ch = establishChannel(ChannelTypes.RuleCons, n, 
+					new LinearSubstitutions(), (LinearSubstitutions) 
+					r.getSubstitutions(), Controller.getCurrentContext(), -1);
+			replyChannels.add(ch);
+		}
+		
+		return replyChannels;
+	}
 
 	@Override
 	public void processRequests() {
