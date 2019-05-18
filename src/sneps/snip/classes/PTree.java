@@ -333,7 +333,8 @@ public class PTree extends RuisHandler {
 	/**
 	 * @className 
 	 * 
-	 * @ClassDescription The PTreeNode is the lowest level in the PTree, where RUIs are stored and combined. 
+	 * @ClassDescription The PTreeNode is the lowest level in the PTree, 
+	 * where RUIs are stored and combined. 
 	 * 
 	 * @author Amgad Ashraf
 	 * 

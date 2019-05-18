@@ -1,15 +1,11 @@
 package sneps.network;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Set;
 
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
-import sneps.network.classes.setClasses.ContextRuisSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -18,9 +14,8 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
-import sneps.snebr.Context;
+import sneps.network.classes.term.Variable;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.Report;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -32,6 +27,7 @@ import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 import sneps.snip.matching.LinearSubstitutions;
+import sneps.snip.rules.OrEntailment;
 
 public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
@@ -56,7 +52,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	/**
 	 * A VarNodeSet of the common free VariableNodes shared between the antecedents.
 	 */
-	protected VarNodeSet sharedVars;
+	protected Set<VariableNode> sharedVars;
 	
 	/**
 	 * A ContextRuisSet that is used to map each context to its appropriate 
@@ -89,7 +85,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
-		sharedVars = new VarNodeSet();
+		sharedVars = new HashSet<VariableNode>();
 		reportsToBeSent = new ArrayList<Report>();
 	}
 
@@ -102,7 +98,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		antNodesWithVars = new NodeSet();
 		antNodesWithVarsIDs = new HashSet<Integer>();
 		shareVars = false;
-		sharedVars = new VarNodeSet();
+		sharedVars = new HashSet<VariableNode>();
 		reportsToBeSent = new ArrayList<Report>();
 	}
 
@@ -297,49 +293,40 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	}
 	
 	/**
-	 * Returns a VarNodeSet of VariableNodes that are shared among some/all the Nodes 
-	 * in the given NodeSet.
+	 * Returns a VarNodeSet of VariableNodes that are shared among all the Nodes in 
+	 * the given NodeSet.
 	 * 
 	 * @param nodes
 	 * @return VarNodeSet
 	 */
-	public VarNodeSet getSharedVarsNodes(NodeSet nodes) {
-		VarNodeSet res = new VarNodeSet();
-		VarNodeSet temp = new VarNodeSet();
+	public static Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
+		Set<VariableNode> res = new HashSet<VariableNode>();
 		
 		if (nodes.isEmpty())
 			return res;
 		
-		if(nodes.size() == 1) {
-			if(nodes.getNode(0) instanceof VariableNode) {
-				res.addVarNode((VariableNode) nodes.getNode(0));
-				return res;
-			}
-			
-			if(nodes.getNode(0).getTerm() instanceof Open) {
-				VarNodeSet free = ((Open) nodes.getNode(0).getTerm()).getFreeVariables();
-				for(VariableNode var : free)
-					res.addVarNode(var);
-				return res;
-			}
+		if(nodes.getNode(0) instanceof VariableNode)
+			res.add((VariableNode) nodes.getNode(0));
+		else if(nodes.getNode(0).getTerm() instanceof Open) {
+			VarNodeSet freeVars = ((Open) nodes.getNode(0).getTerm()).getFreeVariables();
+			for(VariableNode v : freeVars)
+				res.add(v);
 		}
-
-		for(Node curNode : nodes) {
-			if(curNode instanceof VariableNode) {
-				if(temp.contains((VariableNode) curNode))
-					res.addVarNode((VariableNode) curNode);
-				else
-					temp.addVarNode((VariableNode) curNode);
+		
+		if(nodes.size() == 1)
+			return res;
+		
+		for(int i = 1; i < nodes.size(); i++) {
+			Set<VariableNode> vars = new HashSet<VariableNode>();
+			if(nodes.getNode(i) instanceof VariableNode)
+				vars.add((VariableNode) nodes.getNode(i));
+			else if(nodes.getNode(i).getTerm() instanceof Open) {
+				VarNodeSet freeVars = ((Open) nodes.getNode(i).getTerm()).getFreeVariables();
+				for(VariableNode v : freeVars)
+					vars.add(v);
 			}
 			
-			if(curNode.getTerm() instanceof Open) {
-				VarNodeSet free = ((Open)curNode.getTerm()).getFreeVariables();
-				for(VariableNode var : free)
-					if(temp.contains(var))
-						res.addVarNode(var);
-					else
-						temp.addVarNode(var);
-			}
+			res.retainAll(vars);
 		}
 		
 		return res;
@@ -407,7 +394,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		else {
 			// PTree in case of and-entailment
 			// RUISet otherwise
-			//return this.addContextRuiHandler(contextName, createRuisHandler(contextName));
 			return createRuisHandler();
 		}
 	}
@@ -542,6 +528,51 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 				}
 			}
 			currentChannel.clearReportsBuffer();
+		}
+	}
+	
+	public static void main(String[] args) {
+		Variable v1 = new Variable("x");
+		VariableNode x = new VariableNode(v1);
+		Variable v2 = new Variable("y");
+		VariableNode y = new VariableNode(v2);
+		Variable v3 = new Variable("z");
+		VariableNode z = new VariableNode(v3);
+		Variable v4 = new Variable("v");
+		VariableNode v = new VariableNode(v4);
+		Variable v5 = new Variable("w");
+		VariableNode w = new VariableNode(v5);
+		
+		Open o1 = new Open("1");
+		o1.addFreeVariable(x);
+		o1.addFreeVariable(y);
+		o1.addFreeVariable(v);
+		o1.addFreeVariable(w);
+		PropositionNode p1 = new PropositionNode(o1);
+		
+		Open o2 = new Open("2");
+		o2.addFreeVariable(x);
+		o2.addFreeVariable(v);
+		o2.addFreeVariable(w);
+		o2.addFreeVariable(z);
+		PropositionNode p2 = new PropositionNode(o2);
+		
+		Open o3 = new Open("3");
+		o3.addFreeVariable(z);
+		o3.addFreeVariable(v);
+		o3.addFreeVariable(w);
+		o3.addFreeVariable(y);
+		PropositionNode p3 = new PropositionNode(o3);
+		
+		NodeSet n = new NodeSet();
+		n.addNode(p1);
+		n.addNode(p2);
+		n.addNode(p3);
+
+		Set<VariableNode> res = getSharedVarsNodes(n);
+
+		for(VariableNode vn : res) {
+			System.out.println(vn);
 		}
 	}
 

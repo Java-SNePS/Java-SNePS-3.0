@@ -7,7 +7,6 @@ import java.util.Set;
 import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
-import sneps.network.classes.setClasses.VarNodeSet;
 
 public class SIndex extends RuisHandler {
 
@@ -19,7 +18,7 @@ public class SIndex extends RuisHandler {
 	public Hashtable<ArrayList<Integer>, RuisHandler> map;
 	private byte ruiHandlerType;
 	public static final byte RUIS = 0, SINGLETON = 1, PTREE = 2;
-	private VarNodeSet sharedVars;
+	private Set<VariableNode> sharedVars;
 	private NodeSet nodesWithVars;
 
 	/**
@@ -31,7 +30,7 @@ public class SIndex extends RuisHandler {
 	 * 		Set of shared variables whose bindings are used to hash on in this SIndex.
 	 * @param nodesWithVars	
 	 */
-	public SIndex(byte ruiHandlerType, VarNodeSet sharedVars, 
+	public SIndex(byte ruiHandlerType, Set<VariableNode> sharedVars, 
 			NodeSet nodesWithVars) {
 		map = new Hashtable<ArrayList<Integer>, RuisHandler>();
 		this.ruiHandlerType = ruiHandlerType;
@@ -39,7 +38,7 @@ public class SIndex extends RuisHandler {
 		this.nodesWithVars = nodesWithVars;
 	}
 	
-	public SIndex(byte ruiHandlerType, VarNodeSet sharedVars) {
+	public SIndex(byte ruiHandlerType, Set<VariableNode> sharedVars) {
 		map = new Hashtable<ArrayList<Integer>, RuisHandler>();
 		this.ruiHandlerType = ruiHandlerType;
 		this.sharedVars = sharedVars;

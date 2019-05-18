@@ -31,9 +31,9 @@ public class SIndexTest {
 		 * Creating Nodes
 		 */
 		
-		Base ba = new Base("HEY");
-		Base ba1 = new Base("hoooo");
-		Base ba2 = new Base("hola");
+		Base ba = new Base("A");
+		Base ba1 = new Base("B");
+		Base ba2 = new Base("C");
 		
 		Node n = new Node(ba);
 		Node n1 = new Node(ba1);
