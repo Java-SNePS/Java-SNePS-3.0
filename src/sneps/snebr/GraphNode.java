@@ -52,6 +52,10 @@ public class GraphNode {
 	public int getGraphId() {
 		return id;
 	}
+	
+	public int getType() {
+		return type;
+	}
 
 	public PropositionSet getPropositionSet() {
 		return propositionSet;

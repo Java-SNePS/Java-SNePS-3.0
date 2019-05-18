@@ -203,6 +203,51 @@ public class BaseSupportGraph {
 		return 0;
 	}
 	
+	public boolean goesTo(GraphNode n, GraphNode k){
+		if(n.getType() == 0){
+			int index = indexOfGraphNodeInFirstColumn(hypsAdjList, n);
+			LinkedList<GraphNode> row = hypsAdjList.get(index);
+			for(int i = 0; i < row.size(); i++){
+				if(row.get(i).equals(k)){
+					return true;
+				}
+			}
+		} else {
+				int index = indexOfGraphNodeInFirstColumn(supportsAdjList, n);
+				LinkedList<GraphNode> row = supportsAdjList.get(index);
+				for(int i = 0; i < row.size(); i++){
+					if(row.get(i).equals(k)){
+						return true;
+					}
+				}
+		}
+		return false;
+	}
+	
+	public GraphNode getGraphNodeById(int nodeId){
+		
+		for(int i = 0; i < hypsAdjList.size(); i++) {
+			LinkedList<GraphNode> currRow = hypsAdjList.get(i);
+			for(int j = 0; j < currRow.size(); j++){
+				if(currRow.get(j).getGraphId() == nodeId){
+					return currRow.get(j);
+				}
+			}
+		}
+		
+		for(int i = 0; i < supportsAdjList.size(); i++) {
+			LinkedList<GraphNode> currRow = supportsAdjList.get(i);
+			for(int j = 0; j < currRow.size(); j++){
+				if(currRow.get(j).getGraphId() == nodeId){
+					return currRow.get(j);
+				}
+			}
+		}
+		
+		return null;
+	
+	}
+	
 	public void printBaseSupportGraph() {
 		System.out.println("Hyps Adj List: ");
 		for (Iterator i = hypsAdjList.iterator(); i.hasNext();){

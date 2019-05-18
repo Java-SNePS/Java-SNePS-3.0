@@ -876,7 +876,7 @@ public class Controller {
     }
     
     
-    public ArrayList<ArrayList<Integer>> findTriplets(BaseSupportGraph G) {
+    public static ArrayList<ArrayList<Integer>> findTriplets(BaseSupportGraph G) {
     	
     	ArrayList<ArrayList<Integer>> result = new  ArrayList<ArrayList<Integer>>();
     	LinkedList<LinkedList<GraphNode>> hypsList = G.getHypsAdjList();
@@ -952,6 +952,76 @@ public class Controller {
     	
 		return result;
     	
+    }
+    
+    public static ArrayList<ArrayList<Integer>> findChordlessCycles(BaseSupportGraph G){
+    	ArrayList<ArrayList<Integer>> paths = findTriplets(G);
+    	ArrayList<ArrayList<Integer>> chs = new ArrayList<ArrayList<Integer>>();
+    	ArrayList<Integer> m;
+    	
+    	boolean chord;
+    	
+    	while(!(paths.isEmpty())) {
+    		for(int i = 0; i < paths.size(); i++) {
+    			m = paths.get(i);
+    			paths.remove(i);
+    			LinkedList<GraphNode> adjNodes = getListofAdjacentNodes(G, m.get(m.size()-1));
+    			for(int j = 0; j < adjNodes.size(); i++) {
+    				GraphNode k = adjNodes.get(j);
+    				chord = false;
+    				for(int c = 1 ; c < m.size(); c++){
+    					GraphNode tmpNode = G.getGraphNodeById(m.get(c));
+    					if(G.goesTo(k, tmpNode) || G.goesTo(tmpNode, k)){
+    						chord = true;
+    					}
+    				}
+	    			if (chord == false) {
+	    				m.add(k.getGraphId());
+	    				if(G.goesTo(k, G.getGraphNodeById(m.get(0)))) {
+	    					chs.add(getPropNodesFromPath(G, m));
+	    				} else {
+	    					paths.add(m);
+	    				}
+	    			}
+    			}
+    		}
+    	}
+    	
+    	return chs;
+    }
+    
+    public static LinkedList<GraphNode> getListofAdjacentNodes(BaseSupportGraph G, int node){
+    	GraphNode tmp = G.getGraphNodeById(node);
+    	if(tmp.getType() == 0) {
+    		LinkedList<LinkedList<GraphNode>> list = G.getHypsAdjList();
+    		for (int i = 0; i < list.size(); i++) {
+    			LinkedList<GraphNode> currRow = list.get(i);
+    			if((currRow.getFirst()).equals(tmp)){
+    				return currRow;
+    			}
+    		}
+    	} else {
+    		LinkedList<LinkedList<GraphNode>> list = G.getSupportsAdjList();
+    		for (int i = 0; i < list.size(); i++) {
+    			LinkedList<GraphNode> currRow = list.get(i);
+    			if((currRow.getFirst()).equals(tmp)){
+    				return currRow;
+    			}
+    		}
+    	}
+		return null;
+    	
+    }
+    
+    public static ArrayList<Integer> getPropNodesFromPath(BaseSupportGraph G, ArrayList<Integer> m) {
+    	
+    	for(int i = 0; i < m.size(); i++){
+    		GraphNode tmp = G.getGraphNodeById(m.get(i));
+    		if(tmp.getType() == 1){
+    			m.remove(i);
+    		}
+    	}
+    	return m;
     }
     
     public static ArrayList<Integer> findHittingSet(ArrayList<ArrayList<Integer>> sets) { //greedy hitting set algorithm
