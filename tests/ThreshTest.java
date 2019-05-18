@@ -1,123 +1,61 @@
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.DuplicateContextNameException;
-import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
 import sneps.network.Node;
-import sneps.network.PropositionNode;
-import sneps.network.RuleNode;
 import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.classes.CaseFrame;
-import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
-import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
-import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
-import sneps.network.classes.setClasses.ContextRuisSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
+import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
-import sneps.snip.classes.RuisHandler;
-import sneps.snip.classes.RuleUseInfo;
+import sneps.snip.classes.SIndex;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.rules.OrEntailment;
+import sneps.snip.rules.AndOrEntailment;
 import sneps.snip.rules.ThreshEntailment;
 
 public class ThreshTest {
 	
-	
 	private static Context context;
 	private static String contextName = "TempContext";
 	private static ThreshEntailment thresh;
-	private static Node fido, var, dog, barks;
-	private static Node prop1, prop2, prop3, prop4;
-	private static RuleUseInfo rui;
-	private static Report report;
-	private static Report report1;
-	private static Report report2;
-	private static Report report3;
-	private static Report report4;
-	private static Report report5;
-	private static Report report6;
-	private static Report report7;
-	private static Report report8;
-	private static Report report9;
-	private static Report report10;
-	private static Report report11;
-	private static Report report12;
-	private static Report report13;
-	private static Report report14;
-	private static Report report15;
-	private static Report report16;
-	private static Report report17;
-	private static Report report18;
-	private static Report report19;
-	private static Report report20;
-	private static Report report21;
-	private static Report report22;
-	private static Report report23;
-	private static Report report24;
-	private static Report report25;
-	private static Report report26;
-	private static Report report27;
-	private static Report report28;
-	
+	private static Node fido, var, dog, barks, animal, veg, mineral, human;
+	private static Node prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8;
+	private static Report report, report1, report2;
 	
 	@BeforeClass
-	public static void BuildNetwork() throws Exception {
-		
-		
-		/**
-		 * building context
-		 */
-		
+ 	public static void setUp() throws Exception {
 		try {
 			context = Controller.createContext(contextName);
 		} catch (DuplicateContextNameException e1) {
 			assertNotNull(e1.getMessage(), e1);
 		}
 		
-		
-		/**
-		 * Create substitutions,
-		 * FlagNodeSet,
-		 * FlagNode,
-		 * PropositionSet,
-		 * wires,
-		 * relations,
-		 * caseFrames
-		 */
-		
 		LinearSubstitutions sub = new LinearSubstitutions();
-		FlagNodeSet fns = new FlagNodeSet();
-		FlagNode fn;
 		PropositionSet support = new PropositionSet();
  		ArrayList<Wire> wires = new ArrayList<Wire>();
  		LinkedList<DownCable> dc = new LinkedList<DownCable>();
@@ -126,8 +64,9 @@ public class ThreshTest {
 		Relation memberRel = Network.defineRelation("Member", "NodeSet");
 		Relation classRel = Network.defineRelation("Class", "NodeSet");
 		Relation doesRel = Network.defineRelation("Does", "NodeSet");
-		Relation antsRel = Network.defineRelation("Tant", "Tant");
-		Relation consRel = Network.defineRelation("Tconsq", "Tconsq");
+		Relation antsRel = Network.defineRelation("Xant", "Xant");
+		Relation consRel = Network.defineRelation("Xconsq", "Xconsq");
+		Relation argsRel = Network.defineRelation("arg", "arg");
 		rels.add(memberRel);	rels.add(classRel);
 		CaseFrame caseFrameMC = Network.defineCaseFrame("MemberClass", rels);
 		rels.clear();		rels.add(classRel);		rels.add(doesRel);
@@ -136,44 +75,36 @@ public class ThreshTest {
  		CaseFrame caseFrameMD = Network.defineCaseFrame("MemberDoes", rels);
 		rels.clear();		rels.add(antsRel);		rels.add(consRel);
  		CaseFrame caseFrameAC = Network.defineCaseFrame("AntsCons", rels);
+ 		rels.clear();		rels.add(argsRel);
+ 		CaseFrame caseFrameArgs = Network.defineCaseFrame("Args", rels);
 		Wire wire1 = null, wire2 = null, wire3 = null, wire4 = null;
+		Wire wire5 = null, wire6 = null, wire7 = null, wire8 = null;
 		rels.clear();
-		
-		
-		
-		
-		/**
-		 * Building propositions & base nodes,
-		 * adding wires
-		 */
-		
-		
-		
-		
 		
 		
 		try {
 			var = Network.buildVariableNode("X");
 			fido = Network.buildBaseNode("Fido", new Semantic("Base"));
-			dog = Network.buildBaseNode("Dog", new Semantic("Proposition"));//MolecularNode(wires, caseFrame);
-			barks = Network.buildBaseNode("Barks", new Semantic("Proposition"));//MolecularNode(wires, caseFrame);
+			dog = Network.buildBaseNode("Dog", new Semantic("Base"));
+			barks = Network.buildBaseNode("Barks", new Semantic("Base"));
 			wire1 = new Wire(memberRel, fido);
 			wire2 = new Wire(classRel, dog);
 			wire3 = new Wire(doesRel, barks);
 			wire4 = new Wire(memberRel, var);
+			
+			animal = Network.buildBaseNode("Animal", new Semantic("Base"));
+			veg = Network.buildBaseNode("Vegetable", new Semantic("Base"));
+			mineral = Network.buildBaseNode("Mineral", new Semantic("Base"));
+			human = Network.buildBaseNode("Human", new Semantic("Base"));
+			wire5 = new Wire(classRel, animal);
+			wire6 = new Wire(classRel, veg);
+			wire7 = new Wire(classRel, mineral);
+			wire8 = new Wire(classRel, human);
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
 			var = new VariableNode(new Variable("X"));
 		}
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		try {
@@ -188,230 +119,216 @@ public class ThreshTest {
 
 			wires.clear();	wires.add(wire1);	wires.add(wire3);
 			prop4 = Network.buildMolecularNode(wires, caseFrameMD);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire5);
+			prop5 = Network.buildMolecularNode(wires, caseFrameArgs);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire6);
+			prop6 = Network.buildMolecularNode(wires, caseFrameArgs);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire7);
+			prop7 = Network.buildMolecularNode(wires, caseFrameArgs);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire8);
+			prop8 = Network.buildMolecularNode(wires, caseFrameArgs);
 		} catch (CannotBuildNodeException | EquivalentNodeException
 				| NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
-			LinkedList<DownCable> dcList = new LinkedList<DownCable>();
-			NodeSet nodeSet1 = new NodeSet();
-			DownCable dc1;	DownCableSet dcs;
-
-			nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop1 = new Node(new Open("Prop1", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameCD); 
-			prop2 = new Node(new Open("Prop2", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(var);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(dog);
-			dc1 = new DownCable(classRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMC); 
-			prop3 = new Node(new Open("Prop3", dcs));
-			dcList.clear();
-			//------------------------------------------------------------//
-			nodeSet1.clear();		nodeSet1.addNode(fido);
-			dc1 = new DownCable(memberRel, nodeSet1);
-			dcList.add(dc1);
-			nodeSet1.clear();		nodeSet1.addNode(barks);
-			dc1 = new DownCable(doesRel, nodeSet1);
-			dcList.add(dc1);
-			dcs = new DownCableSet(dcList, caseFrameMD); 
-			prop4 = new Node(new Open("Prop4", dcs));
-			dcList.clear();
 		}
 		
-	
-		try {
-			support.add(prop1.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
+		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
+		NodeSet nodeSet1 = new NodeSet();
+		DownCable dc1;	DownCableSet dcs;
+
+		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop1 = new Node(new Closed("Prop1", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameCD); 
+		prop2 = new Node(new Closed("Prop2", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop3 = new Node(new Open("Prop3", dcs));
+		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMD); 
+		prop4 = new Node(new Closed("Prop4", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(animal);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop5 = new Node(new Open("Prop5", dcs));
+		((Open) (prop5.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(veg);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop6 = new Node(new Open("Prop6", dcs));
+		((Open) (prop6.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+	    nodeSet1.clear();		nodeSet1.addNode(mineral);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop7 = new Node(new Open("Prop7", dcs));
+		((Open) (prop7.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+		//------------------------------------------------------------//
+		nodeSet1.clear();		nodeSet1.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet1);
+		dcList.add(dc1);
+		nodeSet1.clear();		nodeSet1.addNode(human);
+		dc1 = new DownCable(classRel, nodeSet1);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC); 
+		prop8 = new Node(new Open("Prop8", dcs));
+		((Open) (prop8.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		dcList.clear();
+//---------------------------------------------------------------------------------//
+		
+		nodeSet.addNode(prop5);
+		nodeSet.addNode(prop6);
+		nodeSet.addNode(prop7);
+		nodeSet.addNode(prop8);
+		dc.add(new DownCable(argsRel, nodeSet));
+
+		DownCableSet dcss = new DownCableSet(dc, caseFrameArgs);
+
+//---------------------------- THRESH -----------------------------------//
+		
+		thresh = new ThreshEntailment(new Open("Open", dcss));
+		thresh.setMax(3);
+		thresh.setMin(2);
+		
+		sub = new LinearSubstitutions();
+		support = new PropositionSet();
+		/*try {
+		support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop1, support, 1);
-		fns.insert(fn);
-
-		support.clearSet();
-		try {
-			support.add(prop2.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report = new Report(sub, support, false, InferenceTypes.BACKWARD);
+		
+		support = new PropositionSet();
+		/*try {
+		support.add(prop6.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop2, support, 1);
-		fns.insert(fn);
-
-		support.clearSet();
-		try {
-			support.add(prop3.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-		fn = new FlagNode(prop3, support, 1);
-		fns.insert(fn);
-
-		nodeSet.addNode(prop1);
-		dc.add(new DownCable(antsRel, nodeSet));
-
-		nodeSet.clear();
-		nodeSet.addNode(prop2);
-		dc.add(new DownCable(antsRel, nodeSet));
-
-		nodeSet.clear();
-		nodeSet.addNode(prop3);
-		dc.add(new DownCable(antsRel, nodeSet));
-
-		nodeSet.clear();
-		nodeSet.addNode(prop4);
-		dc.add(new DownCable(consRel, nodeSet));
-
-		DownCableSet dcs = new DownCableSet(dc, caseFrameAC);
-		
-		
-		/**
-		 * Thresh-entailment
-		 */
-		
-		
-		thresh= new ThreshEntailment(new Open("Open", dcs));
-
-		try {
-			support.add(dog.getId());
-			support.add(fido.getId());
-			support.add(var.getId());
-		} catch (DuplicatePropositionException | NotAPropositionNodeException
-				| NodeNotFoundInNetworkException e) {
-			assertNotNull(e.getMessage(), e);
-		}
-
-		sub.insert(new Binding((VariableNode) var,fido));
-		rui = new RuleUseInfo(sub, 2, 8, fns);
-		report = new Report(sub, support, false, contextName);
-		
-		report = new Report(sub, support, true, contextName);
-		report1 = new Report(sub, support, true, contextName);
-		report2 = new Report(sub, support, false, contextName);
-		report3 = new Report(sub, support, false, contextName);
-		report4 = new Report(sub, support, false, contextName);
-		report5 = new Report(sub, support, false, contextName);
-		report6 = new Report(sub, support, false, contextName);
-		report7 = new Report(sub, support, false, contextName);
-		report8 = new Report(sub, support, false, contextName);
-		report9 = new Report(sub, support, false, contextName);
-	
-		
-		report10 = new Report(sub, support, true, contextName);
-		report11 = new Report(sub, support, true, contextName);
-		report12 = new Report(sub, support, true, contextName);
-		report13 = new Report(sub, support, true, contextName);
-		report14 = new Report(sub, support, false, contextName);
-		report15 = new Report(sub, support, false, contextName);
-		report16 = new Report(sub, support, false, contextName);
-		report17 = new Report(sub, support, false, contextName);
-		report18 = new Report(sub, support, false, contextName);
-		report19 = new Report(sub, support, false, contextName);
-		
-		
-		report20 = new Report(sub, support, true, contextName);
-		report21 = new Report(sub, support, true, contextName);
-		report22 = new Report(sub, support, true, contextName);
-		report23 = new Report(sub, support, true, contextName);
-		report24 = new Report(sub, support, false, contextName);
-		report25 = new Report(sub, support, false, contextName);
-		report26 = new Report(sub, support, false, contextName);
-		report27 = new Report(sub, support, false, contextName);
-		report28 = new Report(sub, support, false, contextName);
-	
-		thresh.setThreshArgs(10);
-		thresh.setThreshMax(6);
-		thresh.setThreshMin(3);
+		e.printStackTrace();
+		}*/
+		report1 = new Report(sub, support, true, InferenceTypes.BACKWARD);
 	}
 	
-	
 	@Test
+	public void testProcessNodes() {
+ 		assertEquals(0, thresh.getConsequents().size());
+		assertEquals(4, thresh.getAntecedents().size());
+		assertEquals(4, thresh.getAntsWithVars().size());
+		assertEquals(0, thresh.getAntsWithoutVars().size());
+ 	}
+	
+	/**
+	 * First inference rule allowed by thresh (n-j args are false, and i-1 args are 
+	 * true, then the other j-i+1 have to be false).
+	 */
+	/*@Test
 	public void test() {
-		thresh.setThreshArgs(10);
-		thresh.setThreshMax(6);
-		thresh.setThreshMin(3);
-		thresh.applyRuleHandler(report, fido);
-		thresh.applyRuleHandler(report1, fido);
-		thresh.applyRuleHandler(report2, fido);
-		thresh.applyRuleHandler(report3, fido);
-		thresh.applyRuleHandler(report4, fido);
-		thresh.applyRuleHandler(report5, fido);
-		thresh.applyRuleHandler(report6, fido);
-		thresh.applyRuleHandler(report7, fido);
-		thresh.applyRuleHandler(report8, fido);
-		thresh.applyRuleHandler(report9, fido);
-		//assertEquals(2, thresh.getPos());
-		//assertEquals(8, thresh.getNeg());
-		assertEquals(3,thresh.getThreshMin());
-		assertEquals(6,thresh.getThreshMax());
-		assertEquals(10,thresh.getThreshArgs());
-		assertEquals(true, thresh.getSign());
-		thresh.clrAll();
+		thresh.applyRuleHandler(report, prop5);
+		assertNotNull("Null RuisHandler", thresh.getRuisHandler());
+		assertTrue("addRuiHandler doesn't create an SIndex as a RuisHandler", 
+				thresh.getRuisHandler() instanceof SIndex);
+		assertEquals(SIndex.SINGLETON, ((SIndex) (thresh.getRuisHandler())).getRuiHandlerType());
+		assertEquals(0, thresh.getReplies().size());
+		
+		thresh.applyRuleHandler(report1, prop6);
+		assertEquals(1, thresh.getReplies().size());
+		assertEquals(false, thresh.getReplies().get(0).getSign());
+		assertEquals(2, thresh.getConsequents().size());
+		assertEquals(prop7, thresh.getConsequents().getNode(0));
+		assertEquals(prop8, thresh.getConsequents().getNode(1));
+	}*/
+	
+	/**
+	 * Second inference rule  allowed by thresh (i args are true, and n-j-1 args are 
+	 * false, then the other j-i+1 args have to be true).
+	 */
+	@Test
+	public void test2() {
+		thresh.clear();
+		LinearSubstitutions sub = new LinearSubstitutions();
+		PropositionSet support = new PropositionSet();
+		/*try {
+		support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
+		
+		thresh.applyRuleHandler(report, prop5);
+		
+		sub = new LinearSubstitutions();
+		support = new PropositionSet();
+		/*try {
+		support.add(prop6.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report1 = new Report(sub, support, true, InferenceTypes.BACKWARD);
+		
+		thresh.applyRuleHandler(report, prop6);
+		assertEquals(1, thresh.getReplies().size());
+		assertEquals(true, thresh.getReplies().get(0).getSign());
+		assertEquals(2, thresh.getConsequents().size());
 	}
 	
-	@Test
-	public void testTwo() {
-		thresh.setThreshArgs(10);
-		thresh.setThreshMax(6);
-		thresh.setThreshMin(3);
-		thresh.applyRuleHandler(report10, fido);
-		thresh.applyRuleHandler(report11, fido);
-		thresh.applyRuleHandler(report12, fido);
-		thresh.applyRuleHandler(report13, fido);
-		thresh.applyRuleHandler(report14, fido);
-		thresh.applyRuleHandler(report15, fido);
-		thresh.applyRuleHandler(report16, fido);
-		thresh.applyRuleHandler(report17, fido);
-		thresh.applyRuleHandler(report18, fido);
-		thresh.applyRuleHandler(report19, fido);
-		//assertEquals(4, thresh.getPos());
-		//assertEquals(6, thresh.getNeg());
-		assertEquals(3,thresh.getThreshMin());
-		assertEquals(6,thresh.getThreshMax());
-		assertEquals(10,thresh.getThreshArgs());
-		assertEquals(false, thresh.getSign());
-		thresh.clrAll();
-	}
-	
-	@Test
-	public void testThree() {
-		thresh.setThreshArgs(10);
-		thresh.setThreshMax(6);
-		thresh.setThreshMin(3);
-		thresh.applyRuleHandler(report20, fido);
-		thresh.applyRuleHandler(report21, fido);
-		thresh.applyRuleHandler(report22, fido);
-		thresh.applyRuleHandler(report23, fido);
-		thresh.applyRuleHandler(report24, fido);
-		thresh.applyRuleHandler(report25, fido);
-		thresh.applyRuleHandler(report26, fido);
-		thresh.applyRuleHandler(report27, fido);
-		thresh.applyRuleHandler(report28, fido);
-		//assertEquals(4, thresh.getPos());
-		//assertEquals(5, thresh.getNeg());
-		assertEquals(3,thresh.getThreshMin());
-		assertEquals(6,thresh.getThreshMax());
-		assertEquals(10,thresh.getThreshArgs());
-		assertEquals(false, thresh.getSign());
-		thresh.clrAll();
+	public void tearDown() {
+		Network.clearNetwork();
+		thresh.clear();
 	}
 }

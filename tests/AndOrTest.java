@@ -378,6 +378,29 @@ public class AndOrTest {
 		assertEquals(3, andor.getConsequents().size());
 	}
 	
+	/**
+	 * Min and Max are both equal to 0.
+	 */
+	@Test
+	public void test4() {
+		andor.clear();
+		andor.setMax(0);
+		andor.setMin(0);
+		LinearSubstitutions sub = new LinearSubstitutions();
+		PropositionSet support = new PropositionSet();
+		/*try {
+		support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException 
+				| NodeNotFoundInNetworkException e) {
+		e.printStackTrace();
+		}*/
+		sub.putIn(new Binding((VariableNode) var, fido));
+		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
+		
+		andor.applyRuleHandler(report, prop5);
+		assertEquals(0, andor.getReplies().size());
+	}
+	
 	public void tearDown() {
 		Network.clearNetwork();
 		andor.clear();

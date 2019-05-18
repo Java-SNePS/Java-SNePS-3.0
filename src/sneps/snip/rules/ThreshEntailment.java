@@ -25,10 +25,10 @@ public class ThreshEntailment extends RuleNode {
 	
 	public ThreshEntailment(Molecular syn) {
 		super(syn);
-		NodeSet minNode = getDownNodeSet("min");
+		/*NodeSet minNode = getDownNodeSet("min");
 		min = Integer.parseInt(minNode.getNode(0).getIdentifier());
 		NodeSet maxNode = getDownNodeSet("max");
-		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());
+		max = Integer.parseInt(maxNode.getNode(0).getIdentifier());*/
 		antecedents = getDownAntNodeSet();
 		processNodes(antecedents);
 	}
@@ -55,15 +55,17 @@ public class ThreshEntailment extends RuleNode {
 		// Add rule node to replySupport
 		
 		consequents = antecedents.difference(rui.getFlagNodeSet().getAllNodes());
+		System.out.println(consequents);
 		
 		Report reply = new Report(rui.getSubstitutions(), replySupport, reportSign, 
 				rui.getType());
 		reportsToBeSent.add(reply);
+		System.out.println(reply);
 		
 		RuleResponse r = new RuleResponse();
 		r.setReport(reply);
-		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
-		r.addAllChannels(forwardChannels);
+		//Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		//r.addAllChannels(forwardChannels);
 		
 		return r;
 	}
