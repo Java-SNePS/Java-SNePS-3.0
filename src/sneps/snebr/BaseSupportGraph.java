@@ -8,6 +8,7 @@ import java.util.Set;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Network;
+import sneps.network.Node;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 
@@ -15,8 +16,6 @@ public class BaseSupportGraph {
 	
 //	Adjacency lists representing the graph
 //	2 lists because it is a bipartite graph
-	private LinkedList<LinkedList<PropositionSet>> hypsAdjList1;
-	private LinkedList<LinkedList<PropositionSet>> supportsAdjList1;
 	private LinkedList<LinkedList<GraphNode>> hypsAdjList;
 	private LinkedList<LinkedList<GraphNode>> supportsAdjList;
 	private LinkedList<PropositionSet> allSupports;
@@ -73,11 +72,14 @@ public class BaseSupportGraph {
 
 	
 	@SuppressWarnings("unchecked")
-	public void removeFromHypList(Object O){
+	public void removeFromHypList(Object O) throws Exception{
 		GraphNode toBeDeleted = (GraphNode) O;
 		for(Iterator iter = hypsAdjList.iterator(); iter.hasNext();){
 			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
 			if((currentRow.peek()).equals(toBeDeleted)){
+				int propositionNodeId = toBeDeleted.getPropositionNodeId();
+				Node theNode = Network.getNodeById(propositionNodeId);
+				Network.removeNode(theNode);
 				hypsAdjList.remove(currentRow);
 			}
 		}
@@ -93,14 +95,15 @@ public class BaseSupportGraph {
 					currentRow.remove(toBeDeleted);
 				}
 				else {
-					supportsAdjList.remove(currentRow);
+					GraphNode suppToBeRemoved = currentRow.getFirst();
+					removeFromSupportList(suppToBeRemoved);
 				}
 			}
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void removeFromSupportList(Object O){
+	public void removeFromSupportList(Object O) throws Exception{
 		GraphNode toBeDeleted = (GraphNode) O;
 		for(Iterator iter = supportsAdjList.iterator(); iter.hasNext();){
 			LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
@@ -120,7 +123,8 @@ public class BaseSupportGraph {
 					currentRow.remove(toBeDeleted);
 				}
 				else {
-					hypsAdjList.remove(currentRow);
+					GraphNode propositionNode = currentRow.getFirst();
+					removeFromHypList(propositionNode);
 				}
 			}
 		}
@@ -152,8 +156,52 @@ public class BaseSupportGraph {
 		return false;
 	}
 	
+	public BaseSupportGraph reverseGraph(){
+		
+		reverseAdjList(this.hypsAdjList);
+		reverseAdjList(this.supportsAdjList);
+		
+		return this;
+	}
 	
 	
+	public static void reverseAdjList(LinkedList<LinkedList<GraphNode>> list) {
+		LinkedList<LinkedList<GraphNode>> tmp = new LinkedList<LinkedList<GraphNode>>();
+		for(int i = 0; i < list.size(); i++){
+			LinkedList<GraphNode> currRow = list.get(i);
+			for(int j = 1; j < currRow.size(); j++){
+				GraphNode currNode = currRow.get(j);
+				if(firstColumnHas(tmp, currNode)) {
+					int index = indexOfGraphNodeInFirstColumn(tmp, currNode);
+					(tmp.get(index)).add(currRow.get(0));
+				} else {
+					LinkedList<GraphNode> newRow = new LinkedList<GraphNode>();
+					newRow.add(currNode);
+					newRow.add(currRow.get(0));
+					tmp.add(newRow);
+				}
+				
+			}
+		}
+	}
+	
+	public static boolean firstColumnHas(LinkedList<LinkedList<GraphNode>> list, GraphNode node){
+		for(int i = 0; i < list.size(); i++){
+			if((list.get(i).getFirst()).equals(node)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static int indexOfGraphNodeInFirstColumn(LinkedList<LinkedList<GraphNode>> list, GraphNode node) {
+		for(int i = 0; i < list.size(); i++){
+			if((list.get(i).getFirst()).equals(node)) {
+				return i;
+			}
+		}
+		return 0;
+	}
 	
 	public void printBaseSupportGraph() {
 		System.out.println("Hyps Adj List: ");

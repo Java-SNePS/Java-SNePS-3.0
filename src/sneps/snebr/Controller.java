@@ -692,12 +692,13 @@ public class Controller {
     }
     
     @SuppressWarnings("unchecked")
-	public static void GTrim(BaseSupportGraph G) {
+	public static BaseSupportGraph GTrim(BaseSupportGraph G) throws Exception {
     	GTrimHelper(G, G.getGraphSize());
+    	return G;
     }
     
     @SuppressWarnings("unchecked")
-	public static void GTrimHelper(BaseSupportGraph G, int previousGraphSize){
+	public static void GTrimHelper(BaseSupportGraph G, int previousGraphSize) throws Exception{
     	
     	LinkedList<LinkedList<GraphNode>> hypsList = G.getHypsAdjList();
     	LinkedList<LinkedList<GraphNode>> supportsList = G.getSupportsAdjList();
@@ -724,6 +725,12 @@ public class Controller {
     	} else {
     		GTrimHelper(G, G.getGraphSize());
     	}
+    }
+    
+    public static BaseSupportGraph RGTrim(BaseSupportGraph G) throws Exception {
+
+    	return (GTrim(G.reverseGraph())).reverseGraph();
+    	
     }
     
     public static int[] noOfOccurancesInSupports(PropositionNode nodeToBeChecked) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{

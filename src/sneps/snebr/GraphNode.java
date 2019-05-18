@@ -1,5 +1,8 @@
 package sneps.snebr;
 
+import sneps.exceptions.NodeNotFoundException;
+import sneps.exceptions.NodeNotFoundInNetworkException;
+import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.classes.setClasses.PropositionSet;
 
 public class GraphNode {
@@ -34,14 +37,14 @@ public class GraphNode {
 		
 	}
 	
-	public int getPropositionNodeId() throws Exception{
+	public int getPropositionNodeId() throws NodeNotFoundException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		int nodeId = 0;
 		if(this.type == 0) {
 			int [] props = PropositionSet.getPropsSafely(propositionSet);
 			nodeId = props[0];
 			return nodeId;
 		} else {
-			throw new Exception("Not a Proposition Node");
+			throw new NodeNotFoundException("Node not found");
 		}
 		
 	}
