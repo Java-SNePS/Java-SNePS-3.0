@@ -2,13 +2,15 @@ package sneps.snip.matching;
 
 import java.util.HashMap;
 
-import sneps.network.nodes.Node;
-import sneps.network.nodes.VariableNode;
+import sneps.network.Node;
+import sneps.network.VariableNode;
+import sneps.network.classes.setClasses.VariableSet;
+import sneps.snip.classes.VariableNodeStats;
 
-public class HashSubstitution implements Substitutions {
+public class HashSubstitutions implements Substitutions {
 	HashMap<VariableNode, Node> sub;
 
-	public HashSubstitution() {
+	public HashSubstitutions() {
 		sub = new HashMap<VariableNode, Node>();
 	}
 
@@ -18,7 +20,7 @@ public class HashSubstitution implements Substitutions {
 
 	public void putIn(Binding mb) {
 
-		sub.put(mb.getVariable(), mb.getNode());
+		sub.put(mb.getVariableNode(), mb.getNode());
 
 	}
 
@@ -28,7 +30,7 @@ public class HashSubstitution implements Substitutions {
 	}
 
 	public void update(Binding mb, Node mn) {
-		sub.put(mb.getVariable(), mn);
+		sub.put(mb.getVariableNode(), mn);
 
 	}
 
@@ -59,7 +61,7 @@ public class HashSubstitution implements Substitutions {
 	}
 
 	public boolean isMember(Binding mb) {
-		Node node = sub.get(mb.getVariable());
+		Node node = sub.get(mb.getVariableNode());
 		return node != null && node == mb.getNode();
 	}
 
@@ -88,7 +90,7 @@ public class HashSubstitution implements Substitutions {
 	}
 
 	public Substitutions restrict(VariableNode[] variables) {
-		HashSubstitution hs = new HashSubstitution();
+		HashSubstitutions hs = new HashSubstitutions();
 		for (VariableNode variable : variables)
 			hs.putIn(new Binding(variable, sub.get(variable)));
 
@@ -121,7 +123,7 @@ public class HashSubstitution implements Substitutions {
 	}
 
 	public Substitutions insert(Binding m) {
-		HashSubstitution s = new HashSubstitution();
+		HashSubstitutions s = new HashSubstitutions();
 		s.insert(this);
 		s.putIn(m);
 		return s;
@@ -182,11 +184,17 @@ public class HashSubstitution implements Substitutions {
 
 	@Override
 	public void insertOrUpdate(Binding mb) {
-		if (sub.containsKey(mb.getVariable()))
-			update(getBindingByVariable(mb.getVariable()), mb.getNode());
+		if (sub.containsKey(mb.getVariableNode()))
+			update(getBindingByVariable(mb.getVariableNode()), mb.getNode());
 		else
 			putIn(mb);
 
+	}
+
+	@Override
+	public VariableNodeStats extractBoundStatus(VariableSet freeVariables) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

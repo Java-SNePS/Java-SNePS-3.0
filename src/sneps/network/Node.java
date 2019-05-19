@@ -160,12 +160,10 @@ public class Node implements Serializable {
 	}
 
 	public void receiveRequest(Channel newChannel) {
-		// TODO Auto-generated method stub - install channel
 		Runner.addToLowQueue(this);
 	}
 
 	public void receiveReport(Channel newChannel) {
-		// TODO Auto-generated method stub
 		Runner.addToHighQueue(this);
 	}
 
@@ -208,38 +206,9 @@ public class Node implements Serializable {
 		return ret;
 	}
 
-	/***
-	 * Checking if this node instance contains not yet bound free variables
-	 * 
-	 * @param filterSubs reference substitutions
-	 * @return boolean computed from VariableNodeStats.areAllVariablesBound()
-	 */
-	public boolean isWhQuestion(Substitutions filterSubs) {
-		VariableNodeStats currentNodeStats = computeNodeStats(filterSubs);
-		return !currentNodeStats.areAllVariablesBound();
-	}
 
-	/***
-	 * Method computing an output of VariableNodeStats containing info about a
-	 * certain node with variables by checking the input Substitutions and comparing
-	 * them with the instance freeVariables, stating whether over a given
-	 * substitutions the node will have all its freeVariables bound and also
-	 * filtering the input substitutions to match the free variables (not including
-	 * extra irrelevant filters)
-	 * 
-	 * @param filterSubs Substitutions the given substitutions on which bindings
-	 *                   check will occur
-	 * @return VariableNodeStats
-	 */
-	public VariableNodeStats computeNodeStats(Substitutions filterSubs) {
-		VariableSet freeVariables = new VariableSet();
-		if (term instanceof Open)
-			freeVariables = ((Open) term).getFreeVariables();
-		VariableNodeStats toBeReturned = filterSubs.extractBoundStatus(freeVariables);
-		toBeReturned.setNodeId(id);
-		return toBeReturned;
 
-	}
+	
 
 	Context fake() {
 		return null;

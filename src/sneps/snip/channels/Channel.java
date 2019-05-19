@@ -16,8 +16,9 @@ import sneps.snip.Switch;
 import sneps.snip.matching.Substitutions;
 
 public abstract class Channel {
-
-	private Filter filter;
+	static int count = 0;
+	private int idCount;
+	protected Filter filter;
 	private Switch switcher;
 	private String contextName;
 	private Node requester;
@@ -28,6 +29,7 @@ public abstract class Channel {
 	private boolean reportProcessed = false;
 
 	public Channel() {
+		idCount = count++;
 		filter = new Filter();
 		switcher = new Switch();
 		setReportsBuffer(new ReportSet());
@@ -35,6 +37,7 @@ public abstract class Channel {
 
 	public Channel(Substitutions switcherSubstitution, Substitutions filterSubstitutions, String contextID,
 			Node requester, Node reporter, boolean v) {
+		idCount = count++;
 		this.filter = new Filter(filterSubstitutions);
 		this.switcher = new Switch(switcherSubstitution);
 		this.contextName = contextID;
@@ -50,19 +53,20 @@ public abstract class Channel {
 	}
 
 	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		boolean passTest = filter.canPass(report);
-		System.out.println("Can pass " + passTest);
+		boolean passTest = filter.canPass(report); // te be reviewed
 		Context channelContext = Controller.getContextByName(getContextName());
 		if (passTest && report.anySupportAssertedInContext(channelContext)) {
 			System.out.println("\nThe switcher data:\n" + switcher);
 			switcher.switchReport(report);
+			PropositionNode requesterNode = (PropositionNode) getRequester();
+			requesterNode.receiveReport(this);
 			getReportsBuffer().addReport(report);
-			Runner.addToHighQueue(requester);
 			return true;
 		}
 		return false;
 	}
 
+	/* add helper to check report test */
 	public String getContextName() {
 		return contextName;
 	}
@@ -132,6 +136,27 @@ public abstract class Channel {
 
 	public void setReportsBuffer(ReportSet reportsBuffer) {
 		this.reportsBuffer = reportsBuffer;
+	}
+
+	public int getId() {
+		return idCount;
+	}
+
+	public void setId(int idCount) {
+		this.idCount = idCount;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Channel) {
+			Channel channel = (Channel) obj;
+			boolean filterCheck = filter.getSubstitutions().equals(channel.getFilter().getSubstitutions());
+			boolean contextCheck = getContextName().equals(channel.getContextName());
+			boolean requesterCheck = getRequester().getId() == channel.getRequester().getId();
+			boolean reporterCheck = getReporter().getId() == channel.getReporter().getId();
+			return filterCheck && contextCheck && requesterCheck && reporterCheck;
+		}
+		return super.equals(obj);
 	}
 
 }

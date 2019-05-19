@@ -472,14 +472,20 @@ public class LinearSubstitutions implements Substitutions {
 			boolean bindingFound = false;
 			Variable bindingVariable = (Variable) bindingVariableNode.getTerm();
 			for (Variable variable : freeVariables)
-				bindingFound |= variable.equals(bindingVariable);
+				bindingFound |= variable.getIdentifier().equals(bindingVariable.getIdentifier());
 			if (bindingFound)
 				extractedFilterRelevantToVariables.add(binding);
 			forAllCondition &= bindingFound;
 		}
 		Substitutions extractedFilterSubs = new LinearSubstitutions(extractedFilterRelevantToVariables);
 		return new VariableNodeStats(forAllCondition, extractedFilterSubs, this);
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof LinearSubstitutions)
+			return isEqual((Substitutions) obj);
+		return false;
 	}
 
 }

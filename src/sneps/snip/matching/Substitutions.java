@@ -59,6 +59,8 @@ public interface Substitutions {
 
 	public void insert(Substitutions s);
 
+	public boolean equals(Object obj);
+
 	public boolean sub(String x, String y);
 
 	public String toString();

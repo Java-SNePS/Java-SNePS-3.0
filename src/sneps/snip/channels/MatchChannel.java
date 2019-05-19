@@ -42,21 +42,9 @@ public class MatchChannel extends Channel {
 	}
 
 	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		Filter currentChannelFilter = getFilter();
-		boolean passTest = currentChannelFilter.canPass(report);
-		System.out.println("Can pass " + passTest);
-		Context channelContext = Controller.getContextByName(getContextName());
 		int channelMatchType = getMatchType();
 		boolean toBeSentFlag = (channelMatchType == 0) || (channelMatchType == 1 && report.isPositive())
 				|| (channelMatchType == 2 && report.isNegative());
-		if (passTest && toBeSentFlag && report.anySupportAssertedInContext(channelContext)) {
-			Switch currentChannelSwitch = getSwitch();
-			System.out.println("\nThe switcher data:\n" + currentChannelSwitch);
-			currentChannelSwitch.switchReport(report);
-			getReportsBuffer().addReport(report);
-			Runner.addToHighQueue(getRequester());
-			return true;
-		}
-		return false;
+		return toBeSentFlag && super.testReportToSend(report);
 	}
 }

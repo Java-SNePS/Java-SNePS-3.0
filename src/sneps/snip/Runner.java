@@ -70,10 +70,24 @@ public class Runner {
 		actQueue.addLast(node);
 	}
 
+	/***
+	 * Method used to keep track of asserted nodes with a specific certain report as
+	 * its hash in the hashtable forwardAssertedNodes instance
+	 * 
+	 * @param report
+	 * @param node
+	 */
 	public static void addNodeAssertionThroughFReport(Report report, PropositionNode node) {
 		forwardAssertedNodes.put(report, node);
 	}
 
+	/***
+	 * Method checks if the given node was asserted (added in the
+	 * forwardAssertedNodes instance) with a forward report
+	 * 
+	 * @param node
+	 * @return
+	 */
 	public static boolean isNodeAssertedThroughForwardInf(PropositionNode node) {
 		return forwardAssertedNodes.containsValue(node);
 	}

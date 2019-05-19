@@ -100,4 +100,31 @@ public class Report {
 		this.inferenceType = inferenceType;
 	}
 
+	/***
+	 * Handling checks done in processing single report, evaluating differences to
+	 * know what
+	 * 
+	 * @param report
+	 * @return
+	 */
+	public Report computeReportFromDifferencesToSend(Report report) {
+		InferenceTypes instanceInfType = getInferenceType();
+		InferenceTypes reportInfType = report.getInferenceType();
+		PropositionSet instanceSupport = getSupport();
+		PropositionSet reportSupport = report.getSupport();
+		boolean supportCheck = instanceSupport.equals(reportSupport);
+		if (instanceInfType == InferenceTypes.BACKWARD && reportInfType == InferenceTypes.FORWARD) {
+			return report;
+		} else if (!supportCheck) {
+			if (instanceInfType == InferenceTypes.FORWARD && reportInfType == InferenceTypes.BACKWARD)
+				report.setInferenceType(InferenceTypes.FORWARD);
+			return report;
+		}
+		return null;
+	}
+
+	public void setSupport(PropositionSet support) {
+		this.support = support;
+	}
+
 }
