@@ -766,7 +766,7 @@ public class Controller {
     }
     
     
-    public static void alphaCut(double threshold) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException{
+    public static void alphaCut(double threshold) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, NodeCannotBeRemovedException{
     	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
     	Set<String> nodeKeySet = propositionNodes.keySet();
     	
@@ -779,39 +779,59 @@ public class Controller {
     	}
     }
     
-    public static void removeNodeFromLayeredBeliefState(PropositionNode toBeRemoved) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException{
+    public static void removeNodeFromLayeredBeliefState(PropositionNode toBeRemoved) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, NodeCannotBeRemovedException{
     	ArrayList<ArrayList<Integer>> parentsTree = getParentsLayered(toBeRemoved);
-    	
-    	for(int i = 0; i < parentsTree.size()-1; i++){ // revise -1
+    	ArrayList<Integer> replacerParents = new ArrayList<Integer>();
+    	ArrayList<PropositionSet> supportsToBeReplaced = new ArrayList<PropositionSet>();
+    	for(int i = 0; i < parentsTree.size(); i++){ // revise
     		ArrayList<Integer> currentLayer = parentsTree.get(i);
     		
-    			for(int j = 0; j < currentLayer.size()-1; j++) { // revise -1
+    			for(int j = 0; j < currentLayer.size(); j++) {
     				int parentId = currentLayer.get(j);
     				PropositionNode currParent = (PropositionNode) Network.getNodeById(parentId);
     				PropositionSet currParentPropSet = new PropositionSet(parentId);
     				int toBeRemovedId = toBeRemoved.getId();
     				PropositionSet toBeRemovedPropSet = new PropositionSet(toBeRemovedId);
     				if(i == 0) {
+    					currParent.setHyp(true);
     	   				Hashtable<String, PropositionSet> justSupp = currParent.getJustificationSupport();
         				Set<String> justKeySet = justSupp.keySet();
         				for(String justKey : justKeySet){
         					PropositionSet currJust = justSupp.get(justKey);
         					if(toBeRemovedPropSet.isSubSet(currJust)){
-        						currJust.remove(toBeRemovedId); // stopped here
-        						justSupp.remove(justKey); // revise
+        						if(justSupp.size() > 1 ) {
+            						supportsToBeReplaced.add(currJust);
+            						replacerParents.add(currParent.getId());
+            						justSupp.remove(justKey);
+        						}
+        					}
+        				}
+        				
+        				Hashtable<String, PropositionSet> assumpSupp = currParent.getAssumptionBasedSupport();
+        				Set<String> assumpKeySet = assumpSupp.keySet();
+        				for(String assumpKey : assumpKeySet){
+        					PropositionSet currAssump = assumpSupp.get(assumpKey);
+        					if(toBeRemovedPropSet.isSubSet(currAssump)){
+        						assumpSupp.remove(assumpKey);
+        					}
+        				}
+    				} else {
+        				Hashtable<String, PropositionSet> assumpSupp = currParent.getAssumptionBasedSupport();
+        				Set<String> assumpKeySet = assumpSupp.keySet();
+        				for(String assumpKey : assumpKeySet){
+        					PropositionSet currAssump = assumpSupp.get(assumpKey);
+        					for(int k = 0; k < supportsToBeReplaced.size(); k++){
+        						PropositionSet suppToBeReplaced = supportsToBeReplaced.get(k);
+            					if(suppToBeReplaced.isSubSet(currAssump)){
+            						currAssump.removeProps(suppToBeReplaced);
+            						currAssump.add(replacerParents.get(k));
+            						
+            					}
         					}
         				}
     				}
-    				Hashtable<String, PropositionSet> assumpSupp = currParent.getAssumptionBasedSupport();
-    				Set<String> assumpKeySet = assumpSupp.keySet();
-    				for(String assumpKey : assumpKeySet){
-    					PropositionSet currAssump = assumpSupp.get(assumpKey);
-    					if(currParentPropSet.isSubSet(currAssump)){
-    						assumpSupp.remove(assumpKey);
-    					}
-    				}
-
     			}
+    			Network.removeNode(toBeRemoved);
     	}
     }
     
@@ -1031,7 +1051,7 @@ public class Controller {
     		int mode = mostCommonElement(sets);
         	for(int i = 0; i < sets.size(); i++) {
         		if(sets.get(i).contains(mode)) {
-        			result.remove(i);
+        			sets.remove(i);
         		}
         	}
     		result.add(mode);
@@ -1039,6 +1059,23 @@ public class Controller {
 
     	
     	return result;
+    }
+    
+    public static void BCompression() throws Exception{
+    	BaseSupportGraph G = new BaseSupportGraph();
+    	G = GTrim(G);
+    	G = RGTrim(G);
+		ArrayList<ArrayList<Integer>> chordlessCycles = findChordlessCycles(G);
+		ArrayList<Integer> nodesToBeKept = findHittingSet(chordlessCycles);
+		
+		Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+		Set<String> keySet = propositionNodes.keySet();
+		for(String key : keySet) {
+			PropositionNode currNode = propositionNodes.get(key);
+			if(!(nodesToBeKept.contains(currNode.getId()))) {
+				Network.removeNode(currNode);
+			}
+		}
     }
     
     public static int mostCommonElement(ArrayList<ArrayList<Integer>> sets){ //revise //efficiency 0
