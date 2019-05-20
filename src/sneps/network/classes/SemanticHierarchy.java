@@ -27,6 +27,22 @@ public class SemanticHierarchy implements Serializable{
 			return semantics.get(identifier);
 		}
 	}
+	
+	public static Semantic createSemanticType(String identifier, String superClassIdentifier) throws SemanticNotFoundInNetworkException {
+		if(semantics.containsKey(identifier)) {
+			return semantics.get(identifier);
+		} 
+		else {
+			if(semantics.containsKey(superClassIdentifier)) {
+				Semantic semantic = new Semantic(identifier, superClassIdentifier);
+				semantics.put(identifier, semantic);
+				return semantics.get(identifier);
+			}
+			else {
+				throw new SemanticNotFoundInNetworkException("The super class named '" + superClassIdentifier + "' does not exist!");
+			}
+		}
+	}
 
 	public static Semantic getSemantic(String identifier) throws SemanticNotFoundInNetworkException {
 		if (semantics.containsKey(identifier)) {
