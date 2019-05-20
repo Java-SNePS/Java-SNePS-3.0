@@ -1,6 +1,7 @@
 package sneps.snip.matching;
 
 import sneps.network.Node;
+import sneps.network.classes.setClasses.PropositionSet;
 
 public class Match {
 	private Substitutions filterSubs; // whquestion atleastone free not bound
@@ -10,7 +11,7 @@ public class Match {
 	private Substitutions switchSubs;
 	private Node node;
 	private int matchType;
-	// add propset as support
+	private PropositionSet support;
 
 	public Match(Substitutions filterSubs, Substitutions switchSubs, Node n, int type) {
 		this.filterSubs = filterSubs;

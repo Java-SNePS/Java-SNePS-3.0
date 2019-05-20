@@ -53,7 +53,7 @@ public abstract class Channel {
 	}
 
 	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		boolean passTest = filter.canPass(report); // te be reviewed
+		boolean passTest = filter.canPass(report); // TODO te be reviewed
 		Context channelContext = Controller.getContextByName(getContextName());
 		if (passTest && report.anySupportAssertedInContext(channelContext)) {
 			System.out.println("\nThe switcher data:\n" + switcher);
