@@ -659,10 +659,11 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws CaseFrameMissMatchException 
 	 */
 	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
 			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, NodeNotFoundInPropSetException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, NodeNotFoundInPropSetException, CaseFrameMissMatchException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);

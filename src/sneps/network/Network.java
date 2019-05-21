@@ -644,24 +644,21 @@ public class Network implements Serializable {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws CaseFrameMissMatchException 
 	 * @throws DuplicateNodeException
 	 *
 	 */
 	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame) throws CannotBuildNodeException,
-			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException, CaseFrameMissMatchException {
 		Object[][] array = turnWiresIntoArray(wires);
-		Object[] result = downCableSetExists(array);
+		// this node is either null, or an equivalent node to the one this method is tryin to build
+		// if an equivalent node is found, it is returned and no new node is built.
+		Node equivalentNodeInNetwork = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null)) {
-			// TODO Look for that node and return it
-			return null;
+		if (equivalentNodeInNetwork != null) {
+			return equivalentNodeInNetwork;
 		}
-
-		if (((Boolean) result[0] == true) && (result[1] != null)) {
-			throw new EquivalentNodeException("The equivalent node '" + "' was used instead", (Node) result[1]);
-		}
-
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
 		if (!validRelNodePairs(array))
@@ -669,7 +666,9 @@ public class Network implements Serializable {
 		// System.out.println("done 2nd");
 		Object[][] relNodeSet = turnIntoRelNodeSet(array);
 		// check that the down cable set is following the case frame
-		// System.out.println("done 3rd");
+		if (!followingCaseFrame(relNodeSet, caseFrame))
+			throw new CaseFrameMissMatchException(
+					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// create the Molecular Node
 		if (caseFrame.getSemanticClass().equals("Proposition")) {
 			PropositionNode propNode;
@@ -708,16 +707,13 @@ public class Network implements Serializable {
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
 			NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
-		Object[] result = downCableSetExists(array);
+		// this node is either null, or an equivalent node to the one this method is tryin to build
+		// if an equivalent node is found, it is returned and no new node is built.
+		Node equivalentNodeInNetwork = downCableSetExists(array);
 		// System.out.println("Downcable set exists > "+ downCableSetExists(array));
 
-		if (((Boolean) result[0] == true) && (result[1] == null)) {
-			// TODO Look for that node and return it
-			return null;
-		}
-		if (((Boolean) result[0] == true) && (result[1] != null)) {
-			throw new EquivalentNodeException(
-					"The equivalent node '" + ((Node) result[1]).toString() + "' was used instead", (Node) result[1]);
+		if (equivalentNodeInNetwork != null) {
+			return equivalentNodeInNetwork;
 		}
 		// check the validity of the relation-node pairs
 		// System.out.println("done 1st");
@@ -763,7 +759,7 @@ public class Network implements Serializable {
 			return mNode;
 		}
 	}
-
+	
 	/**
 	 * checks whether the given down cable set already exists in the network or not.
 	 *
@@ -771,12 +767,13 @@ public class Network implements Serializable {
 	 *            a 2D array of Relation-Node pairs representing a down cable set
 	 *            specifications.
 	 *
-	 * @return true if the down cable set exists, and false otherwise
+	 * @return the node that has this DownCableSet if it is found, or the node 
+	 * 		   that has an equivalent DownCableSet if it is found. Returns null otherwise
 	 */
-	private static Object[] downCableSetExists(Object[][] array) {
+	private static Node downCableSetExists(Object[][] array) {
 		int size = 0;
 
-		Object[] result = new Object[2];
+		boolean result = false;
 		boolean newBoundVarsExist = false;
 		boolean networkBoundVarsExist = false;
 		boolean[] newFlags = new boolean[array.length];
@@ -871,32 +868,24 @@ public class Network implements Serializable {
 		}
 
 		if (ns.size() == 1) {
-			result[0] = (Boolean) true;
-			result[1] = null;
-
-			if ((newBoundVarsExist) && (networkBoundVarsExist)) {
-				Object[] s = ns.get(0);
-				result[1] = (Node) s[0];
-			}
+			result = true;
 
 			if ((newBoundVarsExist) && (!networkBoundVarsExist)) {
-				result[0] = (Boolean) false;
+				result = false;
 				ns.remove();
 			}
 
 		} else {
-			result[0] = (Boolean) false;
-			result[1] = null;
+			result = false;
 		}
-
-		if ((ns.size() == 1) && ((Boolean) result[0] == false)) {
-			// System.out.println("Downcable set already exist");
+		
+		if(result) {
+			// if given DownCableSet exists within the network, return the node that this DownCableSet belongs to
+			return (Node) ns.get(0)[0];
 		}
-		if (!(ns.size() == 1)) {
-			// System.out.println("Molecular Node built successfully");
+		else {
+			return null;
 		}
-
-		return result;
 
 	}
 
@@ -1005,6 +994,25 @@ public class Network implements Serializable {
 			if (list.containsKey(r.getName())) {
 				if (((NodeSet) array[i][1]).size() >= caseFrame.getRelationWithConstraints(r).getLimit()) {
 					list.remove(r.getName());
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		if (!list.isEmpty())
+			return false;
+		return true;
+	}
+	
+	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
+		LinkedList<Relation> list = caseFrame.getRelations();
+		for (int i = 0; i < array.length; i++) {
+			Relation r = (Relation) array[i][0];
+			if (list.contains(r)) {
+				if (((NodeSet) array[i][1]).size() >= r.getLimit()) {
+					list.remove(r);
 				} else {
 					return false;
 				}

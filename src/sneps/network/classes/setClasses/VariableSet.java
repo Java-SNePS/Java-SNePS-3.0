@@ -40,5 +40,13 @@ public class VariableSet implements Iterable<Variable>, Serializable {
 	public boolean isEmpty() {
 		return variables.isEmpty();
 	}
+	
+	public boolean contains(Variable variable) {
+		return variables.contains(variable);
+	}
+	
+	public void removeVariable(Variable variable) {
+		variables.remove(variable);
+	}
 
 }
