@@ -186,4 +186,9 @@ public class OrTests {
 		assertEquals(2, or.getReplies().size());
 	}
 	
+	public void tearDown() {
+		Network.clearNetwork();
+		or.clear();
+	}
+	
 }

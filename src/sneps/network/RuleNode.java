@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import sneps.network.cables.DownCableSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -14,7 +15,6 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
-import sneps.network.classes.term.Variable;
 import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.channels.AntecedentToRuleChannel;
@@ -27,7 +27,6 @@ import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.rules.OrEntailment;
 
 public abstract class RuleNode extends PropositionNode implements Serializable{
 	private static final long serialVersionUID = 3891988384679269734L;
@@ -110,20 +109,16 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return antNodesWithoutVars.size() + antNodesWithVars.size();
 	}
 	
-	protected NodeSet getPatternNodes() {
-		return antNodesWithVars;
-	}
-	
-	public NodeSet getAntecedents() {
-		return antecedents;
-	}
-	
 	public NodeSet getAntsWithoutVars() {
 		return antNodesWithoutVars;
 	}
 	
 	public NodeSet getAntsWithVars() {
 		return antNodesWithVars;
+	}
+	
+	public NodeSet getAntecedents() {
+		return antecedents;
 	}
 
 	public void setAntecedents(NodeSet antecedents) {
@@ -142,13 +137,13 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return reportsToBeSent;
 	}
 
-	protected void sendReportToConsequents(Report reply) {
+	/*protected void sendReportToConsequents(Report reply) {
 		if(!knownInstances.contains(reply))
 			newInstances.addReport(reply);
 		for (Channel outChannel : outgoingChannels)
 			if(outChannel instanceof RuleToConsequentChannel)
 				outChannel.addReport(reply);
-	}
+	}*/
 
 	/**
 	 * Process antecedent nodes, used for initialization.
@@ -531,49 +526,4 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		}
 	}
 	
-	public static void main(String[] args) {
-		Variable v1 = new Variable("x");
-		VariableNode x = new VariableNode(v1);
-		Variable v2 = new Variable("y");
-		VariableNode y = new VariableNode(v2);
-		Variable v3 = new Variable("z");
-		VariableNode z = new VariableNode(v3);
-		Variable v4 = new Variable("v");
-		VariableNode v = new VariableNode(v4);
-		Variable v5 = new Variable("w");
-		VariableNode w = new VariableNode(v5);
-		
-		Open o1 = new Open("1");
-		o1.addFreeVariable(x);
-		o1.addFreeVariable(y);
-		o1.addFreeVariable(v);
-		o1.addFreeVariable(w);
-		PropositionNode p1 = new PropositionNode(o1);
-		
-		Open o2 = new Open("2");
-		o2.addFreeVariable(x);
-		o2.addFreeVariable(v);
-		o2.addFreeVariable(w);
-		o2.addFreeVariable(z);
-		PropositionNode p2 = new PropositionNode(o2);
-		
-		Open o3 = new Open("3");
-		o3.addFreeVariable(z);
-		o3.addFreeVariable(v);
-		o3.addFreeVariable(w);
-		o3.addFreeVariable(y);
-		PropositionNode p3 = new PropositionNode(o3);
-		
-		NodeSet n = new NodeSet();
-		n.addNode(p1);
-		n.addNode(p2);
-		n.addNode(p3);
-
-		Set<VariableNode> res = getSharedVarsNodes(n);
-
-		for(VariableNode vn : res) {
-			System.out.println(vn);
-		}
-	}
-
 }

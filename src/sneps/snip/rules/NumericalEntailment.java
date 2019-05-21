@@ -77,7 +77,6 @@ public class NumericalEntailment extends RuleNode {
 		fns.insert(new FlagNode(signature, propSet, 1));
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns, 
 				report.getInferenceType());
-		//System.out.println(rui);
 		
 		// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
 		// SIndex in case there are shared variables between the antecedents, or 

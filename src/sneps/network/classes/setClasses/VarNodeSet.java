@@ -5,13 +5,6 @@ import java.util.Vector;
 
 import sneps.network.VariableNode;
 
-/**
- * @className VarNodeSet.java
- * 
- * @author Amgad Ashraf
- * 
- * @version 3.00 31/5/2018
- */
 public class VarNodeSet implements Iterable<VariableNode> {
 	protected Vector<VariableNode> variables;
 
@@ -35,9 +28,8 @@ public class VarNodeSet implements Iterable<VariableNode> {
 	}
 
 	public void addAll(VarNodeSet allVariables) {
-		for (int i = 0; i < variables.size(); i++) {
-			this.addVarNode(allVariables.getVarNode(i));
-		}		
+		for (VariableNode v : allVariables)
+			this.addVarNode(v);		
 	}
 
 	public int size() {
@@ -56,11 +48,24 @@ public class VarNodeSet implements Iterable<VariableNode> {
 		variables.remove(variable);
 	}
 
-	public static VarNodeSet union(VarNodeSet v1, VarNodeSet v2){
-		VarNodeSet v3 = v2;
-		for(VariableNode var : v1)
-			if(!v3.contains(var))
-				v3.addVarNode(var);
-		return v3;
+	public static VarNodeSet union(VarNodeSet v1, VarNodeSet v2) {
+		VarNodeSet union = new VarNodeSet();
+		for(VariableNode v : v1)
+			union.addVarNode(v);
+		for(VariableNode v : v2)
+			union.addVarNode(v);
+		
+		return union;
+	}
+	
+	public String toString() {
+		String res = null;
+		for(VariableNode v : variables) {
+			if(res == null)
+				res = v + " ";
+			else
+				res += v + " ";
+		}
+		return res;
 	}
 }

@@ -24,14 +24,12 @@ import sneps.network.classes.Wire;
 import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
-import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
-import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.SIndex;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
@@ -42,9 +40,9 @@ public class AndOrTest {
 	private static Context context;
 	private static String contextName = "TempContext";
 	private static AndOrEntailment andor;
-	private static Node fido, var, dog, barks, animal, veg, mineral, human;
+	private static Node john, fido, var, dog, barks, animal, veg, mineral, human;
 	private static Node prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8;
-	private static Report report, report1, report2;
+	private static Report report, report1, report2, report3;
 	
 	@BeforeClass
  	public static void setUp() throws Exception {
@@ -83,6 +81,7 @@ public class AndOrTest {
 		
 		try {
 			var = Network.buildVariableNode("X");
+			john = Network.buildBaseNode("John", new Semantic("Base"));
 			fido = Network.buildBaseNode("Fido", new Semantic("Base"));
 			dog = Network.buildBaseNode("Dog", new Semantic("Base"));
 			barks = Network.buildBaseNode("Barks", new Semantic("Base"));
@@ -312,6 +311,10 @@ public class AndOrTest {
 	public void test2() {
 		andor.clear();
 		LinearSubstitutions sub = new LinearSubstitutions();
+		LinearSubstitutions sub1 = new LinearSubstitutions();
+		sub.putIn(new Binding((VariableNode) var, fido));
+		sub1.putIn(new Binding((VariableNode) var, john));
+		
 		PropositionSet support = new PropositionSet();
 		/*try {
 		support.add(prop5.getId());
@@ -319,7 +322,6 @@ public class AndOrTest {
 				| NodeNotFoundInNetworkException e) {
 		e.printStackTrace();
 		}*/
-		sub.putIn(new Binding((VariableNode) var, fido));
 		report = new Report(sub, support, false, InferenceTypes.FORWARD);
 		
 		support = new PropositionSet();
@@ -338,12 +340,16 @@ public class AndOrTest {
 				| NodeNotFoundInNetworkException e) {
 		e.printStackTrace();
 		}*/
+		report3 = new Report(sub1, support, false, InferenceTypes.BACKWARD);
 		report2 = new Report(sub, support, false, InferenceTypes.BACKWARD);
 		
 		andor.applyRuleHandler(report, prop5);
 		assertEquals(0, andor.getReplies().size());
 		
 		andor.applyRuleHandler(report1, prop7);
+		assertEquals(0, andor.getReplies().size());
+		
+		andor.applyRuleHandler(report3, prop8);
 		assertEquals(0, andor.getReplies().size());
 		
 		andor.applyRuleHandler(report2, prop8);

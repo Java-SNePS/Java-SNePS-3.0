@@ -1,5 +1,6 @@
 package sneps.snip.classes;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import sneps.snip.channels.Channel;
 public class RuleResponse {
 	
 	private Report report;
-	private Set<Channel> consequentChannels;
+	private Collection<Channel> consequentChannels;
 	
 	public RuleResponse() {
 		consequentChannels = new HashSet<Channel>();
@@ -23,7 +24,7 @@ public class RuleResponse {
 		this.report = report;
 	}
 
-	public Set<Channel> getConsequentChannels() {
+	public Collection<Channel> getConsequentChannels() {
 		return consequentChannels;
 	}
 

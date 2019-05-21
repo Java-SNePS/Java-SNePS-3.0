@@ -271,7 +271,7 @@ public class Node implements Serializable {
 	 * class and pass the current node as a parameter.
 	 */
 	public void updateUpCables() {
-		//((Molecular) this.getTerm()).updateUpCables(this);
+		((Molecular) this.getTerm()).updateUpCables(this);
 	}
 	
 	public boolean hasSameFreeVariablesAs(Node n) {

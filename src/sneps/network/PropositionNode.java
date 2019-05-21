@@ -22,6 +22,7 @@ import sneps.snebr.Support;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Pair;
 import sneps.snip.Report;
+import sneps.snip.ReportInstances;
 import sneps.snip.Runner;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -37,13 +38,13 @@ public class PropositionNode extends Node implements Serializable {
 	protected Support basicSupport;
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
-	protected ReportSet knownInstances;
+	protected ReportInstances knownInstances;
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
-		knownInstances = new ReportSet();
+		knownInstances = new ReportInstances();
 		newInstances = new ReportSet();
 	}
 	
@@ -51,11 +52,11 @@ public class PropositionNode extends Node implements Serializable {
 		super(Semantic.proposition, trm);
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
-		knownInstances = new ReportSet();
+		knownInstances = new ReportInstances();
 		newInstances = new ReportSet();
 	}
 
- 	public void processSingleChannelReports(Channel currentChannel) {
+ 	/*public void processSingleChannelReports(Channel currentChannel) {
 		ReportSet reports = currentChannel.getReportsBuffer();
 		for (Report currentReport : reports) {
 			Report alteredReport = new Report(currentReport.getSubstitutions(), currentReport.getSupport(),
@@ -71,12 +72,12 @@ public class PropositionNode extends Node implements Serializable {
 			currentChannel.clearReportsBuffer();
 		}
 		currentChannel.clearReportsBuffer();
-	}
+	}*/
 
-	public void processReports() {
+	/*public void processReports() {
 		for (Channel inChannel : incomingChannels)
 			processSingleChannelReports(inChannel);
-	}
+	}*/
 
 	public void broadcastReport(Report report) {
 		newInstances.addReport(report);
@@ -227,11 +228,11 @@ public class PropositionNode extends Node implements Serializable {
 		this.incomingChannels = incomingChannels;
 	}
 	
-	public ReportSet getKnownInstances() {
+	public ReportInstances getKnownInstances() {
 		return knownInstances;
 	}
 	
-	public void setKnownInstances(ReportSet knownInstances) {
+	public void setKnownInstances(ReportInstances knownInstances) {
 		this.knownInstances = knownInstances;
 	}
 	

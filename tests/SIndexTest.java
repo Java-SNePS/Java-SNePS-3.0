@@ -2,6 +2,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -12,7 +14,6 @@ import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
-import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.snip.InferenceTypes;
 import sneps.snip.classes.FlagNode;
@@ -76,24 +77,24 @@ public class SIndexTest {
 		VariableNode vn6 = new VariableNode(v6);
 		VariableNode vn7 = new VariableNode(v7);
 		
-		VarNodeSet vns = new VarNodeSet();
-		VarNodeSet vns1 = new VarNodeSet();
-		VarNodeSet vns2 = new VarNodeSet();
-		VarNodeSet vns3 = new VarNodeSet();
-		VarNodeSet vns4 = new VarNodeSet();
-		VarNodeSet vns5 = new VarNodeSet();
-		VarNodeSet vns6 = new VarNodeSet();
-		VarNodeSet vns7 = new VarNodeSet();
+		Set<VariableNode> vns = new HashSet<VariableNode>();
+		Set<VariableNode> vns1 = new HashSet<VariableNode>();
+		Set<VariableNode> vns2 = new HashSet<VariableNode>();
+		Set<VariableNode> vns3 = new HashSet<VariableNode>();
+		Set<VariableNode> vns4 = new HashSet<VariableNode>();
+		Set<VariableNode> vns5 = new HashSet<VariableNode>();
+		Set<VariableNode> vns6 = new HashSet<VariableNode>();
+		Set<VariableNode> vns7 = new HashSet<VariableNode>();
 		
 		
-		vns.addVarNode(vn);
-		vns1.addVarNode(vn1);
-		vns2.addVarNode(vn2);
-		vns3.addVarNode(vn3);
-		vns4.addVarNode(vn4);
-		vns5.addVarNode(vn5);
-		vns6.addVarNode(vn6);
-		vns7.addVarNode(vn7);
+		vns.add(vn);
+		vns1.add(vn1);
+		vns2.add(vn2);
+		vns3.add(vn3);
+		vns4.add(vn4);
+		vns5.add(vn5);
+		vns6.add(vn6);
+		vns7.add(vn7);
 		
 		//RUI set SIndex
 		SIndex index = new SIndex((byte) 0, vns);
@@ -103,7 +104,7 @@ public class SIndexTest {
 		 
 		Binding b = new Binding(vn, n);
 		Binding b1 = new Binding(vn1, n1);
-		Binding b2 = new Binding(vn2, n);
+		Binding b2 = new Binding(vn2, n1);
 		Binding b3 = new Binding(vn3, n);
 		Binding b4 = new Binding(vn4, n);
 		Binding b5 = new Binding(vn5, n1);
@@ -113,6 +114,7 @@ public class SIndexTest {
 		Binding b9 = new Binding(vn, n2);
 		
 		ls.putIn(b);
+		ls.putIn(b2);
 		ls1.putIn(b1);
 		ls4.putIn(b8);
 		ls5.putIn(b9);

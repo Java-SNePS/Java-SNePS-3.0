@@ -115,4 +115,8 @@ public class FlagNodeSet implements Iterable<FlagNode> {
 		
 		return res;
 	}
+	
+	public void clear() {
+		flagNodes.clear();
+	}
 }

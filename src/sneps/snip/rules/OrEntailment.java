@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
+import sneps.network.RuleNode;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
@@ -14,7 +15,7 @@ import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 
-public class OrEntailment extends NumericalEntailment {
+public class OrEntailment extends RuleNode {
 	private static final long serialVersionUID = 1L;
 	
 	public OrEntailment(Molecular syn) {

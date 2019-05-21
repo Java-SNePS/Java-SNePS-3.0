@@ -24,20 +24,19 @@ import sneps.network.classes.term.Variable;
  * 
  * @ClassDescription A PTree is a binary tree structure. Every AndEntailment rule node stores combinations of antecedent RUIs inside a PTree because of its optimized structure.
  * A PTree class follows an algorithm for construction and insertion, having leaf nodes representing RUIs of rule antecedents and root nodes representing combined RUIs of the rule itself.
- * 
- * @author Amgad Ashraf
- * @version 3.00 31/5/2018
  */
 public class PTree extends RuisHandler {
 	private Hashtable<Integer, VarNodeSet> patternVariables;//PatternId, VariableNodes
 	private Hashtable<VariableNode, Set<Integer>> variablePatterns;//VariableNode, PatternIds
 	private VarNodeSet notProccessed;
 	private HashSet<PSubTree> subTrees;
+	/**
+	 * Maps every pattern to a subTree.
+	 */
 	private Hashtable<Integer, PSubTree> subTreesMap;
 
 	/**
 	 * Constructor for the PTree
-	 * @param context
 	 */
 	public PTree() {
 		super();
@@ -52,11 +51,11 @@ public class PTree extends RuisHandler {
 	 * Builds the PTree by preparing pattern variables set, variable patterns set, pattern sequence and finally constructing the tree bottom up 
 	 * @param ants
 	 */
-	public void buildTree(NodeSet ants){
+	public void buildTree(NodeSet ants) {
 		fillPVandVP(ants);
 
-		Queue<PTreeNode> patternSequence = getPatternSequence();		
-
+		Queue<PTreeNode> patternSequence = getPatternSequence();
+		
 		constructBottomUp(patternSequence);
 
 		patternVariables = new Hashtable<Integer, VarNodeSet>();
@@ -68,82 +67,86 @@ public class PTree extends RuisHandler {
 	 * Prepares both pattern variables set and variable patterns set
 	 * @param ants
 	 */
-	private void fillPVandVP(NodeSet ants) {
-		for(Node pattern : ants){
-			int id = pattern.getId();
+	public void fillPVandVP(NodeSet ants) {
+		for(Node pattern : ants) {
+			int patId = pattern.getId();
 			Term term = pattern.getTerm();
-			VarNodeSet vars = patternVariables.get(id);
+			VarNodeSet vars = patternVariables.get(patId);
 			if(vars == null || vars.isEmpty())
 				vars = new VarNodeSet();
-			Set<Integer> pats = variablePatterns.get(id);
-			if(pats == null || pats.isEmpty())
-				pats = new HashSet<Integer>();
 
-			if(term instanceof Variable){
+			if(term instanceof Variable) {
 				vars.addVarNode((VariableNode) pattern);
 				notProccessed.addVarNode((VariableNode) pattern);
 			}
 
-			if(term instanceof Open){
-				VarNodeSet freeVars = ((Open)term).getFreeVariables();
+			if(term instanceof Open) {
+				VarNodeSet freeVars = ((Open) term).getFreeVariables();
 				vars.addAll(freeVars);
 				notProccessed.addAll(freeVars);
 			}
-			patternVariables.put(id, vars);	
-		}
+			
+			patternVariables.put(patId, vars);
 
-		Set<Integer> pats = patternVariables.keySet();
-		for(int curPat : pats){
-			VarNodeSet vars = patternVariables.get(curPat);
-			if(!(vars.isEmpty()) && !(vars == null)){
-				for(VariableNode curVar : vars){
-					Set<Integer> pat = variablePatterns.get(curVar);
-					if(pat == null){
-						pat = new HashSet<Integer>();
-						pat.add(curPat);
-						variablePatterns.put(curVar, pat);
-						continue;
-					}
-					if(!pat.contains(curPat)){
-						pat.add(curPat);
-						variablePatterns.put(curVar, pat);
-					}
+			for(VariableNode curVar : vars) {
+				Set<Integer> pats = variablePatterns.get(curVar);
+				if(pats == null) {
+					pats = new HashSet<Integer>();
+					pats.add(patId);
+					variablePatterns.put(curVar, pats);
+					continue;
+				}
+				
+				if(!pats.contains(patId)) {
+					pats.add(patId);
+					variablePatterns.put(curVar, pats);
 				}
 			}
 		}
 	}
+	
 	/**
 	 * Prepares pattern sequence into a sequence of PTreeNodes ready for construction
 	 * @return
 	 */
-	private Queue<PTreeNode> getPatternSequence() {
+	public Queue<PTreeNode> getPatternSequence() {
 		LinkedHashSet<Integer> res = new LinkedHashSet<Integer>();
 		Queue<PTreeNode> treeNodes = new LinkedList<PTreeNode>();
-
-		for(VariableNode currentVar : notProccessed){
-			Set<Integer> vPatternsIds = variablePatterns.get(currentVar);
-
-			for(int currentPatId : vPatternsIds)
-				if(!res.contains(currentPatId)){
-					res.add(currentPatId);
-
-					VarNodeSet vs = new VarNodeSet();
-					vs.addVarNode(currentVar);
-					Set<Integer> pats = new HashSet<Integer>();
-					pats.add(currentPatId);
-
-					treeNodes.add(new PTreeNode(pats, vs));
+		VarNodeSet toBeProcessed = new VarNodeSet();
+		
+		while(!notProccessed.isEmpty()) {
+			toBeProcessed.addVarNode(notProccessed.iterator().next());
+			while (!toBeProcessed.isEmpty()) {
+				VariableNode var = toBeProcessed.iterator().next();
+				Set<Integer> vPatternsIds = variablePatterns.get(var);
+				for(int currentPatId : vPatternsIds) {
+					if(!res.contains(currentPatId)) {
+						res.add(currentPatId);
+						VarNodeSet patVarSet = patternVariables.get(currentPatId);
+						toBeProcessed.addAll(patVarSet);
+					}
 				}
+				
+				toBeProcessed.remove(var);
+				notProccessed.remove(var);
+			}
 		}
+		
+		for (int pat : res) {
+			Set<Integer> pats = new HashSet<Integer>();
+			pats.add(pat);
+			treeNodes.add(new PTreeNode(pats, patternVariables.get(pat)));
+		}
+		
 		return treeNodes;
-
 	}
+	
 	/**
 	 * Uses given ordered PTreeNodes to construct the PTree
 	 * If no two adjacent nodes in the sequence share variables, a PSubTree is handled 
 	 * @param treeNodes
 	 */
-	private void constructBottomUp(Queue<PTreeNode> treeNodes) {
+	public void constructBottomUp(Queue<PTreeNode> treeNodes) {
 		PTreeNode head = treeNodes.poll();
 		if (treeNodes.isEmpty()) {
 			processSubTree(head);
@@ -167,20 +170,23 @@ public class PTree extends RuisHandler {
 				head = second;
 			}
 		}
+		
 		if (head != null)
 			newTreeNodes.add(head);
+		
 		if (sharing)
 			constructBottomUp(newTreeNodes);
 		else
 			for(PTreeNode subHead : newTreeNodes)
 				processSubTree(subHead);
 	}
+	
 	/**
 	 * Creates a PSubTree and inserts it into subTrees and subTreesMap
 	 * @param subHead
 	 */
 	private void processSubTree(PTreeNode subHead) {
-		if(subHead != null){
+		if(subHead != null) {
 			PSubTree subTree = new PSubTree(subHead);
 			subTrees.add(subTree);
 			for (int id : subHead.getPats()) {
@@ -194,9 +200,8 @@ public class PTree extends RuisHandler {
 	public RuleUseInfoSet insertRUI(RuleUseInfo rui) {
 		Stack<RuleUseInfoSet> stack = new Stack<RuleUseInfoSet>();
 		FlagNodeSet fns = rui.getFlagNodeSet();
-		for(FlagNode node : fns){
+		for(FlagNode node : fns) {
 			int pattern = node.getNode().getId();
-
 			PSubTree subTree = subTreesMap.get(pattern);
 			RuleUseInfoSet returned = new RuleUseInfoSet();
 			if(subTree != null)
@@ -209,8 +214,10 @@ public class PTree extends RuisHandler {
 					tSet = new RuleUseInfoSet();
 				stack.push(tSet);
 			}
+			
 			stack.push(returned);
 		}
+		
 		return multiply(stack);
 	}
 
@@ -237,6 +244,7 @@ public class PTree extends RuisHandler {
 				return true;
 		return false;
 	}
+	
 	private VarNodeSet getSharedVars(PTreeNode first, PTreeNode second) {
 		VarNodeSet smaller = null, bigger = null, intersection = new VarNodeSet();
 		if (first.getVars().size() > second.getVars().size()) {
@@ -249,23 +257,43 @@ public class PTree extends RuisHandler {
 		for (VariableNode i : smaller)
 			if (bigger.contains(i))
 				intersection.addVarNode(i);
+
 		return intersection;
 	}
+	
 	private Set<Integer> union(Set<Integer> vars1, Set<Integer> vars2) {
 		Set<Integer> union = new HashSet<Integer>();
-		for(int strng : vars1){
-			if(vars2.contains(strng))
-				union.add(strng);
-		}
+		for(int strng : vars1)
+			union.add(strng);
+		for(int strng : vars2)
+			union.add(strng);
 		return union;
+	}
+
+	public VarNodeSet getNotProccessed() {
+		return notProccessed;
+	}
+
+	public void setNotProccessed(VarNodeSet notProccessed) {
+		this.notProccessed = notProccessed;
+	}
+
+	public Hashtable<Integer, VarNodeSet> getPatternVariables() {
+		return patternVariables;
+	}
+
+	public Hashtable<VariableNode, Set<Integer>> getVariablePatterns() {
+		return variablePatterns;
 	}
 
 	public HashSet<PSubTree> getSubTrees() {
 		return subTrees;
 	}
+	
 	public void setSubTrees(HashSet<PSubTree> subTrees) {
 		this.subTrees = subTrees;
 	}
+	
 	public Hashtable<Integer, PSubTree> getSubTreesMap() {
 		return subTreesMap;
 	}
@@ -273,38 +301,53 @@ public class PTree extends RuisHandler {
 	public void setSubTreesMap(Hashtable<Integer, PSubTree> subTreesMap) {
 		this.subTreesMap = subTreesMap;
 	}
-	public RuleUseInfoSet getAllRootRuis(){
+	
+	public RuleUseInfoSet getAllRootRuis() {
 		RuleUseInfoSet res = new RuleUseInfoSet();
 		for(PSubTree subtree : subTrees)
 			res.addAll(subtree.getRootRUIS());
 		return res;
 	}
+	
+	@Override
+	public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui) {
+		return null;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return false;
+	}
+
+	@Override
+	public void clear() {
+		
+	}
 
 	/**
 	 * @className PSubTree
 	 * 
-	 * @ClassDescription The PSubTree is used to handle the case where antecedent patterns have disjoint variables, by keeping track of multiple PSubTrees for every disjoint variable inside the same PTree.
+	 * @ClassDescription The PSubTree is used to handle the case where antecedent 
+	 * patterns have disjoint variable unions, by keeping track of multiple PSubTrees 
+	 * for every disjoint variable union inside the same PTree.
 	 * 
-	 * @author Amgad Ashraf
-	 * 
-	 * @version 3.00 31/5/2018
 	 */
 	public class PSubTree {
 		private PTreeNode root;
 
-		public PSubTree(PTreeNode rot){
-			root = rot;
+		public PSubTree(PTreeNode root){
+			this.root = root;
 		}
 
 		public RuleUseInfoSet insert(RuleUseInfo rui) {
 			FlagNodeSet fns = rui.getFlagNodeSet();
 			RuleUseInfoSet res = new RuleUseInfoSet();
-			for(FlagNode node : fns){
+			for(FlagNode node : fns) {
 				int pattern = node.getNode().getId();
-			
 				PTreeNode leaf = getLeafPattern(pattern, root);
 				res = leaf.insertIntoTree(rui, res);
 			}
+			
 			return res;
 		}
 
@@ -331,36 +374,34 @@ public class PTree extends RuisHandler {
 	}
 
 	/**
-	 * @className 
+	 * @className PTreeNode
 	 * 
 	 * @ClassDescription The PTreeNode is the lowest level in the PTree, 
 	 * where RUIs are stored and combined. 
-	 * 
-	 * @author Amgad Ashraf
-	 * 
-	 * @version 3.00 31/5/2018
 	 */
 	public class PTreeNode {
 		private PTreeNode parent, sibling;
 		private PTreeNode leftChild, rightChild;
-		private Hashtable<Integer[], RuleUseInfoSet> ruisMap;//Substitutions node IDs
+		/**
+		 * Maps every set of bindings to a RUISet.
+		 */
+		private Hashtable<Integer, RuleUseInfoSet> ruisMap;
 		private Set<Integer> pats;
 		private VarNodeSet vars;
 		private VarNodeSet siblingIntersection;
 
-		public PTreeNode(){
-			ruisMap = new Hashtable<Integer[], RuleUseInfoSet>();
-			parent = null;			sibling = null;
-			leftChild = null;		rightChild = null;
-			pats = null;			vars = null;
+		public PTreeNode() {
+			ruisMap = new Hashtable<Integer, RuleUseInfoSet>();
 		}
-		public PTreeNode(Set<Integer> p, VarNodeSet v){
+		
+		public PTreeNode(Set<Integer> p, VarNodeSet v) {
 			this();
-			pats = p;				vars = v;
+			pats = p;
+			vars = v;
 		}
 
 		public RuleUseInfoSet insertIntoTree(RuleUseInfo rui, RuleUseInfoSet ruiSet) {
-			Integer[] key = insertRUI(rui);
+			int key = insertRUI(rui);
 			if (sibling == null) {
 				ruiSet.add(rui);
 				return ruiSet;
@@ -374,6 +415,7 @@ public class PTree extends RuisHandler {
 					continue;
 				parent.insertIntoTree(combinedRui, ruiSet);
 			}
+			
 			return ruiSet;
 		}
 
@@ -389,58 +431,88 @@ public class PTree extends RuisHandler {
 			rightChild = rightNode;
 		}
 
-		public Integer[] insertRUI(RuleUseInfo rui) {
+		public int insertRUI(RuleUseInfo rui) {
 			if (sibling == null) {
-				RuleUseInfoSet ruiSet = ruisMap.get(new Integer[]{0});
+				RuleUseInfoSet ruiSet = ruisMap.get(0);
 				if (ruiSet == null) {
 					ruiSet = new RuleUseInfoSet();
-					ruisMap.put(new Integer[]{0}, ruiSet);
+					ruisMap.put(0, ruiSet);
 				}
 				ruiSet.add(rui);
-				return new Integer[]{0};
+				return 0;
 			}
-
-			Integer[] vs = new Integer[siblingIntersection.size()];
+ 
+			// The case when the node is other than the root
+			int[] vs = new int[siblingIntersection.size()];
 			int index = 0;
-			for (VariableNode var : siblingIntersection)
-				vs[index++] = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
+			for (VariableNode var : siblingIntersection) {
+				if(rui.getSubstitutions().getBindingByVariable(var) != null)
+					vs[index++] = rui.getSubstitutions().getBindingByVariable(var).getNode().getId();
+			}
+			int key = getKey(vs);
 			RuleUseInfoSet ruis = ruisMap.get(vs);
 			if (ruis == null) {
 				ruis = new RuleUseInfoSet();
-				ruisMap.put(vs, ruis);
+				ruisMap.put(key, ruis);
 			}
 			ruis.add(rui);
-			return vs;
+			return key;
 		}
 
-		public RuleUseInfoSet getRUIS(){
+		public RuleUseInfoSet getRUIS() {
 			RuleUseInfoSet ruiSet = new RuleUseInfoSet();
 			Collection<RuleUseInfoSet> mappedRuis = ruisMap.values();
 			for(RuleUseInfoSet singleSet : mappedRuis)
 				ruiSet.addAll(singleSet);
 			return ruiSet;
 		}
+		
+		/**
+		 * Get the index of a RuleUseInfo in the table by the ids of its
+		 * substitutions
+		 * 
+		 * @param x
+		 *            int[]
+		 * @return int
+		 */
+		private int getKey(int[] x) {
+			int p = 16777619;
+			int hash = (int) 2166136261L;
+			for (int i = 0; i < x.length; ++i) {
+				hash += (hash ^ x[i]) * p;
+			}
+			hash += hash << 13;
+			hash ^= hash >> 7;
+			hash += hash << 3;
+			hash ^= hash >> 17;
+			hash += hash << 5;
+			return hash;
+		}
 
-		public RuleUseInfoSet getRUIS(Integer[] index) {
+
+		public RuleUseInfoSet getRUIS(int index) {
 			return ruisMap.get(index);
 		}
 
 		public PTreeNode getLeftChild() {
 			return leftChild;
 		}
+		
 		public PTreeNode getRightChild() {
 			return rightChild;
 		}
+		
 		public Set<Integer> getPats() {
 			return pats;
 		}
+		
 		public VarNodeSet getVars() {
 			return vars;
 		}
+		
 		@Override
 		public String toString(){
 			return pats.toString();
 		}
-
 	}
 }

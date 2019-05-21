@@ -38,6 +38,30 @@ public class Report {
         }
         return false;
     }
+    
+    public Report combine(Report r) {
+    	if(substitution.isCompatible(r.getSubstitutions())) {
+    		PropositionSet combinedSupport = new PropositionSet();
+    		try {
+				combinedSupport = support.union(r.support);
+			} catch (NotAPropositionNodeException | 
+					NodeNotFoundInNetworkException e1) {
+				e1.printStackTrace();
+			}
+    		
+    		InferenceTypes resultingType;
+    		if(inferenceType.equals(InferenceTypes.FORWARD) || 
+					r.getInferenceType().equals(InferenceTypes.FORWARD))
+				resultingType = InferenceTypes.FORWARD;
+			else
+				resultingType = InferenceTypes.BACKWARD;
+    		
+    		return new Report(substitution.union(r.getSubstitutions()), 
+					combinedSupport, sign, resultingType);
+    	}
+    	
+    	return null;
+    }
 
 	public Substitutions getSubstitutions() {
 		return substitution;
