@@ -1,6 +1,3 @@
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 
 import java.util.LinkedList;
@@ -64,7 +61,6 @@ public class PTreeTests extends TestCase {
 		Node fido, dog;
 		Node man, woman, married;
 		Node john, mary;
-		//Node prop1, prop2, prop3;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		Relation memberRel = Network.defineRelation("Member", "NodeSet");
@@ -87,11 +83,12 @@ public class PTreeTests extends TestCase {
 			married = Network.buildBaseNode("Married", new Semantic("Class"));
 			john = Network.buildBaseNode("John", new Semantic("Class"));
 			mary = Network.buildBaseNode("Mary", new Semantic("Class"));
+			
 			wire1 = new Wire(memberRel, var1);
 			wire2 = new Wire(memberRel, var2);
 			wire3 = new Wire(classRel, man);
-			wire4 = new Wire(memberRel, woman);
-			wire5 = new Wire(memberRel, married);
+			wire4 = new Wire(classRel, woman);
+			wire5 = new Wire(classRel, married);
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e) {
 			assertNotNull(e.getMessage(), e);
@@ -169,7 +166,6 @@ public class PTreeTests extends TestCase {
 		FlagNodeSet fns = new FlagNodeSet();
 		PropositionSet supports = new PropositionSet();
 		FlagNode fn;
-
 		try {
 			supports.add(prop1.getId());
 		} catch (DuplicatePropositionException | NotAPropositionNodeException

@@ -436,16 +436,14 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	}
 
 	public RuleUseInfo addConstantRui(RuleUseInfo rui) {
-		//Context contxt = (Context) Controller.getContextByName(context);
-		//RuleUseInfo tRui = contextConstantRUI.get(contxt);
 		if (constantRUI != null)
 			constantRUI = rui.combine(constantRUI);
 		else
 			constantRUI = rui;
 		if (constantRUI == null)
 			throw new NullPointerException(
-					"The existed RUI could not be merged " + "with the given rui so check your code again");
-		//contextConstantRUI.put(contxt, tRui);
+					"The existed RUI could not be merged " + 
+			"with the given rui so check your code again");
 		return constantRUI;
 	}
 

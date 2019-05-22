@@ -61,7 +61,7 @@ public class NumericalEntailment extends RuleNode {
 	 * @param report
 	 * @param signature
 	 */
-	//@Override
+	@Override
 	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
 		processNodes(antecedents);
 		System.out.println("---------------");
@@ -78,15 +78,9 @@ public class NumericalEntailment extends RuleNode {
 		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns, 
 				report.getInferenceType());
 		
-		// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
-		// SIndex in case there are shared variables between the antecedents, or 
-		// RUISet in case there are no shared variables
-		if(ruisHandler == null)
-			ruisHandler = addRuiHandler();
-		
 		if(antNodesWithoutVars.contains(signature)) {
 			addConstantRui(rui);
-			if (ruisHandler.isEmpty()) {
+			if (ruisHandler == null) {
 				response = applyRuleOnRui(constantRUI);
 				if(response != null)
 					responseList.add(response);
@@ -101,6 +95,12 @@ public class NumericalEntailment extends RuleNode {
 			}
 		}
 		else {
+			// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
+			// SIndex in case there are shared variables between the antecedents, or 
+			// RUISet in case there are no shared variables
+			if(ruisHandler == null)
+				ruisHandler = addRuiHandler();
+			
 			// The RUI created for the given report is inserted to the RuisHandler
 			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
 			System.out.println(res);

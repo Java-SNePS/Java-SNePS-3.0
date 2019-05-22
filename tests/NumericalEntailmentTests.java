@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.DuplicateContextNameException;
-import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -24,18 +23,12 @@ import sneps.network.classes.Wire;
 import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
-import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
-import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
-import sneps.snebr.Support;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
-import sneps.snip.classes.FlagNode;
-import sneps.snip.classes.RuisHandler;
-import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
@@ -48,7 +41,6 @@ public class NumericalEntailmentTests extends TestCase {
 	private static NumericalEntailment numerical;
 	private static Node fido, var, dog, barks;
 	private static Node prop1, prop2, prop3, prop4;
-	private static RuleUseInfo rui;
 	private static Report report, report1;
 
  	public void setUp() {
@@ -60,8 +52,6 @@ public class NumericalEntailmentTests extends TestCase {
 
 		LinearSubstitutions sub = new LinearSubstitutions();
 		PropositionSet support = new PropositionSet();
-		FlagNodeSet fns = new FlagNodeSet();
-		FlagNode fn;
  		ArrayList<Wire> wires = new ArrayList<Wire>();
  		LinkedList<DownCable> dc = new LinkedList<DownCable>();
 		LinkedList<Relation> rels = new LinkedList<Relation>();
@@ -190,7 +180,6 @@ public class NumericalEntailmentTests extends TestCase {
 //---------------------------- NUMERICAL -----------------------------------//
 
 		numerical = new NumericalEntailment(new Open("Open", dcss));
-		//System.out.println(numerical.getId());
 		numerical.setI(1);
 		numerical.setAntecedents(a);
 		numerical.setConsequents(c);
@@ -210,7 +199,6 @@ public class NumericalEntailmentTests extends TestCase {
 		/*try {
 			support.add(prop3.getId());
 		} catch (DuplicatePropositionException | NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 		sub1.putIn(new Binding((VariableNode) var, fido));
@@ -219,22 +207,22 @@ public class NumericalEntailmentTests extends TestCase {
 	}
 
  	/*@Test
- 	public void testProcessNodes() {
+ 	public void testAntsandConsq() {
  		assertEquals(1, numerical.getConsequents().size());
 		assertEquals(3, numerical.getAntecedents().size());
 		assertEquals(1, numerical.getAntsWithVars().size());
 		assertEquals(2, numerical.getAntsWithoutVars().size());
  	}*/
  	
-	/*@Test
+	@Test
 	public void testApplyRuleHandler() {
 		numerical.applyRuleHandler(report, prop1);
 		
 		assertEquals(1, numerical.getReplies().size());
 		assertEquals(numerical.getReplies().get(0), report);
-	}*/
+	}
 	
-	/*@Test
+	@Test
 	public void testApplyRuleHandler2() {
 		numerical.setI(2);
 		numerical.clear();
@@ -242,7 +230,7 @@ public class NumericalEntailmentTests extends TestCase {
 		numerical.applyRuleHandler(report, prop1);
 		
 		assertEquals(0, numerical.getReplies().size());
-	}*/
+	}
 	
 	@Test
 	public void testApplyRuleHandler3() {
@@ -252,12 +240,13 @@ public class NumericalEntailmentTests extends TestCase {
 		numerical.applyRuleHandler(report, prop1);
 		
 		assertEquals(0, numerical.getReplies().size());
-		assertNotNull("NumericalEntailment: Null RuisHandler", numerical.getRuisHandler());
+		
+		numerical.applyRuleHandler(report1, prop3);
+		assertNotNull("NumericalEntailment: Null RuisHandler", 
+				numerical.getRuisHandler());
 		assertTrue("NumericalEntailment: addRuiHandler doesn't create an SIndex as a RuisHandler", 
 				numerical.getRuisHandler() instanceof SIndex);
 		assertEquals(SIndex.SINGLETON, ((SIndex) (numerical.getRuisHandler())).getRuiHandlerType());
-		
-		numerical.applyRuleHandler(report1, prop3);
 		assertEquals(1, numerical.getReplies().size());
 	}
 
@@ -278,7 +267,6 @@ public class NumericalEntailmentTests extends TestCase {
 		fido = null;
 		var = null;
 		dog = null;
-		rui = null;
 		report = null;
 	}
 }

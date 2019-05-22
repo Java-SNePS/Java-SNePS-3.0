@@ -1,26 +1,26 @@
 package sneps.snip.rules;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 
 import sneps.network.Node;
 import sneps.network.RuleNode;
-import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
-import sneps.network.classes.setClasses.VarNodeSet;
 import sneps.network.classes.term.Molecular;
-import sneps.network.classes.term.Open;
 import sneps.snip.Report;
+import sneps.snip.channels.Channel;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
 import sneps.snip.classes.RuisHandler;
+import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
-import sneps.snip.matching.Binding;
-import sneps.snip.matching.LinearSubstitutions;
-import sneps.snip.matching.Substitutions;
+import sneps.snip.classes.SIndex;
 
 /**
  * @className AndEntailment.java
@@ -28,180 +28,157 @@ import sneps.snip.matching.Substitutions;
  * @ClassDescription The AndEntailment is an inference rule that asserts the conjunction of all the nodes in its antecedent position to imply the conjunction of all the nodes in its consequent position.
  * When the rule node receives a request from a node in its consequent position, it sends requests to all its nodes in its antecedent position.
  * Generally, when a rule node has enough reports, it creates a reply report and broadcasts it to all consequent nodes.
- * In the case of the AndEntailment rule, the reply report is created and sent when all antecedent nodes sent their respective reports.
+ * In the case of the AndEntailment rule, the reply report is created and sent when all antecedent nodes send their respective reports.
  * 
- * @author Amgad Ashraf
- * @version 3.00 31/5/2018
  */
 public class AndEntailment extends RuleNode {
 	private static final long serialVersionUID = -8545987005610860977L;
 
-	/**
-	 * Constructor for the AndEntailment rule node
-	 * @param syn
-	 */
 	public AndEntailment(Molecular syn) {
 		super(syn);
+		antecedents = getDownAntNodeSet();
+		processNodes(antecedents);
+		consequents = getDownConsqNodeSet();
 	}
 
 	/**
-	 * Creates the first RuleUseInfo from a given Report and stores it(if positive)
-	 * Also checks if current number of positive Reports satisfy rule
+	 * Creates the first RuleUseInfo from a given Report and stores it (if positive).
+	 * Also checks if current number of positive Reports satisfies the rule.
 	 * @param report
 	 * @param signature
 	 */
 	@Override
-	public void applyRuleHandler(Report report, Node signature) {
-		String contxt = report.getContextName();
-		if (report.isPositive()) {
-			PropositionSet propSet = report.getSupports();
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.insert(new FlagNode(signature, propSet, 1));
-			RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(),
-					1, 0, fns);
-			addNotSentRui(rui, contxt, signature);
+	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
+		if(report.isNegative())
+			return null;
+		
+		//System.out.println("------------------------------");
+		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
+		RuleResponse response = new RuleResponse();
+		
+		PropositionSet propSet = report.getSupport();
+		FlagNodeSet fns = new FlagNodeSet();
+		fns.insert(new FlagNode(signature, propSet, 1));
+		RuleUseInfo rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns, 
+				report.getInferenceType());
+		
+		if(antNodesWithoutVars.contains(signature)) {
+			addConstantRui(rui);
+			if (constantRUI.getPosCount() != antNodesWithoutVars.size())
+				return null;
+			
+			if(ruisHandler == null) {
+				response = applyRuleOnRui(constantRUI);
+				if(response != null)
+					responseList.add(response);
+			}
+			
+			RuleUseInfoSet ruis = ((PTree) ruisHandler).getAllRootRuis();
+			if (ruis != null) {
+				RuleUseInfo combined;
+				for (RuleUseInfo r : ruis) {
+					combined = r.combine(constantRUI);
+					if (combined != null) {
+						response = applyRuleOnRui(combined);
+						if(response != null)
+							responseList.add(response);
+					}
+				}
+			}
 		}
-		if (contextRuisSet.getByContext(contxt).getPositiveNodes().size() >= getAntSize())
-			sendSavedRUIs(report.getContextName());
+		else {
+			if (ruisHandler == null)
+				ruisHandler = addRuiHandler();
+			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
+			if (res == null)
+				res = new RuleUseInfoSet();
+			for (RuleUseInfo tRui : res) {
+				if (tRui.getPosCount() != antNodesWithVars.size())
+					return null;
+				
+				if(constantRUI == null) {
+					response = applyRuleOnRui(tRui);
+					if(response != null)
+						responseList.add(response);
+				}
+				else {
+					RuleUseInfo combined;
+					combined = tRui.combine(constantRUI);
+					if (combined != null) {
+						response = applyRuleOnRui(combined);
+						if(response != null)
+							responseList.add(response);
+					}
+				}
+			}
+			
+		}
+		
+		if(responseList.isEmpty())
+			return null;
+	
+		return responseList;
 	}
 
 	/**
 	 * Creates a Report from a given RuleUseInfo to be broadcasted to outgoing channels
-	 * Also checks report supports and modifies accordingly
-	 * @param Rui
-	 * @param contextID 
 	 */
 	@Override
-	protected void applyRuleOnRui(RuleUseInfo Rui, String contextID) {
-		if (Rui.getPosCount() >= getAntSize()){
-			Substitutions sub = Rui.getSubstitutions();
-			FlagNodeSet justification = new FlagNodeSet();
-			justification.addAll(Rui.getFlagNodeSet());
-			PropositionSet supports = new PropositionSet();
-
-			for(FlagNode fn : justification){
-				try {
-					supports = supports.union(fn.getSupports());
-				} catch (NotAPropositionNodeException
-						| NodeNotFoundInNetworkException e) {}
-			}
-
+	protected RuleResponse applyRuleOnRui(RuleUseInfo rui) {
+		if (rui.getPosCount() < getAntSize())
+			return null;
+		
+		PropositionSet replySupport = new PropositionSet();
+		for(FlagNode fn : rui.getFlagNodeSet())
 			try {
-				supports = supports.union(Rui.getSupports());
-			} catch (NotAPropositionNodeException
-					| NodeNotFoundInNetworkException e) {}
-			
-			if(this.getTerm() instanceof Open){
-				//knownInstances check this.free vars - > bound
-				VarNodeSet freeVars = ((Open)this.getTerm()).getFreeVariables();
-				Substitutions ruiSub = Rui.getSubstitutions();
-				boolean allBound = true;
-
-				for(Report report : knownInstances){
-					//Bound to same thing(if bound)
-					for(VariableNode var : freeVars){
-						if(!report.getSubstitutions().isBound(var)){
-							allBound = false;
-							break;
-						}
-					}
-					if(allBound){//if yes
-						Substitutions instanceSub = report.getSubstitutions();
-
-						for(int i = 0; i < ruiSub.cardinality(); i++){
-							Binding ruiBind = ruiSub.getBinding(i);//if rui also bound
-							Binding instanceBind = instanceSub.
-									getBindingByVariable(ruiBind.getVariable());
-							if( !((instanceBind != null) &&
-									(instanceBind.isEqual(ruiBind))) ){
-								allBound = false;
-								break;
-							}
-						}
-						if(allBound){
-							//combine known with rui
-							Substitutions newSub = new LinearSubstitutions();
-							newSub.insert(instanceSub);
-							newSub.insert(ruiSub);
-
-							//add to new support and send
-							Report reply = new Report(newSub, supports, true, contextID);
-							sendReportToConsequents(reply);
-							return;
-						}
-					}
-				}
+				//System.out.println("HERE");
+				//System.out.println(fn.getSupport());
+				replySupport.union(fn.getSupport());
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+				e.printStackTrace();
 			}
+		//System.out.println(replySupport);
 
-			Report reply = new Report(sub, supports, true, contextID);
-			sendReportToConsequents(reply);
-		}
+		// TODO
+		// Add rule node to replySupport
+		
+		Report reply = new Report(rui.getSubstitutions(), replySupport, true, 
+				rui.getType());
+		reportsToBeSent.add(reply);
+		
+		RuleResponse r = new RuleResponse();
+		r.setReport(reply);
+		//Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		//r.addAllChannels(forwardChannels);
+		
+		return r;
 	}
-
-	/**
-	 * Creates an appropriate PTree as a RuisHandler, builds it and inserts it into ContextRuisSet by Context
-	 * @param context
-	 * @return
-	 */
-	@Override
-	public RuisHandler createRuisHandler(String context) {
-		PTree tree = new PTree();
-		NodeSet ants = antNodesWithoutVars;
-		ants.addAll(antNodesWithVars);
-		tree.buildTree(ants);
-		this.addContextRuiHandler(context, tree);
-		return tree;
-	}
-
-	/**
-	 * Inserts given RuleUseInfo into the appropriate PTree and updates the corresponding PTree
-	 * @param rui
-	 * @param contxt
-	 * @param signature
-	 */
-	public void addNotSentRui(RuleUseInfo rui, String contxt, Node signature){
-		PTree tree = (PTree) contextRuisSet.getByContext(contxt);
-		if (tree == null)
-			tree = (PTree) createRuisHandler(contxt);
-		tree.insertRUI(rui);
-		if(!tree.getPositiveNodes().contains(signature))
-			tree.getPositiveNodes().addNode(signature);
-		contextRuisSet.addHandlerSet(contxt, tree);
-	}
-	/**
-	 * Prepares the appropriate PTree and all its root RuleUseInfo for broadcasting
-	 * @param contextID
-	 */
-	private void sendSavedRUIs(String contextID) {
-		RuleUseInfo addedConstant = getConstantRUI(contextID);
-		if (addedConstant == null && antNodesWithoutVars.size() != 0)
-			return;
-
-		if( (addedConstant != null) &&(antNodesWithoutVars.size() != addedConstant.getPosCount()))
-			return;
-
-		RuleUseInfoSet ruis = ((PTree)contextRuisSet.getByContext(contextID)).getAllRootRuis();
-		if (ruis == null) {
-			applyRuleOnRui(addedConstant, contextID);
-			return;
-		}
-
-		RuleUseInfo combined;
-		for (RuleUseInfo info : ruis) {
-			combined = info.combine(addedConstant);
-			if (combined != null)
-				applyRuleOnRui(combined, contextID);
-		}
-	}
-
+	
 	/**
 	 * Naming convention used to retrieve Nodes in Down Antecedent position is "&ant";
 	 * "&" for AndEntailment, "ant" for Antecedent
-	 * @return
+	 * @return NodeSet
 	 */
 	@Override
 	public NodeSet getDownAntNodeSet() {
-		return this.getDownNodeSet("&ant");//ants for & name convention
+		return this.getDownNodeSet("&ant");
+	}
+	
+	@Override
+	public NodeSet getDownConsqNodeSet() {
+		return this.getDownNodeSet("&consq");
+	}
+
+	@Override
+	protected RuisHandler createRuisHandler() {
+		PTree tree = new PTree();
+		tree.buildTree(antNodesWithVars);
+		return tree;
+	}
+
+	@Override
+	protected byte getSIndexType() {
+		return SIndex.PTREE;
 	}
 
 }

@@ -64,7 +64,8 @@ public class FlagNode {
 	}
 	
 	public String toString() {
-		return "Proposiiton: " + node.toString() + " Flag: " + flag;
+		return "Proposiiton: " + node.toString() + " Supports: " + support + 
+				" Flag: " + flag;
 	}
 
 }
