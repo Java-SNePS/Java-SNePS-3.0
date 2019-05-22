@@ -116,10 +116,6 @@ public class SIndex extends RuisHandler {
 		return ruiHandlerType;
 	}
 	
-	public boolean isEmpty() {
-		return map.isEmpty();
-	}
-	
 	public void clear() {
 		map.clear();
 	}

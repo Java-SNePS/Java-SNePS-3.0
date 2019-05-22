@@ -58,7 +58,6 @@ public class PTreeTests extends TestCase {
 
 		ants = new NodeSet();
 		VariableNode var1, var2;
-		Node fido, dog;
 		Node man, woman, married;
 		Node john, mary;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
@@ -73,10 +72,6 @@ public class PTreeTests extends TestCase {
  		try {
 			var1 = Network.buildVariableNode("X");
 			var2 = Network.buildVariableNode("Y");
-			
-			//fido = Network.buildBaseNode("Fido", new Semantic("Member"));
-			//dog = Network.buildBaseNode("Dog", new Semantic("Class"));
-			//ants.addNode(var);		//ants.addNode(fido);		//ants.addNode(dog);
 			
 			man = Network.buildBaseNode("Man", new Semantic("Class"));
 			woman = Network.buildBaseNode("Woman", new Semantic("Class"));
@@ -99,10 +94,6 @@ public class PTreeTests extends TestCase {
 			married = new Node(new Base("Married"));
 			john = new Node(new Base("John"));
 			mary = new Node(new Base("Mary"));
-			
-			//fido = new Node(new Base("Fido"));
-			//dog = new Node(new Base("Dog"));
-			//ants.addNode(fido);		ants.addNode(var);		ants.addNode(dog);
 		}
  		
  		try {
@@ -121,40 +112,45 @@ public class PTreeTests extends TestCase {
  		
  		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
 		NodeSet nodeSet1 = new NodeSet();
+		NodeSet nodeSet2 = new NodeSet();
+		NodeSet nodeSet3 = new NodeSet();
+		NodeSet nodeSet4 = new NodeSet();
+		NodeSet nodeSet5 = new NodeSet();
+		NodeSet nodeSet6 = new NodeSet();
 		DownCable dc1;	DownCableSet dcs;
 
 		nodeSet1.addNode(var1);
 		dc1 = new DownCable(memberRel, nodeSet1);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(man);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet2.addNode(man);
+		dc1 = new DownCable(classRel, nodeSet2);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop1 = new PropositionNode(new Open("Prop1", dcs));
-		((Open) (prop1.getTerm())).getFreeVariables().addVarNode((VariableNode) var1);
+		//((Open) (prop1.getTerm())).getFreeVariables().addVarNode((VariableNode) var1);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.addNode(var2);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet3.addNode(var2);
+		dc1 = new DownCable(memberRel, nodeSet3);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(woman);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet4.addNode(woman);
+		dc1 = new DownCable(classRel, nodeSet4);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop2 = new PropositionNode(new Open("Prop2", dcs));
-		((Open) (prop2.getTerm())).getFreeVariables().addVarNode((VariableNode) var2);
+		//((Open) (prop2.getTerm())).getFreeVariables().addVarNode((VariableNode) var2);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var1);		nodeSet1.addNode(var2);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet5.addNode(var1);		nodeSet5.addNode(var2);
+		dc1 = new DownCable(memberRel, nodeSet5);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(married);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet6.addNode(married);
+		dc1 = new DownCable(classRel, nodeSet6);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC);
 		prop3 = new PropositionNode(new Open("Prop3", dcs));
-		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var1);
-		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var2);
+		//((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var1);
+		//((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var2);
 		dcList.clear();
 		//------------------------------------------------------------//
 

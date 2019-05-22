@@ -5,7 +5,6 @@ import java.util.Set;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.RuleNode;
-import sneps.network.cables.DownCableSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
@@ -109,19 +108,17 @@ public class AndOrEntailment extends RuleNode {
 		 
 		// If node is Closed, need to check if it was asserted thru forward inference, 
 		// by calling method isAssertedthruForwardInference(), to get type of replyReport
+		
 		consequents = antecedents.difference(rui.getFlagNodeSet().getAllNodes());
 		
-		//System.out.println(rui.getFlagNodeSet().getAllNodes());
-		//System.out.println(consequents);
 		Report reply = new Report(rui.getSubstitutions(), replySupport, reportSign, 
 				rui.getType());
-		//System.out.println(reply);
 		reportsToBeSent.add(reply);
 		
 		RuleResponse r = new RuleResponse();
 		r.setReport(reply);
-		//Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
-		//r.addAllChannels(forwardChannels);
+		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		r.addAllChannels(forwardChannels);
 		
 		return r;
 	}

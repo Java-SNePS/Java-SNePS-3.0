@@ -36,7 +36,7 @@ public class OrTests {
 	private static OrEntailment or;
 	private static Node fido, var, dog, barks;
 	private static Node prop1, prop2, prop3, prop4;
-	private static Report report, report1;
+	private static Report report, report1, report2;
 	
 	
 	@BeforeClass
@@ -175,6 +175,7 @@ public class OrTests {
 		
 		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
 		report1 = new Report(s, support, true, InferenceTypes.BACKWARD);
+		report2 = new Report(s, support, false, InferenceTypes.BACKWARD);
 	}
 
 	@Test
@@ -183,6 +184,9 @@ public class OrTests {
 		assertEquals(1, or.getReplies().size());
 		
 		or.applyRuleHandler(report1, prop1);
+		assertEquals(2, or.getReplies().size());
+		
+		or.applyRuleHandler(report2, prop1);
 		assertEquals(2, or.getReplies().size());
 	}
 	

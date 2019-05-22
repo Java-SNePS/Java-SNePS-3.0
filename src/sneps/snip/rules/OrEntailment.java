@@ -1,7 +1,7 @@
 package sneps.snip.rules;
 
 import java.util.ArrayList;
-
+import java.util.Set;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
@@ -11,6 +11,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.term.Molecular;
 import sneps.snip.Report;
+import sneps.snip.channels.Channel;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
@@ -25,6 +26,9 @@ public class OrEntailment extends RuleNode {
 	}
 	
 	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
+		if (report.isNegative())
+			return null;
+		
 		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
 		RuleResponse response = new RuleResponse();
 		PropositionSet replySupport = new PropositionSet();
@@ -39,8 +43,8 @@ public class OrEntailment extends RuleNode {
 				true, report.getInferenceType());
 		reportsToBeSent.add(reply);
 		response.setReport(reply);
-		//Set<Channel> outgoingChannels = getOutgoingChannelsForReport(reply);
-		//response.addAllChannels(outgoingChannels);
+		Set<Channel> outgoingChannels = getOutgoingChannelsForReport(reply);
+		response.addAllChannels(outgoingChannels);
 		responseList.add(response);
 		return responseList;
 	}

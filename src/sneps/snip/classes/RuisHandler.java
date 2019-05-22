@@ -22,7 +22,5 @@ public abstract class RuisHandler {
 	
 	abstract public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui);
 	
-	abstract public boolean isEmpty();
-	
 	abstract public void clear();
 }

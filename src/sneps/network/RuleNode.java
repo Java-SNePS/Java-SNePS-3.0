@@ -193,15 +193,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 					report.getInferenceType());
 		}
 		
-		// This is the first report received by this RuleNode, so 
-		// a RuisHandler is created
-		if(ruisHandler == null)
-			ruisHandler = addRuiHandler();
-		
 		if(antNodesWithoutVars.contains(signature)) {
 			System.out.println("CONSTANT");
 			addConstantRui(rui);
-			if (ruisHandler.isEmpty()) {
+			if (ruisHandler == null) {
 				response = applyRuleOnRui(constantRUI);
 				if(response != null)
 					responseList.add(response);
@@ -216,7 +211,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			}
 		}
 		else {
-			System.out.println("VAR");
+			if(ruisHandler == null)
+				ruisHandler = addRuiHandler();
+			
 			// The RUI created for the given report is inserted to the RuisHandler
 			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
 			
@@ -455,11 +452,13 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
 		Set<Channel> replyChannels = new HashSet<Channel>();
 		for(Node n : consequents) {
-			for(Channel c : outgoingChannels) {
-				if(c.getRequester().getId() == n.getId() && 
-						r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
-					replyChannels.add(c);
-					break;
+			if(outgoingChannels != null) {
+				for(Channel c : outgoingChannels) {
+					if(c.getRequester().getId() == n.getId() && 
+							r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {
+						replyChannels.add(c);
+						break;
+					}
 				}
 			}
 			

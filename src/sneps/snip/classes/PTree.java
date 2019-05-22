@@ -311,17 +311,27 @@ public class PTree extends RuisHandler {
 	
 	@Override
 	public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui) {
-		return null;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return false;
+		RuleUseInfoSet res = new RuleUseInfoSet();
+		RuleUseInfoSet ruis = getAllRootRuis();
+		if (ruis != null) {
+			RuleUseInfo combined;
+			for (RuleUseInfo r : ruis) {
+				combined = r.combine(rui);
+				if (combined != null)
+					res.add(combined);
+			}
+		}
+		
+		return res;
 	}
 
 	@Override
 	public void clear() {
-		
+		patternVariables = new Hashtable<Integer, VarNodeSet>();
+		variablePatterns = new Hashtable<VariableNode, Set<Integer>>();
+		notProccessed = new VarNodeSet();
+		subTrees = new HashSet<PSubTree>();
+		subTreesMap = new Hashtable<Integer, PSubTree>();
 	}
 
 	/**

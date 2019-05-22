@@ -64,8 +64,8 @@ public class ThreshEntailment extends RuleNode {
 		
 		RuleResponse r = new RuleResponse();
 		r.setReport(reply);
-		//Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
-		//r.addAllChannels(forwardChannels);
+		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		r.addAllChannels(forwardChannels);
 		
 		return r;
 	}

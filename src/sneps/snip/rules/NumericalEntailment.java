@@ -1,7 +1,7 @@
 package sneps.snip.rules;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+
 import java.util.Set;
 
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -13,27 +13,21 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 import sneps.network.classes.term.Molecular;
-import sneps.snebr.Controller;
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
-import sneps.snip.channels.ChannelTypes;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleResponse;
 import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.classes.SIndex;
-import sneps.snip.matching.LinearSubstitutions;
 
 /**
  * @className NumericalEntailment.java
  * 
  * @ClassDescription The Numerical-Entailment is a rule node that asserts the conjunction of at least i nodes in its antecedent position to imply the conjunction of all the nodes in its consequent position.
  * When the rule node receives a request from a node in its consequent position, it sends requests to all its nodes in antecedent positions.
- * Generally, when a rule node has enough reports, it creates a reply report and broadcasts it to all requesting consequent nodes.
- * In the case of the Numerical-Entailment rule, the reply report is created and sent when a minimum of i antecedent nodes sent their respective positive reports.
- * 
- * @author Amgad Ashraf
- * @version 3.00 31/5/2018
+ * Generally, when a rule node has enough reports, it creates a reply report and broadcasts it to all consequent nodes.
+ * In the case of the Numerical-Entailment rule, the reply report is created and sent when a minimum of i antecedent nodes send their respective positive reports.
  */
 public class NumericalEntailment extends RuleNode {
 	private static final long serialVersionUID = 3546852401118194013L;
@@ -49,7 +43,7 @@ public class NumericalEntailment extends RuleNode {
 		
 		// Initializing the antecedents
 		antecedents = getDownAntNodeSet();
-		//processNodes(antecedents);
+		processNodes(antecedents);
 		
 		// Initializing the consequents
 		consequents = getDownConsqNodeSet();
@@ -63,7 +57,7 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	@Override
 	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
-		processNodes(antecedents);
+		//processNodes(antecedents);
 		System.out.println("---------------");
 		
 		if(report.isNegative())
@@ -153,8 +147,8 @@ public class NumericalEntailment extends RuleNode {
 		
 		RuleResponse r = new RuleResponse();
 		r.setReport(reply);
-		//Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
-		//r.addAllChannels(forwardChannels);
+		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		r.addAllChannels(forwardChannels);
 		
 		return r;
 	}

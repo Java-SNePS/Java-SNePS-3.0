@@ -56,6 +56,7 @@ public class NumericalEntailmentTests extends TestCase {
  		LinkedList<DownCable> dc = new LinkedList<DownCable>();
 		LinkedList<Relation> rels = new LinkedList<Relation>();
 		NodeSet nodeSet = new NodeSet();
+		NodeSet nodeSett = new NodeSet();
 		Relation memberRel = Network.defineRelation("Member", "NodeSet");
 		Relation classRel = Network.defineRelation("Class", "NodeSet");
 		Relation doesRel = Network.defineRelation("Does", "NodeSet");
@@ -111,44 +112,51 @@ public class NumericalEntailmentTests extends TestCase {
 		
 		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
 		NodeSet nodeSet1 = new NodeSet();
+		NodeSet nodeSet2 = new NodeSet();
+		NodeSet nodeSet3 = new NodeSet();
+		NodeSet nodeSet4 = new NodeSet();
+		NodeSet nodeSet5 = new NodeSet();
+		NodeSet nodeSet6 = new NodeSet();
+		NodeSet nodeSet7 = new NodeSet();
+		NodeSet nodeSet8 = new NodeSet();
 		DownCable dc1;	DownCableSet dcs;
 
 		nodeSet1.addNode(fido);
 		dc1 = new DownCable(memberRel, nodeSet1);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet2.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet2);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop1 = new PropositionNode(new Closed("Prop1", dcs));
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet3.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet3);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(barks);
-		dc1 = new DownCable(doesRel, nodeSet1);
+		nodeSet4.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet4);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameCD); 
 		prop2 = new PropositionNode(new Closed("Prop2", dcs));
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet5.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet5);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet6.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet6);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC);
 		prop3 = new PropositionNode(new Open("Prop3", dcs));
-		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		//((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(fido);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet7.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet7);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(barks);
-		dc1 = new DownCable(doesRel, nodeSet1);
+		nodeSet8.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet8);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMD); 
 		prop4 = new PropositionNode(new Closed("Prop4", dcs));
@@ -162,27 +170,15 @@ public class NumericalEntailmentTests extends TestCase {
 		nodeSet.addNode(prop3);
 		dc.add(new DownCable(antsRel, nodeSet));
 		
-		nodeSet.clear();
-		nodeSet.addNode(prop4);
-		dc.add(new DownCable(consRel, nodeSet));
+		nodeSett.addNode(prop4);
+		dc.add(new DownCable(consRel, nodeSett));
 
 		DownCableSet dcss = new DownCableSet(dc, caseFrameAC);
-		//System.out.println(dcss.getDownCable("iant"));
-		//System.out.println(dcss.getDownCable("iconsq"));
-		NodeSet a = new NodeSet();
-		a.addNode(prop1);
-		a.addNode(prop2);
-		a.addNode(prop3);
-		
-		NodeSet c = new NodeSet();
-		c.addNode(prop4);
 
 //---------------------------- NUMERICAL -----------------------------------//
 
 		numerical = new NumericalEntailment(new Open("Open", dcss));
 		numerical.setI(1);
-		numerical.setAntecedents(a);
-		numerical.setConsequents(c);
 		
 		sub = new LinearSubstitutions();
 		support = new PropositionSet();
@@ -206,13 +202,13 @@ public class NumericalEntailmentTests extends TestCase {
 
 	}
 
- 	/*@Test
+ 	@Test
  	public void testAntsandConsq() {
  		assertEquals(1, numerical.getConsequents().size());
 		assertEquals(3, numerical.getAntecedents().size());
 		assertEquals(1, numerical.getAntsWithVars().size());
 		assertEquals(2, numerical.getAntsWithoutVars().size());
- 	}*/
+ 	}
  	
 	@Test
 	public void testApplyRuleHandler() {
@@ -250,7 +246,7 @@ public class NumericalEntailmentTests extends TestCase {
 		assertEquals(1, numerical.getReplies().size());
 	}
 
-	/*@Test
+	@Test
 	public void testGetDownNodeSet() {
 		NodeSet downAntNodeSet = numerical.getDownAntNodeSet();
 		assertNotNull("NumericalEntailment: getDownAntNodeSet retuns null", 
@@ -259,7 +255,7 @@ public class NumericalEntailmentTests extends TestCase {
 				downAntNodeSet.isEmpty());
 		assertEquals(1, numerical.getDownConsqNodeSet().size());
 		assertEquals(3, numerical.getDownAntNodeSet().size());
-	}*/
+	}
 
 	public void tearDown() {
 		Network.clearNetwork();

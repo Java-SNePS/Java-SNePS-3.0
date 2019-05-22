@@ -21,7 +21,6 @@ import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
-import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.NodeSet;
@@ -40,8 +39,8 @@ public class AndOrTest {
 	private static Context context;
 	private static String contextName = "TempContext";
 	private static AndOrEntailment andor;
-	private static Node john, fido, var, dog, barks, animal, veg, mineral, human;
-	private static Node prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8;
+	private static Node john, fido, var, animal, veg, mineral, human;
+	private static Node prop5, prop6, prop7, prop8;
 	private static Report report, report1, report2, report3;
 	
 	@BeforeClass
@@ -60,40 +59,23 @@ public class AndOrTest {
 		NodeSet nodeSet = new NodeSet();
 		Relation memberRel = Network.defineRelation("Member", "NodeSet");
 		Relation classRel = Network.defineRelation("Class", "NodeSet");
-		Relation doesRel = Network.defineRelation("Does", "NodeSet");
-		Relation antsRel = Network.defineRelation("Xant", "Xant");
-		Relation consRel = Network.defineRelation("Xconsq", "Xconsq");
 		Relation argsRel = Network.defineRelation("arg", "arg");
 		rels.add(memberRel);	rels.add(classRel);
 		CaseFrame caseFrameMC = Network.defineCaseFrame("MemberClass", rels);
-		rels.clear();		rels.add(classRel);		rels.add(doesRel);
-		CaseFrame caseFrameCD = Network.defineCaseFrame("ClassDoes", rels);
-		rels.clear();		rels.add(memberRel);		rels.add(doesRel);
- 		CaseFrame caseFrameMD = Network.defineCaseFrame("MemberDoes", rels);
-		rels.clear();		rels.add(antsRel);		rels.add(consRel);
- 		CaseFrame caseFrameAC = Network.defineCaseFrame("AntsCons", rels);
  		rels.clear();		rels.add(argsRel);
  		CaseFrame caseFrameArgs = Network.defineCaseFrame("Args", rels);
-		Wire wire1 = null, wire2 = null, wire3 = null, wire4 = null;
-		Wire wire5 = null, wire6 = null, wire7 = null, wire8 = null;
+		Wire wire4 = null, wire5 = null, wire6 = null, wire7 = null, wire8 = null;
 		rels.clear();
-		
 		
 		try {
 			var = Network.buildVariableNode("X");
-			john = Network.buildBaseNode("John", new Semantic("Base"));
 			fido = Network.buildBaseNode("Fido", new Semantic("Base"));
-			dog = Network.buildBaseNode("Dog", new Semantic("Base"));
-			barks = Network.buildBaseNode("Barks", new Semantic("Base"));
-			wire1 = new Wire(memberRel, fido);
-			wire2 = new Wire(classRel, dog);
-			wire3 = new Wire(doesRel, barks);
-			wire4 = new Wire(memberRel, var);
-			
+			john = Network.buildBaseNode("John", new Semantic("Base"));
 			animal = Network.buildBaseNode("Animal", new Semantic("Base"));
 			veg = Network.buildBaseNode("Vegetable", new Semantic("Base"));
 			mineral = Network.buildBaseNode("Mineral", new Semantic("Base"));
 			human = Network.buildBaseNode("Human", new Semantic("Base"));
+			wire4 = new Wire(memberRel, var);
 			wire5 = new Wire(classRel, animal);
 			wire6 = new Wire(classRel, veg);
 			wire7 = new Wire(classRel, mineral);
@@ -104,20 +86,7 @@ public class AndOrTest {
 			var = new VariableNode(new Variable("X"));
 		}
 		
-		
 		try {
-			wires.clear();	wires.add(wire1);	wires.add(wire2);
-			prop1 = Network.buildMolecularNode(wires, caseFrameMC);
-
-			wires.clear();	wires.add(wire2);	wires.add(wire3);
-			prop2 = Network.buildMolecularNode(wires, caseFrameCD);
-
-			wires.clear();	wires.add(wire4);	wires.add(wire2);
-			prop3 = Network.buildMolecularNode(wires, caseFrameMC);
-
-			wires.clear();	wires.add(wire1);	wires.add(wire3);
-			prop4 = Network.buildMolecularNode(wires, caseFrameMD);
-			
 			wires.clear();	wires.add(wire4);	wires.add(wire5);
 			prop5 = Network.buildMolecularNode(wires, caseFrameArgs);
 			
@@ -136,108 +105,59 @@ public class AndOrTest {
 		
 		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
 		NodeSet nodeSet1 = new NodeSet();
+		NodeSet nodeSet2 = new NodeSet();
+		NodeSet nodeSet3 = new NodeSet();
+		NodeSet nodeSet4 = new NodeSet();
+		NodeSet nodeSet5 = new NodeSet();
+		NodeSet nodeSet6 = new NodeSet();
+		NodeSet nodeSet7 = new NodeSet();
+		NodeSet nodeSet8 = new NodeSet();
 		DownCable dc1;	DownCableSet dcs;
 
-		nodeSet1.addNode(fido);
+		nodeSet1.addNode(var);
 		dc1 = new DownCable(memberRel, nodeSet1);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
-		dcList.add(dc1);
-		dcs = new DownCableSet(dcList, caseFrameMC); 
-		prop1 = new Node(new Closed("Prop1", dcs));
-		dcList.clear();
-		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
-		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(barks);
-		dc1 = new DownCable(doesRel, nodeSet1);
-		dcList.add(dc1);
-		dcs = new DownCableSet(dcList, caseFrameCD); 
-		prop2 = new Node(new Closed("Prop2", dcs));
-		dcList.clear();
-		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
-		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
-		dcList.add(dc1);
-		dcs = new DownCableSet(dcList, caseFrameMC); 
-		prop3 = new Node(new Open("Prop3", dcs));
-		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
-		dcList.clear();
-		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(fido);
-		dc1 = new DownCable(memberRel, nodeSet1);
-		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(barks);
-		dc1 = new DownCable(doesRel, nodeSet1);
-		dcList.add(dc1);
-		dcs = new DownCableSet(dcList, caseFrameMD); 
-		prop4 = new Node(new Closed("Prop4", dcs));
-		dcList.clear();
-		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
-		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(animal);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet2.addNode(animal);
+		dc1 = new DownCable(classRel, nodeSet2);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop5 = new Node(new Open("Prop5", dcs));
-		((Open) (prop5.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		//((Open) (prop5.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet3.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet3);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(veg);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet4.addNode(veg);
+		dc1 = new DownCable(classRel, nodeSet4);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop6 = new Node(new Open("Prop6", dcs));
-		((Open) (prop6.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		//((Open) (prop6.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet5.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet5);
 		dcList.add(dc1);
-	    nodeSet1.clear();		nodeSet1.addNode(mineral);
-		dc1 = new DownCable(classRel, nodeSet1);
+	    nodeSet6.addNode(mineral);
+		dc1 = new DownCable(classRel, nodeSet6);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop7 = new Node(new Open("Prop7", dcs));
-		((Open) (prop7.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		//((Open) (prop7.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet7.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet7);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(human);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet8.addNode(human);
+		dc1 = new DownCable(classRel, nodeSet8);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop8 = new Node(new Open("Prop8", dcs));
-		((Open) (prop8.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		//((Open) (prop8.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 //---------------------------------------------------------------------------------//
-
-		/*nodeSet.addNode(prop1);
-		dc.add(new DownCable(argsRel, nodeSet));
-
-		nodeSet.clear();
-		nodeSet.addNode(prop2);
-		dc.add(new DownCable(argsRel, nodeSet));
-
-		nodeSet.clear();
-		nodeSet.addNode(prop3);
-		dc.add(new DownCable(argsRel, nodeSet));
-
-		nodeSet.clear();
-		nodeSet.addNode(prop4);
-		dc.add(new DownCable(argsRel, nodeSet));*/
 		
 		nodeSet.addNode(prop5);
 		nodeSet.addNode(prop6);

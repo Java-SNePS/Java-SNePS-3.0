@@ -73,17 +73,11 @@ public class AndEntailment extends RuleNode {
 					responseList.add(response);
 			}
 			
-			RuleUseInfoSet ruis = ((PTree) ruisHandler).getAllRootRuis();
-			if (ruis != null) {
-				RuleUseInfo combined;
-				for (RuleUseInfo r : ruis) {
-					combined = r.combine(constantRUI);
-					if (combined != null) {
-						response = applyRuleOnRui(combined);
-						if(response != null)
-							responseList.add(response);
-					}
-				}
+			RuleUseInfoSet ruis = ruisHandler.combineConstantRUI(constantRUI);
+			for (RuleUseInfo tRui : ruis) {
+				response = applyRuleOnRui(tRui);
+				if(response != null)
+					responseList.add(response);
 			}
 		}
 		else {
@@ -131,14 +125,10 @@ public class AndEntailment extends RuleNode {
 		PropositionSet replySupport = new PropositionSet();
 		for(FlagNode fn : rui.getFlagNodeSet())
 			try {
-				//System.out.println("HERE");
-				//System.out.println(fn.getSupport());
 				replySupport.union(fn.getSupport());
 			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
 				e.printStackTrace();
 			}
-		//System.out.println(replySupport);
-
 		// TODO
 		// Add rule node to replySupport
 		
@@ -148,8 +138,8 @@ public class AndEntailment extends RuleNode {
 		
 		RuleResponse r = new RuleResponse();
 		r.setReport(reply);
-		//Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
-		//r.addAllChannels(forwardChannels);
+		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+		r.addAllChannels(forwardChannels);
 		
 		return r;
 	}
