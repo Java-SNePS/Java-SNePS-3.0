@@ -9,10 +9,10 @@ import java.util.Set;
 import sneps.snip.channels.Channel;
 import sneps.snip.matching.Substitutions;
 
-public class ReportInstances implements Iterable<Report> {
+public class KnownInstances implements Iterable<Report> {
 	Hashtable<Substitutions, Set<Report>> instances;
 
-	public ReportInstances() {
+	public KnownInstances() {
 		instances = new Hashtable<Substitutions, Set<Report>>();
 	}
 

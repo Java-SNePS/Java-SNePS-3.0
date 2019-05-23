@@ -32,7 +32,7 @@ import sneps.snebr.Support;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Pair;
 import sneps.snip.Report;
-import sneps.snip.ReportInstances;
+import sneps.snip.KnownInstances;
 import sneps.snip.Runner;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -49,20 +49,20 @@ public class PropositionNode extends Node implements Serializable {
 	private Support basicSupport;
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
-	protected ReportInstances knownInstances;
+	protected KnownInstances knownInstances;
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
-		knownInstances = new ReportInstances();
+		knownInstances = new KnownInstances();
 	}
 
 	public PropositionNode(Term trm) {
 		super(Semantic.proposition, trm);
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
-		knownInstances = new ReportInstances();
+		knownInstances = new KnownInstances();
 		setTerm(trm);
 	}
 
@@ -444,11 +444,11 @@ public class PropositionNode extends Node implements Serializable {
 		this.incomingChannels = incomingChannels;
 	}
 
-	public ReportInstances getKnownInstances() {
+	public KnownInstances getKnownInstances() {
 		return knownInstances;
 	}
 
-	public void setKnownInstances(ReportInstances knownInstances) {
+	public void setKnownInstances(KnownInstances knownInstances) {
 		this.knownInstances = knownInstances;
 	}
 
@@ -710,8 +710,7 @@ public class PropositionNode extends Node implements Serializable {
 			if (!sentAtLeastOne || isWhQuestion(filterSubs)) {
 				NodeSet dominatingRules = getUpConsNodeSet();
 				NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel, filterSubs, false);
-				sendRequestsToNodeSet(toBeSentToDom, new LinearSubstitutions(), currentContextName,
-						ChannelTypes.RuleAnt);
+				sendRequestsToNodeSet(toBeSentToDom, filterSubs, currentContextName, ChannelTypes.RuleAnt);
 				if (!(currentChannel instanceof MatchChannel)) {
 					List<Match> matchingNodes = Matcher.match(this);
 					List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
@@ -751,17 +750,22 @@ public class PropositionNode extends Node implements Serializable {
 			Report reportToBeBroadcasted = attemptAddingReportToKnownInstances(currentChannel, currentReport);
 			if (reportToBeBroadcasted != null) {
 				boolean forwardReportType = reportToBeBroadcasted.getInferenceType() == InferenceTypes.FORWARD;
-				PropositionNode supportNode = buildNodeSubstitutions(currentReport.getSubstitutions());
-				supportNode.addJustificationBasedSupport(reportToBeBroadcasted.getSupport());
-				PropositionSet reportSupportPropSet = new PropositionSet();
-				reportSupportPropSet.add(supportNode.getId());
-				reportToBeBroadcasted.setSupport(reportSupportPropSet);
+				if (currentChannel instanceof RuleToConsequentChannel) {
+					PropositionNode supportNode = buildNodeSubstitutions(currentReport.getSubstitutions());
+					supportNode.addJustificationBasedSupport(reportToBeBroadcasted.getSupport());
+					PropositionSet reportSupportPropSet = new PropositionSet();
+					reportSupportPropSet.add(supportNode.getId());
+					reportToBeBroadcasted.setSupport(reportSupportPropSet);
+				}
 				// TODO: GRADED PROPOSITIONS HANDLING REPORTS
 				if (forwardReportType) {
-					List<Match> matchesReturned = Matcher.match(this);
-					sendReportToMatches(matchesReturned, currentReport, currentChannelContextName);
-					NodeSet isAntecedentTo = getUpAntNodeSet();
-					sendReportToNodeSet(isAntecedentTo, currentReport, currentChannelContextName, ChannelTypes.RuleAnt);
+					if (currentChannel instanceof MatchChannel) {
+						List<Match> matchesReturned = Matcher.match(this);
+						sendReportToMatches(matchesReturned, currentReport, currentChannelContextName);
+					}
+					NodeSet dominatingRules = getUpAntNodeSet();
+					sendReportToNodeSet(dominatingRules, currentReport, currentChannelContextName,
+							ChannelTypes.RuleAnt);
 				} else
 					broadcastReport(reportToBeBroadcasted);
 

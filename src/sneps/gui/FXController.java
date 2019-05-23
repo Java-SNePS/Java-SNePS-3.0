@@ -112,7 +112,7 @@ import sneps.snebr.Context;
 import sneps.snebr.Controller;
 import sneps.snepslog.AP;
 import sneps.snip.Report;
-import sneps.snip.ReportInstances;
+import sneps.snip.KnownInstances;
 
 public class FXController implements Initializable {
 	Network network = new Network();
@@ -3631,7 +3631,7 @@ public class FXController implements Initializable {
 //			n = Network.buildTemporaryNode(identifier, );
 		}
 		n.deduce();
-		ReportInstances rs = n.getKnownInstances();
+		KnownInstances rs = n.getKnownInstances();
 		for (Report r : rs) {
 			res = res + r.toString() + "\n";
 		}

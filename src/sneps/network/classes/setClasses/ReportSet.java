@@ -34,4 +34,8 @@ public class ReportSet implements Iterable<Report>, Serializable {
 		return reports.remove(report);
 	}
 
+	public boolean isEmpty() {
+		return reports.size() == 0;
+	}
+
 }

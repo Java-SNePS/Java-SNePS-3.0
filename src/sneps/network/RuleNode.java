@@ -32,7 +32,7 @@ import sneps.snebr.Support;
 import sneps.snip.Filter;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
-import sneps.snip.ReportInstances;
+import sneps.snip.KnownInstances;
 import sneps.snip.Runner;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -46,6 +46,8 @@ import sneps.snip.classes.SIndex;
 import sneps.snip.classes.VariableNodeStats;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
+import sneps.snip.matching.Match;
+import sneps.snip.matching.Matcher;
 import sneps.snip.matching.Substitutions;
 import sneps.snip.rules.AndOrNode;
 import sneps.snip.rules.ThreshNode;
@@ -279,10 +281,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 		if (removeSender)
 			antecedentsNodeSet.removeNode(currentChannel.getRequester());
 		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
+		String currentContextName = currentChannel.getContextName();
 		Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentsNodeSet, currentChannel, filterSubs, ruleType);
-		sendRequestsToNodeSet(toBeSentTo, currentChannel.getFilter().getSubstitutions(),
-				currentChannel.getContextName(), ChannelTypes.RuleAnt);
+		sendRequestsToNodeSet(toBeSentTo, filterSubs, currentContextName, ChannelTypes.RuleAnt);
 	}
 
 	/***
@@ -295,11 +297,21 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	protected void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel, Report report) {
 		NodeSet antecedentNodeSet = getDownAntNodeSet();
 		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
+		String currentContextName = currentChannel.getContextName();
 		Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 		Substitutions reportSubs = report.getSubstitutions();
 		Substitutions unionSubs = filterSubs.union(reportSubs);
 		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, unionSubs, ruleType);
-		sendRequestsToNodeSet(toBeSentTo, unionSubs, currentChannel.getContextName(), ChannelTypes.RuleAnt);
+		sendRequestsToNodeSet(toBeSentTo, unionSubs, currentContextName, ChannelTypes.RuleAnt);
+	}
+
+	protected void requestAntecedentsNotAlreadyWorkingOn(Channel currentChannel, Report report, boolean removeSender) {
+		NodeSet antecedentNodeSet = getDownAntNodeSet();
+		boolean ruleType = this instanceof ThreshNode || this instanceof AndOrNode;
+		String currentContextName = currentChannel.getContextName();
+		Substitutions reportSubs = report.getSubstitutions();
+		NodeSet toBeSentTo = removeAlreadyWorkingOn(antecedentNodeSet, currentChannel, reportSubs, ruleType);
+		sendRequestsToNodeSet(toBeSentTo, reportSubs, currentContextName, ChannelTypes.RuleAnt);
 	}
 
 	/*
@@ -392,11 +404,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 		if (currentChannel instanceof RuleToConsequentChannel) {
 			boolean closedTypeTerm = term instanceof Closed;
 			String currentContextName = currentChannel.getContextName();
-			Context currentContext = Controller.getContextByName(currentContextName);
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
 			if (closedTypeTerm) {
 				/* Case 1 */
-				if (assertedInContext(currentContext)) {
+				if (assertedInContext(currentContextName)) {
 					requestAntecedentsNotAlreadyWorkingOn(currentChannel, false);
 				} else
 					super.processSingleRequestsChannel(currentChannel);
@@ -405,11 +416,11 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				boolean ruleNodeAllVariablesBound = ruleNodeStats.areAllVariablesBound();
 				Substitutions ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
 				/* Case 2 & 3 */
-				ReportInstances knownReportSet = knownInstances;
+				KnownInstances knownReportSet = knownInstances;
 				for (Report report : knownReportSet) {
 					Substitutions reportSubstitutions = report.getSubstitutions();
 					boolean subSetCheck = ruleNodeExtractedSubs.isSubSet(reportSubstitutions);
-					boolean supportCheck = report.anySupportAssertedInContext(currentContext);
+					boolean supportCheck = report.anySupportAssertedInContext(currentContextName);
 					if (subSetCheck && supportCheck) {
 						if (ruleNodeAllVariablesBound) {
 							requestAntecedentsNotAlreadyWorkingOn(currentChannel, false);
@@ -464,25 +475,55 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 							Collection<RuleResponse> ruleResponse = applyRuleHandler(currentReport, currentChannel);
 							handleResponseOfApplyRuleHandler(ruleResponse, currentReport, currentChannel);
 							currentChannelReportBuffer.removeReport(currentReport);
-							/* requests the antecedents, applyRuleHandler(), remove report from buffer */
-							// DONE Close Type - Asserted through Forward Inference
 						} else {
-							/* try to assert myself through requests and leave the report fel buffer */
-							// TODO Close Type - Not Asserted through Forward Inference
+							NodeSet dominatingRules = getUpConsNodeSet();
+							NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel,
+									currentReportSubs, false);
+							sendRequestsToNodeSet(toBeSentToDom, currentReportSubs, currentChannelContextName,
+									ChannelTypes.RuleAnt);
+							List<Match> matchingNodes = Matcher.match(this);
+							List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
+							sendRequestsToMatches(toBeSentToMatch, currentChannelContextName);
 						}
 					} else {
 						/** Open Type Implementation */
 						/*
-						 * for every known instance compatible with the report, send requests to the
-						 * rest of the antecedents gheir el ba3at el report and apply rule handler and
-						 * not remove the report from the reports buffer
+						 * for every known instance compatible (el free variables el fel rule hntala3 el
+						 * bindings beta3thom fel report we necheck law dah subset men had men el known
+						 * instance ; use variablenodestats) with the report, if(zay belzabt el check
+						 * beta3 el subset wel support el fe requests)send requests to the rest of the
+						 * antecedents gheir el ba3at el report and apply rule handler and not remove
+						 * the report from the reports buffer, try to assert
 						 */
+						/*
+						 * le kol known instance hanla2ih hnt3amel ma3 el node ka2enaha asserted we
+						 * closed
+						 */
+						VariableNodeStats ruleNodeStats = computeNodeStats(currentReportSubs);
+						Substitutions ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
+						for (Report knownInstance : knownInstances) {
+							Substitutions knownInstanceSubstitutions = knownInstance.getSubstitutions();
+							boolean subSetCheck = ruleNodeExtractedSubs.isSubSet(knownInstanceSubstitutions);
+							boolean supportCheck = knownInstance.anySupportAssertedInContext(currentChannelContextName);
+							if (subSetCheck && supportCheck) {
+								requestAntecedentsNotAlreadyWorkingOn(currentChannel, knownInstance, true);
+								Collection<RuleResponse> ruleResponse = applyRuleHandler(knownInstance, currentChannel);
+								handleResponseOfApplyRuleHandler(ruleResponse, knownInstance, currentChannel);
+							}
+						}
 						Collection<RuleResponse> ruleResponse = applyRuleHandler(currentReport, currentChannel);
 						handleResponseOfApplyRuleHandler(ruleResponse, currentReport, currentChannel);
-						Channel newChannel = ((AntecedentToRuleChannel) currentChannel).clone();
-						Filter newChannelSubs = new Filter(currentReportSubs);
-						newChannel.setFilter(newChannelSubs);
-						super.processSingleRequestsChannel(newChannel);
+						NodeSet dominatingRules = getUpConsNodeSet();
+						NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel,
+								currentReportSubs, false);
+						sendRequestsToNodeSet(toBeSentToDom, currentReportSubs, currentChannelContextName,
+								ChannelTypes.RuleAnt);
+						List<Match> matchingNodes = Matcher.match(this);
+						List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
+						sendRequestsToMatches(toBeSentToMatch, currentChannelContextName);
+						/*
+						 * zeyada 3aleiha hnkamel akenaha mesh asserted el heya open
+						 */
 					}
 				} else {
 					/** Backward Inference */
@@ -492,32 +533,24 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				}
 			} else {
 				/** Not AntecedentToRule Channel */
-
-				/*
-				 * Nafs el bt3mlo lel proposition node without removing the report from the
-				 * buffer if. forward type: send requests to all antecedents
-				 */
 				super.processSingleReportsChannel(currentChannel);
-				ChannelSet outgoingChannels = getOutgoingChannels();
-				ChannelSet incomingChannels = getIncomingChannels();
-
 				if (forwardReportType) {
-					if (closedTypeTerm) {
+					if (closedTypeTerm)
 						Runner.addNodeAssertionThroughFReport(currentReport, this);
-						getNodesToSendRequest(ChannelTypes.RuleAnt, currentChannelContextName, currentReportSubs);
-						// 3alashan el rule got asserted be forward inference we lazem acheck el
-						// antecedents by3arfo yereport wala la2
-					}
+					getNodesToSendRequest(ChannelTypes.RuleAnt, currentChannelContextName, currentReportSubs);
 				} else {
-					if (!outgoingChannels.getChannels().isEmpty())
+					Collection<Channel> outgoingChannels = getOutgoingChannels().getChannels();
+					Collection<Channel> incomingChannels = getIncomingChannels().getAntRuleChannels();
+					boolean existsReportBuffers = false;
+					for (Channel incomingChannel : incomingChannels) {
+						existsReportBuffers |= !incomingChannel.getReportsBuffer().isEmpty();
+					}
+					if (!outgoingChannels.isEmpty())
 						receiveRequest(currentChannel);
-					if (!incomingChannels.getChannels().isEmpty() && true /* non empty buffers */)
+					if (!incomingChannels.isEmpty() && existsReportBuffers)
 						receiveReport(currentChannel);
-					// law fih outgoing channels -> low queue
-					// law fih incoming channels and non empty buffers -> queue high
 					currentChannelReportBuffer.removeReport(currentReport);
 				}
-
 			}
 		}
 	}

@@ -10,6 +10,7 @@ import sneps.network.Network;
 import sneps.network.PropositionNode;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.snebr.Context;
+import sneps.snebr.Controller;
 import sneps.snebr.Support;
 import sneps.snip.matching.Substitutions;
 
@@ -45,8 +46,9 @@ public class Report {
 	 * (assumptionHyps.isSubSet(contextHypothesisSet)) return true; return false; }
 	 */
 
-	public boolean anySupportAssertedInContext(Context reportContext)
+	public boolean anySupportAssertedInContext(String reportContextName)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+		Context reportContext = Controller.getContextByName(reportContextName);
 		int[] reportSupportsSet = support.getProps();
 		int currentPropNodeId;
 		for (int i = 0; i < reportSupportsSet.length; i++) {
