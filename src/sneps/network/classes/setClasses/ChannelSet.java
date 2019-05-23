@@ -26,11 +26,12 @@ public class ChannelSet implements Iterable<Channel> {
 		int channelRequesterId = channel.getRequester().getId();
 		int channelReporterId = channel.getReporter().getId();
 		String channelContextName = channel.getContextName();
-		Substitutions channelSubs = channel.getFilter().getSubstitutions();
+		Substitutions filterSubs = channel.getFilter().getSubstitutions();
+		Substitutions switchSubs = channel.getSwitch().getSubstitutions();
 		ChannelTypes channelType = getChannelType(channel);
 		Hashtable<ChannelIdentifier, Channel> targetSet = channels.remove(channelType);
 		ChannelIdentifier channelId = new ChannelIdentifier(channelRequesterId, channelReporterId, channelContextName,
-				channelSubs);
+				filterSubs, switchSubs);
 		Channel added = targetSet.put(channelId, channel);
 		channels.put(channelType, targetSet);
 		return added;
@@ -40,11 +41,12 @@ public class ChannelSet implements Iterable<Channel> {
 		int channelRequesterId = channel.getRequester().getId();
 		int channelReporterId = channel.getReporter().getId();
 		String channelContextName = channel.getContextName();
-		Substitutions channelSubs = channel.getFilter().getSubstitutions();
+		Substitutions filterSubs = channel.getFilter().getSubstitutions();
+		Substitutions switchSubs = channel.getSwitch().getSubstitutions();
 		ChannelTypes channelType = getChannelType(channel);
 		Hashtable<ChannelIdentifier, Channel> targetSet = channels.remove(channelType);
 		ChannelIdentifier channelId = new ChannelIdentifier(channelRequesterId, channelReporterId, channelContextName,
-				channelSubs);
+				filterSubs, switchSubs);
 		Channel removed = targetSet.remove(channelId);
 		channels.put(channelType, targetSet);
 		return removed;
@@ -138,8 +140,9 @@ public class ChannelSet implements Iterable<Channel> {
 		int channelReporterId = newChannel.getReporter().getId();
 		String channelContextName = newChannel.getContextName();
 		Substitutions channelSubs = newChannel.getFilter().getSubstitutions();
+		Substitutions switchSubs = newChannel.getSwitch().getSubstitutions();
 		ChannelIdentifier channelId = new ChannelIdentifier(channelRequesterId, channelReporterId, channelContextName,
-				channelSubs);
+				channelSubs, switchSubs);
 		ChannelTypes channelType = getChannelType(newChannel);
 		Hashtable<ChannelIdentifier, Channel> set = channels.get(channelType);
 		return set.get(channelId);

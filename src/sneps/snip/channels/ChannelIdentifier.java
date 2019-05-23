@@ -7,12 +7,14 @@ public class ChannelIdentifier {
 	int reporterId;
 	String contextName;
 	Substitutions filterSubstitutions;
+	Substitutions switchSubstitutions;
 
-	public ChannelIdentifier(int rqId, int rpId, String cName, Substitutions fSubs) {
+	public ChannelIdentifier(int rqId, int rpId, String cName, Substitutions fSubs, Substitutions sSubs) {
 		requesterId = rqId;
 		reporterId = rpId;
 		contextName = cName;
 		filterSubstitutions = fSubs;
+		switchSubstitutions = sSubs;
 	}
 
 	@Override
@@ -20,11 +22,12 @@ public class ChannelIdentifier {
 		ChannelIdentifier channelId;
 		if (obj instanceof ChannelIdentifier) {
 			channelId = (ChannelIdentifier) obj;
-			boolean filterCheck = filterSubstitutions.equals(channelId.getFilterSubstitutions());
 			boolean requesterCheck = getRequesterId() == channelId.getRequesterId();
 			boolean reporterCheck = getReporterId() == channelId.getReporterId();
 			boolean contextCheck = getContextName() == channelId.getContextName();
-			return filterCheck && reporterCheck && requesterCheck && contextCheck;
+			boolean filterCheck = filterSubstitutions.equals(channelId.getFilterSubstitutions());
+			boolean switchCheck = switchSubstitutions.equals(channelId.getSwitchSubstitutions());
+			return reporterCheck && requesterCheck && contextCheck && filterCheck && switchCheck;
 		}
 		return false;
 	}
@@ -59,6 +62,14 @@ public class ChannelIdentifier {
 
 	public void setFilterSubstitutions(Substitutions filterSubstitutions) {
 		this.filterSubstitutions = filterSubstitutions;
+	}
+
+	public Substitutions getSwitchSubstitutions() {
+		return switchSubstitutions;
+	}
+
+	public void setSwitchSubstitutions(Substitutions switchSubstututions) {
+		this.switchSubstitutions = switchSubstututions;
 	}
 
 }
