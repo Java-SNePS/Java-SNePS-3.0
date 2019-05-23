@@ -13,7 +13,6 @@ public interface Substitutions {
     public Binding getBindingByVariable(VariableNode mv);
     public Substitutions insert(Binding m);
     public void insert(Substitutions s);
-   // public int termID(int variableID);
     public void insertOrUpdate(Binding mb);
     public boolean isBound(VariableNode mv);
     public boolean isCompatible(Binding mb);
@@ -35,6 +34,7 @@ public interface Substitutions {
     public void unionIn (Substitutions s);
     public void update(Binding mb , Node mn);
     public Node value(VariableNode n);
+   
 
 
 }

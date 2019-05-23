@@ -398,8 +398,8 @@ public class LinearSubstitutions implements Substitutions {
 		String res="";
 		for(int i=0;i<sub.size();i++)
 		{
-			res+=sub.get(i).getNode().getIdentifier()+" substitutes "+sub.get(i)
-					.getVariable().getIdentifier()+'\n';
+			res+=sub.get(i).getNode().toString()+" substitutes "+sub.get(i)
+					.getVariable().toString()+'\n';
 		}
 		return res;
 	}
@@ -463,12 +463,7 @@ public class LinearSubstitutions implements Substitutions {
 	}
 
 
-	/*public int termID(int variableID) {
-			for (int i = 0; i < sub.size(); i++) 
-				if(sub.get(i).getVariable().getId()==variableID)
-					return sub.get(i).getNode().getId();
-			return -1;
-		}*/
+	
 
 	/**
 	 * If the node n is bound to another node return the one bounding it
@@ -476,15 +471,19 @@ public class LinearSubstitutions implements Substitutions {
 	 * @param n node
 	 * @return node
 	 */
-	public Node value(VariableNode n)
+	/*public Node value(VariableNode n)
 	{//TODO messing here
 		Binding b = getBindingByVariable(n);
 		if(b==null)
 			return null;
 		return b.getNode();
-	}
-
-
-
+	}*/
+	public Node value(VariableNode n){
+		Binding b = getBindingByVariable(n);
+		if(b==null)		
+			return n;
+		return b.getNode();
+		}
 	
-	}
+
+}
