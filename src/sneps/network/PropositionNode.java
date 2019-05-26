@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import sneps.exceptions.CannotInsertJustificationSupportException;
+import sneps.exceptions.ContextNameDoesntExistException;
+import sneps.exceptions.ContradictionFoundException;
 import sneps.exceptions.CustomException;
 import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -231,13 +233,18 @@ public class PropositionNode extends Node implements Serializable{
 	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
-	public void addTelescopedSupport(PropositionSet propSet, PropositionSet telescopedSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		basicSupport.addTelescopedSupport(propSet, telescopedSet);
+	public void addTelescopedSupport(String contextName, PropositionNode parent) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, ContradictionFoundException, ContextNameDoesntExistException {
+		basicSupport.addTelescopedSupport(contextName, parent);
 	}
 	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		basicSupport.removeNodeFromSupports(propNode);
 		
 	}
+	
+	public Hashtable<String, ArrayList<Integer>> getGrades() {
+		return basicSupport.getGrades();
+	}
+	
 	public void addParentNode(int id) throws DuplicatePropositionException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		 basicSupport.addParentNode(id);
 		
