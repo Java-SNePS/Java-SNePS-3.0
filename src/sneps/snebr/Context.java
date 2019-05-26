@@ -183,6 +183,13 @@ public class Context implements Serializable{
     public boolean isSupported(PropositionNode node) {
     	return isSupported(node, 0);
     }
+    
+    /**
+     * Checks if a node is supported by checking if it's origin set O is a subset
+     * of the current context, and also if T exists if it's a subset of the current context's
+     * telescopedSet. Both have to be true in order for the node to be supported.
+     * @param level represents which level of telescoping is this node asserted in
+     */
 
     public boolean isSupported(PropositionNode node, int level) {
         Collection<PropositionSet> assumptionSet = node.getBasicSupport()
