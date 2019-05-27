@@ -125,8 +125,7 @@ public class AP {
 	}
 
 	/**
-	 * @param snepslogMode
-	 *            The number of the SNePSLOG mode to be used.
+	 * @param snepslogMode The number of the SNePSLOG mode to be used.
 	 */
 	protected static void setSnepslogMode(int snepslogMode) {
 		AP.snepslogMode = snepslogMode;
@@ -140,8 +139,7 @@ public class AP {
 	}
 
 	/**
-	 * @param printingMode
-	 *            The name of the printing mode to be used.
+	 * @param printingMode The name of the printing mode to be used.
 	 */
 	protected static void setPrintingMode(String printingMode) {
 		AP.printingMode = printingMode;
@@ -150,8 +148,7 @@ public class AP {
 	/**
 	 * This method is used to create a customized CaseFrame for Mode 1.
 	 *
-	 * @param noOfArguments
-	 *            The number of argument relations.
+	 * @param noOfArguments The number of argument relations.
 	 *
 	 * @return The created CaseFrame.
 	 */
@@ -169,11 +166,9 @@ public class AP {
 	/**
 	 * This method is used to create a customized CaseFrame for Mode 2.
 	 * 
-	 * @param p
-	 *            The name of the p relation.
+	 * @param p             The name of the p relation.
 	 *
-	 * @param noOfArguments
-	 *            The number of argument relations.
+	 * @param noOfArguments The number of argument relations.
 	 *
 	 * @return The created CaseFrame.
 	 */
@@ -192,16 +187,13 @@ public class AP {
 	 * This method is used to create a CaseFrame for Mode 3 and stores it in a
 	 * Hashtable using the name as key.
 	 * 
-	 * @param semanticType
-	 *            This specifies the semantic type of the case frame.
-	 * @param name
-	 *            This acts as an identifier for the case frame.
-	 * @param relations
-	 *            This String contains the relations that is used to create the
-	 *            CaseFrame.
+	 * @param semanticType This specifies the semantic type of the case frame.
+	 * @param name         This acts as an identifier for the case frame.
+	 * @param relations    This String contains the relations that is used to create
+	 *                     the CaseFrame.
 	 * @return The created CaseFrame case frame.
-	 * @throws RelationDoesntExistException
-	 *             If a relation was not defined in the Network.
+	 * @throws RelationDoesntExistException If a relation was not defined in the
+	 *                                      Network.
 	 */
 	protected static CaseFrame createModeThreeCaseFrame(String name, String semanticType, ArrayList<String> relations,
 			String description) throws RelationDoesntExistException {
@@ -232,13 +224,10 @@ public class AP {
 	 * This method is used to construct the nodes representing an infixedTerm in the
 	 * network.
 	 * 
-	 * @param type
-	 *            A String specifying the type of the infixed term. It should have
-	 *            one of the following values: and, or, or equality.
-	 * @param arg1
-	 *            The first argument node.
-	 * @param arg2
-	 *            The second argument node.
+	 * @param type A String specifying the type of the infixed term. It should have
+	 *             one of the following values: and, or, or equality.
+	 * @param arg1 The first argument node.
+	 * @param arg2 The second argument node.
 	 * @return A molecular node representing the infixed term.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -279,17 +268,13 @@ public class AP {
 	 * This method is used to construct the nodes representing entailments in the
 	 * network.
 	 * 
-	 * @param entailmentType
-	 *            A String specifying the type of the entailment. It should have one
-	 *            of the following values: AndEntailment, OrEntailment,
-	 *            NumericalEntailment or Implication.
-	 * @param antecedents
-	 *            An ArrayList of the nodes representing the antecedents.
-	 * @param consequents
-	 *            An ArrayList of the nodes representing the consequents.
-	 * @param optionalI
-	 *            A String which contains the value of "i" in case of a numerical
-	 *            entailment.
+	 * @param entailmentType A String specifying the type of the entailment. It
+	 *                       should have one of the following values: AndEntailment,
+	 *                       OrEntailment, NumericalEntailment or Implication.
+	 * @param antecedents    An ArrayList of the nodes representing the antecedents.
+	 * @param consequents    An ArrayList of the nodes representing the consequents.
+	 * @param optionalI      A String which contains the value of "i" in case of a
+	 *                       numerical entailment.
 	 * @return A molecular node representing the entailment.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
@@ -351,8 +336,7 @@ public class AP {
 	 * This method is used to construct the nodes representing a negatedTerm in the
 	 * network.
 	 * 
-	 * @param node
-	 *            A node to be negated.
+	 * @param node A node to be negated.
 	 * @return A molecular node representing a negatedTerm.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -377,12 +361,9 @@ public class AP {
 	 * This method is used to construct the nodes representing an andTerm in the
 	 * network.
 	 * 
-	 * @param i
-	 *            The andor min.
-	 * @param j
-	 *            The andor max.
-	 * @param arguments
-	 *            An ArrayList of the nodes representing the arguments.
+	 * @param i         The andor min.
+	 * @param j         The andor max.
+	 * @param arguments An ArrayList of the nodes representing the arguments.
 	 * @return A molecular node representing an andorTerm.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -409,11 +390,9 @@ public class AP {
 	 * This method is used to construct the nodes representing setTerms in the
 	 * network.
 	 * 
-	 * @param type
-	 *            A String specifying the type of the setTerm. It should have one of
-	 *            the following values: and, or, nand, nor, xor or iff.
-	 * @param arguments
-	 *            An ArrayList of the nodes representing the arguments.
+	 * @param type      A String specifying the type of the setTerm. It should have
+	 *                  one of the following values: and, or, nand, nor, xor or iff.
+	 * @param arguments An ArrayList of the nodes representing the arguments.
 	 * @return A molecular node representing a setTerm.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -470,12 +449,9 @@ public class AP {
 	 * This method is used to construct the nodes representing a threshTerm in the
 	 * network.
 	 * 
-	 * @param thresh
-	 *            The thresh min.
-	 * @param threshmax
-	 *            The thresh max.
-	 * @param arguments
-	 *            An ArrayList of the nodes representing the arguments.
+	 * @param thresh    The thresh min.
+	 * @param threshmax The thresh max.
+	 * @param arguments An ArrayList of the nodes representing the arguments.
 	 * @return A molecular node representing a threshTerm.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
@@ -502,14 +478,11 @@ public class AP {
 	 * This method is used to construct the nodes representing a SNeRE TERM in the
 	 * network.
 	 * 
-	 * @param type
-	 *            A String specifying the type of the SNeRE term. It should have one
-	 *            of the following values: ifdo, whendo, wheneverdo, ActPlan,
-	 *            Effect, GoalPlan or Precondition.
-	 * @param arg1
-	 *            The first argument node.
-	 * @param arg2
-	 *            The second argument node.
+	 * @param type A String specifying the type of the SNeRE term. It should have
+	 *             one of the following values: ifdo, whendo, wheneverdo, ActPlan,
+	 *             Effect, GoalPlan or Precondition.
+	 * @param arg1 The first argument node.
+	 * @param arg2 The second argument node.
 	 * @return A molecular node representing the SNeRE term.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
@@ -567,17 +540,12 @@ public class AP {
 	 * This method is used to construct the nodes representing withsome and withall
 	 * terms in the network.
 	 * 
-	 * @param type
-	 *            A String specifying the type of the term. It should have one of
-	 *            the following values: withsome or withall.
-	 * @param vars
-	 *            An ArrayList of the nodes representing the vars.
-	 * @param suchthat
-	 *            An ArrayList of the nodes representing the suchthat.
-	 * @param doo
-	 *            An ArrayList of the nodes representing the doo.
-	 * @param elsee
-	 *            An ArrayList of the nodes representing the elsee.
+	 * @param type     A String specifying the type of the term. It should have one
+	 *                 of the following values: withsome or withall.
+	 * @param vars     An ArrayList of the nodes representing the vars.
+	 * @param suchthat An ArrayList of the nodes representing the suchthat.
+	 * @param doo      An ArrayList of the nodes representing the doo.
+	 * @param elsee    An ArrayList of the nodes representing the elsee.
 	 * @return A molecular node representing the withsome/allTerm.
 	 * @throws CaseFrameMissMatchException
 	 * @throws EquivalentNodeException
@@ -647,10 +615,8 @@ public class AP {
 	 * This method is used to construct the nodes representing an allTerm in the
 	 * network.
 	 * 
-	 * @param vars
-	 *            An ArrayList of the nodes representing the vars.
-	 * @param wff
-	 *            A node representing the scope of the quantifier.
+	 * @param vars An ArrayList of the nodes representing the vars.
+	 * @param wff  A node representing the scope of the quantifier.
 	 * @return A molecular node representing the allTerm.
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
@@ -659,10 +625,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws CaseFrameMissMatchException
 	 */
-	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
-			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, NodeNotFoundInPropSetException {
+	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff)
+			throws CannotBuildNodeException, EquivalentNodeException, NodeCannotBeRemovedException,
+			RelationDoesntExistException, NotAPropositionNodeException, NodeNotFoundInNetworkException,
+			IllegalIdentifierException, NodeNotFoundInPropSetException, CaseFrameMissMatchException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);
@@ -699,10 +667,9 @@ public class AP {
 	 * This method traverses the nodes in the given DownCableSet and set the
 	 * snepslogFlag of any variable node with one of the given names to false.
 	 * 
-	 * @param varNames
-	 *            An ArrayList which contains the names of these variable nodes.
-	 * @param downCableSet
-	 *            The DownCableSet of a node.
+	 * @param varNames     An ArrayList which contains the names of these variable
+	 *                     nodes.
+	 * @param downCableSet The DownCableSet of a node.
 	 * @throws IllegalIdentifierException
 	 */
 	private static void resetTheFlags(ArrayList<String> varNames, DownCableSet downCableSet)
@@ -728,8 +695,7 @@ public class AP {
 	 * This method converts a group of Nodes into a String representation according
 	 * to the printing mode in use.
 	 * 
-	 * @param wffs
-	 *            An ArrayList of some nodes.
+	 * @param wffs An ArrayList of some nodes.
 	 * @return A String holding the representation.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
@@ -787,8 +753,7 @@ public class AP {
 	/**
 	 * This method converts a group of Nodes into a String representation.
 	 * 
-	 * @param terms
-	 *            An ArrayList of some nodes.
+	 * @param terms An ArrayList of some nodes.
 	 * @return A String holding the representation.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
@@ -817,8 +782,7 @@ public class AP {
 	/**
 	 * A method to convert an ArrayList of Nodes to a PropositionSet.
 	 * 
-	 * @param nodes
-	 *            An ArrayList that contains a group of nodes.
+	 * @param nodes An ArrayList that contains a group of nodes.
 	 * @return A PropositionSet which contains the nodes in the given ArrayList.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
@@ -835,8 +799,7 @@ public class AP {
 	/**
 	 * A method to convert a PropositionSet to an ArrayList of Nodes.
 	 * 
-	 * @param nodes
-	 *            A PropositionSet that contains a group of nodes.
+	 * @param nodes A PropositionSet that contains a group of nodes.
 	 * @return An ArrayList which contains the nodes in the given PropositionSet
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
@@ -854,8 +817,7 @@ public class AP {
 	/**
 	 * A method returning the molecular nodes from an ArrayList of Nodes.
 	 * 
-	 * @param nodes
-	 *            An ArrayList that contains a group of nodes.
+	 * @param nodes An ArrayList that contains a group of nodes.
 	 * @return A ArrayList which contains only the molecular nodes from the ones in
 	 *         given ArrayList.
 	 */
@@ -888,8 +850,7 @@ public class AP {
 	/**
 	 * A method returning the closed nodes from an ArrayList of Nodes.
 	 * 
-	 * @param nodes
-	 *            An ArrayList that contains a group of nodes.
+	 * @param nodes An ArrayList that contains a group of nodes.
 	 * @return A ArrayList which contains only the closed nodes from the ones in
 	 *         given ArrayList.
 	 */
@@ -922,8 +883,7 @@ public class AP {
 	/**
 	 * A method returning the asserted nodes dominating a set of nodes.
 	 * 
-	 * @param nodes
-	 *            An ArrayList that contains a group of nodes.
+	 * @param nodes An ArrayList that contains a group of nodes.
 	 * @return An ArrayList which contains the nodes dominating the given nodes.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -949,8 +909,7 @@ public class AP {
 	/**
 	 * A method returning the description of some given nodes.
 	 * 
-	 * @param nodes
-	 *            An ArrayList that contains a group of nodes.
+	 * @param nodes An ArrayList that contains a group of nodes.
 	 * @return A String which contains the descriptions of the given nodes.
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
@@ -983,8 +942,7 @@ public class AP {
 	/**
 	 * A method that loads some commands from a file and execute them.
 	 * 
-	 * @param path
-	 *            A String which contains the path of the file.
+	 * @param path A String which contains the path of the file.
 	 * 
 	 * @return A String representing the output of the commands in this file.
 	 */
@@ -1103,8 +1061,7 @@ public class AP {
 	/**
 	 * This method is used to execute a SNePSLOG command.
 	 * 
-	 * @param command
-	 *            A String holding the command that is to be executed.
+	 * @param command A String holding the command that is to be executed.
 	 * 
 	 * @return A String representing the output of that command.
 	 * 

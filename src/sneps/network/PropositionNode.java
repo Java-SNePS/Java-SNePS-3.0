@@ -80,7 +80,7 @@ public class PropositionNode extends Node implements Serializable {
 	 *                       node scenario
 	 * @return the established type based channel
 	 */
-	protected Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
+	public Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
 			Substitutions filterSubs, String contextName, int matchType) {
 		boolean matchTypeEstablishing = currentElement instanceof Match;
 		Node evaluatedReporter = matchTypeEstablishing ? ((Match) currentElement).getNode() : (Node) currentElement;
@@ -223,6 +223,7 @@ public class PropositionNode extends Node implements Serializable {
 					matchType);
 			matchedNode.receiveRequest(newChannel);
 		}
+		System.out.println("Sent requests to " + list.size() + " matched nodes");
 	}
 
 	/***
@@ -301,7 +302,7 @@ public class PropositionNode extends Node implements Serializable {
 			Report toBeSent = new Report(substitutions, supportPropSet, reportSign, inferenceType);
 			switch (channelType) {
 			case MATCHED:
-				List<Match> matchesReturned = Matcher.match(this);
+				List<Match> matchesReturned = Matcher.match(this, substitutions);
 				if (matchesReturned != null)
 					sendReportToMatches(matchesReturned, toBeSent, currentContextName);
 				break;
@@ -335,7 +336,7 @@ public class PropositionNode extends Node implements Serializable {
 		try {
 			switch (channelType) {
 			case MATCHED:
-				List<Match> matchesReturned = Matcher.match(this);
+				List<Match> matchesReturned = Matcher.match(this, substitutions);
 				if (matchesReturned != null)
 					sendRequestsToMatches(matchesReturned, currentContextName);
 				break;
@@ -712,7 +713,7 @@ public class PropositionNode extends Node implements Serializable {
 				NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel, filterSubs, false);
 				sendRequestsToNodeSet(toBeSentToDom, filterSubs, currentContextName, ChannelTypes.RuleAnt);
 				if (!(currentChannel instanceof MatchChannel)) {
-					List<Match> matchingNodes = Matcher.match(this);
+					List<Match> matchingNodes = Matcher.match(this, filterSubs);
 					List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
 					sendRequestsToMatches(toBeSentToMatch, currentContextName);
 				}

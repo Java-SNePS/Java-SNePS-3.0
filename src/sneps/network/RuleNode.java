@@ -481,7 +481,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 									currentReportSubs, false);
 							sendRequestsToNodeSet(toBeSentToDom, currentReportSubs, currentChannelContextName,
 									ChannelTypes.RuleAnt);
-							List<Match> matchingNodes = Matcher.match(this);
+							List<Match> matchingNodes = Matcher.match(this, currentReportSubs);
 							List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
 							sendRequestsToMatches(toBeSentToMatch, currentChannelContextName);
 						}
@@ -499,6 +499,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 						 * le kol known instance hanla2ih hnt3amel ma3 el node ka2enaha asserted we
 						 * closed
 						 */
+
+						/* always sue the extracted report subs in the requests */
 						VariableNodeStats ruleNodeStats = computeNodeStats(currentReportSubs);
 						Substitutions ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
 						for (Report knownInstance : knownInstances) {
@@ -516,9 +518,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 						NodeSet dominatingRules = getUpConsNodeSet();
 						NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel,
 								currentReportSubs, false);
-						sendRequestsToNodeSet(toBeSentToDom, currentReportSubs, currentChannelContextName,
+						sendRequestsToNodeSet(toBeSentToDom, ruleNodeExtractedSubs, currentChannelContextName,
 								ChannelTypes.RuleAnt);
-						List<Match> matchingNodes = Matcher.match(this);
+						List<Match> matchingNodes = Matcher.match(this, ruleNodeExtractedSubs);
 						List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
 						sendRequestsToMatches(toBeSentToMatch, currentChannelContextName);
 						/*
@@ -541,13 +543,13 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				} else {
 					Collection<Channel> outgoingChannels = getOutgoingChannels().getChannels();
 					Collection<Channel> incomingChannels = getIncomingChannels().getAntRuleChannels();
-					boolean existsReportBuffers = false;
+					boolean existsForwardReportBuffers = false;
 					for (Channel incomingChannel : incomingChannels) {
-						existsReportBuffers |= !incomingChannel.getReportsBuffer().isEmpty();
+						existsForwardReportBuffers |= !incomingChannel.getReportsBuffer().hasForwardReports();
 					}
 					if (!outgoingChannels.isEmpty())
 						receiveRequest(currentChannel);
-					if (!incomingChannels.isEmpty() && existsReportBuffers)
+					if (!incomingChannels.isEmpty() && existsForwardReportBuffers)
 						receiveReport(currentChannel);
 					currentChannelReportBuffer.removeReport(currentReport);
 				}

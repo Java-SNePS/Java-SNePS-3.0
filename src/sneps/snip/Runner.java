@@ -23,6 +23,10 @@ public class Runner {
 		forwardAssertedNodes = new Hashtable<Report, PropositionNode>();
 	}
 
+	public static void inspect() {
+		System.out.println("hihi");
+	}
+
 	public static String run() {
 		String sequence = "";
 		main: while (!highQueue.isEmpty() || !lowQueue.isEmpty() || !actQueue.isEmpty()) {

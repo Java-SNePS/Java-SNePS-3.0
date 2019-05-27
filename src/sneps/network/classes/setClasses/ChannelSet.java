@@ -20,6 +20,9 @@ public class ChannelSet implements Iterable<Channel> {
 
 	public ChannelSet() {
 		channels = new Hashtable<ChannelTypes, Hashtable<ChannelIdentifier, Channel>>();
+		channels.put(ChannelTypes.MATCHED, new Hashtable<ChannelIdentifier, Channel>());
+		channels.put(ChannelTypes.RuleAnt, new Hashtable<ChannelIdentifier, Channel>());
+		channels.put(ChannelTypes.RuleCons, new Hashtable<ChannelIdentifier, Channel>());
 	}
 
 	public Channel addChannel(Channel channel) {

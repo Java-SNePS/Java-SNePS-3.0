@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
 
 public class ReportSet implements Iterable<Report>, Serializable {
@@ -36,6 +37,14 @@ public class ReportSet implements Iterable<Report>, Serializable {
 
 	public boolean isEmpty() {
 		return reports.size() == 0;
+	}
+
+	public boolean hasForwardReports() {
+		for (Report report : reports) {
+			InferenceTypes reportInferenceType = report.getInferenceType();
+			return reportInferenceType == InferenceTypes.FORWARD;
+		}
+		return false;
 	}
 
 }
