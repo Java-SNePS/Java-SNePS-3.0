@@ -89,6 +89,23 @@ public class AP {
 	 * is initially set to 1.
 	 */
 	private static int snepslogMode = 1;
+	
+	/*
+	 * String which will hold a number representing the telescoping level used when dealing with graded
+	 * propositions, empty string means there's no limit, and that telescoping should be applied till the
+	 * end. The level should be entered by the user
+	 */
+	public static String level = "";
+	
+	/*
+	 * Cross and plus operators that are used in the fusion of the grades of a graded proposition while
+	 * handling contradictions, they are initially set to max and avg, however they should be entered by the
+	 * user. The system currently supports min, max and avg.
+	 */
+	
+	public static String crossOperator = "max";
+	
+	public static String plusOperator = "avg";
 
 	/**
 	 * A String which holds the name of the printing mode currently in use. It is
