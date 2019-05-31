@@ -8,7 +8,7 @@ import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
 
-public class SIndex extends RuisHandler {
+public class SIndex implements RuisHandler {
 
 	/**
 	 * A Hashtable used to map different substitutions to different RuisHandlers. 
@@ -47,8 +47,9 @@ public class SIndex extends RuisHandler {
 	/**
 	 * Inserts the RuleUseInfo in the map based on the bound values for the 
 	 * substitutions. If the RuisHandler based on the given index is null in the map, 
-	 * a new one is created according to the ruiHandlerType. If not, it will be 
-	 * replaced by combining the given rui with the existing one.
+	 * a new one is created according to the ruiHandlerType. If not, the RUI will be 
+	 * inserted to the corresponding RuisHandler according to the implementation of 
+	 * its insert method.
 	 * 
 	 * @param rui
 	 * 			RuleUseInfo

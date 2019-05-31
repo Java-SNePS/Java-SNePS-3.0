@@ -39,9 +39,9 @@ public class NumericalEntailmentTests extends TestCase {
 	private static Context context;
 	private static String contextName = "TempContext";
 	private static NumericalEntailment numerical;
-	private static Node fido, var, dog, barks;
-	private static Node prop1, prop2, prop3, prop4;
-	private static Report report, report1;
+	private static Node fido, leo, var, var1, dog, barks, walks;
+	private static Node prop1, prop2, prop3, prop4, prop5;
+	private static Report report, report1, report2, report3;
 
  	public void setUp() {
  		try {
@@ -71,25 +71,34 @@ public class NumericalEntailmentTests extends TestCase {
 		rels.clear();		rels.add(antsRel);		rels.add(consRel);
  		CaseFrame caseFrameAC = Network.defineCaseFrame("AntsCons", rels);
 		Wire wire1 = null, wire2 = null, wire3 = null, wire4 = null;
+		Wire wire5 = null, wire6 = null, wire7 = null;
 		rels.clear();
 
 //----------------------------- fido, dog, barks, X -----------------------------//
 
 		try {
 			var = Network.buildVariableNode("X");
+			var1 = Network.buildVariableNode("Y");
 			fido = Network.buildBaseNode("Fido", new Semantic("Base"));
+			leo = Network.buildBaseNode("Leo", new Semantic("Base"));
 			dog = Network.buildBaseNode("Dog", new Semantic("Base"));
 			barks = Network.buildBaseNode("Barks", new Semantic("Base"));
+			walks = Network.buildBaseNode("Walks", new Semantic("Base"));
 			wire1 = new Wire(memberRel, fido);
 			wire2 = new Wire(classRel, dog);
 			wire3 = new Wire(doesRel, barks);
 			wire4 = new Wire(memberRel, var);
+			wire5 = new Wire(memberRel, var1);
+			wire6 = new Wire(memberRel, leo);
+			wire7 = new Wire(doesRel, walks);
 		} catch (IllegalIdentifierException | NotAPropositionNodeException 
 				| NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
 		}
 		
 		var = new VariableNode(new Variable("X"));
+		var1 = new VariableNode(new Variable("Y"));
+
 
 //--------------------------- prop1, prop2, prop3, prop4 -----------------------------//
 
@@ -105,6 +114,9 @@ public class NumericalEntailmentTests extends TestCase {
 
 			wires.clear();	wires.add(wire1);	wires.add(wire3);
 			prop4 = Network.buildMolecularNode(wires, caseFrameMD);
+			
+			wires.clear();	wires.add(wire4);	wires.add(wire2);
+			prop5 = Network.buildMolecularNode(wires, caseFrameMC);
 		} catch (CannotBuildNodeException | EquivalentNodeException
 				| NotAPropositionNodeException | NodeNotFoundInNetworkException e1) {
 			assertNotNull(e1.getMessage(), e1);
@@ -119,6 +131,8 @@ public class NumericalEntailmentTests extends TestCase {
 		NodeSet nodeSet6 = new NodeSet();
 		NodeSet nodeSet7 = new NodeSet();
 		NodeSet nodeSet8 = new NodeSet();
+		NodeSet nodeSet9 = new NodeSet();
+		NodeSet nodeSet10 = new NodeSet();
 		DownCable dc1;	DownCableSet dcs;
 
 		nodeSet1.addNode(fido);
@@ -149,7 +163,6 @@ public class NumericalEntailmentTests extends TestCase {
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC);
 		prop3 = new PropositionNode(new Open("Prop3", dcs));
-		//((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 		//------------------------------------------------------------//
 		nodeSet7.addNode(fido);
@@ -161,13 +174,24 @@ public class NumericalEntailmentTests extends TestCase {
 		dcs = new DownCableSet(dcList, caseFrameMD); 
 		prop4 = new PropositionNode(new Closed("Prop4", dcs));
 		dcList.clear();
-		//------------------------------------------------------------//	
+		//------------------------------------------------------------//
+		nodeSet9.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet9);
+		dcList.add(dc1);
+		nodeSet10.addNode(walks);
+		dc1 = new DownCable(doesRel, nodeSet10);
+		dcList.add(dc1);
+		dcs = new DownCableSet(dcList, caseFrameMC);
+		prop5 = new PropositionNode(new Open("Prop5", dcs));
+		dcList.clear();
+		//------------------------------------------------------------//
 
 //------------------------- Numerical Setup ------------------------------------//
 
 		nodeSet.addNode(prop1);
 		nodeSet.addNode(prop2);
 		nodeSet.addNode(prop3);
+		nodeSet.addNode(prop5);
 		dc.add(new DownCable(antsRel, nodeSet));
 		
 		nodeSett.addNode(prop4);
@@ -177,7 +201,7 @@ public class NumericalEntailmentTests extends TestCase {
 
 //---------------------------- NUMERICAL -----------------------------------//
 
-		numerical = new NumericalEntailment(new Open("Open", dcss));
+		numerical = new NumericalEntailment(new Closed("Closed", dcss));
 		numerical.setI(1);
 		
 		sub = new LinearSubstitutions();
@@ -199,14 +223,33 @@ public class NumericalEntailmentTests extends TestCase {
 		}*/
 		sub1.putIn(new Binding((VariableNode) var, fido));
 		report1 = new Report(sub1, support1, true, InferenceTypes.BACKWARD);
-
+		
+		LinearSubstitutions sub2 = new LinearSubstitutions();
+		PropositionSet support2 = new PropositionSet();
+		/*try {
+			support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+			e.printStackTrace();
+		}*/
+		sub2.putIn(new Binding((VariableNode) var, leo));
+		report2 = new Report(sub2, support2, true, InferenceTypes.BACKWARD);
+		
+		LinearSubstitutions sub3 = new LinearSubstitutions();
+		PropositionSet support3 = new PropositionSet();
+		/*try {
+			support.add(prop5.getId());
+		} catch (DuplicatePropositionException | NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
+			e.printStackTrace();
+		}*/
+		sub3.putIn(new Binding((VariableNode) var, fido));
+		report3 = new Report(sub3, support3, true, InferenceTypes.BACKWARD);
 	}
 
  	@Test
  	public void testAntsandConsq() {
  		assertEquals(1, numerical.getConsequents().size());
-		assertEquals(3, numerical.getAntecedents().size());
-		assertEquals(1, numerical.getAntsWithVars().size());
+		assertEquals(4, numerical.getAntecedents().size());
+		assertEquals(2, numerical.getAntsWithVars().size());
 		assertEquals(2, numerical.getAntsWithoutVars().size());
  	}
  	
@@ -220,21 +263,19 @@ public class NumericalEntailmentTests extends TestCase {
 	
 	@Test
 	public void testApplyRuleHandler2() {
-		numerical.setI(2);
 		numerical.clear();
+		numerical.setI(2);
 		
 		numerical.applyRuleHandler(report, prop1);
-		
 		assertEquals(0, numerical.getReplies().size());
 	}
 	
 	@Test
 	public void testApplyRuleHandler3() {
-		numerical.setI(2);
 		numerical.clear();
+		numerical.setI(2);
 		
 		numerical.applyRuleHandler(report, prop1);
-		
 		assertEquals(0, numerical.getReplies().size());
 		
 		numerical.applyRuleHandler(report1, prop3);
@@ -243,6 +284,21 @@ public class NumericalEntailmentTests extends TestCase {
 		assertTrue("NumericalEntailment: addRuiHandler doesn't create an SIndex as a RuisHandler", 
 				numerical.getRuisHandler() instanceof SIndex);
 		assertEquals(SIndex.SINGLETON, ((SIndex) (numerical.getRuisHandler())).getRuiHandlerType());
+		assertEquals(1, numerical.getReplies().size());
+	}
+	
+	@Test
+	public void testApplyRuleHandler4() {
+		numerical.clear();
+		numerical.setI(2);
+
+		numerical.applyRuleHandler(report1, prop3);
+		assertEquals(0, numerical.getReplies().size());
+		
+		numerical.applyRuleHandler(report2, prop5);
+		assertEquals(0, numerical.getReplies().size());
+		
+		numerical.applyRuleHandler(report3, prop5);
 		assertEquals(1, numerical.getReplies().size());
 	}
 
@@ -254,7 +310,7 @@ public class NumericalEntailmentTests extends TestCase {
 		assertFalse("NumericalEntailment: getDownAntNodeSet retuns an empty NodeSet", 
 				downAntNodeSet.isEmpty());
 		assertEquals(1, numerical.getDownConsqNodeSet().size());
-		assertEquals(3, numerical.getDownAntNodeSet().size());
+		assertEquals(4, numerical.getDownAntNodeSet().size());
 	}
 
 	public void tearDown() {

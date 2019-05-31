@@ -8,7 +8,6 @@ import java.util.Set;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
-import sneps.network.PropositionNode;
 import sneps.network.VariableNode;
 import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Variable;
@@ -39,23 +38,13 @@ public class SIndexTest {
 		Node n = new Node(ba);
 		Node n1 = new Node(ba1);
 		Node n2 = new Node(ba2);
-		Node n3 = new Node();
-		Node n4 = new Node();
-		Node n5 = new Node();
-		Node n6 = new Node();
-		Node n7 = new Node();
-
+		
 		
 		LinearSubstitutions ls = new LinearSubstitutions();
 		LinearSubstitutions ls1 = new LinearSubstitutions();
 		LinearSubstitutions ls2 = new LinearSubstitutions();
-		LinearSubstitutions ls3 = new LinearSubstitutions();
 		LinearSubstitutions ls4 = new LinearSubstitutions();
 		LinearSubstitutions ls5 = new LinearSubstitutions();
-		
-		PropositionNode pn = new PropositionNode();
-		PropositionNode pn2 = new PropositionNode();
-		PropositionNode pn3 = new PropositionNode();
 		
 		PropositionSet ps = new PropositionSet();
 		
@@ -105,11 +94,6 @@ public class SIndexTest {
 		Binding b = new Binding(vn, n);
 		Binding b1 = new Binding(vn1, n1);
 		Binding b2 = new Binding(vn2, n1);
-		Binding b3 = new Binding(vn3, n);
-		Binding b4 = new Binding(vn4, n);
-		Binding b5 = new Binding(vn5, n1);
-		Binding b6 = new Binding(vn6, n);
-		Binding b7 = new Binding(vn7, n);
 		Binding b8 = new Binding(vn, n1);
 		Binding b9 = new Binding(vn, n2);
 		
@@ -121,12 +105,6 @@ public class SIndexTest {
 		
 		FlagNode fn = new FlagNode(n, ps, 1);
 		FlagNode fn1 = new FlagNode(n1, ps, 1);
-		FlagNode fn2 = new FlagNode(n2, ps, 1);
-		FlagNode fn3 = new FlagNode(n3, ps, 1);
-		FlagNode fn4 = new FlagNode(n4, ps, 1);
-		FlagNode fn5 = new FlagNode(n5, ps, 1);
-		FlagNode fn6 = new FlagNode(n6, ps, 1);
-		FlagNode fn7 = new FlagNode(n7, ps, 1);
 		
 		FlagNodeSet fns = new FlagNodeSet();
 		FlagNodeSet fns1 = new FlagNodeSet();
@@ -155,18 +133,6 @@ public class SIndexTest {
 		RuleUseInfo rui = new RuleUseInfo(ls, 1, 0, fns, InferenceTypes.BACKWARD);
 		index.insertRUI(rui);
 		index1.insertRUI(rui);
-		
-		
-		RuleUseInfo rui1 = new RuleUseInfo(ls1, 1, 0, fns1, InferenceTypes.BACKWARD);
-		
-		
-		RuleUseInfo rui2 = new RuleUseInfo(ls1, 1, 0, fns2, InferenceTypes.BACKWARD);
-		
-		
-		RuleUseInfo rui3 = new RuleUseInfo(ls1, 1, 0, fns2, InferenceTypes.BACKWARD);
-		
-		
-		RuleUseInfo rui4 = new RuleUseInfo(ls3, 0, 1, fns3, InferenceTypes.BACKWARD);
 		
 		
 		RuleUseInfo rui5 = new RuleUseInfo(ls2, 2, 0, fns4, InferenceTypes.BACKWARD);

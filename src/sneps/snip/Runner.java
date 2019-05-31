@@ -89,6 +89,9 @@ public class Runner {
      * @return
      */
     public static boolean isNodeAssertedThroughForwardInf(PropositionNode node) {
-        return forwardAssertedNodes.containsValue(node);
+    	if(forwardAssertedNodes != null)
+    		return forwardAssertedNodes.containsValue(node);
+    	else
+    		return false;
     }
 }

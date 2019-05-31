@@ -21,6 +21,7 @@ import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.NodeSet;
@@ -169,7 +170,7 @@ public class AndOrTest {
 
 //---------------------------- ANDOR -----------------------------------//
 		
-		andor = new AndOrEntailment(new Open("Open", dcss));
+		andor = new AndOrEntailment(new Closed("Open", dcss));
 		andor.setMax(2);
 		andor.setMin(1);
 		
@@ -242,7 +243,7 @@ public class AndOrTest {
 				| NodeNotFoundInNetworkException e) {
 		e.printStackTrace();
 		}*/
-		report = new Report(sub, support, false, InferenceTypes.FORWARD);
+		report = new Report(sub, support, false, InferenceTypes.BACKWARD);
 		
 		support = new PropositionSet();
 		/*try {
@@ -321,10 +322,12 @@ public class AndOrTest {
 		e.printStackTrace();
 		}*/
 		sub.putIn(new Binding((VariableNode) var, fido));
-		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
+		report = new Report(sub, support, false, InferenceTypes.BACKWARD);
 		
 		andor.applyRuleHandler(report, prop5);
-		assertEquals(0, andor.getReplies().size());
+		assertEquals(1, andor.getReplies().size());
+		assertEquals(false, andor.getReplies().get(0).getSign());
+		assertEquals(3, andor.getConsequents().size());
 	}
 	
 	public void tearDown() {

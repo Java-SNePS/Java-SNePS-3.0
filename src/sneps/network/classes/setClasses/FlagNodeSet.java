@@ -5,13 +5,6 @@ import java.util.Iterator;
 
 import sneps.snip.classes.FlagNode;
 
-/**
- * @className FlagNodeSet.java
- * 
- * @author Amgad Ashraf
- * 
- * @version 3.00 31/5/2018
- */
 public class FlagNodeSet implements Iterable<FlagNode> {
 	private HashSet<FlagNode> flagNodes;
 

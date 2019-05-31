@@ -5,10 +5,10 @@ import sneps.network.classes.setClasses.RuleUseInfoSet;
 /**
  * @className RuisHandler.java
  * 
- * @ClassDescription To deal with the large number of RUIs generated as more nodes are built in the network, RuisHandler classes are built to store and combine RUIs.
- * A RuisHandler is stored in a rule Node and a single rule Node can store multiple instances of a single RuisHandler class.
+ * @ClassDescription To deal with the large number of RUIs generated as more nodes are built in the network, 
+ * RuisHandler classes are built to store and combine RUIs.
  */
-public abstract class RuisHandler {
+public interface RuisHandler {
 	
 	/**
 	 * Inserts the given RuleUseInfo into this RuisHandler and returns the 
@@ -18,9 +18,9 @@ public abstract class RuisHandler {
 	 * RuleUseInfo
 	 * @return RuleUseInfoSet
 	 */
-	abstract public RuleUseInfoSet insertRUI(RuleUseInfo rui);
+	public RuleUseInfoSet insertRUI(RuleUseInfo rui);
 	
-	abstract public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui);
+	public RuleUseInfoSet combineConstantRUI(RuleUseInfo rui);
 	
-	abstract public void clear();
+	public void clear();
 }

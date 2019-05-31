@@ -1,5 +1,6 @@
 import static org.junit.Assert.*;
 
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -103,44 +104,51 @@ public class OrTests {
 		
 		LinkedList<DownCable> dcList = new LinkedList<DownCable>();
 		NodeSet nodeSet1 = new NodeSet();
+		NodeSet nodeSet2 = new NodeSet();
+		NodeSet nodeSet3 = new NodeSet();
+		NodeSet nodeSet4 = new NodeSet();
+		NodeSet nodeSet5 = new NodeSet();
+		NodeSet nodeSet6 = new NodeSet();
+		NodeSet nodeSet7 = new NodeSet();
+		NodeSet nodeSet8 = new NodeSet();
 		DownCable dc1;	DownCableSet dcs;
 
 		nodeSet1.addNode(fido);
 		dc1 = new DownCable(memberRel, nodeSet1);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet2.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet2);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop1 = new PropositionNode(new Closed("Prop1", dcs));
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet3.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet3);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(barks);
-		dc1 = new DownCable(doesRel, nodeSet1);
+		nodeSet4.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet4);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameCD); 
 		prop2 = new PropositionNode(new Closed("Prop2", dcs));
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(var);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet5.addNode(var);
+		dc1 = new DownCable(memberRel, nodeSet5);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(dog);
-		dc1 = new DownCable(classRel, nodeSet1);
+		nodeSet6.addNode(dog);
+		dc1 = new DownCable(classRel, nodeSet6);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMC); 
 		prop3 = new PropositionNode(new Open("Prop3", dcs));
-		((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
+		//((Open) (prop3.getTerm())).getFreeVariables().addVarNode((VariableNode) var);
 		dcList.clear();
 		//------------------------------------------------------------//
-		nodeSet1.clear();		nodeSet1.addNode(fido);
-		dc1 = new DownCable(memberRel, nodeSet1);
+		nodeSet7.addNode(fido);
+		dc1 = new DownCable(memberRel, nodeSet7);
 		dcList.add(dc1);
-		nodeSet1.clear();		nodeSet1.addNode(barks);
-		dc1 = new DownCable(doesRel, nodeSet1);
+		nodeSet8.addNode(barks);
+		dc1 = new DownCable(doesRel, nodeSet8);
 		dcList.add(dc1);
 		dcs = new DownCableSet(dcList, caseFrameMD); 
 		prop4 = new PropositionNode(new Closed("Prop4", dcs));
@@ -148,13 +156,7 @@ public class OrTests {
 		
 
 		nodeSet.addNode(prop1);
-		dc.add(new DownCable(antsRel, nodeSet));
-
-		nodeSet.clear();
 		nodeSet.addNode(prop2);
-		dc.add(new DownCable(antsRel, nodeSet));
-
-		nodeSet.clear();
 		nodeSet.addNode(prop3);
 		dc.add(new DownCable(antsRel, nodeSet));
 
@@ -164,11 +166,10 @@ public class OrTests {
 
 		DownCableSet dcss = new DownCableSet(dc, caseFrameAC);
 		
-		
 		/**
 		 * Or-Entailment
 		 */
-		or = new OrEntailment(new Open("Open", dcss));
+		or = new OrEntailment(new Closed("Closed", dcss));
 
 		sub.putIn(new Binding((VariableNode) var, fido));
 		LinearSubstitutions s = new LinearSubstitutions();

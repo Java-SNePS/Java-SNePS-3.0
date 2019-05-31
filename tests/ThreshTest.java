@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import sneps.exceptions.CannotBuildNodeException;
 import sneps.exceptions.DuplicateContextNameException;
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.EquivalentNodeException;
 import sneps.exceptions.IllegalIdentifierException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
@@ -21,6 +22,7 @@ import sneps.network.classes.CaseFrame;
 import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.NodeSet;
@@ -173,7 +175,7 @@ public class ThreshTest {
 
 //---------------------------- THRESH -----------------------------------//
 		
-		thresh = new ThreshEntailment(new Open("Open", dcss));
+		thresh = new ThreshEntailment(new Closed("Open", dcss));
 		thresh.setMax(3);
 		thresh.setMin(2);
 		
@@ -246,6 +248,7 @@ public class ThreshTest {
 		report = new Report(sub, support, true, InferenceTypes.BACKWARD);
 		
 		thresh.applyRuleHandler(report, prop5);
+		assertEquals(0, thresh.getReplies().size());
 		
 		sub = new LinearSubstitutions();
 		support = new PropositionSet();

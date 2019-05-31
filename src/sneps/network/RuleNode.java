@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import sneps.network.cables.DownCableSet;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
@@ -65,8 +64,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	protected RuisHandler ruisHandler;
 	
 	/**
-	 * A Hashtable used to map each context to a single RuleUseInfo 
-	 * that contains all the constant instances that do not dominate variables.
+	 * A single RUI that contains all the constant instances found that do not 
+	 * dominate variables for this RuleNode.
 	 */
 	protected RuleUseInfo constantRUI;
 	
@@ -165,19 +164,19 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	/**
 	 * The main method that does all the inference process in the RuleNode. Creates 
 	 * a RUI for the given report, and inserts it into the appropriate RuisHandler 
-	 * associated with the report's context, for this RuleNode. It instantiates a 
-	 * RuisHandler if this is the first report received in a particular context. It 
-	 * then applies the inference rules of this RuleNode on the current stored RUIs.
+	 * for this RuleNode. It instantiates a RuisHandler if this is the first report 
+	 * from a pattern antecedent received. It then applies the inference rules of this
+	 * RuleNode on the current stored RUIs.
 	 * 
 	 * @param report
 	 * @param signature
 	 * 		The instance that is being reported by the report.
-	 * @return 
+	 * @return
 	 */
 	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
-		System.out.println("---------------------");
+		//System.out.println("---------------------");
 		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
-		RuleResponse response = new RuleResponse();
+		ArrayList<RuleResponse> response = new ArrayList<RuleResponse>();
 		
 		RuleUseInfo rui;
 		PropositionSet propSet = report.getSupport();
@@ -193,24 +192,27 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 					report.getInferenceType());
 		}
 		
+		//System.out.println(rui);
+		
 		if(antNodesWithoutVars.contains(signature)) {
-			System.out.println("CONSTANT");
 			addConstantRui(rui);
 			if (ruisHandler == null) {
 				response = applyRuleOnRui(constantRUI);
 				if(response != null)
-					responseList.add(response);
+					responseList.addAll(response);
 			}
 			else {
 				RuleUseInfoSet combined  = ruisHandler.combineConstantRUI(constantRUI);
 				for (RuleUseInfo tRui : combined) {
 					response = applyRuleOnRui(tRui);
 					if(response != null)
-						responseList.add(response);
+						responseList.addAll(response);
 				}
 			}
 		}
 		else {
+			// This is the first report received from a pattern antecedent, so a 
+			// ruisHandler is created
 			if(ruisHandler == null)
 				ruisHandler = addRuiHandler();
 			
@@ -224,7 +226,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 					if(combined != null) {
 						response = applyRuleOnRui(combined);
 						if(response != null)
-							responseList.add(response);
+							responseList.addAll(response);
 					}
 				}
 			}
@@ -232,7 +234,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 				for (RuleUseInfo tRui : res) {
 					response = applyRuleOnRui(tRui);
 					if(response != null)
-						responseList.add(response);
+						responseList.addAll(response);
 				}
 			}
 		}
@@ -243,7 +245,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return responseList;
 	}
 
-	abstract protected RuleResponse applyRuleOnRui(RuleUseInfo tRui);
+	abstract protected ArrayList<RuleResponse> applyRuleOnRui(RuleUseInfo tRui);
 
 	/**
 	 * 
@@ -291,7 +293,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	 * @param nodes
 	 * @return VarNodeSet
 	 */
-	public static Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
+	public Set<VariableNode> getSharedVarsNodes(NodeSet nodes) {
 		Set<VariableNode> res = new HashSet<VariableNode>();
 		
 		if (nodes.isEmpty())
@@ -354,20 +356,9 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 	}
 
 	/**
-	 * Returns the RuisHandler associated with the given context.
-	 * 
-	 * @param cntxt
-	 * @return RuisHandler
-	 */
-	/*public RuisHandler getContextRuiHandler(String cntxt) {
-		return contextRuisSet.getByContext(cntxt);
-	}*/
-
-	/**
 	 * Creates an appropriate RuisHandler for this RuleNode, according to whether all, 
 	 * some or none of the variables in the antecedents are shared.
 	 * 
-	 * @param contextName
 	 * @return RuisHandler
 	 */
 	public RuisHandler addRuiHandler() {
@@ -389,32 +380,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 			return createRuisHandler();
 		}
 	}
-	
-	/*/**
-	 * Adds the given RuisHandler by the given context name to this contextRuisSet.
-	 * 
-	 * @param cntxt
-	 * 		Context name.
-	 * @param cRuis
-	 * 		RuisHandler to be added.
-	 * @return RuisHandler
-	 */
-	/*public RuisHandler addContextRuiHandler(String cntxt, RuisHandler cRuis) {
-		return this.contextRuisSet.addHandlerSet(cntxt, cRuis);
-	}*/
 
 	protected abstract RuisHandler createRuisHandler();
-
-	/**
-	 * Returns a RUISet to be used in case all the antecedents do not share a common 
-	 * variable, and this RuleNode is not an AndEntailment.
-	 * 
-	 * @param contextName
-	 * @return RuleUseInfoSet
-	 */
-	protected RuleUseInfoSet createContextRuiHandlerNonShared() {
-		return new RuleUseInfoSet(false);
-	}
 
 	/**
 	 * Returns a byte that represents an appropriate SIndex type that is used in case 
@@ -448,11 +415,22 @@ public abstract class RuleNode extends PropositionNode implements Serializable{
 		return constantRUI;
 	}
 	
+	/**
+	 * This method returns all the rule to consequent channels corresponding to a 
+	 * given report. The send method filters which reports should actually be sent.
+	 * @param r
+	 *     Report
+	 * @return
+	 * 	   Set<Channel>
+	 */
 	protected Set<Channel> getOutgoingChannelsForReport(Report r) {
+		// getOutgoingRuleConsequentChannels() returns all the RuleToConsequent 
+		// channels already established from before
 		Set<Channel> outgoingChannels = getOutgoingRuleConsequentChannels();
 		Set<Channel> replyChannels = new HashSet<Channel>();
 		for(Node n : consequents) {
 			if(outgoingChannels != null) {
+				// Checking that the same channel has not already been established before
 				for(Channel c : outgoingChannels) {
 					if(c.getRequester().getId() == n.getId() && 
 							r.getSubstitutions().isSubSet(c.getFilter().getSubstitution())) {

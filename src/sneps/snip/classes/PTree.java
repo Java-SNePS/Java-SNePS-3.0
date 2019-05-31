@@ -25,7 +25,7 @@ import sneps.network.classes.term.Variable;
  * @ClassDescription A PTree is a binary tree structure. Every AndEntailment rule node stores combinations of antecedent RUIs inside a PTree because of its optimized structure.
  * A PTree class follows an algorithm for construction and insertion, having leaf nodes representing RUIs of rule antecedents and root nodes representing combined RUIs of the rule itself.
  */
-public class PTree extends RuisHandler {
+public class PTree implements RuisHandler {
 	private Hashtable<Integer, VarNodeSet> patternVariables;//PatternId, VariableNodes
 	private Hashtable<VariableNode, Set<Integer>> variablePatterns;//VariableNode, PatternIds
 	private VarNodeSet notProccessed;

@@ -33,5 +33,9 @@ public class ReportInstances implements Iterable<Report> {
             allMergedReports.addAll(set);
         return allMergedReports.iterator();
     }
+    
+    public boolean isEmpty() {
+    	return instances.isEmpty();
+    }
 
 }

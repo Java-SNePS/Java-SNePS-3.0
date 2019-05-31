@@ -1,5 +1,6 @@
 package sneps.snip.rules;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import sneps.network.RuleNode;
@@ -31,7 +32,7 @@ public class WhenDoNode extends RuleNode {
 	}
 
 	@Override
-	protected RuleResponse applyRuleOnRui(RuleUseInfo tRui) {
+	protected ArrayList<RuleResponse> applyRuleOnRui(RuleUseInfo tRui) {
 		// TODO Auto-generated method stub
 		return null;
 	}

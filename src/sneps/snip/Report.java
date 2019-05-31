@@ -10,11 +10,6 @@ import sneps.snip.matching.Substitutions;
 
 public class Report {
 	private Substitutions substitution;
-	
-	/**
-	 * Contains the id of the proposition node denoting the actual instance 
-	 * represented by this Report
-	 */
 	private PropositionSet support;
 	private boolean sign;
 	private InferenceTypes inferenceType;
@@ -39,14 +34,22 @@ public class Report {
         return false;
     }
     
+    /**
+     * This method first checks if the substitutions of this report and the given 
+     * report are compatible. If they are, it returns a new report with the combined 
+     * subs and supports of the two reports.
+     * @param r
+     * 		Report
+     * @return
+     */
     public Report combine(Report r) {
     	if(substitution.isCompatible(r.getSubstitutions())) {
+    		Substitutions combinedSubs = substitution.union(r.getSubstitutions());
     		PropositionSet combinedSupport = new PropositionSet();
     		try {
-				combinedSupport = support.union(r.support);
+				combinedSupport = support.union(r.getSupport());
 			} catch (NotAPropositionNodeException | 
 					NodeNotFoundInNetworkException e1) {
-				e1.printStackTrace();
 			}
     		
     		InferenceTypes resultingType;
@@ -56,7 +59,7 @@ public class Report {
 			else
 				resultingType = InferenceTypes.BACKWARD;
     		
-    		return new Report(substitution.union(r.getSubstitutions()), 
+    		return new Report(combinedSubs, 
 					combinedSupport, sign, resultingType);
     	}
     	

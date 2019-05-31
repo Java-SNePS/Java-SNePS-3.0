@@ -4,16 +4,23 @@ import java.util.ArrayList;
 
 import java.util.Set;
 
+import sneps.exceptions.DuplicatePropositionException;
 import sneps.exceptions.NodeNotFoundInNetworkException;
 import sneps.exceptions.NotAPropositionNodeException;
 import sneps.network.Node;
 import sneps.network.RuleNode;
+import sneps.network.VariableNode;
 import sneps.network.classes.setClasses.FlagNodeSet;
 import sneps.network.classes.setClasses.NodeSet;
 import sneps.network.classes.setClasses.PropositionSet;
 import sneps.network.classes.setClasses.RuleUseInfoSet;
+import sneps.network.classes.setClasses.VarNodeSet;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
+import sneps.network.classes.term.Open;
+import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
+import sneps.snip.Runner;
 import sneps.snip.channels.Channel;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.RuisHandler;
@@ -57,14 +64,11 @@ public class NumericalEntailment extends RuleNode {
 	 */
 	@Override
 	public ArrayList<RuleResponse> applyRuleHandler(Report report, Node signature) {
-		//processNodes(antecedents);
-		System.out.println("---------------");
-		
 		if(report.isNegative())
 			return null;
 		
 		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
-		RuleResponse response = new RuleResponse();
+		ArrayList<RuleResponse> response = new ArrayList<RuleResponse>();
 		
 		PropositionSet propSet = report.getSupport();
 		FlagNodeSet fns = new FlagNodeSet();
@@ -77,27 +81,26 @@ public class NumericalEntailment extends RuleNode {
 			if (ruisHandler == null) {
 				response = applyRuleOnRui(constantRUI);
 				if(response != null)
-					responseList.add(response);
+					responseList.addAll(response);
 			}
 			else {
 				RuleUseInfoSet combined  = ruisHandler.combineConstantRUI(constantRUI);
 				for (RuleUseInfo tRui : combined) {
 					response = applyRuleOnRui(tRui);
 					if(response != null)
-						responseList.add(response);
+						responseList.addAll(response);
 				}
 			}
 		}
 		else {
 			// Inserting the RuleUseInfo into the RuleNode's RuisHandler:
-			// SIndex in case there are shared variables between the antecedents, or 
+			// SIndex in case there are shared variables between all the antecedents, or 
 			// RUISet in case there are no shared variables
 			if(ruisHandler == null)
 				ruisHandler = addRuiHandler();
 			
 			// The RUI created for the given report is inserted to the RuisHandler
 			RuleUseInfoSet res = ruisHandler.insertRUI(rui);
-			System.out.println(res);
 			
 			if(constantRUI != null) {
 				RuleUseInfo combined;
@@ -106,7 +109,7 @@ public class NumericalEntailment extends RuleNode {
 					if(combined != null) {
 						response = applyRuleOnRui(combined);
 						if(response != null)
-							responseList.add(response);
+							responseList.addAll(response);
 					}
 				}
 			}
@@ -114,7 +117,7 @@ public class NumericalEntailment extends RuleNode {
 				for (RuleUseInfo tRui : res) {
 					response = applyRuleOnRui(tRui);
 					if(response != null)
-						responseList.add(response);
+						responseList.addAll(response);
 				}
 			}
 		}
@@ -125,32 +128,85 @@ public class NumericalEntailment extends RuleNode {
 		return responseList;
 	}
 
-	protected RuleResponse applyRuleOnRui(RuleUseInfo rui) {
+	protected ArrayList<RuleResponse> applyRuleOnRui(RuleUseInfo rui) {
 		if(rui.getPosCount() < i)
 			return null;
 		
+		ArrayList<RuleResponse> responseList = new ArrayList<RuleResponse>();
+		RuleResponse response = new RuleResponse();
+		Report reply;
+		
 		PropositionSet replySupport = new PropositionSet();
+		PropositionSet ruleSupport = new PropositionSet();
 		for(FlagNode fn : rui.getFlagNodeSet())
 			try {
-				replySupport.union(fn.getSupport());
+				replySupport = replySupport.union(fn.getSupport());
 			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
 				e.printStackTrace();
 			}
-
-		// TODO
-		// Add rule node to replySupport
 		
-		Report reply = new Report(rui.getSubstitutions(), replySupport, true, 
-				rui.getType());
-		System.out.println(reply);
-		reportsToBeSent.add(reply);
+		if(this.getTerm() instanceof Closed) {
+			try {
+				ruleSupport = ruleSupport.add(this.getId());
+				replySupport = replySupport.union(ruleSupport);
+			} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException | 
+					DuplicatePropositionException e) {
+			}
+			
+			if(Runner.isNodeAssertedThroughForwardInf(this))
+				reply = new Report(rui.getSubstitutions(), replySupport, true, 
+						InferenceTypes.FORWARD);
+			else
+				reply = new Report(rui.getSubstitutions(), replySupport, true, 
+						rui.getType());
+			
+			reportsToBeSent.add(reply);
+			response.setReport(reply);
+			Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+			response.addAllChannels(forwardChannels);
+			responseList.add(response);
+		}
+		else if(this.getTerm() instanceof Open) {
+			// knownInstances contain instances found for the rule node itself
+			if(knownInstances.isEmpty())
+				return null;
+			VarNodeSet freeVars = ((Open) this.getTerm()).getFreeVariables();
+			boolean allBound;
+			Report ruiReport = new Report(rui.getSubstitutions(), replySupport, 
+					true, rui.getType());
+			for(Report r : knownInstances) {
+				// Only positive reports should be considered
+				if(r.getSign() == false)
+					continue;
+				
+				allBound = true;
+				// Check that each free variable in this rule node is bound in the 
+				// current report
+				for(VariableNode var : freeVars) {
+					if(!r.getSubstitutions().isBound(var)) {
+						allBound = false;
+						break;
+					}
+				}
+				
+				// All free variables of this rule node are bound in the current report
+				if(allBound) {
+					reply = ruiReport.combine(r);
+					if(reply != null) {
+						response.clear();
+						response.setReport(reply);
+						Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
+						response.addAllChannels(forwardChannels);
+						responseList.add(response);
+					}
+				}
+			}
+		}
 		
-		RuleResponse r = new RuleResponse();
-		r.setReport(reply);
-		Set<Channel> forwardChannels = getOutgoingChannelsForReport(reply);
-		r.addAllChannels(forwardChannels);
+		if(responseList.isEmpty())
+			return null;
 		
-		return r;
+		return responseList;
 	}
 	
 	/**

@@ -6,11 +6,11 @@ import java.util.Iterator;
 import sneps.snip.classes.RuisHandler;
 import sneps.snip.classes.RuleUseInfo;
 
-public class RuleUseInfoSet extends RuisHandler implements Iterable<RuleUseInfo> {
+public class RuleUseInfoSet implements RuisHandler, Iterable<RuleUseInfo> {
 	private HashSet<RuleUseInfo> ruis;
 	
 	/**
-	 * A boolean indicating whether this RuleUseInfoSet is treated as single 
+	 * A boolean indicating whether this RuleUseInfoSet is treated as a single 
 	 * RuleUseInfo.
 	 */
 	private boolean singleton;

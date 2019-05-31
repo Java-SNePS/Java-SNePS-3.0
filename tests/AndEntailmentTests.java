@@ -25,6 +25,7 @@ import sneps.network.classes.Relation;
 import sneps.network.classes.Semantic;
 import sneps.network.classes.Wire;
 import sneps.network.classes.term.Base;
+import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
 import sneps.network.classes.setClasses.FlagNodeSet;
@@ -36,8 +37,6 @@ import sneps.snip.InferenceTypes;
 import sneps.snip.Report;
 import sneps.snip.classes.FlagNode;
 import sneps.snip.classes.PTree;
-import sneps.snip.classes.RuisHandler;
-import sneps.snip.classes.RuleUseInfo;
 import sneps.snip.matching.Binding;
 import sneps.snip.matching.LinearSubstitutions;
 import sneps.snip.rules.AndEntailment;
@@ -205,7 +204,7 @@ public class AndEntailmentTests extends TestCase {
 
 //------------------------ AND ---------------------------//
 
-		and = new AndEntailment(new Open("Open", dcs));
+		and = new AndEntailment(new Closed("Closed", dcs));
 
 		sub.putIn(new Binding((VariableNode) var1, john));
 		support = new PropositionSet();
