@@ -30,6 +30,7 @@ public class Matcher {
 		try {
 			Node leo;
 			Hashtable<String, Node> nodes = Network.getNodes();
+			System.out.println(nodes);
 			leo = Network.getNode("Leo");
 
 			VariableNode X = (VariableNode) Network.getNode("X");
@@ -48,16 +49,24 @@ public class Matcher {
 	public static List<Match> match(PropositionNode propositionNode, Substitutions currentReportSubs) {
 		List<Match> listOfMatches = new ArrayList<Match>();
 		try {
-			Node leo;
+			Node nodeMatch;
+			Match newMatch;
+			VariableNode variableNode;
 			Hashtable<String, Node> nodes = Network.getNodes();
-			leo = Network.getNode("M1");
+			System.out.println("Nodes in the Network\n" + nodes + "\n");
 
-			VariableNode X = (VariableNode) Network.getNode("X");
-			Substitutions filterSubs = new LinearSubstitutions();
-			filterSubs.insert(new Binding(X, leo));
-			Match newMatch = new Match(filterSubs, new LinearSubstitutions(), leo, 0);
+			if (propositionNode.getIdentifier().equals("M1")) {
+				nodeMatch = Network.getNode("M2");
+				newMatch = new Match(new LinearSubstitutions(), new LinearSubstitutions(), nodeMatch, 0);
+				listOfMatches.add(newMatch);
+				nodeMatch = Network.getNode("P1");
+				variableNode = (VariableNode) Network.getNode("X");
+				Substitutions filterSubs = new LinearSubstitutions();
+				filterSubs.putIn(new Binding(variableNode, nodeMatch));
+				newMatch = new Match(filterSubs, new LinearSubstitutions(), nodeMatch, 0);
+				listOfMatches.add(newMatch);
+			}
 
-			listOfMatches.add(newMatch);
 		} catch (NodeNotFoundInNetworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

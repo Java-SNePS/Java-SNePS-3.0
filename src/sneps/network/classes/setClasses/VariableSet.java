@@ -43,4 +43,17 @@ public class VariableSet implements Iterable<Variable>, Serializable {
 		return variables.isEmpty();
 	}
 
+	@Override
+	public String toString() {
+		String variablesString = "[ ";
+		for (Variable variable : this.variables) {
+			variablesString += variable.getIdentifier() + ", ";
+		}
+		if (variablesString.length() > 2)
+			variablesString = variablesString.substring(0, variablesString.length() - 2) + " ]";
+		else
+			variablesString += "]";
+		return variablesString;
+	}
+
 }

@@ -432,12 +432,16 @@ public class LinearSubstitutions implements Substitutions {
 	 * Print the substitutions list
 	 */
 	public String toString() {
-		String res = "";
+		String res = "{ ";
 		for (int i = 0; i < sub.size(); i++) {
 			res += sub.get(i).getNode().getIdentifier() + " substitutes " + sub.get(i).getVariableNode().getIdentifier()
-					+ '\n';
+					+ ", ";
 		}
-		return res;
+		if (res.length() > 2)
+			res = res.substring(0, res.length() - 2) + " }";
+		else
+			res += "}";
+		return res.length() == 0 ? "{ }" : res;
 	}
 
 	public int termID(int variableID) {
@@ -457,7 +461,7 @@ public class LinearSubstitutions implements Substitutions {
 	}
 
 	/***
-	 * Method checking the freeVariables Set making sure each has a compatible
+	 * Method checking the freeVariables Set, making sure each has a compatible
 	 * Binding in the instance Vector<Binding>
 	 * 
 	 * @param freeVariables VariableSet
@@ -465,7 +469,7 @@ public class LinearSubstitutions implements Substitutions {
 	 * @return VariableNodeStats
 	 */
 	public VariableNodeStats extractBoundStatus(VariableSet freeVariables) {
-		boolean forAllCondition = true;
+		boolean forAllCondition = sub.size() > 0;
 		Vector<Binding> extractedFilterRelevantToVariables = new Vector<Binding>();
 		for (Binding binding : sub) {
 			VariableNode bindingVariableNode = binding.getVariableNode();
@@ -478,7 +482,7 @@ public class LinearSubstitutions implements Substitutions {
 			forAllCondition &= bindingFound;
 		}
 		Substitutions extractedFilterSubs = new LinearSubstitutions(extractedFilterRelevantToVariables);
-		return new VariableNodeStats(forAllCondition, extractedFilterSubs, this);
+		return new VariableNodeStats(forAllCondition, extractedFilterSubs, this, freeVariables);
 	}
 
 	@Override

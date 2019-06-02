@@ -72,4 +72,8 @@ public class ChannelIdentifier {
 		this.switchSubstitutions = switchSubstututions;
 	}
 
+	public String toString() {
+		return requesterId + "" + reporterId + contextName + filterSubstitutions.toString()
+				+ switchSubstitutions.toString();
+	}
 }

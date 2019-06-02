@@ -16,13 +16,13 @@ import sneps.snip.channels.RuleToConsequentChannel;
 import sneps.snip.matching.Substitutions;
 
 public class ChannelSet implements Iterable<Channel> {
-	private Hashtable<ChannelTypes, Hashtable<ChannelIdentifier, Channel>> channels;
+	private Hashtable<ChannelTypes, Hashtable<String, Channel>> channels;
 
 	public ChannelSet() {
-		channels = new Hashtable<ChannelTypes, Hashtable<ChannelIdentifier, Channel>>();
-		channels.put(ChannelTypes.MATCHED, new Hashtable<ChannelIdentifier, Channel>());
-		channels.put(ChannelTypes.RuleAnt, new Hashtable<ChannelIdentifier, Channel>());
-		channels.put(ChannelTypes.RuleCons, new Hashtable<ChannelIdentifier, Channel>());
+		channels = new Hashtable<ChannelTypes, Hashtable<String, Channel>>();
+		channels.put(ChannelTypes.MATCHED, new Hashtable<String, Channel>());
+		channels.put(ChannelTypes.RuleAnt, new Hashtable<String, Channel>());
+		channels.put(ChannelTypes.RuleCons, new Hashtable<String, Channel>());
 	}
 
 	public Channel addChannel(Channel channel) {
@@ -32,10 +32,10 @@ public class ChannelSet implements Iterable<Channel> {
 		Substitutions filterSubs = channel.getFilter().getSubstitutions();
 		Substitutions switchSubs = channel.getSwitch().getSubstitutions();
 		ChannelTypes channelType = getChannelType(channel);
-		Hashtable<ChannelIdentifier, Channel> targetSet = channels.remove(channelType);
+		Hashtable<String, Channel> targetSet = channels.remove(channelType);
 		ChannelIdentifier channelId = new ChannelIdentifier(channelRequesterId, channelReporterId, channelContextName,
 				filterSubs, switchSubs);
-		Channel added = targetSet.put(channelId, channel);
+		Channel added = targetSet.put(channelId.toString(), channel);
 		channels.put(channelType, targetSet);
 		return added;
 	}
@@ -47,7 +47,7 @@ public class ChannelSet implements Iterable<Channel> {
 		Substitutions filterSubs = channel.getFilter().getSubstitutions();
 		Substitutions switchSubs = channel.getSwitch().getSubstitutions();
 		ChannelTypes channelType = getChannelType(channel);
-		Hashtable<ChannelIdentifier, Channel> targetSet = channels.remove(channelType);
+		Hashtable<String, Channel> targetSet = channels.remove(channelType);
 		ChannelIdentifier channelId = new ChannelIdentifier(channelRequesterId, channelReporterId, channelContextName,
 				filterSubs, switchSubs);
 		Channel removed = targetSet.remove(channelId);
@@ -75,8 +75,8 @@ public class ChannelSet implements Iterable<Channel> {
 		 */
 		Collection<Channel> toBeAddedLater = new ArrayList<Channel>();
 		Collection<Channel> allMergedChannels = new ArrayList<Channel>();
-		Collection<Hashtable<ChannelIdentifier, Channel>> collectionOfSets = channels.values();
-		for (Hashtable<ChannelIdentifier, Channel> set : collectionOfSets) {
+		Collection<Hashtable<String, Channel>> collectionOfSets = channels.values();
+		for (Hashtable<String, Channel> set : collectionOfSets) {
 			for (Channel channel : set.values()) {
 				boolean ruleAntChannel = channel instanceof AntecedentToRuleChannel;
 				if (ruleAntChannel)
@@ -101,8 +101,8 @@ public class ChannelSet implements Iterable<Channel> {
 	public ChannelSet getFilteredRequestChannels(boolean processedRequest) {
 		ChannelSet processedRequestsChannels = new ChannelSet();
 		Collection<Channel> allMergedChannels = new ArrayList<Channel>();
-		Collection<Hashtable<ChannelIdentifier, Channel>> collectionOfSets = channels.values();
-		for (Hashtable<ChannelIdentifier, Channel> set : collectionOfSets)
+		Collection<Hashtable<String, Channel>> collectionOfSets = channels.values();
+		for (Hashtable<String, Channel> set : collectionOfSets)
 			allMergedChannels.addAll(set.values());
 		for (Channel channel : allMergedChannels) {
 			if (channel.isRequestProcessed() == processedRequest)
@@ -113,24 +113,24 @@ public class ChannelSet implements Iterable<Channel> {
 
 	public Collection<Channel> getChannels() {
 		Collection<Channel> allMergedChannels = new ArrayList<Channel>();
-		Collection<Hashtable<ChannelIdentifier, Channel>> collectionOfSets = channels.values();
-		for (Hashtable<ChannelIdentifier, Channel> set : collectionOfSets)
+		Collection<Hashtable<String, Channel>> collectionOfSets = channels.values();
+		for (Hashtable<String, Channel> set : collectionOfSets)
 			allMergedChannels.addAll(set.values());
 		return allMergedChannels;
 	}
 
 	public Collection<Channel> getAntRuleChannels() {
-		Hashtable<ChannelIdentifier, Channel> channelsHash = channels.get(ChannelTypes.RuleAnt);
+		Hashtable<String, Channel> channelsHash = channels.get(ChannelTypes.RuleAnt);
 		return channelsHash.values();
 	}
 
 	public Collection<Channel> getRuleConsChannels() {
-		Hashtable<ChannelIdentifier, Channel> channelsHash = channels.get(ChannelTypes.RuleCons);
+		Hashtable<String, Channel> channelsHash = channels.get(ChannelTypes.RuleCons);
 		return channelsHash.values();
 	}
 
 	public Collection<Channel> getMatchChannels() {
-		Hashtable<ChannelIdentifier, Channel> channelsHash = channels.get(ChannelTypes.MATCHED);
+		Hashtable<String, Channel> channelsHash = channels.get(ChannelTypes.MATCHED);
 		return channelsHash.values();
 	}
 
@@ -147,8 +147,8 @@ public class ChannelSet implements Iterable<Channel> {
 		ChannelIdentifier channelId = new ChannelIdentifier(channelRequesterId, channelReporterId, channelContextName,
 				channelSubs, switchSubs);
 		ChannelTypes channelType = getChannelType(newChannel);
-		Hashtable<ChannelIdentifier, Channel> set = channels.get(channelType);
-		return set.get(channelId);
+		Hashtable<String, Channel> set = channels.get(channelType);
+		return set.get(channelId.toString());
 	}
 
 }

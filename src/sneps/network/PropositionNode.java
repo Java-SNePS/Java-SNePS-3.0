@@ -80,10 +80,16 @@ public class PropositionNode extends Node implements Serializable {
 	 *                       node scenario
 	 * @return the established type based channel
 	 */
-	public Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
+	protected Channel establishChannel(ChannelTypes type, Object currentElement, Substitutions switchSubs,
 			Substitutions filterSubs, String contextName, int matchType) {
+
 		boolean matchTypeEstablishing = currentElement instanceof Match;
 		Node evaluatedReporter = matchTypeEstablishing ? ((Match) currentElement).getNode() : (Node) currentElement;
+		/* BEGIN - Helpful Prints */
+		String requesterIdent = getIdentifier();
+		String reporterIdent = evaluatedReporter.getIdentifier();
+		System.out.println("Trying to establish a channel from " + requesterIdent + " to " + reporterIdent);
+		/* END - Helpful Prints */
 		Substitutions switchLinearSubs = switchSubs == null ? new LinearSubstitutions() : switchSubs;
 		Channel newChannel;
 		switch (type) {
@@ -101,10 +107,16 @@ public class PropositionNode extends Node implements Serializable {
 		ChannelSet incomingChannels = getIncomingChannels();
 		Channel extractedChannel = incomingChannels.getChannel(newChannel);
 		if (extractedChannel == null) {
+			/* BEGIN - Helpful Prints */
+			System.out.println("Channel successfully created");
+			/* END - Helpful Prints */
 			((PropositionNode) evaluatedReporter).addToOutgoingChannels(newChannel);
 			addToIncomingChannels(newChannel);
 			return newChannel;
 		}
+		/* BEGIN - Helpful Prints */
+		System.out.println("Channel was already created");
+		/* END - Helpful Prints */
 		return extractedChannel;
 
 	}
@@ -263,6 +275,10 @@ public class PropositionNode extends Node implements Serializable {
 	 * through the runner.
 	 */
 	public void receiveRequest(Channel channel) {
+		/* BEGIN - Helpful Prints */
+		String nodeIdent = getIdentifier();
+		System.out.println("PropositionNode " + nodeIdent + " just received a request.");
+		/* END - Helpful Prints */
 		Runner.addToLowQueue(this);
 		channel.setRequestProcessed(true);
 	}
@@ -272,6 +288,10 @@ public class PropositionNode extends Node implements Serializable {
 	 * through the runner.
 	 */
 	public void receiveReport(Channel channel) {
+		/* BEGIN - Helpful Prints */
+		String nodeIdent = getIdentifier();
+		System.out.println("PropositionNode " + nodeIdent + " just received a report.");
+		/* END - Helpful Prints */
 		Runner.addToHighQueue(this);
 		channel.setReportProcessed(true);
 	}
@@ -402,9 +422,16 @@ public class PropositionNode extends Node implements Serializable {
 	 */
 	protected static NodeSet removeAlreadyWorkingOn(NodeSet nodes, Channel channel, Substitutions toBeCompared,
 			boolean ruleType) {
+		/* BEGIN - Helpful Prints */
+		String nodesToBeFiltered = "[ ";
+		String nodesToBeKept = "[ ";
+		/* END - Helpful Prints */
 		NodeSet nodesToConsider = new NodeSet();
 		for (Node sourceNode : nodes)
 			if (sourceNode instanceof PropositionNode) {
+				/* BEGIN - Helpful Prints */
+				nodesToBeFiltered += sourceNode.getIdentifier() + ", ";
+				/* END - Helpful Prints */
 				boolean conditionMet = !ruleType || sourceNode.getId() != channel.getRequester().getId();
 				if (conditionMet) {
 					ChannelSet outgoingChannels = ((PropositionNode) sourceNode).getOutgoingChannels();
@@ -414,10 +441,26 @@ public class PropositionNode extends Node implements Serializable {
 						conditionMet &= !processedChannelFilterSubs.isSubSet(toBeCompared)
 								&& outgoingChannel.getRequester().getId() == channel.getReporter().getId();
 					}
-					if (conditionMet)
+					if (conditionMet) {
 						nodesToConsider.addNode(sourceNode);
+						/* BEGIN - Helpful Prints */
+						nodesToBeKept += sourceNode.getIdentifier() + ", ";
+						/* END - Helpful Prints */
+					}
 				}
 			}
+		if (nodesToBeKept.length() > 2)
+			nodesToBeKept = nodesToBeKept.substring(0, nodesToBeKept.length() - 2) + " ]";
+		else
+			nodesToBeKept += "]";
+		if (nodesToBeFiltered.length() > 2)
+			nodesToBeFiltered = nodesToBeFiltered.substring(0, nodesToBeFiltered.length() - 2) + " ]";
+		else
+			nodesToBeFiltered += "]";
+
+		System.out.println("\n\u2022 Removing nodes with a request that is subset of " + toBeCompared.toString() + ":");
+		System.out.println("Result: " + nodesToBeKept + " from " + nodesToBeFiltered + ".");
+		/* END - Helpful Prints */
 		return nodesToConsider;
 	}
 
@@ -621,6 +664,10 @@ public class PropositionNode extends Node implements Serializable {
 	 */
 	public boolean isWhQuestion(Substitutions filterSubs) {
 		VariableNodeStats currentNodeStats = computeNodeStats(filterSubs);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\n\u2022 Testing if " + getIdentifier() + " is a Wh-Question:");
+		System.out.println(currentNodeStats.toString() + "\n");
+		/* END - Helpful Prints */
 		return !currentNodeStats.areAllVariablesBound();
 	}
 
@@ -708,7 +755,8 @@ public class PropositionNode extends Node implements Serializable {
 			for (Report currentReport : knownInstances)
 				sentAtLeastOne |= sendReport(currentReport, currentChannel);
 			Substitutions filterSubs = currentChannel.getFilter().getSubstitutions();
-			if (!sentAtLeastOne || isWhQuestion(filterSubs)) {
+			boolean isWhQuestion = isWhQuestion(filterSubs);
+			if (!sentAtLeastOne || isWhQuestion) {
 				NodeSet dominatingRules = getUpConsNodeSet();
 				NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel, filterSubs, false);
 				sendRequestsToNodeSet(toBeSentToDom, filterSubs, currentContextName, ChannelTypes.RuleAnt);
@@ -775,9 +823,5 @@ public class PropositionNode extends Node implements Serializable {
 				currentChannel.getReportsBuffer().removeReport(currentReport);
 		}
 	}
-
-	// PROCESS REPORT : 3adi -> , forward
-	// -> same as 3adi , plus matching to send and get the nodes el howa lihom
-	// antecedents we send reports
 
 }

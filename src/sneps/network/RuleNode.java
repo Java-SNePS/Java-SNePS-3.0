@@ -436,9 +436,6 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 			super.processSingleRequestsChannel(currentChannel);
 	}
 
-	// PROCESS REPORT : 3adi -> outgoing channels node we ab3at accordingly, forard
-	// -> outgoing channels and the rest of the consequents kolohom we ab3at 3adi
-
 	/***
 	 * Report handling in Rule proposition nodes.
 	 */
@@ -464,6 +461,8 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 		for (Report currentReport : channelReports) {
 			boolean forwardReportType = currentReport.getInferenceType() == InferenceTypes.FORWARD;
 			Substitutions currentReportSubs = currentReport.getSubstitutions();
+			VariableNodeStats ruleNodeStats = computeNodeStats(currentReportSubs);
+			Substitutions ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
 			if (currentChannel instanceof AntecedentToRuleChannel) {
 				/** AntecedentToRule Channel */
 				if (forwardReportType) {
@@ -478,10 +477,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 						} else {
 							NodeSet dominatingRules = getUpConsNodeSet();
 							NodeSet toBeSentToDom = removeAlreadyWorkingOn(dominatingRules, currentChannel,
-									currentReportSubs, false);
-							sendRequestsToNodeSet(toBeSentToDom, currentReportSubs, currentChannelContextName,
+									ruleNodeExtractedSubs, false);
+							sendRequestsToNodeSet(toBeSentToDom, ruleNodeExtractedSubs, currentChannelContextName,
 									ChannelTypes.RuleAnt);
-							List<Match> matchingNodes = Matcher.match(this, currentReportSubs);
+							List<Match> matchingNodes = Matcher.match(this, ruleNodeExtractedSubs);
 							List<Match> toBeSentToMatch = removeAlreadyWorkingOn(matchingNodes, currentChannel);
 							sendRequestsToMatches(toBeSentToMatch, currentChannelContextName);
 						}
@@ -501,8 +500,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 						 */
 
 						/* always sue the extracted report subs in the requests */
-						VariableNodeStats ruleNodeStats = computeNodeStats(currentReportSubs);
-						Substitutions ruleNodeExtractedSubs = ruleNodeStats.getVariableNodeSubs();
+						
 						for (Report knownInstance : knownInstances) {
 							Substitutions knownInstanceSubstitutions = knownInstance.getSubstitutions();
 							boolean subSetCheck = ruleNodeExtractedSubs.isSubSet(knownInstanceSubstitutions);
