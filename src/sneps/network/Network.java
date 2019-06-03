@@ -908,10 +908,9 @@ public class Network implements Serializable {
 				if (array[i][1].getClass().getSimpleName().equals("VariableNode")) {
 					continue;
 				} else {
-					if (!(((Relation) array[i][0]).getType()
-							.equals(((Node) array[i][1]).getSemantic().getSemanticType())
-							|| ((Node) array[i][1]).getSemantic().getSemanticType()
-									.contains(((Relation) array[i][0]).getType()))) {
+					if (!(((Relation) array[i][0]).getType().equals(((Node) array[i][1]).getSemantic().getSemanticType())
+							|| ((Node) array[i][1]).getSemantic().getSemanticType().contains(((Relation) array[i][0]).getType())
+							|| ((Node) array[i][1]).getSemantic().getSuperClassesNames().contains(((Relation) array[i][0]).getType()))) {
 						return false;
 
 					}
