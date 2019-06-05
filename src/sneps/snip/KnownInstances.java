@@ -1,5 +1,6 @@
 package sneps.snip;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -19,6 +20,8 @@ public class KnownInstances implements Iterable<Report> {
 	public void addReport(Report report) {
 		Substitutions reportSubs = report.getSubstitutions();
 		Set<Report> reportsSet = instances.remove(reportSubs);
+		if (reportsSet == null)
+			reportsSet = new HashSet<Report>();
 		reportsSet.add(report);
 		instances.put(reportSubs, reportsSet);
 	}

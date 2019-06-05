@@ -52,8 +52,6 @@ public class Matcher {
 			Node nodeMatch;
 			Match newMatch;
 			VariableNode variableNode;
-			Hashtable<String, Node> nodes = Network.getNodes();
-			System.out.println("Nodes in the Network\n" + nodes + "\n");
 
 			if (propositionNode.getIdentifier().equals("M1")) {
 				nodeMatch = Network.getNode("M2");
@@ -64,6 +62,13 @@ public class Matcher {
 				Substitutions filterSubs = new LinearSubstitutions();
 				filterSubs.putIn(new Binding(variableNode, nodeMatch));
 				newMatch = new Match(filterSubs, new LinearSubstitutions(), nodeMatch, 0);
+				listOfMatches.add(newMatch);
+			} else {
+				nodeMatch = Network.getNode("M2");
+				newMatch = new Match(new LinearSubstitutions(), new LinearSubstitutions(), nodeMatch, 0);
+				listOfMatches.add(newMatch);
+				nodeMatch = Network.getNode("M1");
+				newMatch = new Match(new LinearSubstitutions(), new LinearSubstitutions(), nodeMatch, 0);
 				listOfMatches.add(newMatch);
 			}
 

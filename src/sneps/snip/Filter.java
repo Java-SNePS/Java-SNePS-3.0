@@ -33,7 +33,7 @@ public class Filter {
 			Binding currentFilterBinding = substitutions.getBinding(i);
 			VariableNode currentFilterVariableNode = currentFilterBinding.getVariableNode();
 			Binding currentReportBinding = report.getSubstitutions().getBindingByVariable(currentFilterVariableNode);
-			System.out.println("Bindings " + currentFilterBinding + " " + report.getSubstitutions());
+//			System.out.println("Bindings " + currentFilterBinding + " " + report.getSubstitutions());
 			if (currentReportBinding != null && currentFilterBinding.getNode() != currentReportBinding.getNode())
 				return false;
 		}

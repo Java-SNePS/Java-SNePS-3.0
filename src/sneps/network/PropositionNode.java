@@ -108,14 +108,14 @@ public class PropositionNode extends Node implements Serializable {
 		Channel extractedChannel = incomingChannels.getChannel(newChannel);
 		if (extractedChannel == null) {
 			/* BEGIN - Helpful Prints */
-			System.out.println("Channel successfully created");
+			System.out.println("Channel is successfully created and used for further operations");
 			/* END - Helpful Prints */
 			((PropositionNode) evaluatedReporter).addToOutgoingChannels(newChannel);
 			addToIncomingChannels(newChannel);
 			return newChannel;
 		}
 		/* BEGIN - Helpful Prints */
-		System.out.println("Channel was already created");
+		System.out.println("Channel is already established and retrieved for further operations");
 		/* END - Helpful Prints */
 		return extractedChannel;
 
@@ -131,10 +131,13 @@ public class PropositionNode extends Node implements Serializable {
 	public boolean sendReport(Report report, Channel channel) {
 		try {
 			if (channel.testReportToSend(report)) {
-				System.out.println("Report instance (" + report + ") was successfuly sent over (" + channel + ")");
+				System.out.println("\nReport instance:" + "\n~~~~\n" + report + "\n~~~~\n"
+						+ "was successfuly sent from " + channel.getReporter().getIdentifier() + " to "
+						+ channel.getRequester().getIdentifier() + "\n");
 			}
 		} catch (NotAPropositionNodeException | NodeNotFoundInNetworkException e) {
-			System.out.println("Report instance (" + report + ") could not be sent.");
+			System.out.println("\nReport instance:" + "\n~~~~\n" + report + "\n~~~~\n" + "could not be sent from "
+					+ channel.getReporter().getIdentifier() + " to " + channel.getRequester().getIdentifier() + "\n");
 			e.printStackTrace();
 		}
 		return false;
@@ -251,6 +254,7 @@ public class PropositionNode extends Node implements Serializable {
 			Channel newChannel = establishChannel(channelType, sentTo, null, filterSubs, contextID, -1);
 			sentTo.receiveRequest(newChannel);
 		}
+		System.out.println("Sent requests to " + ns.size() + " dominating rule nodes");
 	}
 
 	/***
@@ -297,19 +301,39 @@ public class PropositionNode extends Node implements Serializable {
 	}
 
 	public void deduce() {
+		/* BEGIN - Helpful Prints */
+		System.out.println("deduce() method initated.");
+		System.out.println("-------------------------\n");
+		/* END - Helpful Prints */
 		Runner.initiate();
 		String currentContextName = Controller.getCurrentContextName();
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to rule nodes during deduce()\n");
+		/* END - Helpful Prints */
 		getNodesToSendRequest(ChannelTypes.RuleCons, currentContextName, null);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to matching nodes during deduce()\n");
+		/* BEGIN - Helpful Prints */
 		getNodesToSendRequest(ChannelTypes.MATCHED, currentContextName, null);
 		// what to return here ?
 		System.out.println(Runner.run());
 	}
 
 	public void add() {
+		/* BEGIN - Helpful Prints */
+		System.out.println("add() method initated.\n");
+		System.out.println("-------------------------");
+		/* END - Helpful Prints */
 		Runner.initiate();
 		String currentContextName = Controller.getCurrentContextName();
 		boolean reportSign = Controller.isNegated(this);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to rule nodes during add()\n");
+		/* END - Helpful Prints */
 		getNodesToSendReport(ChannelTypes.RuleAnt, currentContextName, null, reportSign, InferenceTypes.FORWARD);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to matching nodes during add()\n");
+		/* END - Helpful Prints */
 		getNodesToSendReport(ChannelTypes.MATCHED, currentContextName, null, reportSign, InferenceTypes.FORWARD);
 		System.out.println(Runner.run());
 	}
@@ -666,9 +690,11 @@ public class PropositionNode extends Node implements Serializable {
 		VariableNodeStats currentNodeStats = computeNodeStats(filterSubs);
 		/* BEGIN - Helpful Prints */
 		System.out.println("\n\u2022 Testing if " + getIdentifier() + " is a Wh-Question:");
-		System.out.println(currentNodeStats.toString() + "\n");
+		System.out.println(currentNodeStats.toString());
+		System.out.println("> Result: "
+				+ (currentNodeStats.getNodeFreeVariables().size() > 0 && !currentNodeStats.areAllVariablesBound()));
 		/* END - Helpful Prints */
-		return !currentNodeStats.areAllVariablesBound();
+		return currentNodeStats.getNodeFreeVariables().size() > 0 && !currentNodeStats.areAllVariablesBound();
 	}
 
 	/***
@@ -746,7 +772,7 @@ public class PropositionNode extends Node implements Serializable {
 			// TODO change the subs to hashsubs
 			int propNodeId = getId();
 			PropositionSet supportPropSet = new PropositionSet();
-			supportPropSet.add(propNodeId);
+			supportPropSet = supportPropSet.add(propNodeId);
 			boolean reportSign = Controller.isNegated(this);
 			Report reply = new Report(new LinearSubstitutions(), supportPropSet, reportSign, InferenceTypes.BACKWARD);
 			sendReport(reply, currentChannel);

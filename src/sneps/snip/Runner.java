@@ -31,15 +31,16 @@ public class Runner {
 		String sequence = "";
 		main: while (!highQueue.isEmpty() || !lowQueue.isEmpty() || !actQueue.isEmpty()) {
 			while (!highQueue.isEmpty()) {
-				System.out.println("In HighQueue");
+				System.out.println("\n\u2202 Runner: In HighQueue");
 				Node toRunNext = highQueue.poll();
-				System.out.println(toRunNext);
+				System.out.println("Processing " + toRunNext.getIdentifier() + " reports.");
 				toRunNext.processReports();
 				sequence += 'H';
 			}
 			while (!lowQueue.isEmpty()) {
-				System.out.println("In LowQueue");
+				System.out.println("\n\u2202 Runner: In LowQueue");
 				Node toRunNext = lowQueue.poll();
+				System.out.println("Processing " + toRunNext.getIdentifier() + " requests.");
 				toRunNext.processRequests();
 				sequence += 'L';
 				if (!highQueue.isEmpty())

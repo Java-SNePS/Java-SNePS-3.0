@@ -32,13 +32,13 @@ public class Switch {
 			if (b != null) {
 				b.setVariable((VariableNode) this.substitutions.getBinding(i).getNode());
 			} else {
-				System.out.println("there u go " + this.substitutions.getBinding(i));
+				System.out.println("There u go " + this.substitutions.getBinding(i));
 				r.getSubstitutions().putIn(this.substitutions.getBinding(i));
-				System.out.println("size now " + r.getSubstitutions().cardinality());
+				System.out.println("Size now " + r.getSubstitutions().cardinality());
 			}
 		}
-		System.out.println(r.getSubstitutions().isNew());
-		System.out.println("Done Switching:\n" + r.getSubstitutions());
+		System.out.println("No substitutions are done, brand new report: " + r.getSubstitutions().isNew());
+		System.out.println("Done Switching:" + r.getSubstitutions());
 		// {a/X, b/Y}, {X/W, Y/Z, K/C} => {a/W, b/Z, K/C}
 		// r.getSubstitutions().unionIn(s);
 	}

@@ -469,17 +469,21 @@ public class LinearSubstitutions implements Substitutions {
 	 * @return VariableNodeStats
 	 */
 	public VariableNodeStats extractBoundStatus(VariableSet freeVariables) {
-		boolean forAllCondition = sub.size() > 0;
+		boolean forAllCondition = freeVariables.size() > 0 && sub.size() > 0;
 		Vector<Binding> extractedFilterRelevantToVariables = new Vector<Binding>();
-		for (Binding binding : sub) {
-			VariableNode bindingVariableNode = binding.getVariableNode();
-			boolean bindingFound = false;
-			Variable bindingVariable = (Variable) bindingVariableNode.getTerm();
-			for (Variable variable : freeVariables)
-				bindingFound |= variable.getIdentifier().equals(bindingVariable.getIdentifier());
-			if (bindingFound)
-				extractedFilterRelevantToVariables.add(binding);
-			forAllCondition &= bindingFound;
+		for (Variable variable : freeVariables) {
+			boolean variableFound = false;
+			for (Binding binding : sub) {
+				VariableNode bindingVariableNode = binding.getVariableNode();
+				Variable bindingVariable = (Variable) bindingVariableNode.getTerm();
+				variableFound |= variable.getIdentifier().equals(bindingVariable.getIdentifier());
+				if (variableFound) {
+					extractedFilterRelevantToVariables.add(binding);
+					break;
+				}
+			}
+			forAllCondition &= variableFound;
+
 		}
 		Substitutions extractedFilterSubs = new LinearSubstitutions(extractedFilterRelevantToVariables);
 		return new VariableNodeStats(forAllCondition, extractedFilterSubs, this, freeVariables);

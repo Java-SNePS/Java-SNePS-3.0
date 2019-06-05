@@ -55,7 +55,8 @@ public abstract class Channel {
 	public boolean testReportToSend(Report report) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		boolean passTest = filter.canPass(report); // TODO te be reviewed
 		if (passTest && report.anySupportAssertedInContext(getContextName())) {
-			System.out.println("\nThe switcher data:\n" + switcher);
+
+			System.out.println("The switcher data:" + switcher);
 			switcher.switchReport(report);
 			PropositionNode requesterNode = (PropositionNode) getRequester();
 			requesterNode.receiveReport(this);
@@ -157,5 +158,6 @@ public abstract class Channel {
 		}
 		return super.equals(obj);
 	}
+
 
 }
