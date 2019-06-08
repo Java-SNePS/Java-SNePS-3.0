@@ -91,24 +91,26 @@ public class PropositionNode extends Node implements Serializable {
 		System.out.println("Trying to establish a channel from " + requesterIdent + " to " + reporterIdent);
 		/* END - Helpful Prints */
 		Substitutions switchLinearSubs = switchSubs == null ? new LinearSubstitutions() : switchSubs;
+		Substitutions filterLinearSubs = filterSubs == null ? new LinearSubstitutions() : filterSubs;
 		Channel newChannel;
 		switch (type) {
 		case MATCHED:
-			newChannel = new MatchChannel(switchLinearSubs, filterSubs, contextName, this, evaluatedReporter, true,
-					matchType);
+			newChannel = new MatchChannel(switchLinearSubs, filterLinearSubs, contextName, this, evaluatedReporter,
+					true, matchType);
 			break;
 		case RuleAnt:
-			newChannel = new AntecedentToRuleChannel(switchLinearSubs, filterSubs, contextName, this, evaluatedReporter,
-					true);
+			newChannel = new AntecedentToRuleChannel(switchLinearSubs, filterLinearSubs, contextName, this,
+					evaluatedReporter, true);
 		default:
-			newChannel = new RuleToConsequentChannel(switchLinearSubs, filterSubs, contextName, this, evaluatedReporter,
-					true);
+			newChannel = new RuleToConsequentChannel(switchLinearSubs, filterLinearSubs, contextName, this,
+					evaluatedReporter, true);
 		}
 		ChannelSet incomingChannels = getIncomingChannels();
 		Channel extractedChannel = incomingChannels.getChannel(newChannel);
 		if (extractedChannel == null) {
 			/* BEGIN - Helpful Prints */
-			System.out.println("Channel is successfully created and used for further operations");
+			System.out.println("Channel of type " + newChannel.getClass()
+					+ " is successfully created and used for further operations");
 			/* END - Helpful Prints */
 			((PropositionNode) evaluatedReporter).addToOutgoingChannels(newChannel);
 			addToIncomingChannels(newChannel);
@@ -179,11 +181,13 @@ public class PropositionNode extends Node implements Serializable {
 			Channel newChannel = establishChannel(channelType, sentTo, null, reportSubs, contextName, -1);
 			sendReport(toBeSent, newChannel);
 		}
+		System.out.println("Sent report to " + ns.size() + " nodes");
 	}
 
 	protected void sendReportsToNodeSet(NodeSet ns, ReportSet toBeSent, String contextName, ChannelTypes channelType) {
 		for (Report report : toBeSent)
 			sendReportToNodeSet(ns, report, contextName, channelType);
+		System.out.println("Sent reports to " + ns.size() + " nodes");
 	}
 
 	/***
@@ -204,12 +208,14 @@ public class PropositionNode extends Node implements Serializable {
 					matchType);
 			sendReport(toBeSent, newChannel);
 		}
+		System.out.println("Sent report to " + list.size() + " matched nodes");
 	}
 
 	protected void sendReportsToMatches(List<Match> list, ReportSet reports, String contextId) {
 		for (Report report : reports) {
 			sendReportToMatches(list, report, contextId);
 		}
+		System.out.println("Sent reports to " + list.size() + " matched nodes");
 	}
 
 	protected void sendReportToChannelSet(ChannelSet filteredNodeSet, Report toBeSent) {
@@ -300,50 +306,13 @@ public class PropositionNode extends Node implements Serializable {
 		channel.setReportProcessed(true);
 	}
 
-	public void deduce() {
-		/* BEGIN - Helpful Prints */
-		System.out.println("deduce() method initated.");
-		System.out.println("-------------------------\n");
-		/* END - Helpful Prints */
-		Runner.initiate();
-		String currentContextName = Controller.getCurrentContextName();
-		/* BEGIN - Helpful Prints */
-		System.out.println("\nSending to rule nodes during deduce()\n");
-		/* END - Helpful Prints */
-		getNodesToSendRequest(ChannelTypes.RuleCons, currentContextName, null);
-		/* BEGIN - Helpful Prints */
-		System.out.println("\nSending to matching nodes during deduce()\n");
-		/* BEGIN - Helpful Prints */
-		getNodesToSendRequest(ChannelTypes.MATCHED, currentContextName, null);
-		// what to return here ?
-		System.out.println(Runner.run());
-	}
-
-	public void add() {
-		/* BEGIN - Helpful Prints */
-		System.out.println("add() method initated.\n");
-		System.out.println("-------------------------");
-		/* END - Helpful Prints */
-		Runner.initiate();
-		String currentContextName = Controller.getCurrentContextName();
-		boolean reportSign = Controller.isNegated(this);
-		/* BEGIN - Helpful Prints */
-		System.out.println("\nSending to rule nodes during add()\n");
-		/* END - Helpful Prints */
-		getNodesToSendReport(ChannelTypes.RuleAnt, currentContextName, null, reportSign, InferenceTypes.FORWARD);
-		/* BEGIN - Helpful Prints */
-		System.out.println("\nSending to matching nodes during add()\n");
-		/* END - Helpful Prints */
-		getNodesToSendReport(ChannelTypes.MATCHED, currentContextName, null, reportSign, InferenceTypes.FORWARD);
-		System.out.println(Runner.run());
-	}
-
 	protected void getNodesToSendReport(ChannelTypes channelType, String currentContextName,
 			Substitutions substitutions, boolean reportSign, InferenceTypes inferenceType) {
 		try {
 			PropositionSet supportPropSet = new PropositionSet();
 			supportPropSet.add(getId());
-			Report toBeSent = new Report(substitutions, supportPropSet, reportSign, inferenceType);
+			Substitutions substitutionsLinear = substitutions == null ? new LinearSubstitutions() : substitutions;
+			Report toBeSent = new Report(substitutionsLinear, supportPropSet, reportSign, inferenceType);
 			switch (channelType) {
 			case MATCHED:
 				List<Match> matchesReturned = Matcher.match(this, substitutions);
@@ -745,6 +714,45 @@ public class PropositionNode extends Node implements Serializable {
 		// TODO nawar
 	}
 
+	public void deduce() {
+		/* BEGIN - Helpful Prints */
+		System.out.println("deduce() method initated.");
+		System.out.println("-------------------------\n");
+		/* END - Helpful Prints */
+		Runner.initiate();
+		String currentContextName = Controller.getCurrentContextName();
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to rule nodes during deduce()\n");
+		/* END - Helpful Prints */
+		getNodesToSendRequest(ChannelTypes.RuleCons, currentContextName, null);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to matching nodes during deduce()\n");
+		/* BEGIN - Helpful Prints */
+		getNodesToSendRequest(ChannelTypes.MATCHED, currentContextName, null);
+		// what to return here ?
+		Runner.run();
+		System.out.println(knownInstances.toString());
+	}
+
+	public void add() {
+		/* BEGIN - Helpful Prints */
+		System.out.println("add() method initated.\n");
+		System.out.println("-------------------------");
+		/* END - Helpful Prints */
+		Runner.initiate();
+		String currentContextName = Controller.getCurrentContextName();
+		boolean reportSign = Controller.isNegated(this);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to rule nodes during add()\n");
+		/* END - Helpful Prints */
+		getNodesToSendReport(ChannelTypes.RuleAnt, currentContextName, null, reportSign, InferenceTypes.FORWARD);
+		/* BEGIN - Helpful Prints */
+		System.out.println("\nSending to matching nodes during add()\n");
+		/* END - Helpful Prints */
+		getNodesToSendReport(ChannelTypes.MATCHED, currentContextName, null, reportSign, InferenceTypes.FORWARD);
+		System.out.println(Runner.run());
+	}
+
 	public void processRequests() {
 		for (Channel outChannel : outgoingChannels)
 			try {
@@ -827,10 +835,12 @@ public class PropositionNode extends Node implements Serializable {
 				boolean forwardReportType = reportToBeBroadcasted.getInferenceType() == InferenceTypes.FORWARD;
 				if (currentChannel instanceof RuleToConsequentChannel) {
 					PropositionNode supportNode = buildNodeSubstitutions(currentReport.getSubstitutions());
-					supportNode.addJustificationBasedSupport(reportToBeBroadcasted.getSupport());
-					PropositionSet reportSupportPropSet = new PropositionSet();
-					reportSupportPropSet.add(supportNode.getId());
-					reportToBeBroadcasted.setSupport(reportSupportPropSet);
+					if (supportNode != null) {
+						supportNode.addJustificationBasedSupport(reportToBeBroadcasted.getSupport());
+						PropositionSet reportSupportPropSet = new PropositionSet();
+						reportSupportPropSet.add(supportNode.getId());
+						reportToBeBroadcasted.setSupport(reportSupportPropSet);
+					}
 				}
 				// TODO: GRADED PROPOSITIONS HANDLING REPORTS
 				if (forwardReportType) {

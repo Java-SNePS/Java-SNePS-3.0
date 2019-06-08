@@ -37,4 +37,18 @@ public class KnownInstances implements Iterable<Report> {
 			allMergedReports.addAll(set);
 		return allMergedReports.iterator();
 	}
+
+	@Override
+	public String toString() {
+		String res = "[ ";
+		for (Set<Report> iterable_element : instances.values()) {
+			res += iterable_element.toString() + ", ";
+		}
+
+		if (res.length() > 2)
+			res = res.substring(0, res.length() - 2);
+		else
+			res += "]";
+		return res;
+	}
 }

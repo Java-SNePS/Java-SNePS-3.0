@@ -77,14 +77,6 @@ public class Test {
 		wires.add(new Wire(Network.getRelation("member"), leo));
 		wires.add(new Wire(Network.getRelation("class"), dog));
 		Node leoIsADog = Network.buildMolecularNode(wires, classMemberCF);
-		try {
-			Controller.addPropToContext("default", fidoIsADog.getId());
-			Controller.addPropToContext("default", leoIsADog.getId());
-		} catch (ContextNameDoesntExistException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		wires.clear();
 		wires.add(new Wire(Network.getRelation("member"), X));
 		wires.add(new Wire(Network.getRelation("class"), dog));
@@ -105,17 +97,27 @@ public class Test {
 		wires.add(new Wire(Relation.andAnt, xIsADog));
 		wires.add(new Wire(Relation.cq, xIsLoyal));
 		Node ifXIsADogThenXIsLoyal = Network.buildMolecularNode(wires, RelationsRestrictedCaseFrame.andRule);
-//		wires.clear();
-//		wires.add(new Wire(Network.getRelation("member"), roger));
-//		wires.add(new Wire(Network.getRelation("class"), dog));
-//		Node rogerIsADog = Network.buildMolecularNode(wires, classMemberCF);
+		wires.clear();
+		wires.add(new Wire(Network.getRelation("member"), roger));
+		wires.add(new Wire(Network.getRelation("class"), dog));
+		Node rogerIsADog = Network.buildMolecularNode(wires, classMemberCF);
+		try {
+			Controller.addPropToContext("default", fidoIsADog.getId());
+			Controller.addPropToContext("default", leoIsADog.getId());
+			Controller.addPropToContext("default", ifXIsADogThenXIsLoyal.getId());
+			Controller.addPropToContext("default", rogerIsADog.getId());
+		} catch (ContextNameDoesntExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Hashtable<String, Node> nodes = Network.getNodes();
 		System.out.println("Nodes in the Network\n" + nodes + "\n");
 //		Substitutions filterSubs = new LinearSubstitutions();
 //		filterSubs.putIn(new Binding(X, nodes.get("Leo")));
 //		filterSubs.putIn(new Binding(Y, nodes.get("Roger")));
 //		((PropositionNode) leoIsADog).isWhQuestion(filterSubs);
-		((PropositionNode) xIsLoyal).deduce();
+//		((PropositionNode) xIsLoyal).deduce();
+		((PropositionNode) rogerIsADog).add();
 	}
 
 }

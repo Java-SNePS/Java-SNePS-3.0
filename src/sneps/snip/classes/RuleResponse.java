@@ -21,7 +21,7 @@ public class RuleResponse {
 		return report;
 	}
 
-	public void setReports(Report report) {
+	public void setReport(Report report) {
 		this.report = report;
 	}
 

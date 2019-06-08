@@ -1,6 +1,7 @@
 package sneps.network;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -119,34 +120,53 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 	}
 
 	public Collection<RuleResponse> applyRuleHandler(Report report, Channel currentChannel) {
-		Node currentChannelReporter = currentChannel.getReporter();
-		String contextID = currentChannel.getContextName();
-		// Context context = SNeBR.getContextByID(contextID);
-		RuleUseInfo rui;
-		if (report.isPositive()) {
-			FlagNode fn = new FlagNode(currentChannelReporter, report.getSupport(), 1);
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.putIn(fn);
-			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
-		} else {
-			FlagNode fn = new FlagNode(currentChannelReporter, report.getSupport(), 2);
-			FlagNodeSet fns = new FlagNodeSet();
-			fns.putIn(fn);
-			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
-		}
-		RuleUseInfoSet crtemp = null;
-		if (this.getContextRUISSet().hasContext(contextID)) {
-			crtemp = this.getContextRUISSet().getContextRUIS(contextID);
-		} else {
-			crtemp = addContextRUIS(contextID);
-		}
-		RuleUseInfoSet res = crtemp.add(rui);
-		if (res == null)
-			res = new RuleUseInfoSet();
-		for (RuleUseInfo tRui : res) {
-			sendRui(tRui, contextID);
-		}
-		return null;
+//		Node currentChannelReporter = currentChannel.getReporter();
+//		String contextID = currentChannel.getContextName();
+//		// Context context = SNeBR.getContextByID(contextID);
+//		RuleUseInfo rui;
+//		if (report.isPositive()) {
+//			FlagNode fn = new FlagNode(currentChannelReporter, report.getSupport(), 1);
+//			FlagNodeSet fns = new FlagNodeSet();
+//			fns.putIn(fn);
+//			rui = new RuleUseInfo(report.getSubstitutions(), 1, 0, fns);
+//		} else {
+//			FlagNode fn = new FlagNode(currentChannelReporter, report.getSupport(), 2);
+//			FlagNodeSet fns = new FlagNodeSet();
+//			fns.putIn(fn);
+//			rui = new RuleUseInfo(report.getSubstitutions(), 0, 1, fns);
+//		}
+//		RuleUseInfoSet crtemp = null;
+//		if (this.getContextRUISSet().hasContext(contextID)) {
+//			crtemp = this.getContextRUISSet().getContextRUIS(contextID);
+//		} else {
+//			crtemp = addContextRUIS(contextID);
+//		}
+//		RuleUseInfoSet res = crtemp.add(rui);
+//		if (res == null)
+//			res = new RuleUseInfoSet();
+//		for (RuleUseInfo tRui : res) {
+//			sendRui(tRui, contextID);
+//		}
+//		return null;
+		Hashtable<String, Node> nodes = Network.getNodes();
+		Collection<RuleResponse> toBeReturned = new ArrayList<RuleResponse>();
+		RuleResponse value1 = new RuleResponse();
+		Substitutions reportSubs1 = new LinearSubstitutions();
+		reportSubs1.putIn(new Binding((VariableNode) nodes.get("X"), nodes.get("Leo")));
+		value1.addReport(new Report(reportSubs1, new PropositionSet(), true, InferenceTypes.BACKWARD));
+		value1.addChannel(((PropositionNode) nodes.get("P3")).establishChannel(ChannelTypes.RuleCons, this,
+				new LinearSubstitutions(), new LinearSubstitutions(), Controller.getCurrentContextName(), -1));
+		toBeReturned.add(value1);
+
+		RuleResponse value2 = new RuleResponse();
+		Substitutions reportSubs2 = new LinearSubstitutions();
+		reportSubs2.putIn(new Binding((VariableNode) nodes.get("X"), nodes.get("Fido")));
+		value2.addReport(new Report(reportSubs2, new PropositionSet(), true, InferenceTypes.BACKWARD));
+		value2.addChannel(((PropositionNode) nodes.get("P3")).establishChannel(ChannelTypes.RuleCons, this,
+				new LinearSubstitutions(), new LinearSubstitutions(), Controller.getCurrentContextName(), -1));
+		toBeReturned.add(value2);
+		return toBeReturned;
+
 	}
 
 	abstract protected void sendRui(RuleUseInfo tRui, String contextID);
@@ -409,8 +429,10 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				/* Case 1 */
 				if (assertedInContext(currentContextName)) {
 					requestAntecedentsNotAlreadyWorkingOn(currentChannel, false);
-				} else
+				} else {
 					super.processSingleRequestsChannel(currentChannel);
+					return;
+				}
 			} else {
 				VariableNodeStats ruleNodeStats = computeNodeStats(filterSubs);
 				boolean ruleNodeAllVariablesBound = ruleNodeStats.areAllVariablesBound();
@@ -431,6 +453,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 				}
 				/* TODO instead of calling super we know it's the case of isWhQuestion */
 				super.processSingleRequestsChannel(currentChannel);
+				return;
 			}
 		} else
 			super.processSingleRequestsChannel(currentChannel);
@@ -500,7 +523,7 @@ public abstract class RuleNode extends PropositionNode implements Serializable {
 						 */
 
 						/* always sue the extracted report subs in the requests */
-						
+
 						for (Report knownInstance : knownInstances) {
 							Substitutions knownInstanceSubstitutions = knownInstance.getSubstitutions();
 							boolean subSetCheck = ruleNodeExtractedSubs.isSubSet(knownInstanceSubstitutions);
