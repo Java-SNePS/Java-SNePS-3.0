@@ -998,8 +998,9 @@ public class Network implements Serializable {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
-		LinkedList<Relation> list = caseFrame.getRelations();
+		LinkedList<Relation> list = (LinkedList<Relation>) caseFrame.getRelations().clone();
 		for (int i = 0; i < array.length; i++) {
 			Relation r = (Relation) array[i][0];
 			if (list.contains(r)) {
