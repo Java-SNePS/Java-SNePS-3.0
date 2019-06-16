@@ -1,23 +1,34 @@
 package sneps.snip.matching;
 
+import java.util.LinkedList;
+
 import sneps.network.Node;
 import sneps.network.classes.setClasses.PropositionSet;
 
 public class Match {
-	private Substitutions filterSubs; // whquestion atleastone free not bound
-	// no filter on match channel
-	// target (switch el heya variables to variables) <- source (filter el heya variables to constants)
-	private Substitutions switchSubs;
-	private Node targetnode;
-	private int matchType;
-	private PropositionSet justifications;
+	/**
+	 *This class initialize all the outputs of the match method in Matcher class
+	 *target node -> is the node that match 
+	 *filterSubs -> are the target substitutions list  
+	 *switchSubs -> are the source substitutions list 
+	 *justifications -> set of supports for path-based inference
+	 *matchType -> is the type of match whether it is an exact match, reducible or expandable => 
+	 *matchType =0 if the match is exact
+	 *matchType =1 if reducible or negated reducible
+	 *matchType =2 if expandable or negated expandable 
+	 */
+	public Substitutions switchSubs;
+	public Substitutions filterSubs;
+	public  Node targetnode;
+	public int matchType;
+	//public  PropositionSet justifications;
 
-	public Match(Substitutions filterSubs, Substitutions switchSubs, Node targetnode, int type,PropositionSet justifications) {
+	public Match(Substitutions filterSubs, Substitutions switchSubs, Node targetnode, int matchType) {
 		this.filterSubs = filterSubs;
 		this.switchSubs = switchSubs;
 		this.targetnode = targetnode;
-		this.matchType = type;
-		this.justifications=justifications;
+		this.matchType = matchType;
+		//this.justifications=justifications;
 	}
 
 	public Substitutions getFilterSubs() {
@@ -52,11 +63,11 @@ public class Match {
 		this.matchType = matchType;
 	}
 
-	public PropositionSet getJustifications() {
+	/*public PropositionSet getJustifications() {
 		return justifications;
 	}
 
 	public void setJustifications(PropositionSet justifications) {
 		this.justifications = justifications;
-	}
+	}*/
 }

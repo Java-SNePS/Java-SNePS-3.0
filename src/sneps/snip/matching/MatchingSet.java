@@ -20,7 +20,7 @@ public class MatchingSet {
 
 	}
 	
-	/*public boolean add(Node n) {
+	public boolean add(Node n) {
 
 		if(n.getTerm()instanceof Molecular){
 			
@@ -41,9 +41,9 @@ public class MatchingSet {
 		else
 
 			return VariableBaseNodes.add(n);
-			}*/
+			}
 	
-	/*public boolean remove(Node n) {
+	public boolean remove(Node n) {
 
 		if(n.getTerm()instanceof Molecular){
 			
@@ -73,7 +73,7 @@ public class MatchingSet {
 
 		return remove(n1)&&add(n2);
 
-	}*/
+	}
 
 
 
@@ -123,7 +123,7 @@ public class MatchingSet {
 
 	
 
-	/*public void add(NodeSet ns){
+	public void add(NodeSet ns){
 
 		for (int i = 0; i < ns.size(); i++) 
 
@@ -131,7 +131,7 @@ public class MatchingSet {
 
 		
 
-	}*/
+	}
 
 
 }

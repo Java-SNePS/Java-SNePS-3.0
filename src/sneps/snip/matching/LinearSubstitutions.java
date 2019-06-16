@@ -73,7 +73,7 @@ public class LinearSubstitutions implements Substitutions {
 	/**
 	 *Returns the binding witch have mv as its variable node or null if mv is
 	 *not in the substitutions list
-	 *@param mv mvar
+	 *@param mv variableNode
 	 *@return Binding or null
 	 */
 	public Binding getBindingByVariable(VariableNode mv)
@@ -116,9 +116,15 @@ public class LinearSubstitutions implements Substitutions {
 		Binding b=sl.sub.get(i);
 		if(!isMember(b))
 			putIn(b);
+	 }
 	}
-	}
-
+	
+	/**
+	 * Insert Binding mb  in this substitutions list if the variable is not bound
+	 * if the variable of binding mb is bound then update it 
+	 * @param mb
+	 */
+	
 	@Override
 	public void insertOrUpdate(Binding mb) {
 		if(isBound(mb.getVariable()))
@@ -158,8 +164,8 @@ public class LinearSubstitutions implements Substitutions {
 
 	/**
 	 * Check if the substitutions list s is compatible to this or not
-	 * two lists are compatible if ever variable node in both are bound to the same
-	 * node and ever node in both are bound to the same variable node
+	 * two lists are compatible if every variable node in both are bound to the same
+	 * node and every node in both are bound to the same variable node
 	 * @param s substitutions list
 	 * @return true or false
 	 */
@@ -339,7 +345,7 @@ public class LinearSubstitutions implements Substitutions {
 	}
 
 	/**
-	 *Returns the variable node of the node in the substitutions list if node is
+	 *Returns the variable node of the node mn in the substitutions list if node is
 	 *not in the substitutions list return null
 	 *@param mn is the node
 	 *@return VariableNode or null
@@ -471,13 +477,7 @@ public class LinearSubstitutions implements Substitutions {
 	 * @param n node
 	 * @return node
 	 */
-	/*public Node value(VariableNode n)
-	{//TODO messing here
-		Binding b = getBindingByVariable(n);
-		if(b==null)
-			return null;
-		return b.getNode();
-	}*/
+	
 	public Node value(VariableNode n){
 		Binding b = getBindingByVariable(n);
 		if(b==null)		
