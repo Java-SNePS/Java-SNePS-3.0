@@ -42,6 +42,9 @@ public class ControllerTest {
         Network.defineDefaults();
         for (int i = 0; i < 8889; i++)
             Network.buildBaseNode("n" + i, Semantic.proposition);
+        ((PropositionNode) Network.getNodeById(4)).setHyp(true);
+        ((PropositionNode) Network.getNodeById(5)).setHyp(true);
+        ((PropositionNode) Network.getNodeById(7)).setHyp(true);
         Controller.createContext(testContextName);
     }
 
@@ -501,9 +504,17 @@ public class ControllerTest {
 
     @Test
     public void isSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, ContextNameDoesntExistException, CustomException, NodeNotFoundInPropSetException, ContradictionFoundException, DuplicatePropositionException, CannotInsertJustificationSupportException {
-        ((PropositionNode) Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(new PropositionSet(new int[]{4, 5, 7}));
         PropositionSet p = new PropositionSet(new int[]{4, 5, 7});
-        Controller.addPropsToCurrentContext(p);
+        int[] props = PropositionSet.getPropsSafely(p);
+//        for(int i=0; i< props.length; i++)
+//        { 
+//        	PropositionNode n = (PropositionNode) Network.getNodeById(i);
+//        	n.setHyp(true);
+//        }
+        PropositionSet p1= new PropositionSet(props);
+        ((PropositionNode) Network.getNodeById(10)).getBasicSupport().addJustificationBasedSupport(p1);
+
+        Controller.addPropsToCurrentContext(p1);
         assertTrue(Controller.getCurrentContext().isSupported((PropositionNode) Network.getNodeById(10)));
         assertFalse(Controller.getCurrentContext().isAsserted((PropositionNode) Network.getNodeById(37)));
     }
