@@ -117,6 +117,17 @@ public class Controller {
 		return addPropsToContext(contextName, hyps);
 	}
 
+	public static Context createContext(String contextName, PropositionSet hyps, ArrayList<PropositionSet> props) 
+			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicateContextNameException {
+		if (contextSet.getContext(contextName) != null) {
+			throw new DuplicateContextNameException(contextName);
+		}
+		Context newContext = new Context(contextName, hyps, props);
+		contextSet.add(newContext);
+
+		return newContext;
+	}
+
 	/**
 	 * Asserts a hyp in an existing Context
 	 *
@@ -164,7 +175,7 @@ public class Controller {
 					PropositionSet newTele = new PropositionSet();
 					for(int k=0; k<props1.length; k++) {
 						if(props[i]!=props1[k]) {
-							newTele.add(props1[k]);
+							newTele = newTele.add(props1[k]);
 						}
 					}
 					teleProps.set(j, newTele);
@@ -194,9 +205,8 @@ public class Controller {
 
 	public static Context addTelescopedPropToContext(String contextName, int prop, int level)
 			throws ContextNameDoesntExistException, NotAPropositionNodeException, 
-			NodeNotFoundInNetworkException, DuplicatePropositionException, 
-			ContradictionFoundException, NodeNotFoundInPropSetException {
-
+			NodeNotFoundInNetworkException, 
+			ContradictionFoundException, NodeNotFoundInPropSetException, DuplicatePropositionException {
 		Context oldContext = contextSet.getContext(contextName);
 
 		if (oldContext == null)
@@ -217,8 +227,27 @@ public class Controller {
 		PropositionSet hypSet = oldContext.getHypothesisSet();
 
 		ArrayList<PropositionSet> teleProps = oldContext.getTelescopedSet();
+		try {
+			PropositionSet newSet = new PropositionSet();
 
-		teleProps.get(level-1).add(prop);
+			if(teleProps.size() == 0) {
+				PropositionSet propSetTemp = new PropositionSet();
+				propSetTemp = propSetTemp.add(prop);
+				teleProps.add(propSetTemp);
+			}
+			if (level <= teleProps.size()) {
+				newSet = teleProps.get(level-1).add(prop);
+				teleProps.set(level-1, newSet);
+			}
+			else  {
+				newSet = teleProps.get(level-2).add(prop);
+				teleProps.add(newSet);
+			}
+
+
+
+		} catch (DuplicatePropositionException e) {
+		}
 
 		if(!nodesToBeRemoved.isEmpty()) {
 
@@ -229,7 +258,7 @@ public class Controller {
 					PropositionSet newTele = new PropositionSet();
 					for(int k=0; k<props1.length; k++) {
 						if(props[i]!=props1[k]) {
-							newTele.add(props1[k]);
+							newTele = newTele.add(props1[k]);
 						}
 					}
 					teleProps.set(j, newTele);
@@ -287,7 +316,7 @@ public class Controller {
 			node.setHyp(true);
 		}
 		ArrayList<PropositionSet> teleProps = oldContext.getTelescopedSet();
-		
+
 		if(!nodesToBeRemoved.isEmpty()) {
 
 			int[] props = PropositionSet.getPropsSafely(nodesToBeRemoved);
@@ -297,14 +326,14 @@ public class Controller {
 					PropositionSet newTele = new PropositionSet();
 					for(int k=0; k<props1.length; k++) {
 						if(props[i]!=props1[k]) {
-							newTele.add(props1[k]);
+							newTele = newTele.add(props1[k]);
 						}
 					}
 					teleProps.set(j, newTele);
 				}
 			}
 		}
-		
+
 		temp = new Context(contextName, oldContext.getHypothesisSet().union(hyps), teleProps);
 		contextSet.add(temp);
 		return temp;
@@ -401,7 +430,10 @@ public class Controller {
 	 */
 	public static ArrayList<PropositionSet> combine(Collection<PropositionSet> negatingPropSupports, Collection<PropositionSet> negatedPropSupports) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		ArrayList<PropositionSet> output = new ArrayList<>();
-
+		if(negatingPropSupports.isEmpty())
+			output.addAll(negatedPropSupports);
+		if(negatedPropSupports.isEmpty())
+			output.addAll(negatingPropSupports);
 		for (PropositionSet negatingPropSupp : negatingPropSupports) {
 			for (PropositionSet negatedPropSupp : negatedPropSupports) {
 				output.add(negatingPropSupp.union(negatedPropSupp));
@@ -502,10 +534,9 @@ public class Controller {
 		Collection<PropositionSet> negatingPropSupports = negatingNode.getAssumptionBasedSupport().values();
 		Collection<PropositionSet> combinedContradictorySupports = new ArrayList<>();
 
-		for (Node dominatedNode : arg.getNodeSet()) {
-			Collection<PropositionSet> negatedNodeSupports = ((PropositionNode) dominatedNode).getAssumptionBasedSupport().values();
-			combinedContradictorySupports.addAll(combine(negatingPropSupports, negatedNodeSupports));
-		}
+		Collection<PropositionSet> negatedNodeSupports = ((PropositionNode) arg.getNodeSet().getNode(0)).getAssumptionBasedSupport().values();
+		combinedContradictorySupports.addAll(combine(negatingPropSupports, negatedNodeSupports));
+
 
 		/*                    add to minimalNoGoods  */
 		Collection<BitSet> combinedContradictorySupportsBitSetCollection = generateBitSetsFromPropositionSets(combinedContradictorySupports);
@@ -703,7 +734,7 @@ public class Controller {
 
 	public static PropositionSet handleContradiction(PropositionNode prop, ArrayList<NodeSet> contradictions) 
 			throws NodeNotFoundInNetworkException, NotAPropositionNodeException, 
-			ContextNameDoesntExistException, DuplicatePropositionException, ContradictionFoundException {
+			ContextNameDoesntExistException, ContradictionFoundException {
 
 		UpCableSet up = prop.getUpCableSet();
 		PropositionNode negatedNode = null;
@@ -749,13 +780,16 @@ public class Controller {
 			for(int i = 0; i < props.length; i++) {
 				PropositionNode p = (PropositionNode) Network.getNodeById(props[i]);
 				if(p.getId() == prop.getId()) {
-					temp.add(prop.getId());
+					try {
+						temp = temp.add(prop.getId());
+					} catch (DuplicatePropositionException e) {
+					}
 					t1Graded = true;
 					pExists = true;
 					break;
 				}
 			}
-			if(!pExists) {
+			if(pExists) {
 				tempBottomKernels2.add(set1);
 			}
 		}
@@ -766,13 +800,16 @@ public class Controller {
 			for(int i = 0; i < props.length; i++) {
 				PropositionNode p = (PropositionNode) Network.getNodeById(props[i]);
 				if(p.getId() == negatedNode.getId()) {
-					temp.add(negatedNode.getId());
+					try {
+						temp = temp.add(negatedNode.getId());
+					} catch (DuplicatePropositionException e) {
+					}
 					t2Graded = true;
 					pExists = true;
 					break;
 				}
 			}
-			if(!pExists) {
+			if(pExists) {
 				tempBottomKernels1.add(set2);
 			}
 		}
@@ -784,17 +821,30 @@ public class Controller {
 
 			if(t1Graded) {
 				for(int i = 0; i<tempBottomKernels1.size(); i++) {
-					tempBottomKernels1.get(i).add(prop.getId());
+					try {
+						PropositionSet temp1 = tempBottomKernels1.get(i).add(prop.getId());
+						tempBottomKernels1.set(i, temp1);
+					} catch (DuplicatePropositionException e) {
+
+					}
 				}
 				bottomKernels.addAll(tempBottomKernels1);
 			}
 			else {
 				for(int i = 0; i<tempBottomKernels2.size(); i++) {
-					tempBottomKernels2.get(i).add(negatedNode.getId());
+					try {
+						PropositionSet temp1 = tempBottomKernels2.get(i).add(negatedNode.getId());
+						tempBottomKernels2.set(i, temp1);
+					} catch (DuplicatePropositionException e) {
+					}
 				}
 				bottomKernels.addAll(tempBottomKernels2);
 			}
 		}
+		if(tempBottomKernels1.isEmpty())
+			bottomKernels = tempBottomKernels2;
+		if(tempBottomKernels2.isEmpty())
+			bottomKernels = tempBottomKernels1;
 
 		for(PropositionSet der1: tempBottomKernels1) {
 			for(PropositionSet der2: tempBottomKernels2) {
@@ -815,7 +865,10 @@ public class Controller {
 			}
 			for(int i=0; i<result.size(); i++) {
 				if(min == result.get(i)) {
-					nodesToBeRemoved.add(props[i]);
+					try {
+						nodesToBeRemoved = nodesToBeRemoved.add(props[i]);
+					} catch (DuplicatePropositionException e) {
+					}
 				}
 			}
 		}

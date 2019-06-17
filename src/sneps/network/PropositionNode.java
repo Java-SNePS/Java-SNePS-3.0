@@ -20,6 +20,7 @@ import sneps.network.classes.term.Term;
 
 import java.util.Hashtable;
 
+import sneps.snebr.Context;
 import sneps.snebr.Support;
 import sneps.snip.Pair;
 import sneps.snip.Report;
@@ -233,8 +234,8 @@ public class PropositionNode extends Node implements Serializable{
 	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
-	public void addTelescopedSupport(String contextName, PropositionNode parent) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, ContradictionFoundException, ContextNameDoesntExistException {
-		basicSupport.addTelescopedSupport(contextName, parent);
+	public Context addTelescopedSupport(String contextName, PropositionNode parent) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, ContradictionFoundException, ContextNameDoesntExistException {
+		return basicSupport.addTelescopedSupport(contextName, parent);
 	}
 	public void removeNodeFromSupports(PropositionNode propNode) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		basicSupport.removeNodeFromSupports(propNode);

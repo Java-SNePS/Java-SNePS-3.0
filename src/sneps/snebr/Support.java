@@ -189,7 +189,7 @@ public class Support implements Serializable{
 	 * @throws ContextNameDoesntExistException 
 	 * @throws ContradictionFoundException 
 	 */
-	public void addTelescopedSupport(String contextName, PropositionNode parent) 
+	public Context addTelescopedSupport(String contextName, PropositionNode parent) 
 			throws NodeNotFoundInPropSetException, NotAPropositionNodeException, 
 			NodeNotFoundInNetworkException, DuplicatePropositionException, ContradictionFoundException, 
 			ContextNameDoesntExistException {
@@ -212,14 +212,15 @@ public class Support implements Serializable{
 				current = telescope.get(propSet.getHash());
 				gradeChain = tempGrades.get(propSet.getHash());
 			}
-			current.add(teleProp.getId());
-			gradeChain.add(Integer.parseInt(gradeNode.getTerm().getIdentifier()));
+			current = current.add(teleProp.getId());
+			ArrayList<Integer> gradeChain2 = (ArrayList<Integer>) gradeChain.clone();
+			gradeChain2.add(Integer.parseInt(gradeNode.getTerm().getIdentifier()));
 			assumptionBasedSupport.put(propSet.getHash(), propSet);
 			telescopedSupport.put(propSet.getHash(), current);
-			grades.put(propSet.getHash(), gradeChain);
-			telescopeLevel = gradeChain.size();
+			grades.put(propSet.getHash(), gradeChain2);
+			telescopeLevel = gradeChain2.size();
 		}
-		Controller.addTelescopedPropToContext(contextName, teleProp.getId(), telescopeLevel);
+		return Controller.addTelescopedPropToContext(contextName, teleProp.getId(), telescopeLevel);
 
 	}
 
