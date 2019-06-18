@@ -27,6 +27,7 @@ import sneps.network.classes.RCFP;
 import sneps.network.classes.Relation;
 import sneps.network.classes.RelationsRestrictedCaseFrame;
 import sneps.network.classes.Semantic;
+import sneps.network.classes.SemanticHierarchy;
 import sneps.network.classes.SubDomainConstraint;
 import sneps.network.classes.Wire;
 import sneps.network.classes.setClasses.NodeSet;
@@ -36,17 +37,6 @@ import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
 import sneps.network.classes.term.Variable;
-import sneps.exceptions.CannotBuildNodeException;
-import sneps.exceptions.CaseFrameCannotBeRemovedException;
-import sneps.exceptions.CaseFrameMissMatchException;
-import sneps.exceptions.CaseFrameWithSetOfRelationsNotFoundException;
-import sneps.exceptions.CustomException;
-import sneps.exceptions.EquivalentNodeException;
-import sneps.exceptions.IllegalIdentifierException;
-import sneps.exceptions.NodeCannotBeRemovedException;
-import sneps.exceptions.NodeNotFoundInNetworkException;
-import sneps.exceptions.NotAPropositionNodeException;
-import sneps.exceptions.RelationDoesntExistException;
 import sneps.gui.Main;
 import sneps.network.paths.FUnitPath;
 import sneps.network.paths.Path;
@@ -599,7 +589,7 @@ public class Network implements Serializable {
 		}
 		
 		Base b = new Base(identifier);
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("Proposition") || semantic.getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode = new PropositionNode(b);
 			nodes.put(identifier, propNode);
 			propositionNodes.put(identifier, propNode);
@@ -645,11 +635,12 @@ public class Network implements Serializable {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws CaseFrameMissMatchException 
+	 * @throws SemanticNotFoundInNetworkException 
 	 * @throws DuplicateNodeException
 	 *
 	 */
 	public static Node buildMolecularNode(ArrayList<Wire> wires, CaseFrame caseFrame) throws CannotBuildNodeException,
-			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException, CaseFrameMissMatchException {
+			EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
 		// this node is either null, or an equivalent node to the one this method is tryin to build
 		// if an equivalent node is found, it is returned and no new node is built.
@@ -670,7 +661,8 @@ public class Network implements Serializable {
 			throw new CaseFrameMissMatchException(
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// create the Molecular Node
-		if (caseFrame.getSemanticClass().equals("Proposition")) {
+		if (caseFrame.getSemanticClass().equals("Proposition") 
+				|| SemanticHierarchy.getSemantic(caseFrame.getSemanticClass()).getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (isToBePattern(array)) {
 				// System.out.println("building patt");
@@ -705,7 +697,7 @@ public class Network implements Serializable {
 
 	public static Node buildMolecularNode(ArrayList<Wire> wires, RelationsRestrictedCaseFrame caseFrame)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, SemanticNotFoundInNetworkException {
 		Object[][] array = turnWiresIntoArray(wires);
 		// this node is either null, or an equivalent node to the one this method is tryin to build
 		// if an equivalent node is found, it is returned and no new node is built.
@@ -727,7 +719,8 @@ public class Network implements Serializable {
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// System.out.println("done 3rd");
 		// create the Molecular Node
-		if (caseFrame.getSemanticClass().equals("Proposition")) {
+		if (caseFrame.getSemanticClass().equals("Proposition")
+				|| SemanticHierarchy.getSemantic(caseFrame.getSemanticClass()).getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (isToBePattern(array)) {
 				// System.out.println("building patt");
@@ -908,10 +901,9 @@ public class Network implements Serializable {
 				if (array[i][1].getClass().getSimpleName().equals("VariableNode")) {
 					continue;
 				} else {
-					if (!(((Relation) array[i][0]).getType()
-							.equals(((Node) array[i][1]).getSemantic().getSemanticType())
-							|| ((Node) array[i][1]).getSemantic().getSemanticType()
-									.contains(((Relation) array[i][0]).getType()))) {
+					if (!(((Relation) array[i][0]).getType().equals(((Node) array[i][1]).getSemantic().getSemanticType())
+							|| ((Node) array[i][1]).getSemantic().getSemanticType().contains(((Relation) array[i][0]).getType())
+							|| ((Node) array[i][1]).getSemantic().getSuperClassesNames().contains(((Relation) array[i][0]).getType()))) {
 						return false;
 
 					}
@@ -1006,8 +998,9 @@ public class Network implements Serializable {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
-		LinkedList<Relation> list = caseFrame.getRelations();
+		LinkedList<Relation> list = (LinkedList<Relation>) caseFrame.getRelations().clone();
 		for (int i = 0; i < array.length; i++) {
 			Relation r = (Relation) array[i][0];
 			if (list.contains(r)) {
@@ -1094,9 +1087,9 @@ public class Network implements Serializable {
 		Open open = new Open(patName, dCableSet);
 		String temp = caseFrame.getSemanticClass();
 		Semantic semantic = new Semantic(temp);
-		// builds a proposition node if the semantic class is proposition, and
+		// builds a proposition node if the semantic class is proposition or one of its children, and
 		// pattern node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("Proposition") || semantic.getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = new AndEntailment(open);
@@ -1134,9 +1127,9 @@ public class Network implements Serializable {
 		Open open = new Open(patName, dCableSet);
 		String temp = getCFSignature(turnIntoHashtable(relNodeSet), caseFrame);
 		Semantic semantic = new Semantic(temp);
-		// builds a proposition node if the semantic class is proposition, and
+		// builds a proposition node if the semantic class is proposition or one of its children, and
 		// pattern node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("Proposition") || semantic.getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule)
 				propNode = new AndEntailment(open);
@@ -1194,7 +1187,7 @@ public class Network implements Serializable {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("Proposition") || semantic.getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = new AndEntailment(c);
@@ -1230,7 +1223,7 @@ public class Network implements Serializable {
 		Semantic semantic = new Semantic(temp);
 		// builds a proposition node if the semantic class is proposition, and
 		// closed node otherwise
-		if (semantic.getSemanticType().equals("Proposition")) {
+		if (semantic.getSemanticType().equals("Proposition") || semantic.getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (caseFrame == RelationsRestrictedCaseFrame.andRule) {
 				propNode = new AndEntailment(c);

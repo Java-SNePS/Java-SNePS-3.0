@@ -164,7 +164,7 @@ public class ControllerTest {
 
 
     @Test
-    public void addConflictingHypToContextWithoutUtilizingCache() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, CaseFrameMissMatchException {
+    public void addConflictingHypToContextWithoutUtilizingCache() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         setupContradiction3();
         int id = negatingProp.getId();
         try {
@@ -196,7 +196,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void addAConflictingHepRepeatedly() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, ContextNameDoesntExistException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         setupContradiction3();
         Controller.getMinimalNoGoods().add(genBitSetFromArray(new int[] {70, 71}));
         int id = negatingProp.getId();
@@ -277,7 +277,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addConflictingHypsToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, CaseFrameMissMatchException {
+    public void addConflictingHypsToContext() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, IllegalIdentifierException, CannotBuildNodeException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         setupContradiction3();
         boolean caught = false;
         int negatingId = negatingProp.getId();
@@ -304,7 +304,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void addConflictingHypsWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NotAPropositionNodeException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void addConflictingHypsWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NotAPropositionNodeException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         boolean caught = false;
         try {
             PropositionSet propSet = setupContradiction4();
@@ -337,7 +337,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void resolveConflictingContextWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void resolveConflictingContextWithMultipleContradictions() throws IllegalIdentifierException, NodeNotFoundInNetworkException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, ContextNameDoesntExistException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         boolean caught = false;
         PropositionSet propSet = setupContradiction4();
         try {
@@ -676,7 +676,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void getConflictingHypsCollectionForNegatingTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void getConflictingHypsCollectionForNegatingTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 
         setupContradiction();
         BitSet temp = genBitSetFromArray(new int[]{40, 43, 46, 48, 49, 81, 85, 89});
@@ -699,7 +699,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void getConflictingHypsCollectionForNegatedTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotBuildNodeException, EquivalentNodeException, IllegalIdentifierException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void getConflictingHypsCollectionForNegatedTest() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotBuildNodeException, EquivalentNodeException, IllegalIdentifierException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 
         setupContradiction();
 
@@ -722,7 +722,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void checkForContradictionTest() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void checkForContradictionTest() throws IllegalIdentifierException, NotAPropositionNodeException, CannotBuildNodeException, EquivalentNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         setupContradiction();
         Context c = Controller.createDummyContext("contradictoryContext", new PropositionSet(new int[]{81, 85, 89}));
 
@@ -834,7 +834,7 @@ public class ControllerTest {
         return true;
     }
 
-    public void setupContradiction() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public void setupContradiction() throws NotAPropositionNodeException, NodeNotFoundInNetworkException, EquivalentNodeException, CannotBuildNodeException, NodeNotFoundInPropSetException, IllegalIdentifierException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
         negated = (PropositionNode) Network.getNodeById(80);
         negated.addJustificationBasedSupport(new PropositionSet(new int[]{60, 64, 75, 78}));
         negated.addJustificationBasedSupport(new PropositionSet(new int[]{81, 85, 89}));
@@ -868,7 +868,7 @@ public class ControllerTest {
         minimalNoGoods.add(genBitSetFromArray(new int[]{46, 48, 49, 81, 85, 89}));
     }
 
-    public void setupContradiction3() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException {
+    public void setupContradiction3() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 
         negatedProp = (PropositionNode) Network.getNodeById(60);
 
@@ -889,7 +889,7 @@ public class ControllerTest {
         minimalNoGoods.add(genBitSetFromArray(new int[]{60, negatingProp.getId(), 62}));
     }
 
-    public PropositionSet setupContradiction4() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public PropositionSet setupContradiction4() throws NodeNotFoundInNetworkException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, NodeNotFoundInPropSetException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 
         ArrayList<BitSet> minimalNoGoods = Controller.getMinimalNoGoods();
         minimalNoGoods.add(genBitSetFromArray(new int[]{1, 4, 6}));
@@ -936,7 +936,7 @@ public class ControllerTest {
         return output;
     }
 
-    public PropositionNode createContradictoryNode(PropositionNode negatedNode, ArrayList<PropositionSet> negatingSupports) throws NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException {
+    public PropositionNode createContradictoryNode(PropositionNode negatedNode, ArrayList<PropositionSet> negatingSupports) throws NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, NotAPropositionNodeException, IllegalIdentifierException, CannotBuildNodeException, EquivalentNodeException, DuplicatePropositionException, CannotInsertJustificationSupportException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 
 
         Node zero = Network.buildBaseNode("0", Semantic.infimum);

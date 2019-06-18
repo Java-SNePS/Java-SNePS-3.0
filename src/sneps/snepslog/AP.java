@@ -246,10 +246,11 @@ public class AP {
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildInfixedTerm(String type, Node arg1, Node arg2)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, arg1));
@@ -297,11 +298,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildEntailment(String entailmentType, ArrayList<Node> antecedents,
 			ArrayList<Node> consequents, String optionalI)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (entailmentType) {
@@ -360,10 +362,11 @@ public class AP {
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildNegatedTerm(Node node)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		wires.add(new Wire(Relation.arg, node));
 		wires.add(new Wire(Relation.max, Network.buildBaseNode("0", Semantic.infimum)));
@@ -390,10 +393,11 @@ public class AP {
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildAndorTerm(String i, String j, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
@@ -421,10 +425,11 @@ public class AP {
 	 * @throws EquivalentNodeException
 	 * @throws CannotBuildNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildSetTerm(String type, ArrayList<Node> arguments)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int i = 0; i < arguments.size(); i++) {
@@ -483,10 +488,11 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildThreshTerm(String thresh, String threshmax, ArrayList<Node> arguments)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		for (int a = 0; a < arguments.size(); a++) {
 			wires.add(new Wire(Relation.arg, arguments.get(a)));
@@ -516,10 +522,11 @@ public class AP {
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildSNeRETerm(String type, Node arg1, Node arg2)
 			throws CannotBuildNodeException, EquivalentNodeException, CaseFrameMissMatchException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, SemanticNotFoundInNetworkException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
@@ -585,11 +592,12 @@ public class AP {
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
 	 * @throws IllegalIdentifierException
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildWithsomeAllTerm(String type, ArrayList<Node> vars, ArrayList<Node> suchthat,
 			ArrayList<Node> doo, ArrayList<Node> elsee)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, CannotBuildNodeException,
-			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException {
+			EquivalentNodeException, CaseFrameMissMatchException, IllegalIdentifierException, SemanticNotFoundInNetworkException {
 		RelationsRestrictedCaseFrame caseFrame = null;
 		ArrayList<Wire> wires = new ArrayList<Wire>();
 		switch (type) {
@@ -660,10 +668,11 @@ public class AP {
 	 * @throws NotAPropositionNodeException
 	 * @throws IllegalIdentifierException
 	 * @throws CaseFrameMissMatchException 
+	 * @throws SemanticNotFoundInNetworkException 
 	 */
 	protected static Node buildAllTerm(ArrayList<Node> vars, Node wff) throws CannotBuildNodeException,
 			EquivalentNodeException, NodeCannotBeRemovedException, RelationDoesntExistException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, NodeNotFoundInPropSetException, CaseFrameMissMatchException {
+			NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException, NodeNotFoundInPropSetException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
 		LinkedList<Relation> relations = new LinkedList<Relation>();
 		Relation forAll = Network.defineRelation("forall", "Infimum");
 		relations.add(forAll);

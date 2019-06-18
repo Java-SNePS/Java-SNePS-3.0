@@ -53,7 +53,7 @@ public class BangPath extends Path implements Serializable{
 		
 		// check it's proposition and it's asserted
 		if ((node.getSemanticType().getSuperClassesNames().contains("Proposition") ||
-				node.getSemanticType().getClass().getSimpleName().equals("Proposition")) &&
+				node.getSemanticType().getSemanticType().equals("Proposition")) &&
 					propositionIsAsserted
 		)
 		{
@@ -97,7 +97,7 @@ public class BangPath extends Path implements Serializable{
 		
 		// check it's proposition and it's asserted
 		if ((node.getSemanticType().getSuperClassesNames().contains("Proposition") ||
-				node.getSemanticType().getClass().getSimpleName().equals("Proposition")) &&
+				node.getSemanticType().getSemanticType().equals("Proposition")) &&
 					propositionIsAsserted
 		)
 		{
