@@ -22,6 +22,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
+
+import oracle.jrockit.jfr.tools.ConCatRepository;
+
 public class Controller {
     private static String currContext = "default";
     private static ContextSet contextSet = new ContextSet(currContext);
@@ -680,7 +684,7 @@ public class Controller {
         		}
         		if(x == contextIds.length - 1){
         			Network.removeNode(propositionNodes.get(key));
-        			removePropositionFromAllContexts(propositionNodes.get(key));        			
+        			removePropositionFromAllContexts(propositionNodes.get(key));
         		}
         	}
     	}
@@ -688,38 +692,427 @@ public class Controller {
     }
     
     @SuppressWarnings("unchecked")
-	public static BaseSupportGraph GTrim(BaseSupportGraph G) {
+	public static BaseSupportGraph GTrim(BaseSupportGraph G) throws Exception {
+    	GTrimHelper(G, G.getGraphSize());
+    	return G;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static void GTrimHelper(BaseSupportGraph G, int previousGraphSize) throws Exception{
     	
-    	LinkedList<LinkedList<PropositionSet>> hypsList = G.getHypsAdjList();
-    	LinkedList<LinkedList<PropositionSet>> supportslist = G.getSupportsAdjList();
+    	LinkedList<LinkedList<GraphNode>> hypsList = G.getHypsAdjList();
+    	LinkedList<LinkedList<GraphNode>> supportsList = G.getSupportsAdjList();
     	
     	for (Iterator iter = hypsList.iterator(); iter.hasNext();){
-    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
-    		PropositionSet currentNode = currentRow.peek(); // looks at the first element of the list (the Node)
-    		PropositionSet currentSupport = currentRow.get(1); // looks at the first support that the node is a subset of
-    		if(currentNode.equals(currentSupport)){
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		if(currentRow.size() <= 1){
+    			GraphNode currentNode = currentRow.peek(); // gets the first element of the list (the Node to be removed)
     			G.removeFromHypList(currentNode);
     		}
     	}
     	
-    	for (Iterator iter = supportslist.iterator(); iter.hasNext();){
-    		LinkedList<PropositionSet> currentRow = (LinkedList<PropositionSet>) iter.next();
-    		PropositionSet currentSupport = currentRow.peek(); // looks at the first element of the list (the Support)
-    		try {
-    			
-    			PropositionSet currentSupportedNode = currentRow.get(1);
-    		
-    		} catch(NullPointerException e) {
-    		
+    	for (Iterator iter = supportsList.iterator(); iter.hasNext();){
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		if(currentRow.size() <=1){
+    			GraphNode currentSupport = currentRow.peek(); // gets the first element of the list (the Support to be removed)
     			G.removeFromSupportList(currentSupport);
-    			
     		}
     		
     	}
     	
-		return G;
+    	if(G.getGraphSize() == previousGraphSize){
+    		return;
+    	} else {
+    		GTrimHelper(G, G.getGraphSize());
+    	}
     }
-   
+    
+    public static BaseSupportGraph RGTrim(BaseSupportGraph G) throws Exception {
+
+    	return (GTrim(G.reverseGraph())).reverseGraph();
+    	
+    }
+    
+    public static int[] noOfOccurancesInSupports(PropositionNode nodeToBeChecked) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	int[] result = new int[2];
+    	int noOfOccurancesInJustifications = 0;
+    	int noOfOccurancesInAssumptions = 0;
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> nodeKeySet = propositionNodes.keySet();
+    	PropositionSet currNode = new PropositionSet(nodeToBeChecked.getId());
+    	for(String key : nodeKeySet){
+    		Hashtable<String, PropositionSet> currJustificationSupport = propositionNodes.get(key).getJustificationSupport();
+    		Set<String> justsKeySet = currJustificationSupport.keySet();
+    		for(String jKey : justsKeySet){
+        		if(currNode.isSubSet(currJustificationSupport.get(jKey))){
+        			noOfOccurancesInJustifications++;
+        		}
+    		}
+    		Hashtable<String, PropositionSet> currAssumptionBasedSupport = propositionNodes.get(key).getAssumptionBasedSupport();
+    		Set<String> assumptionsKeySet = currAssumptionBasedSupport.keySet();
+    		for(String aKey : assumptionsKeySet){
+        		if(currNode.isSubSet(currAssumptionBasedSupport.get(aKey))){
+        			noOfOccurancesInAssumptions++;
+        		}
+    		}
+    	}
+    	
+    	
+    	result[0] = noOfOccurancesInJustifications;
+    	result[1] = noOfOccurancesInAssumptions;
+		
+    	return result;
+    	
+    }
+    
+    
+    public static void alphaCut(double threshold) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, NodeCannotBeRemovedException{
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> nodeKeySet = propositionNodes.keySet();
+    	
+    	for(String key : nodeKeySet){
+    		int [] occs = noOfOccurancesInSupports(propositionNodes.get(key));
+    		double alpha = (occs[0] / occs[1]);
+    		if(alpha < threshold){
+    			removeNodeFromLayeredBeliefState(propositionNodes.get(key));
+    		}
+    	}
+    }
+    
+    public static void removeNodeFromLayeredBeliefState(PropositionNode toBeRemoved) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, NodeNotFoundInPropSetException, DuplicatePropositionException, NodeCannotBeRemovedException{
+    	ArrayList<ArrayList<Integer>> parentsTree = getParentsLayered(toBeRemoved);
+    	ArrayList<Integer> replacerParents = new ArrayList<Integer>();
+    	ArrayList<PropositionSet> supportsToBeReplaced = new ArrayList<PropositionSet>();
+    	for(int i = 0; i < parentsTree.size(); i++){ // revise
+    		ArrayList<Integer> currentLayer = parentsTree.get(i);
+    		
+    			for(int j = 0; j < currentLayer.size(); j++) {
+    				int parentId = currentLayer.get(j);
+    				PropositionNode currParent = (PropositionNode) Network.getNodeById(parentId);
+    				PropositionSet currParentPropSet = new PropositionSet(parentId);
+    				int toBeRemovedId = toBeRemoved.getId();
+    				PropositionSet toBeRemovedPropSet = new PropositionSet(toBeRemovedId);
+    				if(i == 0) {
+    					currParent.setHyp(true);
+    	   				Hashtable<String, PropositionSet> justSupp = currParent.getJustificationSupport();
+        				Set<String> justKeySet = justSupp.keySet();
+        				for(String justKey : justKeySet){
+        					PropositionSet currJust = justSupp.get(justKey);
+        					if(toBeRemovedPropSet.isSubSet(currJust)){
+        						if(justSupp.size() > 1 ) {
+            						supportsToBeReplaced.add(currJust);
+            						replacerParents.add(currParent.getId());
+            						justSupp.remove(justKey);
+        						}
+        					}
+        				}
+        				
+        				Hashtable<String, PropositionSet> assumpSupp = currParent.getAssumptionBasedSupport();
+        				Set<String> assumpKeySet = assumpSupp.keySet();
+        				for(String assumpKey : assumpKeySet){
+        					PropositionSet currAssump = assumpSupp.get(assumpKey);
+        					if(toBeRemovedPropSet.isSubSet(currAssump)){
+        						assumpSupp.remove(assumpKey);
+        					}
+        				}
+    				} else {
+        				Hashtable<String, PropositionSet> assumpSupp = currParent.getAssumptionBasedSupport();
+        				Set<String> assumpKeySet = assumpSupp.keySet();
+        				for(String assumpKey : assumpKeySet){
+        					PropositionSet currAssump = assumpSupp.get(assumpKey);
+        					for(int k = 0; k < supportsToBeReplaced.size(); k++){
+        						PropositionSet suppToBeReplaced = supportsToBeReplaced.get(k);
+            					if(suppToBeReplaced.isSubSet(currAssump)){
+            						currAssump.removeProps(suppToBeReplaced);
+            						currAssump.add(replacerParents.get(k));
+            						
+            					}
+        					}
+        				}
+    				}
+    			}
+    			Network.removeNode(toBeRemoved);
+    	}
+    }
+    
+    public static ArrayList<ArrayList<Integer>> getParentsLayered(PropositionNode child) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
+    	ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+    	boolean parentsFound = false;
+    	ArrayList<Integer> firstLayer = getDirectParents(child);
+    	if(firstLayer.size() > 0) {
+    		parentsFound = true;
+    		result.add(firstLayer);
+    	}
+    	int i = 0;
+    	while(parentsFound){
+    		ArrayList<Integer> nextLayer = new ArrayList<Integer>();
+    		ArrayList<Integer> prevLayer = result.get(i);
+    		for(int j = 0; j < prevLayer.size()-1; j++){
+    			PropositionNode currChild = (PropositionNode) Network.getNodeById(prevLayer.get(j));
+    			concatLists(nextLayer, getDirectParents(currChild));
+    		}
+    		
+    		if(nextLayer.size() > 0){
+    			result.add(nextLayer);
+    			i++;
+    		} else {
+    			parentsFound = false;
+    		}
+    	}
+    	
+    	return result;
+    }
+    
+    public static ArrayList<Integer> getDirectParents(PropositionNode child) throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+    	ArrayList<Integer> result = new ArrayList<Integer>();
+    	Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+    	Set<String> nodesKeySet = propositionNodes.keySet();
+    	PropositionSet childPropSet = new PropositionSet(child.getId());
+    	
+    	for(String NodeKey : nodesKeySet) {
+    		PropositionNode currNode = propositionNodes.get(NodeKey);
+    		Hashtable<String, PropositionSet> currJustSupp = currNode.getJustificationSupport();
+    		Set<String> suppsKeySet = currJustSupp.keySet();
+    		for(String suppKey : suppsKeySet) {
+    			PropositionSet currSet = currJustSupp.get(suppKey);
+    			if(childPropSet.isSubSet(currSet)){
+    				result.add(currNode.getId());
+    				break;
+    			}
+    		}
+    	}
+    	
+    	
+    	return result;
+    }
+    
+    public static ArrayList<Integer> concatLists(ArrayList<Integer> l1, ArrayList<Integer> l2) {
+    	
+    	for(int i = 0; i< l2.size(); i++) {
+    		l1.add(l2.get(i));
+    	}
+    	
+    	return l1;
+    }
+    
+    
+    public static ArrayList<ArrayList<Integer>> findTriplets(BaseSupportGraph G) {
+    	
+    	ArrayList<ArrayList<Integer>> result = new  ArrayList<ArrayList<Integer>>();
+    	LinkedList<LinkedList<GraphNode>> hypsList = G.getHypsAdjList();
+    	LinkedList<LinkedList<GraphNode>> supportsList = G.getSupportsAdjList();
+    	
+    	for(Iterator iter = hypsList.iterator(); iter.hasNext();){
+    		ArrayList<Integer> path = new ArrayList<Integer>();
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		GraphNode firstNode = currentRow.getFirst();
+    		int i = 0;
+    		path.add(firstNode.getGraphId());
+    		for(Iterator it = currentRow.iterator(); it.hasNext();){
+    			GraphNode currentSuppNode = (GraphNode) it.next();
+    			if(i > 0){
+    				path.add(currentSuppNode.getGraphId());
+    				for (Iterator iterator = supportsList.iterator(); iterator.hasNext();) {
+    					LinkedList<GraphNode> currSupportRow = (LinkedList<GraphNode>) iterator.next();
+    					GraphNode currSupport = currSupportRow.getFirst();
+    					if(currSupport.equals(currentSuppNode)){
+    						int j = 0;
+    						for (Iterator itr = currSupportRow.iterator(); itr.hasNext();){
+    							GraphNode currPropNode = (GraphNode) itr.next();
+    							if(j>0){
+    								path.add(currPropNode.getGraphId());
+    								result.add(path);
+    								path.remove(path.size()-1);
+    							}
+    							i++;
+    						}
+    						path.remove(path.size()-1);
+    						break;
+    					}
+    				}
+    			}
+    			i++;
+    		}
+    		
+    	}
+    	
+    	for(Iterator iter = supportsList.iterator(); iter.hasNext();){
+    		ArrayList<Integer> path = new ArrayList<Integer>();
+    		LinkedList<GraphNode> currentRow = (LinkedList<GraphNode>) iter.next();
+    		GraphNode firstNode = currentRow.getFirst();
+    		int i = 0;
+    		path.add(firstNode.getGraphId());
+    		for(Iterator it = currentRow.iterator(); it.hasNext();){
+    			GraphNode currentPropNode = (GraphNode) it.next();
+    			if(i > 0){	
+    				path.add(currentPropNode.getGraphId());
+    				for (Iterator iterator = hypsList.iterator(); iterator.hasNext();) {
+    					LinkedList<GraphNode> currPropRow = (LinkedList<GraphNode>) iterator.next();
+    					GraphNode currProp = currPropRow.getFirst();
+    					if(currProp.equals(currentPropNode)){
+    						int j = 0;
+    						for (Iterator itr = currPropRow.iterator(); itr.hasNext();){
+    							GraphNode currSuppNode = (GraphNode) itr.next();
+    							if(j>0){
+    								path.add(currSuppNode.getGraphId());
+    								result.add(path);
+    								path.remove(path.size()-1);
+    							}
+    							i++;
+    						}
+    						path.remove(path.size()-1);
+    						break;
+    					}
+    				}
+    			}
+    			i++;
+    		}
+    		
+    	}
+    	
+		return result;
+    	
+    }
+    
+    public static ArrayList<ArrayList<Integer>> findChordlessCycles(BaseSupportGraph G){
+    	ArrayList<ArrayList<Integer>> paths = findTriplets(G);
+    	ArrayList<ArrayList<Integer>> chs = new ArrayList<ArrayList<Integer>>();
+    	ArrayList<Integer> m;
+    	
+    	boolean chord;
+    	
+    	while(!(paths.isEmpty())) {
+    		for(int i = 0; i < paths.size(); i++) {
+    			m = paths.get(i);
+    			paths.remove(i);
+    			LinkedList<GraphNode> adjNodes = getListofAdjacentNodes(G, m.get(m.size()-1));
+    			for(int j = 0; j < adjNodes.size(); i++) {
+    				GraphNode k = adjNodes.get(j);
+    				chord = false;
+    				for(int c = 1 ; c < m.size(); c++){
+    					GraphNode tmpNode = G.getGraphNodeById(m.get(c));
+    					if(G.goesTo(k, tmpNode) || G.goesTo(tmpNode, k)){
+    						chord = true;
+    					}
+    				}
+	    			if (chord == false) {
+	    				m.add(k.getGraphId());
+	    				if(G.goesTo(k, G.getGraphNodeById(m.get(0)))) {
+	    					chs.add(getPropNodesFromPath(G, m));
+	    				} else {
+	    					paths.add(m);
+	    				}
+	    			}
+    			}
+    		}
+    	}
+    	
+    	return chs;
+    }
+    
+    public static LinkedList<GraphNode> getListofAdjacentNodes(BaseSupportGraph G, int node){
+    	GraphNode tmp = G.getGraphNodeById(node);
+    	if(tmp.getType() == 0) {
+    		LinkedList<LinkedList<GraphNode>> list = G.getHypsAdjList();
+    		for (int i = 0; i < list.size(); i++) {
+    			LinkedList<GraphNode> currRow = list.get(i);
+    			if((currRow.getFirst()).equals(tmp)){
+    				return currRow;
+    			}
+    		}
+    	} else {
+    		LinkedList<LinkedList<GraphNode>> list = G.getSupportsAdjList();
+    		for (int i = 0; i < list.size(); i++) {
+    			LinkedList<GraphNode> currRow = list.get(i);
+    			if((currRow.getFirst()).equals(tmp)){
+    				return currRow;
+    			}
+    		}
+    	}
+		return null;
+    	
+    }
+    
+    public static ArrayList<Integer> getPropNodesFromPath(BaseSupportGraph G, ArrayList<Integer> m) {
+    	
+    	for(int i = 0; i < m.size(); i++){
+    		GraphNode tmp = G.getGraphNodeById(m.get(i));
+    		if(tmp.getType() == 1){
+    			m.remove(i);
+    		}
+    	}
+    	return m;
+    }
+    
+    public static ArrayList<Integer> findHittingSet(ArrayList<ArrayList<Integer>> sets) { //greedy hitting set algorithm
+    	ArrayList<Integer> result = new ArrayList<Integer>();
+    	
+    	while(!(sets.isEmpty())){
+    		int mode = mostCommonElement(sets);
+        	for(int i = 0; i < sets.size(); i++) {
+        		if(sets.get(i).contains(mode)) {
+        			sets.remove(i);
+        		}
+        	}
+    		result.add(mode);
+    	}
+
+    	
+    	return result;
+    }
+    
+    public static void BCompression() throws Exception{
+    	BaseSupportGraph G = new BaseSupportGraph();
+    	G = GTrim(G);
+    	G = RGTrim(G);
+		ArrayList<ArrayList<Integer>> chordlessCycles = findChordlessCycles(G);
+		ArrayList<Integer> nodesToBeKept = findHittingSet(chordlessCycles);
+		
+		Hashtable<String, PropositionNode> propositionNodes = Network.getPropositionNodes();
+		Set<String> keySet = propositionNodes.keySet();
+		for(String key : keySet) {
+			PropositionNode currNode = propositionNodes.get(key);
+			if(!(nodesToBeKept.contains(currNode.getId()))) {
+				Network.removeNode(currNode);
+			}
+		}
+    }
+    
+    public static int mostCommonElement(ArrayList<ArrayList<Integer>> sets){ //revise //efficiency 0
+    	int maxValue = 0;
+    	ArrayList<Integer> superSet = new ArrayList<Integer>();
+    	for(int i = 0; i < sets.size(); i++) {
+    		ArrayList<Integer> currSet = sets.get(i);
+    		for(int j = 0; j < currSet.size(); j++) {
+    			if(currSet.get(j) > maxValue){
+    				maxValue = currSet.get(j);
+    			}
+    			superSet.add(currSet.get(j));
+    		}
+    	}
+    	int[] maxVals = new int[maxValue];
+    	
+    	for(int i = 0; i < superSet.size(); i++){
+    		int currElement = superSet.get(i);
+    		for(int j = 0; j < superSet.size(); j++) {
+    			int tmp = superSet.get(i);
+    			if(currElement == tmp){
+    				maxVals[currElement]++;
+    			}
+    		}
+    	}
+    	int maxCount = 0;
+    	int max = 0;
+    	for(int i = 0; i < maxVals.length; i++) {
+    		if(maxVals[i] > maxCount){
+    			maxCount = maxVals[i];
+    			max = i;
+    		}
+    	}
+    	
+    	
+    	return max;
+    }
 
     
     public static void save(String f) throws FileNotFoundException, IOException {
@@ -735,4 +1128,91 @@ public class Controller {
 		cis.close();
 		tempSet = null;
     }
+    
+    public static void main(String[] args) throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
+    	Network net;
+    	Semantic sem;
+    	String semanticType = "Proposition";
+    	ContextSet contexts = new ContextSet();
+    	PropositionNode n0;
+    	PropositionNode n1;
+    	PropositionNode n2;
+    	PropositionNode n3;
+    	PropositionNode n4;
+    	PropositionNode n5;
+    	PropositionNode n6;
+    	PropositionNode n7;
+    	PropositionNode n8;
+    	PropositionNode n9;
+    	PropositionNode n10;
+    	PropositionNode n11;
+    	PropositionNode n12;
+    	PropositionNode n13;
+    	PropositionNode n14;
+    	
+    	sem = new Semantic(semanticType);
+    	net = new Network();
+    	
+    	//Building Network Nodes
+    	//The Network Nodes Labels and Corresponding Ids
+    	net.buildBaseNode("s", sem);// 0
+		net.buildBaseNode("p", sem);// 1
+		net.buildBaseNode("q", sem);// 2
+		net.buildBaseNode("r", sem);// 3
+		net.buildBaseNode("m", sem);// 4
+		net.buildBaseNode("n", sem);// 5
+		net.buildBaseNode("v", sem);// 6
+		net.buildBaseNode("z", sem);// 7
+		net.buildBaseNode("a", sem);// 8
+		net.buildBaseNode("b", sem);// 9
+		net.buildBaseNode("c", sem);// 10
+		net.buildBaseNode("d", sem);// 11
+		net.buildBaseNode("e", sem);// 12
+		net.buildBaseNode("f", sem);// 13
+		net.buildBaseNode("g", sem);// 14
+		
+		
+		//Getting the Network PropositionNodes
+		 n0 = (PropositionNode) net.getNode("s");
+		 n1 = (PropositionNode) net.getNode("p");
+		 n2 = (PropositionNode) net.getNode("q");
+		 n3 = (PropositionNode) net.getNode("r");
+		 n4 = (PropositionNode) net.getNode("m");
+		 n5 = (PropositionNode) net.getNode("n");
+		 n6 = (PropositionNode) net.getNode("v");
+		 n7 = (PropositionNode) net.getNode("z");
+		 n8 = (PropositionNode) net.getNode("a");
+		 n9 = (PropositionNode) net.getNode("b");
+		 n10 = (PropositionNode) net.getNode("c");
+		 n11 = (PropositionNode) net.getNode("d");
+		 n12 = (PropositionNode) net.getNode("e");
+		 n13 = (PropositionNode) net.getNode("f");
+		 n14 = (PropositionNode) net.getNode("g");
+		 
+		 //Setting Specific Nodes to be Hyps. So that no support are needed for this node.
+		 //If node is not set, it is considers as Derived node.
+		 n2.setHyp(true);
+		 n4.setHyp(true);
+		 n5.setHyp(true);
+		 n6.setHyp(true);
+		 n7.setHyp(true);
+		 n9.setHyp(true);
+		 n10.setHyp(true);
+		 n11.setHyp(true);
+		 n12.setHyp(true);
+		 n13.setHyp(true);
+		 n14.setHyp(true);
+		 
+		 //BaseSupportGraph G = new BaseSupportGraph();
+		 System.out.println(n1.getParentNodes());
+		 System.out.println(n1.getMySupportsTree());
+		//GraphNode gn0 = new GraphNode(new PropositionSet(props));
+		//GraphNode gn1 = new GraphNode(new PropositionSet(props1));
+		//System.out.println(gn0);
+		//System.out.println(gn1);
+		//System.out.println(gn0.equals(gn1));
+		//PropositionSet p0 = gn0.getPropositionSet();
+		//PropositionSet p1 = gn1.getPropositionSet();
+		//System.out.println(p0.equals(p1));
+	}
 }
