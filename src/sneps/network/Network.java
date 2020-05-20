@@ -275,25 +275,20 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to define a new relation in the network.
 	 *
-	 * @param name   the name of the new relation.
-	 * @param type   the name of the semantic class that specify the semantic of the
-	 *               nodes that this new relation can point to.
-	 * @param adjust the adjustability of the new relation.
-	 * @param limit  the minimum number of nodes that this new relation can point to
-	 *               within a down-cable.
+
 	 *
 	 * @return the newly created relation.
 	 *
 	 * @throws CustomException if another relation with the same given name is
 	 *                         already defined in the network.
 	 */
-	public static Relation defineRelation(String name, String type, String adjust, int limit) {
+	public static Relation defineRelation(String name, String type, ArrayList<String> decoration, int limit) {
 		if (relations.containsKey(name)) {
 			return relations.get(name);
 			// throw new CustomException("The relation named " + name +
 			// " is already defined in the network");
 		} else {
-			relations.put(name, new Relation(name, type, adjust, limit));
+			relations.put(name, new Relation(name, type, decoration, limit));
 		}
 		return relations.get(name);
 	}
