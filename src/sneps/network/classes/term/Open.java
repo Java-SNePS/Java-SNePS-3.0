@@ -14,7 +14,7 @@ public class Open extends Molecular implements Serializable{
 
 	/**
 	 * The constructor of this class.
-	 * 
+	 *
 	 * @param identifier
 	 * 			the name of the node that will be created.
 	 * @param downCableSet
@@ -26,12 +26,22 @@ public class Open extends Molecular implements Serializable{
 		this.variables = new VariableSet();
 		this.updateFreeVariables();
 	}
-	public VariableSet getFreeVariables() {
+
+	public Open(String id) {
+		super(id);
+		this.variables = new VarNodeSet();
+	}
+
+	public VarNodeSet getFreeVariables() {
 		return variables;
 	}
 
+	public void addFreeVariable(VariableNode n) {
+		variables.addVarNode(n);
+	}
+
 	/**
-	 * The method that populate the list of free variables by the 
+	 * The method that populate the list of free variables by the
 	 * 	free variables dominated by the current node.
 	 */
 	public void updateFreeVariables(){
@@ -53,13 +63,13 @@ public class Open extends Molecular implements Serializable{
 					// looping over free variables of the pattern node
 					for (int k = 0; k < patternFVars.size(); k++){
 						Variable variable = patternFVars.getVariable(k);
-						
+
 						// if a variable already exists in this variable set, remove it from the pattern node variable set to avoid duplicates
 						if(variables.contains(variable))
 							patternFVars.removeVariable(variable);
-						
+
 					}
-					
+
 					this.variables.addAll(patternFVars);
 				}
 			}

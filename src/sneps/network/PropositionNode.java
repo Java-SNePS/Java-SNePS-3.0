@@ -28,11 +28,15 @@ import java.util.Set;
 
 import sneps.snebr.Context;
 import sneps.snebr.Controller;
+import java.util.Set;
+
+import sneps.snebr.Context;
 import sneps.snebr.Support;
 import sneps.snip.InferenceTypes;
 import sneps.snip.Pair;
 import sneps.snip.Report;
 import sneps.snip.KnownInstances;
+import sneps.snip.ReportInstances;
 import sneps.snip.Runner;
 import sneps.snip.channels.AntecedentToRuleChannel;
 import sneps.snip.channels.Channel;
@@ -46,24 +50,26 @@ import sneps.snip.matching.Matcher;
 import sneps.snip.matching.Substitutions;
 
 public class PropositionNode extends Node implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private Support basicSupport;
 	protected ChannelSet outgoingChannels;
 	protected ChannelSet incomingChannels;
-	protected KnownInstances knownInstances;
+	protected ReportInstances knownInstances;
 	protected ReportSet newInstances;
 
 	public PropositionNode() {
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
-		knownInstances = new KnownInstances();
+		knownInstances = new ReportInstances();
+		newInstances = new ReportSet();
 	}
 
 	public PropositionNode(Term trm) {
 		super(Semantic.proposition, trm);
 		outgoingChannels = new ChannelSet();
 		incomingChannels = new ChannelSet();
-		knownInstances = new KnownInstances();
-		setTerm(trm);
+		knownInstances = new ReportInstances();
+		newInstances = new ReportSet();
 	}
 
 	/***
@@ -142,7 +148,7 @@ public class PropositionNode extends Node implements Serializable {
 					+ channel.getReporter().getIdentifier() + " to " + channel.getRequester().getIdentifier() + "\n");
 			e.printStackTrace();
 		}
-		return false;
+		currentChannel.clearReportsBuffer();
 	}
 
 	/***
@@ -481,11 +487,11 @@ public class PropositionNode extends Node implements Serializable {
 		this.incomingChannels = incomingChannels;
 	}
 
-	public KnownInstances getKnownInstances() {
+	public ReportInstances getKnownInstances() {
 		return knownInstances;
 	}
 
-	public void setKnownInstances(KnownInstances knownInstances) {
+	public void setKnownInstances(ReportInstances knownInstances) {
 		this.knownInstances = knownInstances;
 	}
 
@@ -494,21 +500,16 @@ public class PropositionNode extends Node implements Serializable {
 
 	}
 
-	public Hashtable<String, PropositionSet> getJustificationSupport()
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public Hashtable<String, PropositionSet> getJustificationSupport() {
 		return basicSupport.getJustificationSupport();
 	}
 
-	public void addJustificationBasedSupport(PropositionSet propSet)
-			throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException,
-			DuplicatePropositionException, CannotInsertJustificationSupportException {
+	public void addJustificationBasedSupport(PropositionSet propSet) throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		basicSupport.addJustificationBasedSupport(propSet);
 	}
 
-	public void removeNodeFromSupports(PropositionNode propNode)
-			throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		basicSupport.removeNodeFromSupports(propNode);
-
+	public boolean removeNodeFromSupports(PropositionNode propNode) {
+		return basicSupport.removeNodeFromSupports(propNode);
 	}
 
 	public void addParentNode(int id)
@@ -617,18 +618,6 @@ public class PropositionNode extends Node implements Serializable {
 		basicSupport.setHyp(isHyp);
 	}
 
-	protected Collection<Channel> getOutgoingAntecedentRuleChannels() {
-		return outgoingChannels.getAntRuleChannels();
-	}
-
-	protected Collection<Channel> getOutgoingRuleConsequentChannels() {
-		return outgoingChannels.getRuleConsChannels();
-	}
-
-	protected Collection<Channel> getOutgoingMatchChannels() {
-		return outgoingChannels.getMatchChannels();
-	}
-
 	public void addToOutgoingChannels(Channel channel) {
 		outgoingChannels.addChannel(channel);
 	}
@@ -636,19 +625,6 @@ public class PropositionNode extends Node implements Serializable {
 	public void addToIncomingChannels(Channel channel) {
 		incomingChannels.addChannel(channel);
 	}
-
-	protected Collection<Channel> getIncomingAntecedentRuleChannels() {
-		return incomingChannels.getAntRuleChannels();
-	}
-
-	protected Collection<Channel> getIncomingRuleConsequentChannels() {
-		return incomingChannels.getRuleConsChannels();
-	}
-
-	protected Collection<Channel> getIncomingMatchChannels() {
-		return incomingChannels.getMatchChannels();
-	}
-
 	/***
 	 * Checking if this node instance contains not yet bound free variables
 	 *
@@ -858,6 +834,41 @@ public class PropositionNode extends Node implements Serializable {
 			if (!(this instanceof RuleNode))
 				currentChannel.getReportsBuffer().removeReport(currentReport);
 		}
+	}
+
+	protected Set<Channel> getOutgoingAntecedentRuleChannels() {
+		return outgoingChannels.getAntRuleChannels();
+	}
+
+	protected Set<Channel> getOutgoingRuleConsequentChannels() {
+		return outgoingChannels.getRuleConsChannels();
+	}
+
+	protected Set<Channel> getOutgoingMatchChannels() {
+		return outgoingChannels.getMatchChannels();
+	}
+
+	protected Set<Channel> getIncomingAntecedentRuleChannels() {
+		return incomingChannels.getAntRuleChannels();
+	}
+
+	protected Set<Channel> getIncomingRuleConsequentChannels() {
+		return incomingChannels.getRuleConsChannels();
+	}
+
+	protected Set<Channel> getIncomingMatchChannels() {
+		return incomingChannels.getMatchChannels();
+	}
+
+	public boolean assertedInContext(Context reportContext) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Channel establishChannel(ChannelTypes rulecons, Node n, LinearSubstitutions linearSubstitutions,
+			LinearSubstitutions linearSubstitutions2, Context currentContext, int j) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
