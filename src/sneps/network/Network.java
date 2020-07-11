@@ -10,9 +10,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.List;
 
 import sneps.exceptions.*;
 import sneps.network.cables.Cable;
@@ -36,6 +38,7 @@ import sneps.network.classes.term.Base;
 import sneps.network.classes.term.Closed;
 import sneps.network.classes.term.Molecular;
 import sneps.network.classes.term.Open;
+import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 import sneps.gui.Main;
 import sneps.network.paths.FUnitPath;
@@ -136,9 +139,15 @@ public class Network implements Serializable {
 	private static LinkedList<Integer> userDefinedVarSuffix = new LinkedList<Integer>();
 
 	/**
+	 * A 2D ArrayList that has all the Nodes divided Level By Lebel (LBL) 
+	 */
+	private static  ArrayList<ArrayList<Node>> nodesLBL = new ArrayList<>();
+
+	/**
 	 *
 	 * @return the hash table that stores the nodes defined in the network.
 	 */
+	
 	public static Hashtable<String, Node> getNodes() {
 		return nodes;
 	}
@@ -2107,6 +2116,32 @@ public class Network implements Serializable {
 		userDefinedMolSuffix.clear();
 		userDefinedPatSuffix.clear();
 		userDefinedVarSuffix.clear();
+	}
+
+	/** This method adds a node to the nodesLBL whenever one has been created
+	 * @param node
+	 * @param level appropriate level of the node
+	 */
+	public static void addNodeLBL(Node node, int level) {
+		nodesLBL.get(level).add(node);
+	}
+	
+	/**
+	 * This method updates a node's position in nodesLBL whenever it changed its level
+	 * @param node that changed its level
+	 * @param oldLevel its old level in order to get it from its old position and remove it from the The nodesLBL 
+	 * @param newLevel to put it in its appropriate level
+	 */
+	public static void updateNodeLBL(Node node, int oldLevel, int newLevel) {
+		nodesLBL.get(oldLevel).remove(node);
+		nodesLBL.get(newLevel).add(node);
+	}
+	
+	/**
+	 * @return All the Nodes Divided Level By Level (LBL)
+	 */
+	public static ArrayList<ArrayList<Node>> getNodesLBL(){
+		return nodesLBL;
 	}
 
 }

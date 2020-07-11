@@ -51,7 +51,7 @@ public class Molecular extends Term implements Serializable{
 	 * 			the node object having the current molecular object
 	 * 			as its syntactic object.
 	 */
-	public void updateUpCables(Node node) {
+	public void updateUpCables(Node node, int level) {
 		DownCableSet dCableSet = this.getDownCableSet();
 		Enumeration<DownCable> dCables = dCableSet.getDownCables().elements();
 		while(dCables.hasMoreElements()){
@@ -63,6 +63,7 @@ public class Molecular extends Term implements Serializable{
 				if (!n.getUpCableSet().contains(r))
 					n.getUpCableSet().addUpCable(new UpCable(r));
 				n.getUpCableSet().getUpCable(r.getName()).addNode(node);
+				node.updateLevel(n.getLevel()+1);
 			}
 		}
 	}
