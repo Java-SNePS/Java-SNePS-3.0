@@ -4,7 +4,7 @@ import sneps.network.Node;
 import sneps.network.VariableNode;
 
 public interface Substitutions {
-	
+
 	public boolean isNew();
 	public void putIn(Binding mb);
 	public boolean isCompatible(Binding mb);
@@ -35,7 +35,9 @@ public interface Substitutions {
     public String toString();
     public int termID(int variableID);
     public void insertOrUpdate(Binding mb);
-
+    public void update(Binding mb , Node mn);
+    public Node value(VariableNode n);
+    public int size();
 
 
 }
