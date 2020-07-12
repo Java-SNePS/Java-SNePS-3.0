@@ -5,6 +5,10 @@ import java.util.Collection;
 
 import sneps.network.classes.setClasses.ChannelSet;
 import sneps.network.classes.setClasses.ReportSet;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import sneps.snip.Report;
 import sneps.snip.channels.Channel;
 
@@ -14,7 +18,7 @@ public class RuleResponse {
 	private Collection<Channel> consequentChannels;
 
 	public RuleResponse() {
-		consequentChannels = new ArrayList<Channel>();
+		consequentChannels = new HashSet<Channel>();
 	}
 
 	public Report getReport() {
@@ -33,11 +37,22 @@ public class RuleResponse {
 		return consequentChannels;
 	}
 
-	public void setConsequentChannels(Collection<Channel> consequentChannels) {
+	public void setConsequentChannels(Set<Channel> consequentChannels) {
 		this.consequentChannels = consequentChannels;
 	}
 
-	public void addChannel(Channel channel) {
-		this.consequentChannels.add(channel);
+	public void addChannel(Channel c) {
+		this.consequentChannels.add(c);
 	}
+
+	public void addAllChannels(Set<Channel> channels) {
+		for(Channel c : channels) {
+			this.consequentChannels.add(c);
+		}
+	}
+
+	public void clear() {
+		consequentChannels.clear();
+	}
+
 }

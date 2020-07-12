@@ -67,14 +67,14 @@ public class Support implements Serializable{
      * @return a Hashtable containing the sets representing the direct supports of this node.
      */
 	public Hashtable<String, PropositionSet> getJustificationSupport() throws NotAPropositionNodeException, NodeNotFoundInNetworkException {
-		
+
 		return justificationSupport;
 	}
 
 	/**
 	 * Makes sure that a proposition node is either a hyp or is supported.
 	 * And reconstruct the justifications of a proposition node.
-	 * When removing a node from the supports, This node could  reflect  into  deleting  
+	 * When removing a node from the supports, This node could  reflect  into  deleting
 	 * another  sets  from  another  nodes  justificationSupport.
 	 * Therefore,  this method checks that every node in the supports strucure has a valid justificationSupport.
 	 * By valid i mean that each node must be either a hypothesis (user asserted) therefore no supports needed,
@@ -149,33 +149,33 @@ public class Support implements Serializable{
 
 	/**
 	 * Accepts  a  PropositionSet which represent a direct support of this proposition node, and adds the
-	 * propSet to the hash table of justificationSupport.  
-	 * Moreover, this method computes the assumptionBased support. 
-	 * When adding a new set to the justification basedsupport,  
-	 * each node of this set has an assumptionBasedSupport set. 
+	 * propSet to the hash table of justificationSupport.
+	 * Moreover, this method computes the assumptionBased support.
+	 * When adding a new set to the justification basedsupport,
+	 * each node of this set has an assumptionBasedSupport set.
 	 * Simply,  this method computes the assumptionBasedSupport as the cross product of the propSetnodes
 	 * assumption supports.For example if the propSet is equal to {"x", "y"},
 	 * the node "x" has an assumption-BasedSupports{"a",  "b"}and{"c",  "d"}and the node "y"
-	 * has an assumption-BasedSupport{"e", "f", "g"}, then the output cross product assumptionSupport will 
+	 * has an assumption-BasedSupport{"e", "f", "g"}, then the output cross product assumptionSupport will
 	 * be{"a", "b", "e", "f", "g"}and{"c", "d", "e", "f", "g"}.
-	 * Moreover,  this method takes care of both direct cycles by throwing 
+	 * Moreover,  this method takes care of both direct cycles by throwing
 	 * an exception"CannotInsertJustificationSupportException",  and  in-direct  cycles  by  neglecting the path
-	 *  having cycles when computing assumptionBasedSupport. 
+	 *  having cycles when computing assumptionBasedSupport.
      *
      * @param a propSet representing the newly support of a node.
      */
 	public void addJustificationBasedSupport(PropositionSet propSet)
 			throws NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException {
-		
+
 		if (!HasChildren()) {
 			assumptionBasedSupport = new Hashtable<String, PropositionSet>();
 		}
 		String hash = propSet.getHash();
 		if (!justificationSupport.containsKey(hash)) {
-			
+
 			if((new PropositionSet(this.getId())).isSubSet(propSet))
 				throw new CannotInsertJustificationSupportException("This PropositionSet contain a Cyclic Supports in the node " + propSet.toString() + this.getId());
-			
+
 			justificationSupport.put(hash, propSet);
 			setHasChildren(true);
 			setTreeComputed(false);
@@ -200,7 +200,7 @@ public class Support implements Serializable{
 				computeAssumptionRec(nodes, setSofar, idx);
 				}
 			}
-			
+
 		}
 	}
 
@@ -231,30 +231,30 @@ public class Support implements Serializable{
 
 	/**
 	 * Returns  the  set  (mySupportsTree)  of  this  propositionnode only if treeComputed is true.
-	 * Otherwise, it computes the supportsTree from the  assumptionBasedSupport  structure.   
+	 * Otherwise, it computes the supportsTree from the  assumptionBasedSupport  structure.
 	 * And  sets treeComputed to true.
      *
      * @return ArrayList<ArrayList<ArrayList<Integer>>> representing the supports hierarchy of this node.
      */
-	
+
 	public ArrayList<ArrayList<ArrayList<Integer>>> getMySupportsTree() throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
 		if(isTreeComputed())
 			return mySupportsTree;
-		
+
 		mySupportsTree = new ArrayList<ArrayList<ArrayList<Integer>>>();
 		intialTreeSet = new ArrayList<ArrayList<Integer>>();
-		
+
 		Iterator<PropositionSet> it = assumptionBasedSupport.values().iterator();
 		while(it.hasNext()){
 			int[] nodes = PropositionSet.getPropsSafely(it.next());
-			
+
 			for (int i = 0; i < nodes.length; i++) {
 				PropositionNode node = (PropositionNode) Network.getNodeById(nodes[i]);
-				
+
 				ArrayList<Integer> aPath = new ArrayList<Integer>();
 				aPath.add(nodes[i]);
 				aPath.addAll(node.getParentSupports());
-				
+
 				intialTreeSet.add(aPath);
 			}
 			mySupportsTree.add(intialTreeSet);
@@ -262,7 +262,7 @@ public class Support implements Serializable{
 		}
 		return mySupportsTree;
 	}
-	
+
 	/**
 	 * Returns the set (assumptionBasedSupport) of this proposition node.
 	 * @return Hashtable<String, PropositionSet> representing the assumptions of this node.
@@ -273,9 +273,9 @@ public class Support implements Serializable{
 
 	/**
 	 * Removes thepropNode from any set, either justificationBasedSupport or assumptionBasedSup-port,
-	 * containing this node as one of it's elements.  
-	 * Also sets the attribute hasChildren  to  false,  if  the  justificationBasedSupport  becomes  empty  after 
-	 * the  removal. 
+	 * containing this node as one of it's elements.
+	 * Also sets the attribute hasChildren  to  false,  if  the  justificationBasedSupport  becomes  empty  after
+	 * the  removal.
 	 * Moreover, this method calls the method reStructureJustifications(), discussed above.
 	 * restrucureJustification only makes sure that all justifications are valid "are hyps or have valid supports".
 	 * @param propNode
@@ -297,7 +297,7 @@ public class Support implements Serializable{
 			justificationSupport.remove(willBeRemoved.get(0));
 			willBeRemoved.remove(0);
 		}
-		
+
 		Iterator<PropositionSet>  it2 = assumptionBasedSupport.values().iterator();
 		while(it2.hasNext()){
 			PropositionSet thisSet = it2.next();
@@ -328,7 +328,7 @@ public class Support implements Serializable{
 			assumptionBasedSupport.remove(willBeRemoved.get(0));
 			willBeRemoved.remove(0);
 		}
-		
+
 		if(justificationSupport.isEmpty()){
 			setHasChildren(false);
 			if(isHyp && assumptionBasedSupport.isEmpty()){
@@ -340,11 +340,11 @@ public class Support implements Serializable{
 			reStrucured = reStructureJustifications();
 		}
 		TreeComputed = false;
-		
+
 	}
 
 	/**
-	 * 
+	 *
 	 * @return int representing the id of this proposition node
 	 */
 	public int getId() {
@@ -361,7 +361,7 @@ public class Support implements Serializable{
 	public ArrayList<Integer> getParentSupports() {
 		return parentNodes;
 	}
-	
+
 	/**
 	 * This method recursively adds a node id to parentSupport structure in the supports hierarchy.
 	 * This method is only used by addJustificationSupport() Method.
@@ -383,7 +383,7 @@ public class Support implements Serializable{
 		}
 		}
 	}
-	
+
 	/**
 	 * Tells whether this proposition node is a hypothesis and user asserted, or this proposition node is a derived node.
 	 * @return boolean
@@ -391,14 +391,14 @@ public class Support implements Serializable{
 	private boolean isHyp() {
 		return isHyp;
 	}
-	
+
 	/*
-	 * Sets the attribute isHyp to the method parameter isHyp. 
-	 * In-addition, if the method parameter isHyp is equal to true, 
+	 * Sets the attribute isHyp to the method parameter isHyp.
+	 * In-addition, if the method parameter isHyp is equal to true,
 	 * the assumptionBased-Support of this node must will have only an element which is this node id.
-	 * Any  hypothesis  or  user  asserted  node  does  not  need  an  supports,  
-	 * because  a  hypothesis node is believed by the system without any supports.  
-	 * Therefore this node will contain itself only as the assumptionBasedSupport, 
+	 * Any  hypothesis  or  user  asserted  node  does  not  need  an  supports,
+	 * because  a  hypothesis node is believed by the system without any supports.
+	 * Therefore this node will contain itself only as the assumptionBasedSupport,
 	 * and will have empty set ofJustificationSupport.
 	 */
 	public void setHyp(boolean isHyp) throws NotAPropositionNodeException, NodeNotFoundInNetworkException{
@@ -422,11 +422,11 @@ public class Support implements Serializable{
 	 */
 	public static void main(String[] args)
 			throws NotAPropositionNodeException, NodeNotFoundInPropSetException, NodeNotFoundInNetworkException, DuplicatePropositionException, CannotInsertJustificationSupportException, IllegalIdentifierException {
-		
+
 		Network net;
 		Semantic sem;
 		String semanticType = "Proposition";
-		
+
 		PropositionNode n0;
 		PropositionNode n1;
 		PropositionNode n2;
@@ -442,10 +442,10 @@ public class Support implements Serializable{
 		PropositionNode n12;
 		PropositionNode n13;
 		PropositionNode n14;
-		
+
 		sem = new Semantic(semanticType);
     	net = new Network();
-    	
+
     	//Building Network Nodes
     	//The Network Nodes Labels and Corresponding Ids
     	net.buildBaseNode("s", sem);// 0
@@ -463,8 +463,8 @@ public class Support implements Serializable{
 		net.buildBaseNode("e", sem);// 12
 		net.buildBaseNode("f", sem);// 13
 		net.buildBaseNode("g", sem);// 14
-		
-		
+
+
 		//Getting the Network PropositionNodes
 		 n0 = (PropositionNode) net.getNode("s");
 		 n1 = (PropositionNode) net.getNode("p");
@@ -481,7 +481,7 @@ public class Support implements Serializable{
 		 n12 = (PropositionNode) net.getNode("e");
 		 n13 = (PropositionNode) net.getNode("f");
 		 n14 = (PropositionNode) net.getNode("g");
-		 
+
 		 //Setting Specific Nodes to be Hyps. So that no support are needed for this node.
 		 //If node is not set, it is considers as Derived node.
 		 n2.setHyp(true);
@@ -496,37 +496,37 @@ public class Support implements Serializable{
 		 n13.setHyp(true);
 		 n14.setHyp(true);
 		 n0.setHyp(true);
-		 
+
 		 int[] pqr = new int[3];
 			pqr[0] = 1;
 			pqr[1] = 2;
 			pqr[2] = 3;
-			
+
 			int[] mn = new int[3];
 			mn[0] = 5;
 			mn[1] = 4;
 			mn[2] = 0;
-			
-			
+
+
 			int[] vz = new int[2];
 			vz[0] = 6;
 			vz[1] = 7;
-			
+
 			int[] ab = new int[2];
 			ab[0] = 9;
 			ab[1] = 8;
-			
+
 			int[] cde = new int[3];
 			cde[0] = 10;
 			cde[1] = 11;
 			cde[2] = 12;
-			
-			
-			
+
+
+
 			int[] fg = new int[2];
 			fg[0] = 14;
 			fg[1] = 13;
-			
+
 		//Creating Proposition Sets by the previous Arrays of int
 			PropositionSet s1 = new PropositionSet(pqr);
 			PropositionSet s2 = new PropositionSet(mn);
@@ -534,25 +534,25 @@ public class Support implements Serializable{
 			PropositionSet s4 = new PropositionSet(ab);
 			PropositionSet s5 = new PropositionSet(cde);
 			PropositionSet s6 = new PropositionSet(fg);
-			
-			
-		    
+
+
+
 		//Construct the tree "Bottum-Up" See the Graph above the method to imagine the Support Structure!
-			
+
 			n1.addJustificationBasedSupport(s2);
-		
+
 			n1.addJustificationBasedSupport(s3);
-		
+
 			n8.addJustificationBasedSupport(s5);
-	
+
 			n3.addJustificationBasedSupport(s4);
-		
+
 			n0.addJustificationBasedSupport(s6);
-			
+
 			n0.addJustificationBasedSupport(s1);
-			
-			
-			
+
+
+
 			//Getting the justification supports of node 1.
 			Hashtable<String,PropositionSet>n1Justs= n1.getJustificationSupport();
 			//Getting the justification supports of node 0.
@@ -563,17 +563,17 @@ public class Support implements Serializable{
 			Hashtable<String,PropositionSet>n0Assump= n0.getAssumptionBasedSupport();
 			//Getting the supports Tree of node 0.
 			ArrayList<ArrayList<ArrayList<Integer>>>mySupportsTree=n0.getMySupportsTree();
-			
+
 			System.out.println(n1Justs.toString());
 			System.out.println(n1Assump.toString());
 			System.out.println(n0Justs.toString());
 			System.out.println(n0Assump.toString());
 			System.out.println(mySupportsTree.toString());
 
-		
-		
+
+
 	}
 
-	
+
 
 }
