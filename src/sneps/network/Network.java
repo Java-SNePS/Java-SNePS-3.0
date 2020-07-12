@@ -1005,27 +1005,6 @@ public class Network implements Serializable {
 		return true;
 	}
 
-	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
-		LinkedList<Relation> list = new LinkedList<Relation>();
-		list.addAll(caseFrame.getRelations());
-		for (int i = 0; i < array.length; i++) {
-			Relation r = (Relation) array[i][0];
-			if (list.contains(r)) {
-				if (((NodeSet) array[i][1]).size() >= r.getLimit()) {
-					list.remove(r);
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-		if (!list.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
 	/**
 	 * This method examines the down cable set of a certain molecular node to check
 	 * whether it dominate free variables or not. Pattern nodes dominate free
