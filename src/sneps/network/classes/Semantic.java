@@ -1,14 +1,18 @@
 package sneps.network.classes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import sneps.exceptions.SemanticNotFoundInNetworkException;
 
 public class Semantic implements Serializable {
 	protected String semanticType;
-	private String superClass;
-	public static Semantic act, proposition, infimum, individual;
+	public String superClass;
+	public ArrayList<String> superClassSet;
+	public static Semantic act, proposition, entity, individual;
+	public static Semantic infimum;
+	
 
 	public Semantic() {
 	}
@@ -21,6 +25,11 @@ public class Semantic implements Serializable {
 	public Semantic(String sem, String superClass) {
 		semanticType = sem;
 		this.superClass = superClass;
+	}
+	
+	public Semantic(String sem, ArrayList<String> Semantics) {
+		semanticType = sem;
+		this.superClassSet = Semantics;
 	}
 
 	public LinkedList<Object> getSuperClassesNames() {
@@ -51,17 +60,25 @@ public class Semantic implements Serializable {
 	public String getSemanticType() {
 		return semanticType;
 	}
+	
+	public ArrayList<String> getSuperClassSet() {
+		return superClassSet;
+	}
 
 	public boolean isAsserted(Object contextByName) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public static void createDefaultSemantics() {
-		act = SemanticHierarchy.createSemanticType("Act");
-		proposition = SemanticHierarchy.createSemanticType("Proposition");
-		infimum = SemanticHierarchy.createSemanticType("Infimum");
-		individual = SemanticHierarchy.createSemanticType("Individual");
+	public static void createDefaultSemantics() throws SemanticNotFoundInNetworkException {
+		
+		entity = SemanticHierarchy.createSemanticType("Entity");
+		infimum = SemanticHierarchy.createSemanticType("Infimum"); // FOR TESTING ONLY
+		act = SemanticHierarchy.createSemanticType("Act","Entity");
+		proposition = SemanticHierarchy.createSemanticType("Proposition","Entity");
+		individual = SemanticHierarchy.createSemanticType("Individual","Entity");
+		
 	}
+
 
 }
