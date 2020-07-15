@@ -56,19 +56,19 @@ public class NodeSet implements Iterable<Node>, Serializable {
 		return unionSet;
 	}
 
-	public NodeSet Intersection(NodeSet ns) {
+	public NodeSet difference(NodeSet ns) {
 		NodeSet intersectionSet = new NodeSet();
 		for (int i = 0; i < ns.size(); i++) {
-			if (this.contains(ns.getNode(i)))
+			if (!this.contains(ns.getNode(i)))
 				intersectionSet.addNode(ns.getNode(i));
 		}
 		return intersectionSet;
 	}
 
-	public NodeSet difference(NodeSet ns) {
+	public NodeSet Intersection(NodeSet ns) {
 		NodeSet differenceSet = new NodeSet();
 		for (int i = 0; i < this.size(); i++) {
-			if (!ns.contains(this.getNode(i)))
+			if (ns.contains(this.getNode(i)))
 				differenceSet.addNode(this.getNode(i));
 		}
 		return differenceSet;
