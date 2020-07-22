@@ -444,6 +444,8 @@ public class Network implements Serializable {
 
 		// if the node is isolated:
 
+		// remove node from nodesLBL
+		nodesLBL.get(node.getLevel()).remove(node);
 		// removing the node from the hash table
 		nodes.remove(node.getIdentifier());
 		// nullify entry of the removed node in the array list
@@ -2097,22 +2099,26 @@ public class Network implements Serializable {
 		userDefinedVarSuffix.clear();
 	}
 
-	/** This method adds a node to the nodesLBL whenever one has been created
+	/** This method adds a node to the nodesLBL whenever one has been created, and adds a new level to nodesLBL if level doesn't exist.
 	 * @param node
 	 * @param level appropriate level of the node
 	 */
 	public static void addNodeLBL(Node node, int level) {
+		if(!(level<nodesLBL.size()))
+			nodesLBL.add(new ArrayList<Node>());
 		nodesLBL.get(level).add(node);
 	}
 	
 	/**
-	 * This method updates a node's position in nodesLBL whenever it changed its level
+	 * This method updates a node's position in nodesLBL whenever it changed its level, and makes appropriate changes in the nodesLBL
 	 * @param node that changed its level
 	 * @param oldLevel its old level in order to get it from its old position and remove it from the The nodesLBL 
 	 * @param newLevel to put it in its appropriate level
 	 */
 	public static void updateNodeLBL(Node node, int oldLevel, int newLevel) {
 		nodesLBL.get(oldLevel).remove(node);
+		if(!(newLevel<nodesLBL.size()))
+			nodesLBL.add(new ArrayList<Node>());
 		nodesLBL.get(newLevel).add(node);
 	}
 	

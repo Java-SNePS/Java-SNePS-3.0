@@ -342,7 +342,7 @@ public class Node implements Serializable {
 	}
 	
 	/**
-	 * This method gets the parent nodes that are in the BELOW adjacent level
+	 * This method gets the child nodes that are in the BELOW adjacent level
 	 *
 	 */
 	public ArrayList<Node> getAdjacentChildren() {
