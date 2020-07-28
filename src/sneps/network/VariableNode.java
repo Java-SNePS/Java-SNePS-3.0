@@ -54,13 +54,4 @@ public class VariableNode extends Node implements Serializable{
 	public VariableSet getFreeVariables() {
 		return freeVariables;
 	}
-
-	public void updateLevel() {
-		int min=1;
-		for(int i=0; i<getParentNodes().size();i++) {
-			if(min>getParentNodes().getNode(i).getLevel())
-				min=getParentNodes().getNode(i).getLevel();
-		}
-		updateLevel(min-1);
-	}
 }

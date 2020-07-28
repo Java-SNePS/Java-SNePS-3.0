@@ -311,11 +311,13 @@ public class Node implements Serializable {
 			}
 		}
 		else {
-			Network.updateNodeLBL(this,value,level);
-			level = value;
-			if (level>numberOfLevels)
-				numberOfLevels++;
-			return true;
+			if(value<level){
+				Network.updateNodeLBL(this,value,level);
+				level = value;
+				if (level>numberOfLevels)
+					numberOfLevels++;
+				return true;
+			}
 		}
 		return false;
 	}
