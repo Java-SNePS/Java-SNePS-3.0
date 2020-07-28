@@ -284,7 +284,7 @@ public class Node implements Serializable {
 	 * class and pass the current node as a parameter.
 	 */
 	public void updateUpCables() {
-		((Molecular) this.getTerm()).updateUpCables(this,level);
+		((Molecular) this.getTerm()).updateUpCables(this);
 	}
 	
 	
