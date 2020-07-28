@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sneps.exceptions.*;
+import sneps.graph.Graph;
 import sneps.network.cables.Cable;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
@@ -2099,7 +2100,7 @@ public class Network implements Serializable {
 		userDefinedVarSuffix.clear();
 	}
 
-	/** This method adds a node to the nodesLBL whenever one has been created, and adds a new level to nodesLBL if level doesn't exist.
+		/** This method adds a node to the nodesLBL whenever one has been created
 	 * @param node
 	 * @param level appropriate level of the node
 	 */
@@ -2110,7 +2111,7 @@ public class Network implements Serializable {
 	}
 	
 	/**
-	 * This method updates a node's position in nodesLBL whenever it changed its level, and makes appropriate changes in the nodesLBL
+	 * This method updates a node's position in nodesLBL whenever it changed its level
 	 * @param node that changed its level
 	 * @param oldLevel its old level in order to get it from its old position and remove it from the The nodesLBL 
 	 * @param newLevel to put it in its appropriate level
@@ -2128,5 +2129,9 @@ public class Network implements Serializable {
 	public static ArrayList<ArrayList<Node>> getNodesLBL(){
 		return nodesLBL;
 	}
-
+	
+	public static void generateGraph() {
+		Graph.constructGraph();
+	}
+	
 }

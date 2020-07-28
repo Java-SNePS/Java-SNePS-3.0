@@ -12,6 +12,7 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.snip.channels.Channel;
 import sneps.snip.matching.Substitutions;
+import sneps.graph.LongSpanEdge;
 import sneps.network.Network;
 
 public class Node implements Serializable {
@@ -20,7 +21,7 @@ public class Node implements Serializable {
 	protected Semantic semanticType;
 	private static int count = 0;
 	private int id;
-
+	
 	/**
 	 * Attribute level to determine the level of the node
 	 * The higher the node in the y-axis the higher the attribute level
@@ -296,7 +297,7 @@ public class Node implements Serializable {
 	
 	/**
 	 * This method updates the node level if needed.
-	 * @param value of the proposed level updated
+	 *  @param value of the proposed level updated
 	 * @returns boolean to check if level changed.
 	 */
 	public boolean updateLevel(int value) {
@@ -336,15 +337,20 @@ public class Node implements Serializable {
 	}
 	
 	/**
-	 * This method gets the parent nodes that are in the ABOVE adjacent level
-	 *
+	 * This method gets the indices of the parent nodes that are in the ABOVE adjacent level.
+	 * It also creates dummies between its non adjacent parents 
+	 * And adds the first dummy to the returned list as it also is an adjacent parent node
 	 */
-	public ArrayList<Node> getAdjacentParents() {
+	public ArrayList<Integer> getAdjacentParents() {
 		NodeSet parents = getParentNodes();
-		ArrayList<Node> result = new ArrayList<Node>();
+		ArrayList<Integer> result = new ArrayList<Integer>();
 		for (int i=0;i<parents.size();i++) {
 			if(parents.getNode(i).getLevel()==(level+1))
-				result.add(parents.getNode(i));
+				result.add(Network.getNodesLBL().get(level+1).indexOf(parents.getNode(i)));
+			else {
+				LongSpanEdge lse =new LongSpanEdge(parents.getNode(i),this);
+				result.add(Network.getNodesLBL().get(level+1).indexOf(lse.getFirstDummy()));
+			}
 		}
 		return result;
 	}
