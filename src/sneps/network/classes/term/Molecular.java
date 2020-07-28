@@ -71,7 +71,7 @@ public class Molecular extends Term implements Serializable{
 					variableNodes.add(n);
 			}
 			for(int i=0;i<variableNodes.size();i++) {
-				((VariableNode)variableNodes.get(i)).updateLevel(node.getLevel()-1);
+				((VariableNode)variableNodes.get(i)).updateLevel();
 			}
 		}
 	}
