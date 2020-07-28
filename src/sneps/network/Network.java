@@ -441,7 +441,7 @@ public class Network implements Serializable {
 			throw new NodeCannotBeRemovedException(
 					"Cannot remove the node named '" + node.getIdentifier() + "' because it is not isolated");
 		}
-
+ 
 		// if the node is isolated:
 
 		// remove node from nodesLBL

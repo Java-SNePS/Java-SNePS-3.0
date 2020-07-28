@@ -1,9 +1,11 @@
 package sneps.network.classes.term;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 import sneps.network.Node;
+import sneps.network.VariableNode;
 import sneps.network.cables.DownCable;
 import sneps.network.cables.DownCableSet;
 import sneps.network.cables.UpCable;
@@ -58,12 +60,18 @@ public class Molecular extends Term implements Serializable{
 			DownCable dCable = dCables.nextElement();
 			Relation r = dCable.getRelation();
 			NodeSet ns = dCable.getNodeSet();
+			ArrayList<Node> variableNodes= new ArrayList<Node>();
 			for (int j = 0; j < ns.size(); j++){
 				Node n = ns.getNode(j);
 				if (!n.getUpCableSet().contains(r))
 					n.getUpCableSet().addUpCable(new UpCable(r));
 				n.getUpCableSet().getUpCable(r.getName()).addNode(node);
 				node.updateLevel(n.getLevel()+1);
+				if(n.getTerm() instanceof Variable)
+					variableNodes.add(n);
+			}
+			for(int i=0;i<variableNodes.size();i++) {
+				((VariableNode)variableNodes.get(i)).updateLevel();
 			}
 		}
 	}

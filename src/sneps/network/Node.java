@@ -48,7 +48,6 @@ public class Node implements Serializable {
 		semanticType = sem;
 		id = count++;
 		level=0;
-		updateParentsLevel();
 		Network.addNodeLBL(this,level);
 	}
 
@@ -301,7 +300,16 @@ public class Node implements Serializable {
 	 * @returns boolean to check if level changed.
 	 */
 	public boolean updateLevel(int value) {
-		if(value>level) {
+		if(!(this instanceof VariableNode)) {
+			if(value>level) {
+				Network.updateNodeLBL(this,value,level);
+				level = value;
+				if (level>numberOfLevels)
+					numberOfLevels++;
+				return true;
+			}
+		}
+		else {
 			Network.updateNodeLBL(this,value,level);
 			level = value;
 			if (level>numberOfLevels)
