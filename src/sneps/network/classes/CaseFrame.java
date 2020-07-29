@@ -4,9 +4,16 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import sneps.exceptions.CustomException;
+import sneps.network.Network;
+
 public class CaseFrame implements Serializable { 
 	
 	
+	public static CaseFrame act;
+
+	public static CaseFrame planGoal;
+
 	private String semanticClass; 
 	
 	private LinkedList<Relation> relations; 
@@ -69,6 +76,17 @@ public class CaseFrame implements Serializable {
 		this.id = id;
 	} 
 	
+	public static void createDefaultCaseFrames() throws CustomException {
+	LinkedList<Relation> actCF = new LinkedList<Relation>();
+	actCF.add(Relation.action);
+	actCF.add(Relation.obj);
+	act = Network.defineCaseFrame("Act", actCF);
+	
+	LinkedList<Relation> plangoal = new LinkedList<Relation>();
+	plangoal.add(Relation.plan);
+	plangoal.add(Relation.goal);
+	planGoal = Network.defineCaseFrame("Proposition", plangoal);
+	}
 	
 
 }
