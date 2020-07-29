@@ -2,6 +2,7 @@ package sneps.network;
 
 import java.io.Serializable;
 
+import sneps.network.cables.DownCableSet;
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
 import sneps.network.classes.Semantic;
@@ -266,5 +267,14 @@ public class Node implements Serializable {
 	public void updateUpCables() {
 		((Molecular) this.getTerm()).updateUpCables(this);
 	}
+	
+	public DownCableSet getDownCableSet(){
+		return ((Molecular) this.getTerm()).getDownCableSet();
+	}
+
+	
+
+	
+	
 
 }
