@@ -13,7 +13,7 @@ package sneps.network.cables;
 import java.io.Serializable;
 
 import sneps.network.classes.Relation;
-import sneps.network.classes.setClasses.NodeSet;
+import sneps.network.classes.setClasses.NodeCollection;
 
 public abstract class Cable implements Serializable{
 	
@@ -23,10 +23,10 @@ public abstract class Cable implements Serializable{
 	private Relation relation;
 	
 	/**
-	 * The node set containing the nodes that are pointed to by
+	 * The node collection containing the nodes that are pointed to by
 	 * 	the arcs of this cable.
 	 */
-	private NodeSet nodeSet;
+	private NodeCollection nodeCollection;
 	
 	/**
 	 * The constructor of this class
@@ -36,9 +36,9 @@ public abstract class Cable implements Serializable{
 	 * @param ns
 	 * 			the nodes included in this cable.
 	 */
-	public Cable(Relation relation, NodeSet ns){
+	public Cable(Relation relation, NodeCollection nc){
 		this.relation = relation;
-		this.nodeSet = ns;
+		this.nodeCollection = nc;
 	}
 	
 	/**
@@ -51,11 +51,11 @@ public abstract class Cable implements Serializable{
 
 	/**
 	 * 
-	 * @return the node set that contains the nodes included in this
+	 * @return the node collection that contains the nodes included in this
 	 * 	cable.
 	 */
-	public NodeSet getNodeSet(){
-		return this.nodeSet;
+	public NodeCollection getNodeCollection(){
+		return this.nodeCollection;
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public abstract class Cable implements Serializable{
 	 */
 	@Override
 	public String toString(){
-		return this.relation.toString()+" "+this.nodeSet.toString();
+		return this.relation.toString()+" "+this.nodeCollection.toString();
 	}
 
 }

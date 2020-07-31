@@ -13,6 +13,7 @@ package sneps.network.cables;
 import java.io.Serializable;
 
 import sneps.network.classes.Relation;
+import sneps.network.classes.setClasses.NodeCollection;
 import sneps.network.classes.setClasses.NodeSet;
 
 public class DownCable extends Cable implements Serializable{
@@ -24,8 +25,8 @@ public class DownCable extends Cable implements Serializable{
 	 * @param nodeSet
 	 * 			the nodes included in this down cable.
 	 */
-	public DownCable(Relation relation, NodeSet nodeSet) {
-		super(relation, nodeSet);
+	public DownCable(Relation relation, NodeCollection nodeCollection) {
+		super(relation, nodeCollection);
 		// TODO does this resembles what we agreed to do with semantic classes??
 		//this.updateSemanticClass();
 	}

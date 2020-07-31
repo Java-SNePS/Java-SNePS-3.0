@@ -15,6 +15,7 @@ import sneps.network.classes.Relation;
 import java.io.Serializable;
 
 import sneps.network.Node;
+import sneps.network.classes.setClasses.NodeCollection;
 import sneps.network.classes.setClasses.NodeSet;
 
 public class UpCable extends Cable implements Serializable{
@@ -26,7 +27,7 @@ public class UpCable extends Cable implements Serializable{
 	 * 			the relation that labels the arcs of this up cable.
 	 */
 	public UpCable(Relation relation) {
-		super(relation, new NodeSet());	
+		super(relation, new NodeCollection());	
 	}
 	
 	/**
@@ -36,8 +37,14 @@ public class UpCable extends Cable implements Serializable{
 	 * 			be added or removed from the up cable after its creation.
 	 */
 	public void addNode(Node node){
-		this.getNodeSet().addNode(node);
+		
+		this.getNodeCollection().VectoraddNode(node);
 	}
+	
+	public void addNodee(Node node){
+			
+			this.getNodeCollection().LinkedListaddNode(node);
+		}
 
 	/**
 	 * 
@@ -46,6 +53,10 @@ public class UpCable extends Cable implements Serializable{
 	 * 			be added or removed from the up cable after its creation.
 	 */
 	public void removeNode(Node node){
-		this.getNodeSet().removeNode(node);
+		this.getNodeCollection().VectorremoveNode(node);
+	}
+	
+	public void removeNodee(Node node){
+		this.getNodeCollection().LinkedListremoveNode(node);
 	}
 }

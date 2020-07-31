@@ -3,7 +3,7 @@
  * 
  * @ClassDescription This is the class that represents the labeled, directed arcs 
  * 	that are used to connect the nodes in SNePS network. The class is implemented
- * 	as a 6-tuple (name, type, adjust, limit, path and quantifier).
+ * 	as a 6-tuple (name, type, decoration, limit, path and quantifier).
  * 
  * @author Nourhan Zakaria
  * @version 2.00 18/6/2014
@@ -11,9 +11,12 @@
 package sneps.network.classes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.BitSet;
 
 import sneps.exceptions.CustomException;
 import sneps.network.Network;
+import sneps.network.Node;
 import sneps.network.paths.Path;
 
 public class Relation implements Serializable {
@@ -35,10 +38,18 @@ public class Relation implements Serializable {
 	private String type;
 
 	/**
-	 * the string that represents the adjustability of the relation. It can be one
-	 * of three options: 'reduce', 'expand' or 'none'.
+	 * the bitset that represents the decoration of the relation. It can be one
+	 * of 7 options: 
+	 * 'reducible' 100000
+	 * 'expandable' 010000
+	 * 'rotary' 001000
+	 * 'reversible' 000100
+	 * 'concatenate' 000010
+	 * 'symmetric' 000001
+	 * 'none' 000000
 	 */
-	private String adjust;
+
+	private BitSet decoration = new BitSet(6);
 
 	/**
 	 * the number that represents the minimum number of nodes that this relation can
@@ -66,17 +77,17 @@ public class Relation implements Serializable {
 	 *            a string representing the name of the semantic type of the nodes
 	 *            that this relation can point to.
 	 * @param a
-	 *            a string representing the adjustability of the relations. 'reduce'
+	 *            a vector representing the decoration of the relations. 'reduce'
 	 *            if the relation is reducible. 'expand' if the relation is
 	 *            expandable. 'none' if the relation is neither reducible nor
 	 *            expandable.
 	 * @param l
-	 *            an int representing the limit of the relation.
+	 *            an integer representing the limit of the relation.
 	 */
-	public Relation(String n, String t, String a, int l) {
+	public Relation(String n, String t, BitSet a, int l) {
 		this.name = n;
 		this.type = t;
-		this.adjust = a;
+		this.decoration = a;
 		this.limit = l;
 		this.path = null;
 		setQuantifier();
@@ -85,12 +96,13 @@ public class Relation implements Serializable {
 	public Relation(String name, String type) {
 		this.name = name;
 		this.type = type;
+		this.decoration = null;
 		this.limit = 1;
-		this.adjust = "none";
 		this.path = null;
 		setQuantifier();
 
 	}
+	
 
 	/**
 	 * @return the name of the current relation.
@@ -108,11 +120,11 @@ public class Relation implements Serializable {
 	}
 
 	/**
-	 * @return the adjustability of the current relation. ('reduce', 'expand' or
+	 * @return the decoration of the current relation. ('reduce', 'expand' or
 	 *         'none')
 	 */
-	public String getAdjust() {
-		return this.adjust;
+	public BitSet getDecoration() {
+		return this.decoration;
 	}
 
 	/**
@@ -189,45 +201,79 @@ public class Relation implements Serializable {
 	public String toString() {
 		return this.name;
 	}
+	
+	public static BitSet setbit () {
+		BitSet iset = new BitSet(6);
+		for(int i = 0; i < 6; i++) {
+	        iset.set(i);
+	     }
+		return iset;
+	}
+	public static BitSet clearbit () {
+		BitSet iclear = new BitSet(6);
+		for(int i = 0; i < 6; i++) {
+			iclear.clear();
+	     }
+		return iclear;
+	}
+	
+	public static BitSet setbitx (int x) {
+		BitSet iset = new BitSet(6);
+	        iset.set(x);
+		return iset;
+	}
+	
+	public static BitSet clearbitx (int x) {
+		BitSet iclear = new BitSet(6);
+			iclear.clear(x);
+		return iclear;
+	}
 
 	public static void createDefaultRelations() {
-		andAnt = Network.defineRelation("&ant", "Proposition", "none", 1);
-		ant = Network.defineRelation("ant", "Proposition", "none", 1);
-		cq = Network.defineRelation("cq", "Proposition", "none", 1);
-		arg = Network.defineRelation("arg", "Proposition", "none", 1);
-		min = Network.defineRelation("min", "Infimum", "none", 1);
-		max = Network.defineRelation("max", "Infimum", "none", 1);
-		i = Network.defineRelation("i", "Infimum", "none", 1);
-		thresh = Network.defineRelation("thresh", "Infimum", "none", 1);
-		threshMax = Network.defineRelation("threshmax", "Infimum", "none", 1);
+		andAnt = Network.defineRelation("&ant", "Proposition" , clearbit() , 1);
+		ant = Network.defineRelation("ant", "Proposition", clearbit(), 1);
+		cq = Network.defineRelation("cq", "Proposition", clearbit(), 1);
+		arg = Network.defineRelation("arg", "Proposition", clearbit(), 1);
+		min = Network.defineRelation("min", "Infimum", clearbit(), 1);
+		max = Network.defineRelation("max", "Infimum", clearbit(), 1);
+		i = Network.defineRelation("i", "Infimum", clearbit(), 1);
+		thresh = Network.defineRelation("thresh", "Infimum", clearbit(), 1);
+		threshMax = Network.defineRelation("threshmax", "Infimum", clearbit(), 1);
 
-		action = Network.defineRelation("action", "Action", "none", 1);
+		action = Network.defineRelation("action", "Action", clearbit(), 1);
 
-		obj = Network.defineRelation("obj", "Entity", "none", 1);
+		obj = Network.defineRelation("obj", "Entity", clearbit(), 1);
 
-		obj1 = Network.defineRelation("obj1", "Entity", "none", 1);
-		obj2 = Network.defineRelation("obj2", "Entity", "none", 1);
-		obj3 = Network.defineRelation("obj3", "Entity", "none", 1);
-		obj4 = Network.defineRelation("obj4", "Entity", "none", 1);
-		obj5 = Network.defineRelation("obj5", "Entity", "none", 1);
-		obj6 = Network.defineRelation("obj6", "Entity", "none", 1);
-		obj7 = Network.defineRelation("obj7", "Entity", "none", 1);
-		obj8 = Network.defineRelation("obj8", "Entity", "none", 1);
-		obj9 = Network.defineRelation("obj9", "Entity", "none", 1);
-		obj10 = Network.defineRelation("obj10", "Entity", "none", 1);
+		obj1 = Network.defineRelation("obj1", "Entity", clearbit(), 1);
+		obj2 = Network.defineRelation("obj2", "Entity", clearbit(), 1);
+		obj3 = Network.defineRelation("obj3", "Entity", clearbit(), 1);
+		obj4 = Network.defineRelation("obj4", "Entity", clearbit(), 1);
+		obj5 = Network.defineRelation("obj5", "Entity", clearbit(), 1);
+		obj6 = Network.defineRelation("obj6", "Entity", clearbit(), 1);
+		obj7 = Network.defineRelation("obj7", "Entity", clearbit(), 1);
+		obj8 = Network.defineRelation("obj8", "Entity", clearbit(), 1);
+		obj9 = Network.defineRelation("obj9", "Entity", clearbit(), 1);
+		obj10 = Network.defineRelation("obj10", "Entity", clearbit(), 1);
 
-		precondition = Network.defineRelation("precondition", "Proposition", "none", 1);
-		act = Network.defineRelation("act", "Act", "none", 1);
-		doo = Network.defineRelation("do", "Act", "none", 1);
-		iff = Network.defineRelation("if", "Proposition", "none", 1);
-		when = Network.defineRelation("when", "Proposition", "none", 1);
-		whenever = Network.defineRelation("whenever", "Proposition", "none", 1);
-		plan = Network.defineRelation("plan", "Act", "none", 1);
-		goal = Network.defineRelation("goal", "Proposition", "none", 1);
-		effect = Network.defineRelation("effect", "Proposition", "none", 1);
-		suchthat = Network.defineRelation("suchthat", "Proposition", "none", 1);
-		vars = Network.defineRelation("vars", "Infimum", "none", 1);
-		elsee = Network.defineRelation("else", "Act", "none", 1);
+		precondition = Network.defineRelation("precondition", "Proposition", clearbit(), 1);
+		act = Network.defineRelation("act", "Act", clearbit(), 1);
+		doo = Network.defineRelation("do", "Act", clearbit(), 1);
+		iff = Network.defineRelation("if", "Proposition", clearbit(), 1);
+		when = Network.defineRelation("when", "Proposition", clearbit(), 1);
+		whenever = Network.defineRelation("whenever", "Proposition", clearbit(), 1);
+		plan = Network.defineRelation("plan", "Act", clearbit(), 1);
+		goal = Network.defineRelation("goal", "Proposition", clearbit(), 1);
+		effect = Network.defineRelation("effect", "Proposition", clearbit(), 1);
+		suchthat = Network.defineRelation("suchthat", "Proposition", clearbit(), 1);
+		vars = Network.defineRelation("vars", "Infimum", clearbit(), 1);
+		elsee = Network.defineRelation("else", "Act", clearbit(), 1);
+	}
+	
+	
+	public static void main(String[] args) {
+//		Relation aa = new Relation("bro", "Proposition",null, 1);
+//		System.out.println(setbit());
+//		System.out.println(clearbit());
 	}
 
 }
