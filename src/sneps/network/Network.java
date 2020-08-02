@@ -142,7 +142,7 @@ public class Network implements Serializable {
 	/**
 	 * A 2D ArrayList that has all the Nodes divided Level By Lebel (LBL) 
 	 */
-	private static  ArrayList<ArrayList<Node>> nodesLBL = new ArrayList<>();
+	private static  ArrayList<ArrayList<Node>> nodesLBL = new ArrayList<ArrayList<Node>>();
 
 	/**
 	 *
@@ -2098,6 +2098,8 @@ public class Network implements Serializable {
 		userDefinedMolSuffix.clear();
 		userDefinedPatSuffix.clear();
 		userDefinedVarSuffix.clear();
+		Graph.clear();
+		nodesLBL = new ArrayList<ArrayList<Node>>();
 	}
 
 		/** This method adds a node to the nodesLBL whenever one has been created

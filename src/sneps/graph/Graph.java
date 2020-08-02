@@ -17,12 +17,10 @@ public class Graph {
 	private static ArrayList<ArrayList<Vertex>> verticesLBL;
 	private static ArrayList<ArrayList<Vertex>> dummyVerticesLBL; 
 	private static ArrayList<LongSpanEdge> longSpanEdges= new ArrayList<LongSpanEdge>();
-	private static int height;
 	
 	
 	public static void constructGraph() {
 		nodesLBL= Network.getNodesLBL();
-		height=nodesLBL.size();
 		Node node;
 		verticesLBL = new ArrayList<ArrayList<Vertex>>();
 		dummyVerticesLBL= new ArrayList<ArrayList<Vertex>>();
@@ -55,9 +53,9 @@ public class Graph {
 		minimizeEdgeCrossings();
 		
 		//TODO handle remove dummy vertices with appropriate protocols
-		//TODO specify final x-coordinates and level separation
-		//TODO 
-		//TODO Construct edge lines
+		//TODO specify final x-coordinates
+		constructEdges();
+		
 		
 	}
 	
@@ -79,4 +77,15 @@ public class Graph {
 		longSpanEdges.add(longSpanEdge);
 	}
 	
+	public static void constructEdges() {
+		for(int i=0; i<edges.size();i++) {
+			for(int j=0; j<edges.get(i).size();j++) {
+				edges.get(i).get(j).constructLine();
+			}
+		}
+	}
+	
+	public static void clear() {
+		longSpanEdges=new ArrayList<LongSpanEdge>();
+	}
 }
