@@ -51,14 +51,13 @@ public class Graph {
 			}
 		}
 		minimizeEdgeCrossings();
-		
-		//TODO handle remove dummy vertices with appropriate protocols
-		//TODO specify final x-coordinates
+		assignXcoordinates();
 		constructEdges();
 		
 		
+		
 	}
-	
+
 	private static void minimizeEdgeCrossings() {
 		boolean hasChanged = true;
 		for (int c=0;hasChanged; c++) {
@@ -83,6 +82,163 @@ public class Graph {
 				edges.get(i).get(j).constructLine();
 			}
 		}
+	}
+	
+	public static void assignXcoordinates() {
+		int sumUpper;
+		int sumLower;
+		ArrayList<ArrayList<Integer>> prioritiesUpperLBL= new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> prioritiesLowerLBL= new ArrayList<ArrayList<Integer>>();
+		for(int i=0; i< verticesLBL.size(); i++) {
+			sumUpper=0;
+			sumLower=0;
+			prioritiesUpperLBL.add(new ArrayList<Integer>());
+			prioritiesLowerLBL.add(new ArrayList<Integer>());
+			for(int j=0; j<verticesLBL.get(i).size(); j++) {
+				sumUpper+=verticesLBL.get(i).get(j).computePriorityUpper();
+				sumLower+=verticesLBL.get(i).get(j).computePriorityLower();
+				prioritiesUpperLBL.get(i).add(verticesLBL.get(i).get(j).getPriorityUpper());
+				prioritiesLowerLBL.get(i).add(verticesLBL.get(i).get(j).getPriorityLower());
+			}
+			for(int j=0; j<verticesLBL.get(i).size(); j++)
+				if(verticesLBL.get(i).get(j).getNode() instanceof Dummy) {
+					verticesLBL.get(i).get(j).setPriorityUpper(sumUpper);
+					verticesLBL.get(i).get(j).setPriorityLower(sumLower);
+					prioritiesUpperLBL.get(i).set(j,verticesLBL.get(i).get(j).getPriorityUpper());
+					prioritiesLowerLBL.get(i).set(j,verticesLBL.get(i).get(j).getPriorityLower());
+				}
+		}
+		int max;
+		ArrayList<Integer> copyPrioritiesUpper;
+		ArrayList<Integer> occurrences;
+		int steps;
+		int step;
+		int index;
+		ArrayList<Vertex> moveableVertices;
+		boolean higherPriority;
+		for(int i=verticesLBL.size()-1; i>-1; i--) {
+			copyPrioritiesUpper=((ArrayList<Integer>) prioritiesUpperLBL.get(i).clone());
+			while(!copyPrioritiesUpper.isEmpty()) {
+				occurrences=new ArrayList<Integer>();
+				max=Collections.max(copyPrioritiesUpper);
+				copyPrioritiesUpper.remove(max);
+				for (int c=0;c<prioritiesUpperLBL.get(i).size();c++)
+					if(max==prioritiesUpperLBL.get(i).get(c))
+						occurrences.add(c);
+				for(int j=0; j<occurrences.size();j++) {
+					index=occurrences.get(j);
+					steps=(int) Math.round(verticesLBL.get(i).get(index).computeBarycenterUpper());
+					steps-=verticesLBL.get(i).get(index).getPosition().x;
+					if(steps<0)
+						step=-1;
+					else
+						step=1;
+					moveableVertices=new ArrayList<Vertex>();
+					for(int s=0;s<Math.abs(steps);s++) {
+						higherPriority=false;
+						for(int k=index;k<verticesLBL.get(i).size();k+=step) {
+							if(!(verticesLBL.get(i).get(k+step).getPosition().x== verticesLBL.get(i).get(k).getPosition().x+step)) 
+								break;
+							if(verticesLBL.get(i).get(k+step).getPriorityUpper()>verticesLBL.get(i).get(k).getPriorityUpper()) {
+								higherPriority=true;
+								break;
+							}
+							moveableVertices.add(verticesLBL.get(i).get(k));
+						}
+						if(higherPriority)
+							break;
+						for(int m=0;m<moveableVertices.size();m++)
+							moveableVertices.get(m).move(step);
+					}
+				}
+			}
+		}
+		ArrayList<Integer> copyPrioritiesLower;
+		for(int i=1; i<verticesLBL.size(); i++) {
+			copyPrioritiesLower=((ArrayList<Integer>) prioritiesLowerLBL.get(i).clone());
+			while(!copyPrioritiesLower.isEmpty()) {
+				occurrences=new ArrayList<Integer>();
+				max=Collections.max(copyPrioritiesLower);
+				copyPrioritiesLower.remove(max);
+				for (int c=0;c<prioritiesLowerLBL.get(i).size();c++)
+					if(max==prioritiesLowerLBL.get(i).get(c))
+						occurrences.add(c);
+				for(int j=0; j<occurrences.size();j++) {
+					index=occurrences.get(j);
+					steps=(int) Math.round(verticesLBL.get(i).get(index).computeBarycenterLower());
+					steps-=verticesLBL.get(i).get(index).getPosition().x;
+					if(steps<0)
+						step=-1;
+					else
+						step=1;
+					moveableVertices=new ArrayList<Vertex>();
+					for(int s=0;s<Math.abs(steps);s++) {
+						higherPriority=false;
+						for(int k=index;k<verticesLBL.get(i).size();k+=step) {
+							if(!(verticesLBL.get(i).get(k+step).getPosition().x== verticesLBL.get(i).get(k).getPosition().x+step)) 
+								break;
+							if(verticesLBL.get(i).get(k+step).getPriorityLower()>verticesLBL.get(i).get(k).getPriorityLower()) {
+								higherPriority=true;
+								break;
+							}
+							moveableVertices.add(verticesLBL.get(i).get(k));
+						}
+						if(higherPriority)
+							break;
+						for(int m=0;m<moveableVertices.size();m++)
+							moveableVertices.get(m).move(step);
+					}
+				}
+			}
+		}
+		
+		for(int i=verticesLBL.size()-1; i>-1; i--) {
+			copyPrioritiesUpper=((ArrayList<Integer>) prioritiesUpperLBL.get(i).clone());
+			while(!copyPrioritiesUpper.isEmpty()) {
+				occurrences=new ArrayList<Integer>();
+				max=Collections.max(copyPrioritiesUpper);
+				copyPrioritiesUpper.remove(max);
+				for (int c=0;c<prioritiesUpperLBL.get(i).size();c++)
+					if(max==prioritiesUpperLBL.get(i).get(c))
+						occurrences.add(c);
+				for(int j=0; j<occurrences.size();j++) {
+					index=occurrences.get(j);
+					steps=(int) Math.round(verticesLBL.get(i).get(index).computeBarycenterUpper());
+					steps-=verticesLBL.get(i).get(index).getPosition().x;
+					if(steps<0)
+						step=-1;
+					else
+						step=1;
+					moveableVertices=new ArrayList<Vertex>();
+					for(int s=0;s<Math.abs(steps);s++) {
+						higherPriority=false;
+						for(int k=index;k<verticesLBL.get(i).size();k+=step) {
+							if(!(verticesLBL.get(i).get(k+step).getPosition().x== verticesLBL.get(i).get(k).getPosition().x+step)) 
+								break;
+							if(verticesLBL.get(i).get(k+step).getPriorityUpper()>verticesLBL.get(i).get(k).getPriorityUpper()) {
+								higherPriority=true;
+								break;
+							}
+							moveableVertices.add(verticesLBL.get(i).get(k));
+						}
+						if(higherPriority)
+							break;
+						for(int m=0;m<moveableVertices.size();m++)
+							moveableVertices.get(m).move(step);
+					}
+				}
+			}
+		}
+		shiftVertices();
+	}
+	
+
+	private static void shiftVertices() {
+		int offset= -(int) Vertex.getMin_X();
+		if(offset!=0)
+			for(int i=0; i<verticesLBL.size();i++)
+				for(int j=0; j<verticesLBL.get(i).size();j++)
+					verticesLBL.get(i).get(j).move(offset);
 	}
 	
 	public static void clear() {

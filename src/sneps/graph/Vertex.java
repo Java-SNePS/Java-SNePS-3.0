@@ -16,6 +16,12 @@ public class Vertex implements Comparable<Vertex> {
 	private Double bary;
 	private String label;
 	private ArrayList<Integer> parentIndices;
+	private Double baryLower;
+	private Double baryUpper;
+	private int priorityLower;
+	private int priorityUpper;
+	private static double max_X=0;
+	private static double min_X=0;
 
 	public Vertex(Node node, Point2D.Double position, ArrayList<Integer> parentIndices) {
 		this.node=node;
@@ -24,6 +30,8 @@ public class Vertex implements Comparable<Vertex> {
 		label = node.getIdentifier();
 		outgoingEdges= new ArrayList<Edge>();
 		incomingEdges= new ArrayList<Edge>();
+		if(position.x>max_X)
+			max_X=position.x;
 	}
 
 	/**
@@ -40,13 +48,89 @@ public class Vertex implements Comparable<Vertex> {
 		for(int i=0; i<inDegree; i++)
 			barycenterIn+=(incomingEdges.get(i).getParentX()/(inDegree+0.0));
 		for(int i=0; i<outDegree; i++)
-			barycenterOut+=(outgoingEdges.get(i).getChildX()/(outDegree+0-0));
+			barycenterOut+=(outgoingEdges.get(i).getChildX()/(outDegree+0.0));
 		bary= barycenterIn+barycenterOut;
 		if(inDegree==0 || outDegree==0)
 			return;
 		bary/=2;
 	}
 	
+	public Double computeBarycenterUpper() {
+		baryUpper=0.0;
+		for(int i=0; i<inDegree; i++)
+			baryLower+=(incomingEdges.get(i).getParentX()/(inDegree+0.0));
+		return baryUpper;
+	}
+			
+			
+	public Double computeBarycenterLower(){
+		baryLower=0.0;
+		for(int i=0; i<outDegree; i++)
+			baryUpper+=(outgoingEdges.get(i).getChildX()/(outDegree+0.0));
+		return baryLower;
+	}
+	
+	public int computePriorityUpper() {    
+		priorityUpper=inDegree;
+		return priorityUpper;
+	}
+	
+	public int computePriorityLower() {    
+		priorityLower=outDegree;
+		return priorityLower;
+	}
+	
+
+	/**
+	 * @param priorityLower the priorityLower to set
+	 */
+	public void setPriorityLower(int priorityLower) {
+		this.priorityLower = priorityLower;
+	}
+
+	/**
+	 * @param priorityUpper the priorityUpper to set
+	 */
+	public void setPriorityUpper(int priorityUpper) {
+		this.priorityUpper = priorityUpper;
+	}
+
+	/**
+	 * @return the baryLower
+	 */
+	public Double getBaryLower() {
+		return baryLower;
+	}
+
+	/**
+	 * @return the baryUpper
+	 */
+	public Double getBaryUpper() {
+		return baryUpper;
+	}
+
+	/**
+	 * @return the priorityLower
+	 */
+	public int getPriorityLower() {
+		return priorityLower;
+	}
+
+	/**
+	 * @return the priorityUpper
+	 */
+	public int getPriorityUpper() {
+		return priorityUpper;
+	}
+	
+	public void move(int displacement) {
+		position.x+=displacement;
+		if(position.x>max_X)
+			max_X=position.x;
+		if(position.x<min_X)
+			min_X=position.x;
+	}
+
 	public boolean setX(double x) {
 		if(position.x!=x) {
 			position.x=x;
@@ -105,6 +189,20 @@ public class Vertex implements Comparable<Vertex> {
 	 */
 	public Node getNode() {
 		return node;
+	}
+
+	/**
+	 * @return the max_X
+	 */
+	public static double getMax_X() {
+		return max_X;
+	}
+
+	/**
+	 * @return the min_X
+	 */
+	public static double getMin_X() {
+		return min_X;
 	}
 
 	@Override
