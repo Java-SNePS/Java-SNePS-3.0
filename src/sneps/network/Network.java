@@ -988,7 +988,7 @@ public class Network implements Serializable {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
 		LinkedList<Relation> list = (LinkedList<Relation>) caseFrame.getRelations().clone();
 		for (int i = 0; i < array.length; i++) {
@@ -1005,6 +1005,27 @@ public class Network implements Serializable {
 		}
 		if (!list.isEmpty())
 			return false;
+		return true;
+	}*/
+
+	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
+		LinkedList<Relation> list = new LinkedList<Relation>();
+		list.addAll(caseFrame.getRelations());
+		for (int i = 0; i < array.length; i++) {
+			Relation r = (Relation) array[i][0];
+			if (list.contains(r)) {
+				if (((NodeSet) array[i][1]).size() >= r.getLimit()) {
+					list.remove(r);
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		if (!list.isEmpty()) {
+			return false;
+		}
 		return true;
 	}
 
