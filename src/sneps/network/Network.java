@@ -729,11 +729,11 @@ public class Network implements Serializable {
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
 	 *
-	 * @param array     a 2D array of Relation-Node pairs that represents the
-	 *                  specifications of the down cable set of the new molecular
-	 *                  node.
-	 * @param caseFrame the case frame that will be implemented by the new molecular
-	 *                  node.
+	 * @param array
+	 *            a 2D array of Relation-Node pairs that represents the
+	 *            specifications of the down cable set of the new molecular node.
+	 * @param caseFrame
+	 *            the case frame that will be implemented by the new molecular node.
 	 *
 	 * @return the newly created molecular node.
 	 * @throws CannotBuildNodeException
