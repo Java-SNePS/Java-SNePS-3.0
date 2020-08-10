@@ -146,7 +146,7 @@ public class Network implements Serializable {
 	/**
 	 * This is created to reduce the search space when searching for only
 	 * proposition nodes
-	 *
+	 * 
 	 * @return the hash table that stores the proposition nodes defined in the
 	 *         network.
 	 */
@@ -216,11 +216,12 @@ public class Network implements Serializable {
 
 	/**
 	 *
-	 * @param name the name of the relation that will be retrieved.
+	 * @param name
+	 *            the name of the relation that will be retrieved.
 	 *
 	 * @return the relation with the specified name if it exists.
-	 * @throws RelationDoesntExistException if the requested relation does not
-	 *                                      exist.
+	 * @throws RelationDoesntExistException
+	 *             if the requested relation does not exist.
 	 */
 	public static Relation getRelation(String name) throws RelationDoesntExistException {
 		if (relations.containsKey(name)) {
@@ -232,12 +233,13 @@ public class Network implements Serializable {
 
 	/**
 	 *
-	 * @param id the string id of the case frame that will be retrieved.
+	 * @param id
+	 *            the string id of the case frame that will be retrieved.
 	 *
 	 * @return the case frame with the specified id if it exists.
 	 *
-	 * @throws CaseFrameWithSetOfRelationsNotFoundException if the requested frame
-	 *                                                      does not exist.
+	 * @throws CaseFrameWithSetOfRelationsNotFoundException
+	 *             if the requested frame does not exist.
 	 */
 	public static CaseFrame getCaseFrame(String id) throws CaseFrameWithSetOfRelationsNotFoundException {
 		if (caseFrames.containsKey(id)) {
@@ -250,11 +252,13 @@ public class Network implements Serializable {
 
 	/**
 	 *
-	 * @param identifier the name of the node that will be retrieved.
+	 * @param identifier
+	 *            the name of the node that will be retrieved.
 	 *
 	 * @return the node with the specified name if it exists.
 	 *
-	 * @throws NodeNotFoundInNetworkException if the requested node does not exist.
+	 * @throws NodeNotFoundInNetworkException
+	 *             if the requested node does not exist.
 	 */
 	public static Node getNode(String identifier) throws NodeNotFoundInNetworkException {
 		if (nodes.containsKey(identifier)) {
@@ -275,17 +279,22 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to define a new relation in the network.
 	 *
-	 * @param name   the name of the new relation.
-	 * @param type   the name of the semantic class that specify the semantic of the
-	 *               nodes that this new relation can point to.
-	 * @param adjust the adjustability of the new relation.
-	 * @param limit  the minimum number of nodes that this new relation can point to
-	 *               within a down-cable.
+	 * @param name
+	 *            the name of the new relation.
+	 * @param type
+	 *            the name of the semantic class that specify the semantic of the
+	 *            nodes that this new relation can point to.
+	 * @param adjust
+	 *            the adjustability of the new relation.
+	 * @param limit
+	 *            the minimum number of nodes that this new relation can point to
+	 *            within a down-cable.
 	 *
 	 * @return the newly created relation.
 	 *
-	 * @throws CustomException if another relation with the same given name is
-	 *                         already defined in the network.
+	 * @throws CustomException
+	 *             if another relation with the same given name is already defined
+	 *             in the network.
 	 */
 	public static Relation defineRelation(String name, String type, String adjust, int limit) {
 		if (relations.containsKey(name)) {
@@ -312,10 +321,11 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to delete a relation from the network.
 	 *
-	 * @param name the name of the relation that will be deleted.
-	 * @throws CaseFrameCannotBeRemovedException if the relation cannot be removed
-	 *                                           because one of the case frames that
-	 *                                           contains it cannot be removed.
+	 * @param name
+	 *            the name of the relation that will be deleted.
+	 * @throws CaseFrameCannotBeRemovedException
+	 *             if the relation cannot be removed because one of the case frames
+	 *             that contains it cannot be removed.
 	 */
 	public static void undefineRelation(String name) throws CaseFrameCannotBeRemovedException {
 		Relation r = relations.get(name);
@@ -339,10 +349,11 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to define a new case frame.
 	 *
-	 * @param semanticType the default semantic type specified by the new case
-	 *                     frame.
-	 * @param relationSet  the list that contains the RCFP's of the relations
-	 *                     included in the new case frame.
+	 * @param semanticType
+	 *            the default semantic type specified by the new case frame.
+	 * @param relationSet
+	 *            the list that contains the RCFP's of the relations included in the
+	 *            new case frame.
 	 *
 	 * @return the newly created case frame.
 	 *
@@ -378,12 +389,13 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to remove a case frame from the network.
 	 *
-	 * @param id the ID of the case frame that will be removed.
+	 * @param id
+	 *            the ID of the case frame that will be removed.
 	 *
-	 * @throws CaseFrameCannotBeRemovedException if the specified case frame cannot
-	 *                                           be removed because there are nodes
-	 *                                           implementing this case frame and
-	 *                                           they need to be removed first.
+	 * @throws CaseFrameCannotBeRemovedException
+	 *             if the specified case frame cannot be removed because there are
+	 *             nodes implementing this case frame and they need to be removed
+	 *             first.
 	 */
 	public static void undefineCaseFrame(String id) throws CaseFrameCannotBeRemovedException {
 		// first check if there are nodes implementing this case frame .. they
@@ -400,8 +412,10 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to define a certain path for a specific relation.
 	 *
-	 * @param relation the relation that its path will be defined.
-	 * @param path     the path that will be defined for the given relation.
+	 * @param relation
+	 *            the relation that its path will be defined.
+	 * @param path
+	 *            the path that will be defined for the given relation.
 	 */
 	public static void definePath(Relation relation, Path path) {
 		relation.setPath(path);
@@ -410,7 +424,8 @@ public class Network implements Serializable {
 	/**
 	 * This method is used to undefine or remove the path of a a certain relation
 	 *
-	 * @param relation the relation that its path will be removed.
+	 * @param relation
+	 *            the relation that its path will be removed.
 	 */
 	public static void undefinePath(Relation relation) {
 		relation.setPath(null);
@@ -420,13 +435,13 @@ public class Network implements Serializable {
 	 * This method is used to remove a node from the network and also removes all
 	 * the nodes that are only dominated by it.
 	 *
-	 * @param node the node that will be removed.
+	 * @param node
+	 *            the node that will be removed.
 	 *
-	 * @throws NodeCannotBeRemovedException if the node cannot be removed because it
-	 *                                      is not isolated.
+	 * @throws NodeCannotBeRemovedException
+	 *             if the node cannot be removed because it is not isolated.
 	 */
-	public static void removeNode(Node node) throws NodeCannotBeRemovedException, NodeNotFoundInPropSetException,
-			NotAPropositionNodeException, NodeNotFoundInNetworkException {
+	public static void removeNode(Node node) throws NodeCannotBeRemovedException, NodeNotFoundInPropSetException, NotAPropositionNodeException, NodeNotFoundInNetworkException {
 		// check if the node is not isolated
 		if (!node.getUpCableSet().isEmpty()) {
 			throw new NodeCannotBeRemovedException(
@@ -474,79 +489,189 @@ public class Network implements Serializable {
 
 	/**
 	 * This method builds a variable node with the default semantic type for
-	 * variable nodes which is 'infimum'.
+	 * variable nodes which is 'entity'.
 	 *
 	 * @return the newly created variable node.
 	 */
-	public static VariableNode buildVariableNode() {
+	
+	public static BasicVariable buildBasicVariable(){
 		Variable v = new Variable(getNextVarName());
-		VariableNode node = new VariableNode(v);
+		BasicVariable node = new BasicVariable(v);
 		nodes.put(node.getIdentifier(), node);
-		nodesIndex.add(node.getId(), node);
+		nodesIndex.add(node.getId(),node);
 		return node;
 	}
-
-	/**
-	 * This method builds a variable node with the default semantic type for
-	 * variable nodes which is 'infimum'.
-	 *
-	 * @param identifier the name of the new variable node.
-	 * @return the newly created variable node.
-	 * @throws IllegalIdentifierException
-	 */
-	public static VariableNode buildVariableNode(String identifier) throws IllegalIdentifierException {
+	
+	
+	
+	
+	public static BasicVariable buildBasicVariable(String identifier)
+			throws IllegalIdentifierException {
 		if (nodes.containsKey(identifier)) {
 			if (nodes.get(identifier).getTerm() instanceof Variable) {
-				VariableNode vNode = (VariableNode) nodes.get(identifier);
+				BasicVariable vNode = (BasicVariable) nodes.get(identifier);
 				return vNode;
 			} else {
 				throw new IllegalIdentifierException("A base node already exists with this identifier.");
 			}
 		} else {
 			Variable v = new Variable(identifier);
-			VariableNode node = new VariableNode(v);
+			BasicVariable node = new BasicVariable(v);
 			nodes.put(node.getIdentifier(), node);
 			nodesIndex.add(node.getId(), node);
 			return node;
 		}
 	}
+	
 
-	/*
-	 * check when this method should be used in the network?? and how the variable
-	 * node that have a semantic type should be handled and treated in the network?
-	 * In the current version, all variable nodes are assumed to have only the
-	 * default semantic type 'infimum'.
-	 *
-	 *
-	 * /** This method builds a variable node with the given semantic type.
-	 *
-	 * @param semantic the specified semantic type that will override the default
-	 * semantic type for the variable node that will be created.
-	 *
-	 * @return the newly created variable node.
-	 */
-	public static VariableNode buildVariableNode(Semantic semantic) {
+	public static BasicVariable buildBasicVariable(Semantic semantic) {
 		Variable v = new Variable(getNextVarName());
-		VariableNode node = new VariableNode(semantic, v);
+		BasicVariable node = new BasicVariable(semantic, v);
 		nodes.put(node.getIdentifier(), node);
 		nodesIndex.add(node.getId(), node);
 		return node;
 	}
 
+	
+	/** this method builds a universal variable node with restrictions 
+	 * 
+	 * @param r an array of relations 
+	 * @param c an array  of cables
+	 * @return the newly built universal variable node
+	 * @throws CustomException
+	 * @throws CannotBuildNodeException
+	 * @throws EquivalentNodeException
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws CaseFrameMissMatchException
+	 * @throws SemanticNotFoundInNetworkException
+	 */
+	
+	@SuppressWarnings("null")
+	public static UniversalVariable buildUniversalVariable(Relation[] r, Cable[] c) throws CustomException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException {
+		
+		Variable v = new Variable(getNextVarName());
+		UniversalVariable node = new UniversalVariable(v);
+		
+		
+		
+		LinkedList<Relation> r1 = null;
+		
+		ArrayList <Wire> w = null ;
+		
+		
+		
+		for(int i = 0 ; i < r.length ;i++ ){
+			
+		r1.push(r[i]);
+		
+		w.add(new Wire(r[i],node));
+				
+		}
+		
+		for ( int i = 0 ; i < c.length ; i++){
+			
+			if (!r1.contains(c[i].getRelation())){
+				
+				r1.push(c[i].getRelation());
+				
+
+
+			}
+			w.add(new Wire(c[i].getRelation(),node));
+			
+		}
+		
+		
+		
+		CaseFrame cf = new CaseFrame("Proposition",r1 );
+		
+		PropositionNode p = (PropositionNode) buildMolecularNode(w, cf);
+		node.restrictions.add(p);
+		return node;
+	}
+	
+	 
+	
+	/** this method builds an existential variable with restrictions and dependencies
+	 * 
+	 * @param r array of relations
+	 * @param c array of cables
+	 * @param dependencies array of universal nodes as dependencies of the existential node
+	 * @return the newly built existential node
+	 * @throws CustomException
+	 * @throws CannotBuildNodeException
+	 * @throws EquivalentNodeException
+	 * @throws NotAPropositionNodeException
+	 * @throws NodeNotFoundInNetworkException
+	 * @throws CaseFrameMissMatchException
+	 * @throws SemanticNotFoundInNetworkException
+	 */
+	
+	@SuppressWarnings("null")
+	public static ExistentialVariable buildExistentialVariable(Relation[] r, Cable[] c, UniversalVariable[] dependencies) throws CustomException, CannotBuildNodeException, EquivalentNodeException, NotAPropositionNodeException, NodeNotFoundInNetworkException, CaseFrameMissMatchException, SemanticNotFoundInNetworkException{
+		Variable v = new Variable(getNextVarName());
+		ExistentialVariable node = new ExistentialVariable(v);
+		
+		LinkedList<Relation> r1 = null;
+		
+		ArrayList <Wire> w = null ;
+		
+		
+		
+		
+		for(int i = 0 ; i < r.length ;i++ ){
+			
+		r1.push(r[i]);
+		
+		w.add(new Wire(r[i],node));
+				
+		}
+		
+		for ( int i = 0 ; i < c.length ; i++){
+			
+			if (!r1.contains(c[i].getRelation())){
+				
+				r1.push(c[i].getRelation());
+				
+				
+				
+			}
+			
+			w.add(new Wire(c[i].getRelation(),node));
+				
+			
+		}
+		
+		CaseFrame cf = new CaseFrame("Proposition",r1 );
+		
+		PropositionNode p = (PropositionNode) buildMolecularNode(w, cf);
+		node.restrictions.add(p);
+		node.dependency = dependencies;
+		
+		
+		return node;
+	}
+
+	
+
 	/**
 	 * This method builds a new base node with the given name and semantic type.
 	 *
-	 * @param identifier the name of the new base node.
-	 * @param semantic   the semantic class that represents the semantic type of the
-	 *                   new base node.
+	 * @param identifier
+	 *            the name of the new base node.
+	 * @param semantic
+	 *            the semantic class that represents the semantic type of the new
+	 *            base node.
 	 *
 	 * @return the newly created base node.
 	 * @throws NotAPropositionNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws IllegalIdentifierException
 	 *
-	 * @throws CustomException                if another node with the same given
-	 *                                        name already exists in the network.
+	 * @throws CustomException
+	 *             if another node with the same given name already exists in the
+	 *             network.
 	 */
 	public static Node buildBaseNode(String identifier, Semantic semantic)
 			throws NotAPropositionNodeException, NodeNotFoundInNetworkException, IllegalIdentifierException {
@@ -563,11 +688,11 @@ public class Network implements Serializable {
 				VariableNode vNode = (VariableNode) nodes.get(identifier);
 				if (vNode.isSnepslogFlag()) {
 					return nodes.get(identifier);
-				}
+				} 
 			}
 			throw new IllegalIdentifierException("A variable node already exists with this identifier.");
 		}
-
+		
 		Base b = new Base(identifier);
 		if (semantic.getSemanticType().equals("Proposition") || semantic.getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode = new PropositionNode(b);
@@ -604,18 +729,18 @@ public class Network implements Serializable {
 	 * This method builds a new molecular node with the given down cable set
 	 * specifications and case frame.
 	 *
-	 * @param array     a 2D array of Relation-Node pairs that represents the
-	 *                  specifications of the down cable set of the new molecular
-	 *                  node.
-	 * @param caseFrame the case frame that will be implemented by the new molecular
-	 *                  node.
+	 * @param array
+	 *            a 2D array of Relation-Node pairs that represents the
+	 *            specifications of the down cable set of the new molecular node.
+	 * @param caseFrame
+	 *            the case frame that will be implemented by the new molecular node.
 	 *
 	 * @return the newly created molecular node.
 	 * @throws CannotBuildNodeException
 	 * @throws NodeNotFoundInNetworkException
 	 * @throws NotAPropositionNodeException
-	 * @throws CaseFrameMissMatchException
-	 * @throws SemanticNotFoundInNetworkException
+	 * @throws CaseFrameMissMatchException 
+	 * @throws SemanticNotFoundInNetworkException 
 	 * @throws DuplicateNodeException
 	 *
 	 */
@@ -641,7 +766,7 @@ public class Network implements Serializable {
 			throw new CaseFrameMissMatchException(
 					"Not following the case frame .. wrong node set size or wrong set of relations");
 		// create the Molecular Node
-		if (caseFrame.getSemanticClass().equals("Proposition")
+		if (caseFrame.getSemanticClass().equals("Proposition") 
 				|| SemanticHierarchy.getSemantic(caseFrame.getSemanticClass()).getSuperClassesNames().contains("Proposition")) {
 			PropositionNode propNode;
 			if (isToBePattern(array)) {
@@ -732,14 +857,15 @@ public class Network implements Serializable {
 			return mNode;
 		}
 	}
-
+	
 	/**
 	 * checks whether the given down cable set already exists in the network or not.
 	 *
-	 * @param array a 2D array of Relation-Node pairs representing a down cable set
-	 *              specifications.
+	 * @param array
+	 *            a 2D array of Relation-Node pairs representing a down cable set
+	 *            specifications.
 	 *
-	 * @return the node that has this DownCableSet if it is found, or the node
+	 * @return the node that has this DownCableSet if it is found, or the node 
 	 * 		   that has an equivalent DownCableSet if it is found. Returns null otherwise
 	 */
 	private static Node downCableSetExists(Object[][] array) {
@@ -850,7 +976,7 @@ public class Network implements Serializable {
 		} else {
 			result = false;
 		}
-
+		
 		if(result) {
 			// if given DownCableSet exists within the network, return the node that this DownCableSet belongs to
 			return (Node) ns.get(0)[0];
@@ -868,8 +994,9 @@ public class Network implements Serializable {
 	 * implementation any relation can point to the variable node because all nodes
 	 * have infimum as their semantic type.
 	 *
-	 * @param array a 2D array of Relation-Node pairs that represents the
-	 *              specifications of the down cable set of a new molecular node.
+	 * @param array
+	 *            a 2D array of Relation-Node pairs that represents the
+	 *            specifications of the down cable set of a new molecular node.
 	 *
 	 * @return true if each pair in the 2D array is valid, and false otherwise.
 	 */
@@ -975,7 +1102,7 @@ public class Network implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
 		LinkedList<Relation> list = (LinkedList<Relation>) caseFrame.getRelations().clone();
@@ -996,34 +1123,14 @@ public class Network implements Serializable {
 		return true;
 	}
 
-	private static boolean followingCaseFrame(Object[][] array, CaseFrame caseFrame) {
-		LinkedList<Relation> list = new LinkedList<Relation>();
-		list.addAll(caseFrame.getRelations());
-		for (int i = 0; i < array.length; i++) {
-			Relation r = (Relation) array[i][0];
-			if (list.contains(r)) {
-				if (((NodeSet) array[i][1]).size() >= r.getLimit()) {
-					list.remove(r);
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-		if (!list.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
 	/**
 	 * This method examines the down cable set of a certain molecular node to check
 	 * whether it dominate free variables or not. Pattern nodes dominate free
 	 * variables while closed nodes do not dominate free variables.
 	 *
-	 * @param array a 2D array of Relation-Node pairs that represents the
-	 *              specifications of the down cable set of the new molecular node.
+	 * @param array
+	 *            a 2D array of Relation-Node pairs that represents the
+	 *            specifications of the down cable set of the new molecular node.
 	 *
 	 * @return true if the node dominates free variable and thus should be pattern
 	 *         node, and false otherwise.
@@ -1062,15 +1169,17 @@ public class Network implements Serializable {
 	 * This method builds a new pattern node or proposition node with the given down
 	 * cable set specifications and case frame.
 	 *
-	 * @param relNodeSet a 2D array of relation-nodeSet pairs that represents the
-	 *                   down cable set of the new pattern or proposition node.
-	 * @param caseFrame  the case frame implemented by the new pattern or
-	 *                   proposition node.
+	 * @param relNodeSet
+	 *            a 2D array of relation-nodeSet pairs that represents the down
+	 *            cable set of the new pattern or proposition node.
+	 * @param caseFrame
+	 *            the case frame implemented by the new pattern or proposition node.
 	 *
 	 * @return the newly created pattern node or proposition node.
 	 *
-	 * @throws Exception if the semantic class specified by the case frame was not
-	 *                   successfully created and thus the node was not built.
+	 * @throws Exception
+	 *             if the semantic class specified by the case frame was not
+	 *             successfully created and thus the node was not built.
 	 */
 	@SuppressWarnings("rawtypes")
 	private static Node createPatNode(Object[][] relNodeSet, CaseFrame caseFrame) {
@@ -1158,15 +1267,17 @@ public class Network implements Serializable {
 	 * set specifications and case frame.
 	 *
 	 *
-	 * @param relNodeSet a 2D array of relation-nodeSet pairs that represents the
-	 *                   down cable set of the new closed or proposition node.
-	 * @param caseFrame  the case frame implemented by the new closed or proposition
-	 *                   node.
+	 * @param relNodeSet
+	 *            a 2D array of relation-nodeSet pairs that represents the down
+	 *            cable set of the new closed or proposition node.
+	 * @param caseFrame
+	 *            the case frame implemented by the new closed or proposition node.
 	 *
 	 * @return the newly created closed or proposition node.
 	 *
-	 * @throws Exception if the semantic class specified by the case frame was not
-	 *                   successfully created and thus the node was not built.
+	 * @throws Exception
+	 *             if the semantic class specified by the case frame was not
+	 *             successfully created and thus the node was not built.
 	 */
 	@SuppressWarnings("rawtypes")
 	private static Node createClosedNode(Object[][] relNodeSet, CaseFrame caseFrame) {
@@ -1247,8 +1358,9 @@ public class Network implements Serializable {
 	 * the key and and the node set that contains the nodes pointed to by the
 	 * corresponding relation as the value.
 	 *
-	 * @param relNodeSet a given 2D array of relation-nodeSet pairs that will be
-	 *                   used to create the hash table
+	 * @param relNodeSet
+	 *            a given 2D array of relation-nodeSet pairs that will be used to
+	 *            create the hash table
 	 *
 	 * @return the newly created hash table.
 	 */
@@ -1264,10 +1376,12 @@ public class Network implements Serializable {
 	 * This method gets the case frame signature specified by the case frame based
 	 * on the down cable set of a certain node.
 	 *
-	 * @param relNodeSet a hash table with entry having the relation name as the key
-	 *                   and the node set of nodes pointed to by the corresponding
-	 *                   relation as the value.
-	 * @param caseframe  a given case frame.
+	 * @param relNodeSet
+	 *            a hash table with entry having the relation name as the key and
+	 *            the node set of nodes pointed to by the corresponding relation as
+	 *            the value.
+	 * @param caseframe
+	 *            a given case frame.
 	 *
 	 * @return the (case frame signature) semantic type specified by the given case
 	 *         frame based on the given down cable set specifications.
@@ -1333,8 +1447,10 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * @param array   a given 2D array that contains pairs of paths and node sets.
-	 * @param context a given context.
+	 * @param array
+	 *            a given 2D array that contains pairs of paths and node sets.
+	 * @param context
+	 *            a given context.
 	 *
 	 * @return the node set of nodes that we can start following those paths in the
 	 *         array from, in order to reach at least one node at each node set in
@@ -1345,10 +1461,12 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * @param array   a given 2D array that contains pairs of paths and node sets.
-	 * @param context a given context.
-	 * @param index   the index of the 2D array at which we should start traversing
-	 *                it.
+	 * @param array
+	 *            a given 2D array that contains pairs of paths and node sets.
+	 * @param context
+	 *            a given context.
+	 * @param index
+	 *            the index of the 2D array at which we should start traversing it.
 	 *
 	 * @return the node set of nodes that we can start following those paths in the
 	 *         array from, in order to reach at least one node of node sets at each
@@ -1391,10 +1509,13 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * @param path    the path that can be followed to get to one of the nodes
-	 *                specified.
-	 * @param nodeSet the nodes that can be reached by following the path.
-	 * @param context a given context.
+	 * @param path
+	 *            the path that can be followed to get to one of the nodes
+	 *            specified.
+	 * @param nodeSet
+	 *            the nodes that can be reached by following the path.
+	 * @param context
+	 *            a given context.
 	 * @return a node set of nodes that we can start following the path from in
 	 *         order to get to one of the nodes in the specified node set.
 	 */
@@ -1424,12 +1545,14 @@ public class Network implements Serializable {
 	/**
 	 * This method builds a new case frame signature with the given parameters.
 	 *
-	 * @param result      the name of the semantic class specified by the new case
-	 *                    frame signature.
-	 * @param rules       the list of sub-domain constraints included in the new
-	 *                    case frame signature.
-	 * @param caseframeId the case frame if that this CFSignature will be included
-	 *                    in
+	 * @param result
+	 *            the name of the semantic class specified by the new case frame
+	 *            signature.
+	 * @param rules
+	 *            the list of sub-domain constraints included in the new case frame
+	 *            signature.
+	 * @param caseframeId
+	 *            the case frame if that this CFSignature will be included in
 	 *
 	 * @return the newly created case frame signature.
 	 */
@@ -1441,12 +1564,15 @@ public class Network implements Serializable {
 	/**
 	 * This method adds a given case frame signature to a given case frame.
 	 *
-	 * @param rule      the given case frame signature that will be added to the
-	 *                  specified case frame.
+	 * @param rule
+	 *            the given case frame signature that will be added to the specified
+	 *            case frame.
 	 *
-	 * @param priority  the priority of the given case frame signature.
+	 * @param priority
+	 *            the priority of the given case frame signature.
 	 *
-	 * @param caseframe the given case frame.
+	 * @param caseframe
+	 *            the given case frame.
 	 *
 	 * @return true if the case frame signature was successfully added to the case
 	 *         frame and false otherwise.
@@ -1458,8 +1584,10 @@ public class Network implements Serializable {
 	/**
 	 * This method removes the given case frame signature from the given case frame
 	 *
-	 * @param signatureID the id of the signature to be removed.
-	 * @param caseFrame   the given case frame
+	 * @param signatureID
+	 *            the id of the signature to be removed.
+	 * @param caseFrame
+	 *            the given case frame
 	 *
 	 * @return true if the case frame signature was successfully removed from the
 	 *         given case frame and false otherwise.
@@ -1471,8 +1599,10 @@ public class Network implements Serializable {
 	/**
 	 * This method removes the given case frame signature from the given case frame
 	 *
-	 * @param signatureID the signature to be removed.
-	 * @param caseFrame   the given case frame
+	 * @param signatureID
+	 *            the signature to be removed.
+	 * @param caseFrame
+	 *            the given case frame
 	 *
 	 * @return true if the case frame signature was successfully removed from the
 	 *         given case frame and false otherwise.
@@ -1484,9 +1614,12 @@ public class Network implements Serializable {
 	/**
 	 * This method builds a new RCFP with the given parameters
 	 *
-	 * @param r      the relation included in the new RCFP.
-	 * @param adjust the adjust of the given relation in the new RCFP.
-	 * @param limit  the limit of the given relation in the new RCFP.
+	 * @param r
+	 *            the relation included in the new RCFP.
+	 * @param adjust
+	 *            the adjust of the given relation in the new RCFP.
+	 * @param limit
+	 *            the limit of the given relation in the new RCFP.
 	 *
 	 * @return the newly created RCFP.
 	 */
@@ -1582,7 +1715,8 @@ public class Network implements Serializable {
 	 * This method checks if a user-defined name of a base node has the same form as
 	 * the closed nodes' identifiers "Mi"
 	 *
-	 * @param identifier a user-defined identifier.
+	 * @param identifier
+	 *            a user-defined identifier.
 	 *
 	 * @return -1 if the identifier does not have the form of "Mi" where 'i' is an
 	 *         integer suffix, and return the int value of the 'i' otherwise.
@@ -1603,7 +1737,8 @@ public class Network implements Serializable {
 	 * This method checks if a user-defined name of a base node has the same form as
 	 * the pattern nodes' identifiers "Pi"
 	 *
-	 * @param identifier a user-defined identifier.
+	 * @param identifier
+	 *            a user-defined identifier.
 	 *
 	 * @return -1 if the identifier does not have the form of "Pi" where 'i' is an
 	 *         integer suffix, and return the int value of the 'i' otherwise.
@@ -1624,7 +1759,8 @@ public class Network implements Serializable {
 	 * This method checks if a user-defined name of a base node has the same form as
 	 * the variable nodes' identifiers "Vi"
 	 *
-	 * @param identifier a user-defined identifier.
+	 * @param identifier
+	 *            a user-defined identifier.
 	 *
 	 * @return -1 if the identifier does not have the form of "Vi" where 'i' is an
 	 *         integer suffix, and return the int value of the 'i' otherwise.
@@ -1643,7 +1779,8 @@ public class Network implements Serializable {
 
 	/**
 	 *
-	 * @param c a character that will be checked whether it is an int or not.
+	 * @param c
+	 *            a character that will be checked whether it is an int or not.
 	 *
 	 * @return true if the character is an int, and false otherwise.
 	 */
@@ -1697,7 +1834,8 @@ public class Network implements Serializable {
 	 * because it will be conflicting with itself.
 	 *
 	 *
-	 * @param cf the newly created case frame.
+	 * @param cf
+	 *            the newly created case frame.
 	 *
 	 * @return a list of the case frame that are conflicting with the given case
 	 *         frame, and null if the given case frame already exists in the system.
@@ -1759,9 +1897,11 @@ public class Network implements Serializable {
 	 * frames. It is invoked and used by the method that checks the case frame
 	 * conflicts.
 	 *
-	 * @param list1 a given hash table of relations of a certain case frame
+	 * @param list1
+	 *            a given hash table of relations of a certain case frame
 	 *
-	 * @param list2 a given hash table of relations of a another case frame
+	 * @param list2
+	 *            a given hash table of relations of a another case frame
 	 *
 	 * @return a hash table that contains the relations that were in both case
 	 *         frames. Each entry has the relation name as the key and the RCFP of
@@ -1824,7 +1964,8 @@ public class Network implements Serializable {
 	// Other Methods
 
 	/**
-	 * @param array the array that contains pairs of paths and node sets
+	 * @param array
+	 *            the array that contains pairs of paths and node sets
 	 * @return the node set of non-variable nodes that we can start following those
 	 *         paths in the array from, in order to reach at least one
 	 */
@@ -1841,7 +1982,8 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * @param array the array that contains pairs of paths and node sets
+	 * @param array
+	 *            the array that contains pairs of paths and node sets
 	 * @return the node set of base nodes that we can start following those paths in
 	 *         the array from, in order to reach at least one node at each node set
 	 *         in all entries of the array
@@ -1859,7 +2001,8 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * @param array the array that contains pairs of paths and node sets
+	 * @param array
+	 *            the array that contains pairs of paths and node sets
 	 * @return the node set of variable nodes that we can start following those
 	 *         paths in the array from, in order to reach at least one node at each
 	 *         node set in all entries of the array
@@ -1877,7 +2020,8 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * @param array the array that contains pairs of paths and node sets
+	 * @param array
+	 *            the array that contains pairs of paths and node sets
 	 * @return the node set of pattern nodes that we can start following those paths
 	 *         in the array from, in order to reach at least one node at each node
 	 *         set in all entries of the array
@@ -1924,37 +2068,36 @@ public class Network implements Serializable {
 		RCFP.createDefaultProperties();
 		Semantic.createDefaultSemantics();
 		RelationsRestrictedCaseFrame.createDefaultCaseFrames();
-		// SNeBR.getContextSet().add(SNeBR.getCurrentContext());
-		// ControlActionNode.initControlActions();
+		//SNeBR.getContextSet().add(SNeBR.getCurrentContext());
+		//ControlActionNode.initControlActions();
 	}
-
-	public static void save(String relationsData, String caseFramesData, String nodesData, String molData, String mcd,
-			String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData,
-			String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException {
+	
+	public static void save(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException {
 		ObjectOutputStream ros = new ObjectOutputStream(new FileOutputStream(new File(relationsData)));
 		ros.writeObject(relations);
 		ros.close();
-
+		
 		ObjectOutputStream cFos = new ObjectOutputStream(new FileOutputStream(new File(caseFramesData)));
 		cFos.writeObject(caseFrames);
 		cFos.close();
-
+		
+		
 		ObjectOutputStream nodesOS = new ObjectOutputStream(new FileOutputStream(new File(nodesData)));
 		nodesOS.writeObject(nodes);
 		nodesOS.close();
-
+		
 		ObjectOutputStream molNodesOs = new ObjectOutputStream(new FileOutputStream(new File(molData)));
 		molNodesOs.writeObject(molecularNodes);
 		molNodesOs.close();
-
+		
 		ObjectOutputStream mc = new ObjectOutputStream(new FileOutputStream(new File(mcd)));
 		mc.writeObject(molCounter);
 		mc.close();
-
+		
 		ObjectOutputStream pc = new ObjectOutputStream(new FileOutputStream(new File(pcd)));
 		pc.writeObject(patternCounter);
 		pc.close();
-
+		
 		ObjectOutputStream vc = new ObjectOutputStream(new FileOutputStream(new File(vcd)));
 		vc.writeObject(varCounter);
 		vc.close();
@@ -1979,35 +2122,35 @@ public class Network implements Serializable {
 		udvs.writeObject(userDefinedVarSuffix);
 		udvs.close();
 	}
-
+	
 	public static void saveNetworks() throws IOException {
 		ObjectOutputStream networks = new ObjectOutputStream(new FileOutputStream(new File("Networks")));
 		networks.writeObject(savedNetworks);
 		networks.close();
 	}
-
+	
 	public static void loadNetworks() throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInputStream ns = new ObjectInputStream(new FileInputStream(new File("Networks")));
+		ObjectInputStream ns= new ObjectInputStream(new FileInputStream(new File("Networks")));
 		ArrayList<String> temp = (ArrayList<String>) ns.readObject();
 		Network.savedNetworks = temp;
 		ns.close();
 	}
-
+	
 	public static ArrayList<String> getSavedNetworks() {
 		return savedNetworks;
 	}
 
 	public static boolean addToSavedNetworks(String n) {
 		boolean r;
-		if (savedNetworks.contains(n)) {
+		if(savedNetworks.contains(n)) {
 			r = false;
-		} else {
+		}else {
 			savedNetworks.add(n);
 			r = true;
 		}
 		return r;
 	}
-
+	
 	public static void deleteFromSavedNetworks(String f) {
 		savedNetworks.remove(f);
 		try {
@@ -2018,76 +2161,75 @@ public class Network implements Serializable {
 		}
 	}
 
-	public static void load(String relationsData, String caseFramesData, String nodesData, String molData, String mcd,
-			String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData,
-			String userDefinedPatSuffixData, String userDefinedVarSuffixData)
-			throws IOException, ClassNotFoundException {
-		ObjectInputStream ris = new ObjectInputStream(new FileInputStream(new File(relationsData)));
+	public static void load(String relationsData, String caseFramesData, String nodesData, String molData, String mcd, String pcd, String vcd, String pNData, String nodesIndexData, String userDefinedMolSuffixData, String userDefinedPatSuffixData, String userDefinedVarSuffixData) throws IOException, ClassNotFoundException {
+		ObjectInputStream ris= new ObjectInputStream(new FileInputStream(new File(relationsData)));
 		Hashtable<String, Relation> tempRelations = (Hashtable<String, Relation>) ris.readObject();
 		Network.relations = tempRelations;
 		ris.close();
 		tempRelations = null;
-
-		ObjectInputStream cFis = new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
+		
+		ObjectInputStream cFis= new ObjectInputStream(new FileInputStream(new File(caseFramesData)));
 		Hashtable<String, CaseFrame> tempcF = (Hashtable<String, CaseFrame>) cFis.readObject();
 		Network.caseFrames = tempcF;
 		cFis.close();
 		tempcF = null;
-
-		ObjectInputStream nodesis = new ObjectInputStream(new FileInputStream(new File(nodesData)));
+		
+		
+		ObjectInputStream nodesis= new ObjectInputStream(new FileInputStream(new File(nodesData)));
 		Hashtable<String, Node> tempNodes = (Hashtable<String, Node>) nodesis.readObject();
 		Network.nodes = tempNodes;
 		nodesis.close();
 		tempNodes = null;
+		
 
-		ObjectInputStream molNodesis = new ObjectInputStream(new FileInputStream(new File(molData)));
+		ObjectInputStream molNodesis= new ObjectInputStream(new FileInputStream(new File(molData)));
 		Hashtable<String, NodeSet> tempMolNodes = (Hashtable<String, NodeSet>) molNodesis.readObject();
 		Network.molecularNodes = tempMolNodes;
 		molNodesis.close();
 		tempMolNodes = null;
-
-		ObjectInputStream mc = new ObjectInputStream(new FileInputStream(new File(mcd)));
+		
+		ObjectInputStream mc= new ObjectInputStream(new FileInputStream(new File(mcd)));
 		int tempMC = (int) mc.readObject();
 		Network.molCounter = tempMC;
 		mc.close();
-
-		ObjectInputStream pc = new ObjectInputStream(new FileInputStream(new File(pcd)));
+		
+		ObjectInputStream pc= new ObjectInputStream(new FileInputStream(new File(pcd)));
 		int tempPC = (int) pc.readObject();
 		Network.patternCounter = tempPC;
 		pc.close();
-
-		ObjectInputStream vc = new ObjectInputStream(new FileInputStream(new File(vcd)));
+		
+		ObjectInputStream vc= new ObjectInputStream(new FileInputStream(new File(vcd)));
 		int tempVC = (int) vc.readObject();
 		Network.varCounter = tempVC;
 		vc.close();
 
-		ObjectInputStream pn = new ObjectInputStream(new FileInputStream(new File(pNData)));
+		ObjectInputStream pn= new ObjectInputStream(new FileInputStream(new File(pNData)));
 		Hashtable<String, PropositionNode> temppn = (Hashtable<String, PropositionNode>) pn.readObject();
 		Network.propositionNodes = temppn;
 		pn.close();
 
-		ObjectInputStream niis = new ObjectInputStream(new FileInputStream(new File(nodesIndexData)));
+		ObjectInputStream niis= new ObjectInputStream(new FileInputStream(new File(nodesIndexData)));
 		ArrayList<Node> tempni = (ArrayList<Node>) niis.readObject();
 		Network.nodesIndex = tempni;
 		niis.close();
 
-		ObjectInputStream udmsis = new ObjectInputStream(new FileInputStream(new File(userDefinedMolSuffixData)));
+		ObjectInputStream udmsis= new ObjectInputStream(new FileInputStream(new File(userDefinedMolSuffixData)));
 		LinkedList<Integer> tempudms = (LinkedList<Integer>) udmsis.readObject();
 		Network.userDefinedMolSuffix = tempudms;
 		udmsis.close();
 
-		ObjectInputStream udpsis = new ObjectInputStream(new FileInputStream(new File(userDefinedPatSuffixData)));
+		ObjectInputStream udpsis= new ObjectInputStream(new FileInputStream(new File(userDefinedPatSuffixData)));
 		LinkedList<Integer> tempudps = (LinkedList<Integer>) udpsis.readObject();
 		Network.userDefinedPatSuffix = tempudps;
 		udpsis.close();
 
-		ObjectInputStream udvsis = new ObjectInputStream(new FileInputStream(new File(userDefinedVarSuffixData)));
+		ObjectInputStream udvsis= new ObjectInputStream(new FileInputStream(new File(userDefinedVarSuffixData)));
 		LinkedList<Integer> tempudvs = (LinkedList<Integer>) udvsis.readObject();
 		Network.userDefinedVarSuffix = tempudvs;
 		udvsis.close();
-
+		
 		Node.setCount(nodes.size());
-
+		
 	}
 
 	/**

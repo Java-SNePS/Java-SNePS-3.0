@@ -1,6 +1,8 @@
 package sneps.network;
 
+import java.awt.image.RescaleOp;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import sneps.network.classes.Semantic;
 import sneps.network.classes.setClasses.VariableSet;
@@ -8,9 +10,17 @@ import sneps.network.classes.term.Term;
 import sneps.network.classes.term.Variable;
 
 public class VariableNode extends Node implements Serializable{
+	
 	private VariableSet freeVariables;
 
-	private boolean snepslogFlag;
+	public boolean snepslogFlag;
+	
+	
+	/** the array list restrictions represent the restrictions of 
+	 * the structured variables and is initialized in the basic variable 
+	 * with null
+	 */
+	public ArrayList<PropositionNode> restrictions;
 
 	public VariableNode() {
 		snepslogFlag = false;
@@ -53,5 +63,13 @@ public class VariableNode extends Node implements Serializable{
 
 	public VariableSet getFreeVariables() {
 		return freeVariables;
+	}
+	
+	/**This method returns an gets the restrictions of the node
+	 * 
+	 * @return arraylist of the restrictions of the node
+	 */
+	public ArrayList<PropositionNode> getRestrictions(){
+		return restrictions;
 	}
 }

@@ -266,5 +266,25 @@ public class Node implements Serializable {
 	public void updateUpCables() {
 		((Molecular) this.getTerm()).updateUpCables(this);
 	}
+	
+	
+	public static boolean subsume(Node x, Node y){
+		
+		if(x.equals(y))
+			return true;
+		
+		if(reduce(x,y))
+			return true;
+		
+		
+		
+		return false;
+		
+	}
+
+	public static boolean reduce(Node x, Node y) {
+		
+		return false;
+	}
 
 }
