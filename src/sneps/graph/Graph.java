@@ -54,7 +54,23 @@ public class Graph {
 		assignXcoordinates();
 		constructEdges();
 		
+		//printGraph();
 		
+		
+	}
+
+	private static void printGraph() {
+		int lastX;
+		for(int i=verticesLBL.size()-1; i>=0; i--) {
+			lastX=0;
+			for(int j=0;j<verticesLBL.get(i).size(); j++) {
+				for(int c=1;c<lastX;c++)
+					System.out.print("           ");
+				System.out.print(verticesLBL.get(i).get(j));
+				lastX=(int) verticesLBL.get(i).get(j).getPosition().x;
+			}
+			System.out.println("");
+		}
 		
 	}
 
@@ -121,7 +137,7 @@ public class Graph {
 			while(!copyPrioritiesUpper.isEmpty()) {
 				occurrences=new ArrayList<Integer>();
 				max=Collections.max(copyPrioritiesUpper);
-				copyPrioritiesUpper.remove(max);
+				copyPrioritiesUpper.remove(copyPrioritiesUpper.indexOf(max));
 				for (int c=0;c<prioritiesUpperLBL.get(i).size();c++)
 					if(max==prioritiesUpperLBL.get(i).get(c))
 						occurrences.add(c);
@@ -136,8 +152,8 @@ public class Graph {
 					moveableVertices=new ArrayList<Vertex>();
 					for(int s=0;s<Math.abs(steps);s++) {
 						higherPriority=false;
-						for(int k=index;k<verticesLBL.get(i).size();k+=step) {
-							if(!(verticesLBL.get(i).get(k+step).getPosition().x== verticesLBL.get(i).get(k).getPosition().x+step)) 
+						for(int k=index;k<verticesLBL.get(i).size()-1 && k>0;k+=step) {
+							if(!(verticesLBL.get(i).get(k+step).getPosition().x==verticesLBL.get(i).get(k).getPosition().x+step)) 
 								break;
 							if(verticesLBL.get(i).get(k+step).getPriorityUpper()>verticesLBL.get(i).get(k).getPriorityUpper()) {
 								higherPriority=true;
@@ -159,7 +175,7 @@ public class Graph {
 			while(!copyPrioritiesLower.isEmpty()) {
 				occurrences=new ArrayList<Integer>();
 				max=Collections.max(copyPrioritiesLower);
-				copyPrioritiesLower.remove(max);
+				copyPrioritiesLower.remove(copyPrioritiesLower.indexOf(max));
 				for (int c=0;c<prioritiesLowerLBL.get(i).size();c++)
 					if(max==prioritiesLowerLBL.get(i).get(c))
 						occurrences.add(c);
@@ -174,7 +190,7 @@ public class Graph {
 					moveableVertices=new ArrayList<Vertex>();
 					for(int s=0;s<Math.abs(steps);s++) {
 						higherPriority=false;
-						for(int k=index;k<verticesLBL.get(i).size();k+=step) {
+						for(int k=index;k<verticesLBL.get(i).size()-1 && k>0;k+=step) {
 							if(!(verticesLBL.get(i).get(k+step).getPosition().x== verticesLBL.get(i).get(k).getPosition().x+step)) 
 								break;
 							if(verticesLBL.get(i).get(k+step).getPriorityLower()>verticesLBL.get(i).get(k).getPriorityLower()) {
@@ -197,7 +213,7 @@ public class Graph {
 			while(!copyPrioritiesUpper.isEmpty()) {
 				occurrences=new ArrayList<Integer>();
 				max=Collections.max(copyPrioritiesUpper);
-				copyPrioritiesUpper.remove(max);
+				copyPrioritiesUpper.remove(copyPrioritiesUpper.indexOf(max));
 				for (int c=0;c<prioritiesUpperLBL.get(i).size();c++)
 					if(max==prioritiesUpperLBL.get(i).get(c))
 						occurrences.add(c);
@@ -212,7 +228,7 @@ public class Graph {
 					moveableVertices=new ArrayList<Vertex>();
 					for(int s=0;s<Math.abs(steps);s++) {
 						higherPriority=false;
-						for(int k=index;k<verticesLBL.get(i).size();k+=step) {
+						for(int k=index;k<verticesLBL.get(i).size()-1 && k>0;k+=step) {
 							if(!(verticesLBL.get(i).get(k+step).getPosition().x== verticesLBL.get(i).get(k).getPosition().x+step)) 
 								break;
 							if(verticesLBL.get(i).get(k+step).getPriorityUpper()>verticesLBL.get(i).get(k).getPriorityUpper()) {

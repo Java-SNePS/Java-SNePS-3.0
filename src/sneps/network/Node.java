@@ -303,7 +303,7 @@ public class Node implements Serializable {
 	public boolean updateLevel(int value) {
 		if(!(this instanceof VariableNode)) {
 			if(value>level) {
-				Network.updateNodeLBL(this,value,level);
+				Network.updateNodeLBL(this,level,value);
 				level = value;
 				if (level>numberOfLevels)
 					numberOfLevels++;
@@ -311,7 +311,7 @@ public class Node implements Serializable {
 			}
 		}
 		else {
-			Network.updateNodeLBL(this,value,level);
+			Network.updateNodeLBL(this,level,value);
 			level = value;
 			if (level>numberOfLevels)
 				numberOfLevels++;

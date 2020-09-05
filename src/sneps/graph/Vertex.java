@@ -32,6 +32,8 @@ public class Vertex implements Comparable<Vertex> {
 		incomingEdges= new ArrayList<Edge>();
 		if(position.x>max_X)
 			max_X=position.x;
+		
+		
 	}
 
 	/**
@@ -58,7 +60,8 @@ public class Vertex implements Comparable<Vertex> {
 	public Double computeBarycenterUpper() {
 		baryUpper=0.0;
 		for(int i=0; i<inDegree; i++)
-			baryLower+=(incomingEdges.get(i).getParentX()/(inDegree+0.0));
+			baryUpper+=(incomingEdges
+					.get(i).getParentX()/(inDegree+0.0));
 		return baryUpper;
 	}
 			
@@ -66,7 +69,7 @@ public class Vertex implements Comparable<Vertex> {
 	public Double computeBarycenterLower(){
 		baryLower=0.0;
 		for(int i=0; i<outDegree; i++)
-			baryUpper+=(outgoingEdges.get(i).getChildX()/(outDegree+0.0));
+			baryLower+=(outgoingEdges.get(i).getChildX()/(outDegree+0.0));
 		return baryLower;
 	}
 	
@@ -214,6 +217,9 @@ public class Vertex implements Comparable<Vertex> {
 		return 1;
 	}
 	
-	
+	public String toString() {
+		//return " ["+position.x+","+ position.y+"] ";
+		return label;
+	}
 		
 }
