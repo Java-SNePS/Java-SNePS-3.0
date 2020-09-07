@@ -38,11 +38,11 @@ public class Node implements Serializable {
 		term = trm;
 		id = count++;
 		level=0;
+		Network.addNodeLBL(this,level);
 		if(this.getTerm() instanceof Molecular) {
 			this.updateUpCables();
 		}
 		updateParentsLevel();
-		Network.addNodeLBL(this,level);
 	}
 
 	public Node(Semantic sem) {
@@ -57,11 +57,11 @@ public class Node implements Serializable {
 		term = trm;
 		id = count++;
 		level=0;
+		Network.addNodeLBL(this,level);
 		if(this.getTerm() instanceof Molecular) {
 			this.updateUpCables();
 		}
 		updateParentsLevel();
-		Network.addNodeLBL(this,level);
 	}
 
 	/**
