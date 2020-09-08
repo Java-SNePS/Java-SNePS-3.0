@@ -13,13 +13,15 @@ import sneps.network.Node;
 public class Graph {
 	
 	private static ArrayList<ArrayList<Node>> nodesLBL;
-	private static ArrayList<ArrayList<Edge>> edges= new ArrayList<ArrayList<Edge>>();
+	private static ArrayList<ArrayList<Edge>> edges;
 	private static ArrayList<ArrayList<Vertex>> verticesLBL;
 	private static ArrayList<ArrayList<Vertex>> dummyVerticesLBL; 
-	private static ArrayList<LongSpanEdge> longSpanEdges= new ArrayList<LongSpanEdge>();
+	private static ArrayList<LongSpanEdge> longSpanEdges;
 	
 	
 	public static void constructGraph() {
+		edges= new ArrayList<ArrayList<Edge>>();
+		longSpanEdges= new ArrayList<LongSpanEdge>();
 		nodesLBL= Network.getNodesLBL();
 		Node node;
 		verticesLBL = new ArrayList<ArrayList<Vertex>>();
@@ -101,6 +103,8 @@ public class Graph {
 	}
 	
 	public static void assignXcoordinates() {
+
+		//setting priorities
 		int sumUpper;
 		int sumLower;
 		ArrayList<ArrayList<Integer>> prioritiesUpperLBL= new ArrayList<ArrayList<Integer>>();
@@ -132,6 +136,8 @@ public class Graph {
 		int index;
 		ArrayList<Vertex> moveableVertices;
 		boolean higherPriority;
+
+		//Down Procedure
 		for(int i=verticesLBL.size()-1; i>-1; i--) {
 			copyPrioritiesUpper=((ArrayList<Integer>) prioritiesUpperLBL.get(i).clone());
 			while(!copyPrioritiesUpper.isEmpty()) {
@@ -170,6 +176,8 @@ public class Graph {
 			}
 		}
 		ArrayList<Integer> copyPrioritiesLower;
+
+		//Up Procedure
 		for(int i=1; i<verticesLBL.size(); i++) {
 			copyPrioritiesLower=((ArrayList<Integer>) prioritiesLowerLBL.get(i).clone());
 			while(!copyPrioritiesLower.isEmpty()) {
@@ -207,7 +215,8 @@ public class Graph {
 				}
 			}
 		}
-		
+
+		//Down Procedure again
 		for(int i=verticesLBL.size()-1; i>-1; i--) {
 			copyPrioritiesUpper=((ArrayList<Integer>) prioritiesUpperLBL.get(i).clone());
 			while(!copyPrioritiesUpper.isEmpty()) {
@@ -245,6 +254,8 @@ public class Graph {
 				}
 			}
 		}
+
+		//Shift all nodes if any node has a negative x-coordinate
 		shiftVertices();
 	}
 	
@@ -258,6 +269,5 @@ public class Graph {
 	}
 	
 	public static void clear() {
-		longSpanEdges=new ArrayList<LongSpanEdge>();
 	}
 }

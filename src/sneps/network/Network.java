@@ -2119,7 +2119,6 @@ public class Network implements Serializable {
 		userDefinedMolSuffix.clear();
 		userDefinedPatSuffix.clear();
 		userDefinedVarSuffix.clear();
-		Graph.clear();
 		nodesLBL = new ArrayList<ArrayList<Node>>();
 	}
 
