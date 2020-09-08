@@ -1,6 +1,7 @@
 package sneps.network;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import sneps.network.cables.UpCable;
 import sneps.network.cables.UpCableSet;
@@ -11,6 +12,8 @@ import sneps.network.classes.setClasses.NodeSet;
 import sneps.snebr.Context;
 import sneps.snip.channels.Channel;
 import sneps.snip.matching.Substitutions;
+import sneps.graph.LongSpanEdge;
+import sneps.network.Network;
 
 public class Node implements Serializable {
 
@@ -18,30 +21,47 @@ public class Node implements Serializable {
 	protected Semantic semanticType;
 	private static int count = 0;
 	private int id;
+	
+	/**
+	 * Attribute level to determine the level of the node
+	 * The higher the node in the y-axis the higher the attribute level
+	 * Which means that the deepest nodes will always have level 0
+	 */
+	private int level;
+	private static int numberOfLevels = 0;
 
 	public Node() {
+		level=0;
 	}
 
 	public Node(Term trm) {
 		term = trm;
 		id = count++;
+		level=0;
+		Network.addNodeLBL(this,level);
 		if(this.getTerm() instanceof Molecular) {
 			this.updateUpCables();
 		}
+		updateParentsLevel();
 	}
 
 	public Node(Semantic sem) {
 		semanticType = sem;
 		id = count++;
+		level=0;
+		Network.addNodeLBL(this,level);
 	}
 
 	public Node(Semantic sem, Term trm) {
 		semanticType = sem;
 		term = trm;
 		id = count++;
+		level=0;
+		Network.addNodeLBL(this,level);
 		if(this.getTerm() instanceof Molecular) {
 			this.updateUpCables();
 		}
+		updateParentsLevel();
 	}
 
 	/**
@@ -265,6 +285,94 @@ public class Node implements Serializable {
 	 */
 	public void updateUpCables() {
 		((Molecular) this.getTerm()).updateUpCables(this);
+	}
+	
+	
+	/**
+	 * @return the int level attribute of the Node
+	 */
+	public int getLevel() {
+		return level;
+	}
+	
+	/**
+	 * This method updates the node level if needed.
+	 *  @param value of the proposed level updated
+	 * @returns boolean to check if level changed.
+	 */
+	public boolean updateLevel(int value) {
+		if(!(this instanceof VariableNode)) {
+			if(value>level) {
+				Network.updateNodeLBL(this,level,value);
+				level = value;
+				if (level>numberOfLevels)
+					numberOfLevels++;
+				return true;
+			}
+		}
+		else {
+			Network.updateNodeLBL(this,level,value);
+			level = value;
+			if (level>numberOfLevels)
+				numberOfLevels++;
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * This method updates parents' levels when needed
+	 */
+	public void updateParentsLevel() {
+		NodeSet parentNodes= getParentNodes();
+		for (int i=0; i<parentNodes.size();i++) {
+			Node n=parentNodes.getNode(i);
+			if(n.updateLevel(level+1))
+				n.updateParentsLevel();
+		}
+	}
+
+	public static int getNumberOfLevels() {
+		return numberOfLevels;
+	}
+	
+	/**
+	 * This method gets the indices of the parent nodes that are in the ABOVE adjacent level.
+	 * It also creates dummies between its non adjacent parents 
+	 * And adds the first dummy to the returned list as it also is an adjacent parent node
+	 */
+	public ArrayList<Integer> getAdjacentParents() {
+		NodeSet parents = getParentNodes();
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		for (int i=0;i<parents.size();i++) {
+			if(parents.getNode(i).getLevel()==(level+1))
+				result.add(Network.getNodesLBL().get(level+1).indexOf(parents.getNode(i)));
+			else {
+				LongSpanEdge lse =new LongSpanEdge(parents.getNode(i),this);
+				result.add(Network.getNodesLBL().get(level+1).indexOf(lse.getFirstDummy()));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * This method gets the child nodes that are in the BELOW adjacent level
+	 *
+	 */
+	public ArrayList<Node> getAdjacentChildren() {
+		if(getTerm() instanceof Molecular) {
+			ArrayList<Node> children = new ArrayList<Node>();
+			for(int c=0;c<Network.getNodesLBL().get(level-1).size();c++)
+				if(Network.getNodesLBL().get(level-1).get(c).getParentNodes().contains(this))
+					children.add(Network.getNodesLBL().get(level-1).get(c));
+			ArrayList<Node> result = new ArrayList<Node>();
+			for (int i=0;i<children.size();i++) {
+				if(children.get(i).getLevel()==(level-1))
+					result.add(children.get(i));
+			}
+		return result;
+		}
+		return new ArrayList<Node>();
 	}
 
 }
